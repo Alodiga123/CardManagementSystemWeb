@@ -64,8 +64,8 @@ public class AdminMainMenuController extends GenericForwardComposer {
        //TODO:
        ltcProfile.setLabel("Administrador");
        ltcLogin.setLabel(user.getLogin());
-       ///     
-       Listitem item = new Listitem();
+       ///  Opcion CardRequestType   
+            Listitem item = new Listitem();
             Listcell listCell = new Listcell();
             listCell.setLabel("List CardRequestType");
             listCell.addEventListener("onClick", new RedirectListener("listCardRequestType.zul"));
@@ -73,7 +73,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell.setParent(item);
             item.setParent(lbxPermissions);
             
-        ///
+        /// Opcion Country
             Listitem item2 = new Listitem();
             Listcell listCell2 = new Listcell();
             listCell2.setLabel( Labels.getLabel("sp.common.country"));
@@ -82,27 +82,21 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell2.setParent(item2);
             item2.setParent(lbxPermissions);
             
+        /// Opcion Currency
+            Listitem item3 = new Listitem();
+            Listcell listCell3 = new Listcell();
+            listCell3.setLabel(Labels.getLabel("sp.common.currency"));
+            listCell3.addEventListener("onClick", new RedirectListener("listCurrency.zul"));
+            listCell3.setParent(item3);
+            item3.setParent(lbxPermissions);  
          }
-
-         
-       
-       
-       
-       
-       
     }
-
-
-
-  
-    
 
       class RedirectListener implements EventListener {
 
         private String view = null;
         private Long permissionId = null;
        
-
         public RedirectListener() {
         }
 
