@@ -60,11 +60,11 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="5"/>
+                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
-                                                               <textbox id="txtShortName" value="" width="50px" maxlength="5"/>
+                                                               <textbox id="txtShortName" value="" width="50px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="5"/>
                                                                <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hbox>
                                                             <hlayout>
@@ -79,7 +79,7 @@
                                                         </row>
                                                         <row>
                                                             <hbox>
-                                                              <textbox id="txtAlternativeName1" value="" width="320px" maxlength="200" tooltip="alternative"/>
+                                                              <textbox id="txtAlternativeName1" value="" width="320px" maxlength="200" onChange="self.setValue(self.getValue().toUpperCase().trim());" tooltip="alternative"/>
                                                             </hbox>
                                                             <combobox id="currency" name="currency" value="${c:l('sp.common.currency')}" constraint="no empty">
                                                               <comboitem label="Dolar"/>
@@ -87,7 +87,7 @@
                                                               <comboitem label="Bolivares"/>
                                                               <comboitem label="Pesos"/>
                                                             </combobox>
-                                                            <combobox id="cmbCurrency" width="320px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCurrency" width="320px" mold="rounded"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
