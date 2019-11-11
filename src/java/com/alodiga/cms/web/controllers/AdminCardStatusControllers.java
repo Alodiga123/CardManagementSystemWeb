@@ -3,6 +3,7 @@ package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.Currency;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -11,23 +12,20 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
-public class AdminCurrencyController extends GenericAbstractAdminController {
+public class AdminCardStatusControllers extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtSimbol,txtName;
+    private Textbox txtName;
     private UtilsEJB utilsEJB = null;
-    private Currency currencyParam;
+    private CardStatus  cardStatusParam;
     private Button btnSave;
     private Integer evenType2 = -1;
-            
-            
-
-
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         
-        currencyParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Currency) Sessions.getCurrent().getAttribute("object") : null;
+        cardStatusParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CardStatus) Sessions.getCurrent().getAttribute("object") : null;
         evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         initialize();
         loadData();
@@ -50,21 +48,19 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
     }
 
     public void clearFields() {
-        txtSimbol.setRawValue(null);
+    
         txtName.setRawValue(null);
     }
 
-    private void loadFields(Currency currency) {
-        try {
-            txtSimbol.setText(currency.getSymbol());
-            txtName.setText(currency.getName());
+    private void loadFields(CardStatus cardStatus) {
+        try {txtName.setText(cardStatus.getDescription());
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtSimbol.setReadonly(true);
+       
         txtName.setReadonly(true);
         btnSave.setVisible(false);
     }
@@ -73,31 +69,26 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+            return  false;
         }
-        if (txtSimbol.getText().isEmpty()) {
-            txtSimbol.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else {
-            return true;
-        }
-        return false;
+         
+        return true;
 
     }
 
 
-    private void saveCurrency(Currency currency_) {
+    private void saveCardStatus(CardStatus cardStatus_) {
         try {
-            Currency currency = null;
+            CardStatus cardStatus = null;
 
-            if (currency_ != null) {
-                currency = currency_;
+            if (cardStatus_ != null) {
+                cardStatus = cardStatus_;
             } else {//New requestType
-                currency = new Currency();
+                cardStatus = new CardStatus();
             }
-            currency.setName(txtName.getText());
-            currency.setSymbol(txtSimbol.getText());
-            currency = utilsEJB.saveCurrency(currency);
-            currencyParam = currency;
+            cardStatus.setDescription(txtName.getText());
+            cardStatus = utilsEJB.saveCardStatus(cardStatus);
+            cardStatusParam = cardStatus;
             this.showMessage("sp.common.save.success", false, null);
         } catch ( Exception ex) {
             showError(ex);
@@ -109,10 +100,10 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (evenType2) {
                 case WebConstants.EVENT_ADD:
-                    saveCurrency(null);
+                    saveCardStatus(null);
                 break;
                 case WebConstants.EVENT_EDIT:
-                   saveCurrency(currencyParam);
+                   saveCardStatus(cardStatusParam);
                 break;
             }
         }
@@ -121,10 +112,10 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
     public void loadData() {
         switch (evenType2) {
             case WebConstants.EVENT_EDIT:
-                loadFields(currencyParam);
+                loadFields(cardStatusParam);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(currencyParam);
+                loadFields(cardStatusParam);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
@@ -133,5 +124,8 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
                 break;
         }
     }
+
+ 
+    
 
 }
