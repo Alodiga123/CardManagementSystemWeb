@@ -54,17 +54,17 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.contry.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.common.country.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('sp.common.shortName')}" sclass="lblbold"/>
                                                             <label value="${c:l('sp.common.code')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
-                                                               <textbox id="txtShortName" value="" width="50px" maxlength="60"/>
+                                                               <textbox id="txtShortName" value="" width="50px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hbox>
                                                             <hlayout>
@@ -79,7 +79,7 @@
                                                         </row>
                                                         <row>
                                                             <hbox>
-                                                              <textbox id="txtAlternativeName1" value="" width="320px" maxlength="200" tooltip="alternative"/>
+                                                              <textbox id="txtAlternativeName1" value="" width="320px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hbox>
                                                          
                                                             <combobox id="cmbCurrency" width="150px" mold="rounded" readonly="true" />
