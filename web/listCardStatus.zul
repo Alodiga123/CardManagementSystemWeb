@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCurrencyController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCardStatusControllers" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('sp.common.listCurrency')}"/>
+                                                <toolbarbutton label="${c:l('')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('sp.common.statusCard')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
 
@@ -55,8 +55,8 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.name')}" width="400px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.symbol')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.statusCard')}" width="400px" sort="auto"/>
+                                                    <!-- <listheader label="${c:l('sp.coomon.simbol')}" width="150px" sort="auto"/>-->
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

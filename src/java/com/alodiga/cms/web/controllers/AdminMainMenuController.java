@@ -89,6 +89,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell3.addEventListener("onClick", new RedirectListener("listCurrency.zul"));
             listCell3.setParent(item3);
             item3.setParent(lbxPermissions);  
+            
+            /// Opcion statusCard
+            Listitem item4 = new Listitem();
+            Listcell listCell4 = new Listcell();
+            listCell4.setLabel(Labels.getLabel("sp.common.statusCard"));
+            listCell4.addEventListener("onClick", new RedirectListener("listCardStatus.zul"));
+            listCell4.setParent(item4);
+            item4.setParent(lbxPermissions);  
          }
     }
 
