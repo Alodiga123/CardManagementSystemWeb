@@ -24,7 +24,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 public class AdminCountryController extends GenericAbstractAdminController {
-//test
+
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtName;
     private Textbox txtCode;
