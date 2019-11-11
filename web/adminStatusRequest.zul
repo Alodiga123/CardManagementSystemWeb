@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.status.list'')}" onClick='Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('sp.crud.status.list')}" onClick='Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton label="${c:l('sp.crud.status')}"/>
                                                  |
@@ -56,7 +56,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
+                                                                <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
