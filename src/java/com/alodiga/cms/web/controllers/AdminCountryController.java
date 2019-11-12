@@ -29,7 +29,6 @@ public class AdminCountryController extends GenericAbstractAdminController {
     private Textbox txtCodeIso3;
     private UtilsEJB utilsEJB = null;
     private Combobox cmbCurrency;
-    //private Language Language;
     private Country countryParam;
     private Button btnSave;
     private Integer eventType;
