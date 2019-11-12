@@ -12,7 +12,7 @@
             </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
-                    <hlayout >
+                    <hlayout>
                         <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
