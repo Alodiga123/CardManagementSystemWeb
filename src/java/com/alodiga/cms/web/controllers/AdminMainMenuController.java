@@ -67,7 +67,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
        ///  Opcion CardRequestType   
             Listitem item = new Listitem();
             Listcell listCell = new Listcell();
-            listCell.setLabel("List CardRequestType");
+            listCell.setLabel("cms.menu.cardRequestType.list");
             listCell.addEventListener("onClick", new RedirectListener("listCardRequestType.zul"));
 
             listCell.setParent(item);

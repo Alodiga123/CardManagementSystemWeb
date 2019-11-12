@@ -1,15 +1,23 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.exception.EmptyListException;
+import com.alodiga.cms.commons.exception.GeneralException;
+import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
+import com.cms.commons.models.Currency;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.util.List;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 public class AdminCountryController extends GenericAbstractAdminController {
@@ -20,6 +28,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
     private Textbox txtCodeIso2;
     private Textbox txtCodeIso3;
     private UtilsEJB utilsEJB = null;
+    private Combobox cmbCurrency;
     //private Language Language;
     private Country countryParam;
     private Button btnSave;
@@ -157,6 +166,45 @@ public class AdminCountryController extends GenericAbstractAdminController {
             default:
                 break;
         }
+    }
+    
+    private void loadCmbCurrency(Integer evenInteger) {
+        //cmbCurrency
+        EJBRequest request1 = new EJBRequest();
+        List<Currency> currencies;
+ 
+        try {
+            currencies = utilsEJB.getCurrency(request1);
+            cmbCurrency.getItems().clear();
+            for (Currency c : currencies) {
+ 
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getSymbol());
+                item.setDescription(c.getName());
+                item.setParent(cmbCurrency);
+                if (countryParam != null && c.getId().equals(countryParam.getCurrencyId().getId())) {
+                    cmbCurrency.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbCurrency.setSelectedIndex(1);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbCurrency.setDisabled(true);
+            }
+            
+            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+ 
     }
 
 }
