@@ -55,11 +55,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.description.cardRequestType)}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.program.name')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description.productType')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.name.country')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description.personType')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.description')}" width="755px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

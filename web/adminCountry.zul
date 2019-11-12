@@ -81,8 +81,13 @@
                                                             <hbox>
                                                               <textbox id="txtCodeIso3" value="" width="280px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hbox>
-                                                         
-                                                            <combobox id="cmbCurrency" width="150px" mold="rounded" readonly="true" />
+                                                            <combobox id="currency" name="currency" value="${c:l('sp.common.currency')}" constraint="no empty">
+                                                              <comboitem label="Dolar"/>
+                                                              <comboitem label="Euro"/>
+                                                              <comboitem label="Bolivares"/>
+                                                              <comboitem label="Pesos"/>
+                                                            </combobox>
+                                                            <combobox id="cmbCurrency" width="320px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -78,7 +78,6 @@ public class AdminMainMenuController extends GenericForwardComposer {
             Listcell listCell2 = new Listcell();
             listCell2.setLabel( Labels.getLabel("sp.common.country"));
             listCell2.addEventListener("onClick", new RedirectListener("listCountry.zul"));
-            //listCell2.addEventListener("onClick", new RedirectListener("adminCountry.zul"));
             listCell2.setParent(item2);
             item2.setParent(lbxPermissions);
             
@@ -89,7 +88,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell3.addEventListener("onClick", new RedirectListener("listCurrency.zul"));
             listCell3.setParent(item3);
             item3.setParent(lbxPermissions);  
-            
+
             /// Opcion statusCard
             Listitem item4 = new Listitem();
             Listcell listCell4 = new Listcell();
