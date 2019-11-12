@@ -28,8 +28,8 @@ public class AdminCountryController extends GenericAbstractAdminController {
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtName;
     private Textbox txtCode;
-    private Textbox txtShortName;
-    private Textbox txtAlternativeName1;
+    private Textbox txtCodeIso2;
+    private Textbox txtCodeIso3;
     private UtilsEJB utilsEJB = null;
     private Combobox cmbCurrency;
     //private Language Language;
@@ -59,9 +59,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
 
     public void clearFields() {
         txtName.setRawValue(null);
-        txtShortName.setRawValue(null);
+        txtCodeIso2.setRawValue(null);
         txtCode.setRawValue(null);
-        txtAlternativeName1.setRawValue(null);
+        txtCodeIso3.setRawValue(null);
 
 //Cambio prueba
     }
@@ -69,9 +69,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
     private void loadFields(Country country) {
         try {
             txtName.setText(country.getName());
-            txtShortName.setText(country.getCodeIso2());
+            txtCodeIso2.setText(country.getCodeIso2());
             txtCode.setText(country.getCode());
-            txtAlternativeName1.setText(country.getCodeIso3());
+            txtCodeIso3.setText(country.getCodeIso3());
 
         } catch (Exception ex) {
             showError(ex);
@@ -80,9 +80,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
 
     public void blockFields() {
         txtName.setReadonly(true);
-        txtShortName.setReadonly(true);
+        txtCodeIso2.setReadonly(true);
         txtCode.setReadonly(true);
-        txtAlternativeName1.setReadonly(true);
+        txtCodeIso3.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -90,8 +90,8 @@ public class AdminCountryController extends GenericAbstractAdminController {
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtShortName.getText().isEmpty()) {
-            txtShortName.setFocus(true);
+        } else if (txtCodeIso2.getText().isEmpty()) {
+            txtCodeIso2.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtCode.getText().isEmpty()) {
             txtCode.setFocus(true);
@@ -122,8 +122,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
             }
             country.setName(txtName.getText());
             country.setCode(txtCode.getText());
-            country.setCodeIso2(txtShortName.getText());
-            country.setCodeIso3(txtAlternativeName1.getText());
+            country.setCodeIso2(txtCodeIso2.getText());
+            country.setCodeIso3(txtCodeIso3.getText());
+            country.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
             country = utilsEJB.saveCountry(country);
             countryParam = country;
             this.showMessage("sp.common.save.success", false, null);
@@ -157,9 +158,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 loadFields(countryParam);
                 txtName.setDisabled(true);
-                txtShortName.setDisabled(true);
+                txtCodeIso2.setDisabled(true);
                 txtCode.setDisabled(true);
-                txtAlternativeName1.setDisabled(true);
+                txtCodeIso3.setDisabled(true);
                 loadCmbCurrency(eventType);
                 break;
             case WebConstants.EVENT_ADD:
