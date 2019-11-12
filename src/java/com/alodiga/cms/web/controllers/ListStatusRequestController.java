@@ -31,8 +31,6 @@ public class ListStatusRequestController extends GenericAbstractListController<S
     private Textbox txtDescription;
     private UtilsEJB utilsEJB = null;
     private List<StatusRequest> statusRequest = null;
-    //private User currentUser;
-    //private Profile currentProfile;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -53,8 +51,6 @@ public class ListStatusRequestController extends GenericAbstractListController<S
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            //
-            
             adminPage = "adminStatusRequest.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
@@ -95,13 +91,11 @@ public class ListStatusRequestController extends GenericAbstractListController<S
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-//                btnDownload.setVisible(true);
                 for (StatusRequest statusRequest : list) {
                    
                     item = new Listitem();
                     item.setValue(statusRequest);
                     item.appendChild(new Listcell(statusRequest.getDescription()));
-                    
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, statusRequest) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, statusRequest) : new Listcell());
                     item.setParent(lbxRecords);
@@ -147,12 +141,12 @@ public class ListStatusRequestController extends GenericAbstractListController<S
                 item.setParent(lbxRecords);  
     }
 
-//    public String getCountryTraslationAlias(List<CountryTranslation> countryTranslations, Long languageId) {
+//    public String getStatusRequestTraslationAlias(List<StatusRequestTranslation> statusRequestTranslation, Long languageId) {
 //        String alias = "";
-//        if (countryTranslations != null) {
-//            for (CountryTranslation countryTranslation : countryTranslations) {
-//                if (countryTranslation.getLanguage().getId().equals(languageId)) {
-//                    alias = countryTranslation.getAlias();
+//        if (statusRequestTranslation != null) {
+//            for (StatusRequestTranslation statusRequestTranslation : statusRequestTranslation) {
+//                if (statusRequestTranslation.getLanguage().getId().equals(languageId)) {
+//                    alias = statusRequestTranslation.getAlias();
 //                }
 //            }
 //        }

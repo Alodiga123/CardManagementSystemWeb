@@ -90,7 +90,6 @@ public class AdminStatusRequestController extends GenericAbstractAdminController
         } catch (Exception ex) {
            showError(ex);
         }
-
     }
 
     public void onClick$btnSave() {
@@ -123,5 +122,4 @@ public class AdminStatusRequestController extends GenericAbstractAdminController
                 break;
         }
     }
-
 }
