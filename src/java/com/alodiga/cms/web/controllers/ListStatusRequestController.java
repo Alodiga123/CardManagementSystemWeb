@@ -7,9 +7,10 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
+import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.Country;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -23,15 +24,13 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListCountryController extends GenericAbstractListController<Country> {
+public class ListStatusRequestController extends GenericAbstractListController<StatusRequest> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtAlias;
+    private Textbox txtDescription;
     private UtilsEJB utilsEJB = null;
-    private List<Country> countries = null;
-    //private User currentUser;
-    //private Profile currentProfile;
+    private List<StatusRequest> statusRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -52,34 +51,32 @@ public class ListCountryController extends GenericAbstractListController<Country
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            //
-            
-            adminPage = "adminCountry.zul";
+            adminPage = "adminStatusRequest.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadList(countries);
+            loadList(statusRequest);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-//    public List<Country> getFilteredList(String filter) {
-//        List<Country> countriesaux = new ArrayList<Country>();
-//        Country country;
+//    public List<StatusRequest> getFilteredList(String filter) {
+//        List<StatusRequest> statusRequestsaux = new ArrayList<StatusRequest>();
+//        StatusRequest statusRequest;
 //        try {
 //            if (filter != null && !filter.equals("")) {
-//                country = utilsEJB.searchCountry(filter);
-//                countriesaux.add(country);
+//                statusRequests = utilsEJB.searchStatusRequest(filter);
+//                statusRequestsaux.add(statusRequest);
 //            } else {
-//                return countries;
+//                return statusRequests;
 //            }
 //        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCountryController.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(ListStatusRequestController.class.getDescription()).log(Level.SEVERE, null, ex);
 //        } catch (Exception ex) {
 //            showError(ex);
 //        }
-//        return countriesaux;
-//    }
+//        return statusRequestsaux;
+//   }
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
@@ -89,22 +86,18 @@ public class ListCountryController extends GenericAbstractListController<Country
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<Country> list) {
+    public void loadList(List<StatusRequest> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
-                for (Country country : list) {
+                for (StatusRequest statusRequest : list) {
+                   
                     item = new Listitem();
-                    item.setValue(country);
-                    item.appendChild(new Listcell(country.getCode()));
-                    item.appendChild(new Listcell(country.getName()));
-                    item.appendChild(new Listcell(country.getCodeIso2()));
-                    item.appendChild(new Listcell(country.getCodeIso3()));
-                    item.appendChild(new Listcell(country.getCurrencyId().getName()));                    
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, country) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, country) : new Listcell());
+                    item.setValue(statusRequest);
+                    item.appendChild(new Listcell(statusRequest.getDescription()));
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, statusRequest) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, statusRequest) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -123,11 +116,11 @@ public class ListCountryController extends GenericAbstractListController<Country
     }
 
     public void getData() {
-        countries = new ArrayList<Country>();
+        statusRequest = new ArrayList<StatusRequest>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            countries = utilsEJB.getCountries(request);
+            statusRequest = utilsEJB.getStatusRequests(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -139,6 +132,7 @@ public class ListCountryController extends GenericAbstractListController<Country
     
     
     private void showEmptyList(){
+                
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
@@ -147,16 +141,28 @@ public class ListCountryController extends GenericAbstractListController<Country
                 item.setParent(lbxRecords);  
     }
 
+//    public String getStatusRequestTraslationAlias(List<StatusRequestTranslation> statusRequestTranslation, Long languageId) {
+//        String alias = "";
+//        if (statusRequestTranslation != null) {
+//            for (StatusRequestTranslation statusRequestTranslation : statusRequestTranslation) {
+//                if (statusRequestTranslation.getLanguage().getId().equals(languageId)) {
+//                    alias = statusRequestTranslation.getAlias();
+//                }
+//            }
+//        }
+//        return alias;
+//    }
+
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.bread.crumb.country.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.bread.crumb.statusRequest.list"));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtAlias.setText("");
+        txtDescription.setText("");
     }
 
 //    public void onClick$btnSearch() throws InterruptedException {
@@ -168,14 +174,13 @@ public class ListCountryController extends GenericAbstractListController<Country
 //    }
 
     @Override
-    public List<Country> getFilterList(String filter) {
+    public List<StatusRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void loadDataList(List<Country> list) {
+    public void loadDataList(List<StatusRequest> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }
