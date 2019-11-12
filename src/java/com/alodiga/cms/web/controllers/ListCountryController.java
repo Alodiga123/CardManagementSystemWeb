@@ -94,19 +94,15 @@ public class ListCountryController extends GenericAbstractListController<Country
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-//                btnDownload.setVisible(true);
+                //btnDownload.setVisible(true);
                 for (Country country : list) {
-                   
                     item = new Listitem();
                     item.setValue(country);
                     item.appendChild(new Listcell(country.getCode()));
                     item.appendChild(new Listcell(country.getName()));
                     item.appendChild(new Listcell(country.getCodeIso2()));
                     item.appendChild(new Listcell(country.getCodeIso3()));
-                    //item.appendChild(new Listcell()country.getCurrency().getSimbol());
-                    //item.appendChild(new Listcell(country.getCurrencyId()));
-                    item.appendChild(new Listcell("cable"));
-                    
+                    item.appendChild(new Listcell(country.getCurrencyId().getName()));                    
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, country) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, country) : new Listcell());
                     item.setParent(lbxRecords);
@@ -143,7 +139,6 @@ public class ListCountryController extends GenericAbstractListController<Country
     
     
     private void showEmptyList(){
-                
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
@@ -151,18 +146,6 @@ public class ListCountryController extends GenericAbstractListController<Country
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);  
     }
-
-//    public String getCountryTraslationAlias(List<CountryTranslation> countryTranslations, Long languageId) {
-//        String alias = "";
-//        if (countryTranslations != null) {
-//            for (CountryTranslation countryTranslation : countryTranslations) {
-//                if (countryTranslation.getLanguage().getId().equals(languageId)) {
-//                    alias = countryTranslation.getAlias();
-//                }
-//            }
-//        }
-//        return alias;
-//    }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
