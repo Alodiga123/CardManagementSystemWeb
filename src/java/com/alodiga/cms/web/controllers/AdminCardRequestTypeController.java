@@ -13,7 +13,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
 public class AdminCardRequestTypeController extends GenericAbstractAdminController {
-
+    //test
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtCode;
     private Textbox txtDescription;
