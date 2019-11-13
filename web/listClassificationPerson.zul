@@ -55,7 +55,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.commom.Classification.Person')}" width="550px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.commom.Classification.Person')}" width="760px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
