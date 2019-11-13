@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
 
@@ -55,7 +55,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.description')}" width="755px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionProgram')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionProductType')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.countryName')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionPersonType')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionCardRequestType')}" width="155px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
