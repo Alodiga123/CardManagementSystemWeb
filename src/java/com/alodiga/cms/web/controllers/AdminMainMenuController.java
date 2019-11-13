@@ -122,6 +122,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell7.setParent(item7);
             item7.setParent(lbxPermissions); 
             
+             // Option State
+            Listitem item8 = new Listitem();
+            Listcell listCell8 = new Listcell();
+            listCell8.setLabel( Labels.getLabel("sp.common.state"));
+            listCell8.addEventListener("onClick", new RedirectListener("listState.zul"));
+            listCell8.setParent(item8);
+            item8.setParent(lbxPermissions); 
+            
          }
     }
 
