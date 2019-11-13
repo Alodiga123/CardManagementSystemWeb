@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminStatusRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminStatusRequestController" class="general-window">
+    <window id="winAdminCountry" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCountryController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,9 +26,11 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.status.list')}" onClick='Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('sp.crud.country.list')}" onClick='Executions.sendRedirect(&quot;listCountry.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.common.status')}"/>
+                                                <toolbarbutton label="${c:l('sp.crud.country.add')}"/>
+                                                 |
+                                                <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -46,17 +48,40 @@
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="500px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.descriptionStatus')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeIso2')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtName" width="280px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
+                                                            <hbox>
+                                                               <textbox id="txtCode" value="" width="280px" maxlength="4" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
+                                                            </hbox>
+                                                            <hlayout>
+                                                              <textbox id="txtCodeIso2" value="" width="280px" constraint="no empty: ${c:l('error.field.required')}" maxlength="2"/>
+                                                              <label value="*" sclass="lblreq" />
+                                                              <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
+                                                            </hlayout>
+                                                        </row>
+                                                         <row>
+                                                            <label value="${c:l('cms.common.codeIso3')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.currency')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hbox>
+                                                              <textbox id="txtCodeIso3" value="" width="280px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            </hbox>
+                                                             <combobox id="cmbCurrency" width="150px" mold="rounded" readonly="true" />
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -66,7 +91,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCountry.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
