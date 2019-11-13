@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRequestTypesController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCountryController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.requestType.list')}" />
+                                                <toolbarbutton label="${c:l('sp.crud.country.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,10 +34,9 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                     <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/> 
+                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
-
                                                 <hlayout>
                                                     <!--Add button-->
                                                     <div align="left" width="495px">
@@ -49,23 +48,21 @@
                                                         <button id="btnClear" label="${c:l('sp.common.actions.cancel')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.cancel.filter.tooltip')}"/>
                                                     </div>
                                                 </hlayout>
-
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.descriptionProgram')}" width="155px" sort="auto"/> 
-                                                    <listheader label="${c:l('cms.common.descriptionProductType')}" width="155px" sort="auto"/> 
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="155px" sort="auto"/> 
-                                                    <listheader label="${c:l('cms.common.descriptionPersonType')}" width="155px" sort="auto"/> 
-                                                    <listheader label="${c:l('cms.common.descriptionCardRequestType')}" width="155px" sort="auto"/> 
+                                                    <listheader label="${c:l('cms.common.code')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country.name')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.codeIso2')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.codeIso2')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.currency')}" width="100px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
-
                                         </div>
                                         <!--Download button-->
                                         <div align="right">

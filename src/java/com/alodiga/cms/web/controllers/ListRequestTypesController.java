@@ -1,6 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
-/*import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -72,15 +72,12 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
         }
     }
 
-
-
-    /*public List<RequestType> getFilteredList(String filter) {
+    public List<RequestType> getFilteredList(String filter) {
         System.out.println("filter " + filter);
         List<RequestType> requestTypesAux = new ArrayList<RequestType>();
         for (Iterator<RequestType> i = requestTypes.iterator(); i.hasNext();) {
             RequestType tmp = i.next();
-            String field = tmp.getDescription();
-            System.out.println("field " + field);
+            String field = tmp.getProgramId().getName();
             if (field.indexOf(filter.trim().toLowerCase()) >= 0) {
                 requestTypesAux.add(tmp);
             }
@@ -94,18 +91,13 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
         Executions.getCurrent().sendRedirect(adminPage);
     }
     
-       
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.requestType.list"));
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-
-
-
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
@@ -126,11 +118,13 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
                 for (RequestType requestType : list) {
-
                     item = new Listitem();
                     item.setValue(requestType);
-                    //item.appendChild(new Listcell(requestType.getDescription()));
-                   
+                    item.appendChild(new Listcell(requestType.getProgramId().getName()));
+                    item.appendChild(new Listcell(requestType.getProductTypeId().getName()));
+                    item.appendChild(new Listcell(requestType.getCountryId().getName()));
+                    item.appendChild(new Listcell(requestType.getPersonTypeId().getDescription()));
+                    item.appendChild(new Listcell(requestType.getCardRequestTypeId().getDescription()));
                     item.appendChild( new ListcellEditButton("", requestType));
                     item.appendChild(new ListcellViewButton("", requestType,true));
                     item.setParent(lbxRecords);
@@ -142,12 +136,14 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
         } catch (Exception ex) {
            showError(ex);
         }
     }
 
-}*/
+}
