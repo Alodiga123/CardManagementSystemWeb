@@ -67,9 +67,8 @@ public class AdminMainMenuController extends GenericForwardComposer {
        ///  Opcion CardRequestType   
             Listitem item = new Listitem();
             Listcell listCell = new Listcell();
-            listCell.setLabel("cms.menu.cardRequestType.list");
+            listCell.setLabel( Labels.getLabel("cms.menu.cardRequestType.list"));;
             listCell.addEventListener("onClick", new RedirectListener("listCardRequestType.zul"));
-
             listCell.setParent(item);
             item.setParent(lbxPermissions);
             
@@ -97,7 +96,6 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell4.setParent(item4);
             item4.setParent(lbxPermissions);  
             
-            
             /// Opction status
             Listitem item5 = new Listitem();
             Listcell listCell5 = new Listcell();
@@ -109,12 +107,12 @@ public class AdminMainMenuController extends GenericForwardComposer {
             /// Opction collectionRequest
             Listitem item6 = new Listitem();
             Listcell listCell6 = new Listcell();
-            listCell6.setLabel(Labels.getLabel("sp.common.collectionRequest"));
+            listCell6.setLabel(Labels.getLabel("cms.common.collectionRequest"));
             listCell6.addEventListener("onClick", new RedirectListener("listCollectionRequest.zul"));
             listCell6.setParent(item6);
             item6.setParent(lbxPermissions); 
              
-            // Option Classification_Person
+            //Option Classification_Person
             Listitem item7 = new Listitem();
             Listcell listCell7 = new Listcell();
             listCell7.setLabel( Labels.getLabel("sp.commom.Classification.Person"));
@@ -130,6 +128,13 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell8.setParent(item8);
             item8.setParent(lbxPermissions); 
             
+             // Option Request Type
+            Listitem item9 = new Listitem();
+            Listcell listCell9 = new Listcell();
+            listCell9.setLabel( Labels.getLabel("cms.menu.requestType.list"));
+            listCell9.addEventListener("onClick", new RedirectListener("listRequestTypes.zul"));
+            listCell9.setParent(item9);
+            item9.setParent(lbxPermissions);
          }
     }
 

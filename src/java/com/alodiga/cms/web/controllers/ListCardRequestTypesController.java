@@ -47,7 +47,6 @@ public class ListCardRequestTypesController extends GenericAbstractListControlle
     
     @Override
     public void initialize() {
-        System.out.println("entre");
         super.initialize();
         try {
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
@@ -66,7 +65,6 @@ public class ListCardRequestTypesController extends GenericAbstractListControlle
             request.setFirst(0);
             request.setLimit(null);
             cardRequestTypes = utilsEJB.getCardRequestType(request);
-            System.out.println(cardRequestTypes);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -74,8 +72,6 @@ public class ListCardRequestTypesController extends GenericAbstractListControlle
             showError(ex);
         }
     }
-
-
 
     public List<CardRequestType> getFilteredList(String filter) {
         System.out.println("filter " + filter);
