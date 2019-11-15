@@ -58,14 +58,17 @@
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
                                                             <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
+                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
+                                                            <label value="Descripcion" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
+                                                            <textbox id="txtName" width="200px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                            <label value="*" sclass="lblreq" />
                                                         </row>
                                                     </rows>
                                                 </grid>

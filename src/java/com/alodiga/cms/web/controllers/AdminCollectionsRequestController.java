@@ -10,6 +10,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
 import com.cms.commons.models.CollectionsRequest;
+import com.cms.commons.models.ProductType;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -150,12 +151,15 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadCmbCountry(eventType);
+                loadCmbProductType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadCmbCountry(eventType);
+                loadCmbProductType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
+                loadCmbProductType(eventType);
                 break;
             default:
                 break;
@@ -163,7 +167,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     private void loadCmbCountry(Integer evenInteger) {
-        //cmbCurrency
+        //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
 
@@ -174,8 +178,8 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
 
                 Comboitem item = new Comboitem();
                 item.setValue(c);
-                item.setLabel(c.getCode());
-                item.setDescription(c.getName());
+                item.setLabel(c.getName());
+                item.setDescription(c.getCode());
                 item.setParent(cmbCountry);
                 if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getCountryId().getId())) {
                     cmbCountry.setSelectedItem(item);
@@ -185,6 +189,42 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
                 cmbCountry.setSelectedIndex(1);
             } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbCountry.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+        private void loadCmbProductType(Integer evenInteger) {
+        //cmbProductType
+        EJBRequest request1 = new EJBRequest();
+        List<ProductType> productTypes;
+
+        try {
+            productTypes = utilsEJB.getProductTypes(request1);
+            cmbProductType.getItems().clear();
+            for (ProductType c : productTypes) {
+
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getName());
+                item.setDescription(c.getId().toString());
+                item.setParent(cmbProductType);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getProductTypeId().getId())) {
+                    cmbProductType.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbProductType.setSelectedIndex(1);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbProductType.setDisabled(true);
             }
         } catch (EmptyListException ex) {
             showError(ex);
