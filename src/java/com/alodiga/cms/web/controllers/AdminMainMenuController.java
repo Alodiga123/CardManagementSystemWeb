@@ -99,7 +99,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             /// Opction status
             Listitem item5 = new Listitem();
             Listcell listCell5 = new Listcell();
-            listCell5.setLabel(Labels.getLabel("sp.common.status"));
+            listCell5.setLabel(Labels.getLabel("cms.common.statusRequest"));
             listCell5.addEventListener("onClick", new RedirectListener("listStatusRequest.zul"));
             listCell5.setParent(item5);
             item5.setParent(lbxPermissions);  

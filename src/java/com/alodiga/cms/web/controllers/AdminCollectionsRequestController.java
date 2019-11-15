@@ -9,6 +9,8 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
+import com.cms.commons.models.CollectionsRequest;
+import com.cms.commons.models.ProductType;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -23,23 +25,27 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
-public class AdminCountryController extends GenericAbstractAdminController {
+public class AdminCollectionsRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtName;
     private Textbox txtCode;
     private Textbox txtShortName;
     private Textbox txtAlternativeName1;
+    
+    private CollectionsRequest collectionsRequestParam;
     private UtilsEJB utilsEJB = null;
-    private Combobox cmbCurrency;
-    private Country countryParam;
+    private Combobox cmbCountry;
+    private Combobox cmbPrograms;
+    private Combobox cmbPersonType;
+    private Combobox cmbProductType;
     private Button btnSave;
     private Integer eventType;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        countryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Country) Sessions.getCurrent().getAttribute("object") : null;
+        collectionsRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionsRequest) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
         //initView(eventType, "sp.crud.country");
@@ -61,19 +67,17 @@ public class AdminCountryController extends GenericAbstractAdminController {
         txtShortName.setRawValue(null);
         txtCode.setRawValue(null);
         txtAlternativeName1.setRawValue(null);
+
+//prueba
     }
 
-    private void loadFields(Country country) {
+   /* private void loadFields(CollectionsRequest collectionsRequest) {
         try {
-            txtName.setText(country.getName());
-            txtShortName.setText(country.getCodeIso2());
-            txtCode.setText(country.getCode());
-            txtAlternativeName1.setText(country.getCodeIso3());
 
         } catch (Exception ex) {
             showError(ex);
         }
-    }
+    }*/
 
     public void blockFields() {
         txtName.setReadonly(true);
@@ -108,36 +112,34 @@ public class AdminCountryController extends GenericAbstractAdminController {
         Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
     }
 
-    private void saveCountry(Country _country) {
+    private void saveCollectionsRequest(CollectionsRequest _collectionsRequest) {
         try {
-            Country country = null;
+            CollectionsRequest collectionsRequest = null;
 
-            if (_country != null) {
-                country = _country;
-            } else {//New country
-                country = new Country();
+            if (_collectionsRequest != null) {
+                collectionsRequest = _collectionsRequest;
+            } else {//New collectionsRequest
+                collectionsRequest = new CollectionsRequest();
             }
-            country.setName(txtName.getText());
-            country.setCode(txtCode.getText());
-            country.setCodeIso2(txtShortName.getText());
-            country.setCodeIso3(txtAlternativeName1.getText());
-            country.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());//prueba
-            country = utilsEJB.saveCountry(country);
-            countryParam = country;
+            
+            collectionsRequest.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            collectionsRequest = utilsEJB.saveCollectionRequest(collectionsRequest);
+            collectionsRequestParam = collectionsRequest;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
         }
+
     }
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveCountry(null);
+                    saveCollectionsRequest(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveCountry(countryParam);
+                    saveCollectionsRequest(collectionsRequestParam);
                     break;
                 default:
                     break;
@@ -148,50 +150,46 @@ public class AdminCountryController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(countryParam);
-                loadCmbCurrency(eventType);
+                loadCmbCountry(eventType);
+                loadCmbProductType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(countryParam);
-                txtName.setDisabled(true);
-                txtShortName.setDisabled(true);
-                txtCode.setDisabled(true);
-                txtAlternativeName1.setDisabled(true);
-                loadCmbCurrency(eventType);
+                loadCmbCountry(eventType);
+                loadCmbProductType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                loadCmbCurrency(eventType);
+                loadCmbCountry(eventType);
+                loadCmbProductType(eventType);
                 break;
             default:
                 break;
         }
     }
 
-    private void loadCmbCurrency(Integer evenInteger) {
-        //cmbCurrency
+    private void loadCmbCountry(Integer evenInteger) {
+        //cmbCountry
         EJBRequest request1 = new EJBRequest();
-        List<Currency> currencies;
+        List<Country> countries;
 
         try {
-            currencies = utilsEJB.getCurrency(request1);
-            cmbCurrency.getItems().clear();
-            for (Currency c : currencies) {
+            countries = utilsEJB.getCountries(request1);
+            cmbCountry.getItems().clear();
+            for (Country c : countries) {
 
                 Comboitem item = new Comboitem();
                 item.setValue(c);
-                item.setLabel(c.getSymbol());
-                item.setDescription(c.getName());
-                item.setParent(cmbCurrency);
-                if (countryParam != null && c.getId().equals(countryParam.getCurrencyId().getId())) {
-                    cmbCurrency.setSelectedItem(item);
+                item.setLabel(c.getName());
+                item.setDescription(c.getCode());
+                item.setParent(cmbCountry);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getCountryId().getId())) {
+                    cmbCountry.setSelectedItem(item);
                 }
             }
             if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbCurrency.setSelectedIndex(1);
+                cmbCountry.setSelectedIndex(1);
             } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbCurrency.setDisabled(true);
-            } 
-            //prueba luly
+                cmbCountry.setDisabled(true);
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -203,4 +201,41 @@ public class AdminCountryController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
+    
+        private void loadCmbProductType(Integer evenInteger) {
+        //cmbProductType
+        EJBRequest request1 = new EJBRequest();
+        List<ProductType> productTypes;
+
+        try {
+            productTypes = utilsEJB.getProductTypes(request1);
+            cmbProductType.getItems().clear();
+            for (ProductType c : productTypes) {
+
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getName());
+                item.setDescription(c.getId().toString());
+                item.setParent(cmbProductType);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getProductTypeId().getId())) {
+                    cmbProductType.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbProductType.setSelectedIndex(1);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbProductType.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+
 }
