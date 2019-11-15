@@ -151,6 +151,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(countryParam);
+                 loadCmbCurrency(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(countryParam);
@@ -161,12 +162,15 @@ public class AdminCountryController extends GenericAbstractAdminController {
                 loadCmbCurrency(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                 loadCmbCurrency(eventType);
                 break;
             default:
                 break;
         }
     }
     
+    
+   
     private void loadCmbCurrency(Integer evenInteger) {
         //cmbCurrency
         EJBRequest request1 = new EJBRequest();
@@ -195,15 +199,14 @@ public class AdminCountryController extends GenericAbstractAdminController {
             
         } catch (EmptyListException ex) {
             showError(ex);
-            ex.printStackTrace();
         } catch (GeneralException ex) {
             showError(ex);
-            ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
         }
  
     }
 
 }
+
+
