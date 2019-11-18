@@ -8,6 +8,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
+import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Program;
 import com.cms.commons.util.EJBServiceLocator;
@@ -104,7 +105,11 @@ public class ListProgramController extends GenericAbstractListController<Program
                     item = new Listitem();
                     item.setValue(program);
                     item.appendChild(new Listcell(program.getName()));
-                    item.appendChild(new Listcell(program.getBinSponsorId().getDescription()));               
+                    item.appendChild(new Listcell(program.getDescription()));
+                    item.appendChild(new Listcell(program.getContractDate().toString()));
+                    item.appendChild(new Listcell(program.getProgramTypeId().getName()));
+                    item.appendChild(new Listcell(program.getProductTypeId().getName()));
+                    item.appendChild(new Listcell(program.getIssuerId().getName()));                
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, program) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, program) : new Listcell());
                     item.setParent(lbxRecords);
@@ -116,6 +121,9 @@ public class ListProgramController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+               
                 item.setParent(lbxRecords);
             }
 
@@ -146,6 +154,9 @@ public class ListProgramController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+             
                 item.setParent(lbxRecords);  
     }
 
