@@ -53,8 +53,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
@@ -62,12 +62,12 @@
                                                             <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
-                                                            <label value="Descripcion" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <textbox id="txtName" width="200px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                            <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
                                                             <label value="*" sclass="lblreq" />
                                                         </row>
                                                     </rows>

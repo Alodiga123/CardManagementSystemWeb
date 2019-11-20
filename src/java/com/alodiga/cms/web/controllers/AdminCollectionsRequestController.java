@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -8,15 +9,14 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.Currency;
 import com.cms.commons.models.CollectionsRequest;
+import com.cms.commons.models.PersonType;
 import com.cms.commons.models.ProductType;
+import com.cms.commons.models.Program;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -28,13 +28,11 @@ import org.zkoss.zul.Textbox;
 public class AdminCollectionsRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtName;
-    private Textbox txtCode;
-    private Textbox txtShortName;
-    private Textbox txtAlternativeName1;
+    private Textbox txtDescription;
     
     private CollectionsRequest collectionsRequestParam;
     private UtilsEJB utilsEJB = null;
+    private ProgramEJB programEJB = null;
     private Combobox cmbCountry;
     private Combobox cmbPrograms;
     private Combobox cmbPersonType;
@@ -56,6 +54,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -63,39 +62,25 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     public void clearFields() {
-        txtName.setRawValue(null);
-        txtShortName.setRawValue(null);
-        txtCode.setRawValue(null);
-        txtAlternativeName1.setRawValue(null);
-
-//prueba
+        txtDescription.setRawValue(null);
     }
 
-   /* private void loadFields(CollectionsRequest collectionsRequest) {
+    private void loadFields(CollectionsRequest collectionsRequest) {
         try {
-
+            txtDescription.setText(collectionsRequest.getDescription());
         } catch (Exception ex) {
             showError(ex);
         }
-    }*/
+    }
 
     public void blockFields() {
-        txtName.setReadonly(true);
-        txtShortName.setReadonly(true);
-        txtCode.setReadonly(true);
-        txtAlternativeName1.setReadonly(true);
+        txtDescription.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtName.getText().isEmpty()) {
-            txtName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtShortName.getText().isEmpty()) {
-            txtShortName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtCode.getText().isEmpty()) {
-            txtCode.setFocus(true);
+        if (txtDescription.getText().isEmpty()) {
+            txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -121,8 +106,11 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             } else {//New collectionsRequest
                 collectionsRequest = new CollectionsRequest();
             }
-            
+            collectionsRequest.setDescription(txtDescription.getText());
             collectionsRequest.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            collectionsRequest.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
+            collectionsRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
+            collectionsRequest.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
             collectionsRequest = utilsEJB.saveCollectionRequest(collectionsRequest);
             collectionsRequestParam = collectionsRequest;
             this.showMessage("sp.common.save.success", false, null);
@@ -150,16 +138,25 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFields(collectionsRequestParam);
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
+                //loadCmbProductType(eventType);
+                //loadCmbPrograms(eventType);
+                loadCmbPersonType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                loadFields(collectionsRequestParam);
+                txtDescription.setDisabled(true);
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
+                //loadCmbProductType(eventType);
+                //loadCmbPrograms(eventType);
+                loadCmbPersonType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
+                //loadCmbProductType(eventType);
+                //loadCmbPrograms(eventType);
+                loadCmbPersonType(eventType);
                 break;
             default:
                 break;
@@ -173,23 +170,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
 
         try {
             countries = utilsEJB.getCountries(request1);
-            cmbCountry.getItems().clear();
-            for (Country c : countries) {
-
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-                item.setLabel(c.getName());
-                item.setDescription(c.getCode());
-                item.setParent(cmbCountry);
-                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getCountryId().getId())) {
-                    cmbCountry.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbCountry.setSelectedIndex(1);
-            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbCountry.setDisabled(true);
-            }
+            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -202,30 +183,55 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         }
     }
     
-        private void loadCmbProductType(Integer evenInteger) {
+   /* private void loadCmbProductType(Integer evenInteger) {
         //cmbProductType
+        
         EJBRequest request1 = new EJBRequest();
         List<ProductType> productTypes;
-
         try {
             productTypes = utilsEJB.getProductTypes(request1);
-            cmbProductType.getItems().clear();
-            for (ProductType c : productTypes) {
-
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-                item.setLabel(c.getName());
-                item.setDescription(c.getId().toString());
-                item.setParent(cmbProductType);
-                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getProductTypeId().getId())) {
-                    cmbProductType.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbProductType.setSelectedIndex(1);
-            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbProductType.setDisabled(true);
-            }
+            loadGenericCombobox(productTypes,cmbProductType, "name",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+ 
+    }*/
+     
+    /*private void loadCmbPrograms(Integer evenInteger) {
+        //cmbProductType
+        EJBRequest request1 = new EJBRequest();
+        List<Program> programs;
+        
+        try {
+            programs = programEJB.getProgram(request1);
+            loadGenericCombobox(programs,cmbPrograms, "name",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }*/
+    
+    private void loadCmbPersonType(Integer evenInteger) {
+        //cmbPersonType
+        EJBRequest request1 = new EJBRequest();
+        List<PersonType> personTypes;
+        
+        try {
+            personTypes = utilsEJB.getPersonTypes(request1);
+            loadGenericCombobox(personTypes,cmbPersonType, "description",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -237,5 +243,5 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
     }
-
+    
 }
