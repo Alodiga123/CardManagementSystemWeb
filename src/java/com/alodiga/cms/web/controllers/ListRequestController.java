@@ -12,6 +12,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
@@ -94,10 +95,15 @@ public class ListRequestController extends GenericAbstractListController<Request
                 for (Request request : list) {
                     item = new Listitem();
                     item.setValue(request);
+                    StringBuilder builder = new StringBuilder(request.getPersonId().getNaturalPerson().getFirstNames());
+                    builder.append(" ");
+                    builder.append(request.getPersonId().getNaturalPerson().getLastNames());
+                    String pattern = "yyyy-MM-dd";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(request.getRequestNumber()));
-                    item.appendChild(new Listcell(request.getRequestDate().toString()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
                     item.appendChild(new Listcell(request.getRequestTypeId().getCardRequestTypeId().getDescription()));
-                    item.appendChild(new Listcell(request.getPersonId().getNaturalPerson().getFirstNames()));
+                    item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
