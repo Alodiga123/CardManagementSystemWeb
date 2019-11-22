@@ -7,12 +7,12 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CollectionsRequest;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
@@ -24,19 +24,18 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListCollectionsRequestsController extends GenericAbstractListController<CollectionsRequest> {
+public class ListRequestController extends GenericAbstractListController<Request> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtDescription;
+    private Textbox txtAlias;
     private UtilsEJB utilsEJB = null;
-    private List<CollectionsRequest> collectionsRequest = null;
+    private List<Request> requests = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        initialize();
-        
+        initialize(); 
     }
 
     public void startListener() {
@@ -51,33 +50,34 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            adminPage = "adminCollectionsRequest.zul";
+            adminPage = "adminLegalPerson.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadList(collectionsRequest);
+            loadList(requests);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-//    public List<CollectionsRequest> getFilteredList(String filter) {
-//        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
-//        CollectionsRequest collectionsRequest;
+//    public List<Request> getFilteredList(String filter) {
+//        List<Request> requestsaux = new ArrayList<Request>();
+//        Request country;
 //        try {
 //            if (filter != null && !filter.equals("")) {
-//                collectionsRequest = utilsEJB.searchCollectionsRequest(filter);
-//                collectionsRequest.add(collectionsRequest);
+//                requests = utilsEJB.searchRequest(filter);
+//                requestsaux.add(requests);
 //            } else {
-//                return collectionsRequest;
+//                return countries;
 //            }
 //        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCollectionsRequest.class.getDescription()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (Exception ex) {
 //            showError(ex);
 //        }
-//        return collectionsRequest;
-//   }
+//        return requestsaux;
+//    }
 
+    
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect(adminPage);
@@ -86,21 +86,27 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<CollectionsRequest> list) {
+    public void loadList(List<Request> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (CollectionsRequest collectionsRequest : list) {
-                    
-                   
+                //btnDownload.setVisible(true);
+                for (Request request : list) {
                     item = new Listitem();
-                    item.setValue(collectionsRequest);
-                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, collectionsRequest) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, collectionsRequest) : new Listcell());
+                    item.setValue(request);
+                    StringBuilder builder = new StringBuilder(request.getPersonId().getNaturalPerson().getFirstNames());
+                    builder.append(" ");
+                    builder.append(request.getPersonId().getNaturalPerson().getLastNames());
+                    String pattern = "yyyy-MM-dd";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    item.appendChild(new Listcell(request.getRequestNumber()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
+                    item.appendChild(new Listcell(request.getRequestTypeId().getCardRequestTypeId().getDescription()));
+                    item.appendChild(new Listcell(builder.toString()));
+                    item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -112,18 +118,18 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
+            
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void getData() {
-        collectionsRequest = new ArrayList<CollectionsRequest>();
+        requests = new ArrayList<Request>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            collectionsRequest = utilsEJB.getCollectionsRequests(request);
+            requests = utilsEJB.getRequests(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -134,7 +140,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     }
     
     
-    private void showEmptyList(){     
+    private void showEmptyList(){
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
@@ -143,16 +149,18 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
                 item.setParent(lbxRecords);  
     }
 
+    
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.bread.crumb.collectionsRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
+    
     public void onClick$btnClear() throws InterruptedException {
-        txtDescription.setText("");
+        txtAlias.setText("");
     }
 
 //    public void onClick$btnSearch() throws InterruptedException {
@@ -163,11 +171,13 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
 //        }
 //    }
 
-    public List<CollectionsRequest> getFilterList(String filter) {
+    @Override
+    public List<Request> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<CollectionsRequest> list) {
+    @Override
+    public void loadDataList(List<Request> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

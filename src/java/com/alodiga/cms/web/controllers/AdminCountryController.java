@@ -171,27 +171,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
         //cmbCurrency
         EJBRequest request1 = new EJBRequest();
         List<Currency> currencies;
-
         try {
             currencies = utilsEJB.getCurrency(request1);
-            cmbCurrency.getItems().clear();
-            for (Currency c : currencies) {
-
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-                item.setLabel(c.getSymbol());
-                item.setDescription(c.getName());
-                item.setParent(cmbCurrency);
-                if (countryParam != null && c.getId().equals(countryParam.getCurrencyId().getId())) {
-                    cmbCurrency.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbCurrency.setSelectedIndex(1);
-            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbCurrency.setDisabled(true);
-            } 
-            //prueba luly
+            loadGenericCombobox(currencies,cmbCurrency, "name",evenInteger,Long.valueOf(countryParam != null? countryParam.getCurrencyId().getId(): 0));            
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
