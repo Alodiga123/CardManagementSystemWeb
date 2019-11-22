@@ -96,8 +96,9 @@ public class ListRequestController extends GenericAbstractListController<Request
                     item.setValue(request);
                     item.appendChild(new Listcell(request.getRequestNumber()));
                     item.appendChild(new Listcell(request.getRequestDate().toString()));
-                    item.appendChild(new Listcell(request.getRequestTypeId().toString()));
-                    item.appendChild(new Listcell(request.getStatusRequestId().toString()));
+                    item.appendChild(new Listcell(request.getRequestTypeId().getCardRequestTypeId().getDescription()));
+                    item.appendChild(new Listcell(request.getPersonId().getNaturalPerson().getFirstNames()));
+                    item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                     item.setParent(lbxRecords);
