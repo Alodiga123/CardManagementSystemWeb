@@ -151,9 +151,9 @@ public class GenericAbstractController extends GenericForwardComposer implements
                     }
                 }
             }
-            if (eventType.equals(WebConstants.EVENT_ADD)) {
+            /*if (eventType.equals(WebConstants.EVENT_ADD)) {
                 combobox.setSelectedIndex(1);
-            }
+            }*/
             if (eventType.equals(WebConstants.EVENT_VIEW)) {
                 combobox.setDisabled(true);
             }
