@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" onClick='Executions.sendRedirect(&quot;listLegalPerson.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" onClick='Executions.sendRedirect(&quot;listRequest.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton label="${c:l('cms.crud.enterprise.data')}"/>
                                             </hlayout>
@@ -106,7 +106,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" onClick="Executions.sendRedirect(&quot;adminLegalPersonAddress.zul&quot;)"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listLegalPerson.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
