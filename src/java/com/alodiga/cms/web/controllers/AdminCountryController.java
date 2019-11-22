@@ -194,13 +194,10 @@ public class AdminCountryController extends GenericAbstractAdminController {
             //prueba luly
         } catch (EmptyListException ex) {
             showError(ex);
-            ex.printStackTrace();
         } catch (GeneralException ex) {
             showError(ex);
-            ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
         }
     }
 }
