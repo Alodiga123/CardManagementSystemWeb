@@ -58,7 +58,7 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmsTypesIdentification" width="250px" mold="rounded" readonly="true" />
                                                             <!--<combobox id="cmbTypesPersons" width="10px" mold="rounded" readonly="true" />-->
                                                             <textbox id="txtIdentification" value="" width="100px" maxlength="60"/>
                                                         </row>
@@ -69,7 +69,7 @@
                                                         </row>
                                                         <row>
                                                             <datebox id="txtExpirationDate" width="250px" constraint="no empty"/>
-                                                            <textbox id="txtTradeName" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtComercialDesignation" value="" width="250px" maxlength="60"/>
                                                             <textbox id="txtRif" value="" width="250px" maxlength="60"/>
                                                         </row>
                                                         <row>                                                            
@@ -78,8 +78,8 @@
                                                             <label value="${c:l('cms.common.RegistrationDate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEnterpriseName" value="" width="250px" maxlength="60"/>
-                                                            <textbox id="txtEconomicActivity" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtCompanyName" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtComercialActivity" value="" width="250px" maxlength="60"/>
                                                             <datebox id="txtRegistrationDate" width="250px" constraint="no empty"/>
                                                         </row>
                                                         <row>                                                            
@@ -105,7 +105,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" onClick="Executions.sendRedirect(&quot;adminLegalPersonAddress.zul&quot;)"/>
+                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" onClick="Executions.sendRedirect(&quot;AdminLegalPersonAdres.zul&quot;)"/>
                                             <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listLegalPerson.zul&quot;)"/>
                                         </div>
                                     </vlayout>
