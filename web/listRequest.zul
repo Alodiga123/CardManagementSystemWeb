@@ -53,11 +53,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.requestNumber')}" width="100px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.requestDate')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.requestType')}" width="100px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.applicant')}" width="100px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.product.status')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestNumber')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestDate')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestType')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.applicant')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.product.status')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
