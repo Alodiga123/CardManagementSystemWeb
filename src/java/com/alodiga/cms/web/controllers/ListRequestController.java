@@ -9,11 +9,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.Country;
-import com.cms.commons.models.LegalPerson;
-import com.cms.commons.models.Person;
-import com.cms.commons.models.PhonePerson;
-import com.cms.commons.models.State;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -27,23 +23,18 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListLegalPersonController extends GenericAbstractListController<Country> {
+public class ListRequestController extends GenericAbstractListController<Request> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtAlias;
     private UtilsEJB utilsEJB = null;
-    private List<LegalPerson> legalPersons = null;
-    private List<Person> persons = null;
-    private List<PhonePerson> phonePersons = null;
-    private List<Country> countries = null;
-    private List<State> states = null;
+    private List<Request> requests = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        initialize();
-        
+        initialize(); 
     }
 
     public void startListener() {
@@ -58,35 +49,34 @@ public class ListLegalPersonController extends GenericAbstractListController<Cou
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            //
-            
             adminPage = "adminLegalPerson.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadList(legalPersons);
+            loadList(requests);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-//    public List<Country> getFilteredList(String filter) {
-//        List<Country> countriesaux = new ArrayList<Country>();
-//        Country country;
+//    public List<Request> getFilteredList(String filter) {
+//        List<Request> requestsaux = new ArrayList<Request>();
+//        Request country;
 //        try {
 //            if (filter != null && !filter.equals("")) {
-//                country = utilsEJB.searchCountry(filter);
-//                countriesaux.add(country);
+//                requests = utilsEJB.searchRequest(filter);
+//                requestsaux.add(requests);
 //            } else {
 //                return countries;
 //            }
 //        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCountryController.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (Exception ex) {
 //            showError(ex);
 //        }
-//        return countriesaux;
+//        return requestsaux;
 //    }
 
+    
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect(adminPage);
@@ -95,24 +85,21 @@ public class ListLegalPersonController extends GenericAbstractListController<Cou
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<LegalPerson> list) {
+    public void loadList(List<Request> list) {
         try {
             lbxRecords.getItems().clear();
-           /* Listitem item = null;
+            Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
-                for (Country country : list) {
+                for (Request request : list) {
                     item = new Listitem();
-                    item.setValue(country);
-                    item.appendChild(new Listcell(country.getCode()));
-                    item.appendChild(new Listcell(country.getName()));
-                    item.appendChild(new Listcell(country.getCodeIso2()));
-                    item.appendChild(new Listcell(country.getCodeIso2()));
-                    item.appendChild(new Listcell(country.getCodeIso3()));
-                    item.appendChild(new Listcell(country.getCodeIso3()));
-                    item.appendChild(new Listcell(country.getCurrencyId().getName()));                    
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, country) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, country) : new Listcell());
+                    item.setValue(request);
+                    item.appendChild(new Listcell(request.getRequestNumber()));
+                    item.appendChild(new Listcell(request.getRequestDate().toString()));
+                    item.appendChild(new Listcell(request.getRequestTypeId().toString()));
+                    item.appendChild(new Listcell(request.getStatusRequestId().toString()));
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -123,26 +110,26 @@ public class ListLegalPersonController extends GenericAbstractListController<Cou
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
-            }*/
-
+            }
+            
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void getData() {
-        countries = new ArrayList<Country>();
-       /* try {
+        requests = new ArrayList<Request>();
+        try {
             request.setFirst(0);
             request.setLimit(null);
-            countries = utilsEJB.getCountries(request);
+            requests = utilsEJB.getRequests(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
            showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
-        }*/
+        }
     }
     
     
@@ -155,14 +142,16 @@ public class ListLegalPersonController extends GenericAbstractListController<Cou
                 item.setParent(lbxRecords);  
     }
 
+    
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.bread.crumb.country.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
+    
     public void onClick$btnClear() throws InterruptedException {
         txtAlias.setText("");
     }
@@ -176,12 +165,12 @@ public class ListLegalPersonController extends GenericAbstractListController<Cou
 //    }
 
     @Override
-    public List<Country> getFilterList(String filter) {
+    public List<Request> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void loadDataList(List<Country> list) {
+    public void loadDataList(List<Request> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
