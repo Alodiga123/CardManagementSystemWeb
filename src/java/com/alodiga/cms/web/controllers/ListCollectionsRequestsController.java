@@ -92,6 +92,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 for (CollectionsRequest collectionsRequest : list) {
+                    
                    
                     item = new Listitem();
                     item.setValue(collectionsRequest);

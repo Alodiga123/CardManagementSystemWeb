@@ -89,14 +89,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
 
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
     private void saveCollectionsRequest(CollectionsRequest _collectionsRequest) {
         try {
             CollectionsRequest collectionsRequest = null;
@@ -140,29 +132,174 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(collectionsRequestParam);
                 loadCmbCountry(eventType);
-                //loadCmbProductType(eventType);
-                //loadCmbPrograms(eventType);
+                loadCmbProductType(eventType);
+                loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(collectionsRequestParam);
                 txtDescription.setDisabled(true);
                 loadCmbCountry(eventType);
-                //loadCmbProductType(eventType);
-                //loadCmbPrograms(eventType);
+                loadCmbProductType(eventType);
+                loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                //loadCmbProductType(eventType);
-                //loadCmbPrograms(eventType);
+                loadCmbProductType(eventType);
+                loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 break;
             default:
                 break;
         }
     }
-
+    
+    private void loadCmbCountry(Integer evenInteger) {
+        //cmbCurrency
+        EJBRequest request1 = new EJBRequest();
+        List<Country> countries;
+ 
+        try {
+            countries = utilsEJB.getCountries(request1);
+            cmbCountry.getItems().clear();
+            for (Country c : countries) {
+ 
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getName());
+                item.setDescription(c.getName());
+                item.setParent(cmbCountry);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getCountryId().getId())) {
+                    cmbCountry.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbCountry.setSelectedIndex(0);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbCountry.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadCmbProductType(Integer evenInteger) {
+        //cmbProductType
+        EJBRequest request1 = new EJBRequest();
+        List<ProductType> productTypes;
+ 
+        try {
+            productTypes = utilsEJB.getProductTypes(request1);
+            cmbProductType.getItems().clear();
+            for (ProductType c : productTypes) {
+ 
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getName());
+                item.setDescription(c.getName());
+                item.setParent(cmbProductType);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getProductTypeId().getId())) {
+                    cmbProductType.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbProductType.setSelectedIndex(0);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbProductType.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadCmbPrograms(Integer evenInteger) {
+        //cmbPrograms
+        EJBRequest request1 = new EJBRequest();
+        List<Program> programs;
+ 
+        try {
+            programs = programEJB.getProgram(request1);
+            cmbPrograms.getItems().clear();
+            for (Program c : programs) {
+ 
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getName());
+                item.setDescription(c.getName());
+                item.setParent(cmbPrograms);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getProgramId().getId())) {
+                    cmbPrograms.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbPrograms.setSelectedIndex(0);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbPrograms.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadCmbPersonType(Integer evenInteger) {
+        //cmbPersonType
+        EJBRequest request1 = new EJBRequest();
+        List<PersonType> personTypes;
+ 
+        try {
+            personTypes = utilsEJB.getPersonTypes(request1);
+            cmbPersonType.getItems().clear();
+            for (PersonType c : personTypes) {
+ 
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getDescription());
+                item.setDescription(c.getDescription());
+                item.setParent(cmbPersonType);
+                if (collectionsRequestParam != null && c.getId().equals(collectionsRequestParam.getPersonTypeId().getId())) {
+                    cmbPersonType.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbPersonType.setSelectedIndex(0);
+            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbPersonType.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    /*
     private void loadCmbCountry(Integer evenInteger) {
         //cmbCountry
         EJBRequest request1 = new EJBRequest();
@@ -183,7 +320,8 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         }
     }
     
-   /* private void loadCmbProductType(Integer evenInteger) {
+    
+    private void loadCmbProductType(Integer evenInteger) {
         //cmbProductType
         
         EJBRequest request1 = new EJBRequest();
@@ -202,9 +340,9 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
  
-    }*/
+    }
      
-    /*private void loadCmbPrograms(Integer evenInteger) {
+    private void loadCmbPrograms(Integer evenInteger) {
         //cmbProductType
         EJBRequest request1 = new EJBRequest();
         List<Program> programs;
@@ -222,7 +360,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             showError(ex);
             ex.printStackTrace();
         }
-    }*/
+    }
     
     private void loadCmbPersonType(Integer evenInteger) {
         //cmbPersonType
@@ -242,6 +380,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             showError(ex);
             ex.printStackTrace();
         }
-    }
+    }*/
     
 }
