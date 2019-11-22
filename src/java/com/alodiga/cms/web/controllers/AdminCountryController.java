@@ -173,7 +173,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
         List<Currency> currencies;
         try {
             currencies = utilsEJB.getCurrency(request1);
-            loadGenericCombobox(currencies,cmbCurrency, "name",evenInteger,Long.valueOf(countryParam != null? countryParam.getId(): 0) );            
+            loadGenericCombobox(currencies,cmbCurrency, "name",evenInteger,Long.valueOf(countryParam != null? countryParam.getCurrencyId().getId(): 0));            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
