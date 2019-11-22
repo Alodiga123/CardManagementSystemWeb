@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -11,14 +12,19 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Program;
+
+
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -28,9 +34,16 @@ public class ListProgramController extends GenericAbstractListController<Program
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtAlias;
+    private Textbox txtName;
+    //private Datebox ;
+    private List<Program> programs = null;
     private ProgramEJB programEJB = null;
-    private List<Program> program = null;
+    private UtilsEJB utilsEJB = null;
+   
+    //private User currentUser;
+    //private Profile currentProfile;
+    
+    
     //private User currentUser;
     //private Profile currentProfile;
 
@@ -41,10 +54,6 @@ public class ListProgramController extends GenericAbstractListController<Program
         
     }
 
-    public void ProgramListener() {
-    }
-
-
     @Override
     public void initialize() {
         super.initialize();
@@ -54,16 +63,20 @@ public class ListProgramController extends GenericAbstractListController<Program
             permissionAdd = true; 
             permissionRead = true;
             //
-            
             adminPage = "adminProgram.zul";
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
-            List<Program> program = null ;
-            loadList(program);
+            //List<Program> program = null ;
+            loadList(programs);
         } catch (Exception ex) {
             showError(ex);
         }
     }
+ //   public void ProgramListener() {
+   // }
+
+
+    
 
 //    public List<Country> getFilteredList(String filter) {
 //        List<Country> countriesaux = new ArrayList<Country>();
@@ -121,9 +134,10 @@ public class ListProgramController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+               /* item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-               
+                item.appendChild(new Listcell());*/
                 item.setParent(lbxRecords);
             }
 
@@ -133,17 +147,17 @@ public class ListProgramController extends GenericAbstractListController<Program
     }
 
     public void getData() {
-        program = new ArrayList<Program>();
         try {
+            programs = new ArrayList<Program>();
             request.setFirst(0);
             request.setLimit(null);
-            program = programEJB.getProgram(request);
-        } catch (NullParameterException ex) {
-            showError(ex);
+            programs = programEJB.getProgram(request);//getProgram(request);
         } catch (EmptyListException ex) {
-           showEmptyList();
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
-            showError(ex);
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -154,9 +168,9 @@ public class ListProgramController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                /*item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-             
+                item.appendChild(new Listcell());*/
                 item.setParent(lbxRecords);  
     }
 
@@ -169,7 +183,7 @@ public class ListProgramController extends GenericAbstractListController<Program
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtAlias.setText("");
+        txtName.setText("");
     }
 
 //    public void onClick$btnSearch() throws InterruptedException {
@@ -193,7 +207,7 @@ public class ListProgramController extends GenericAbstractListController<Program
   
 
     public void startListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
     
 

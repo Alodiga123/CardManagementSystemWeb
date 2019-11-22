@@ -71,7 +71,6 @@
                                                   
                                                             <hlayout>
                                                                 <datebox id="dtbcontdate"  width="265px"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                         <row>
