@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCollectionsRequestsController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListLegalPersonController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.bread.crumb.collectionsRequest.list')}" />
+                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -53,9 +53,13 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.country')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.transaction.customerType')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.product.type')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identification.list')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.statusCard')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.email')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.phoneNumber')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.countryName')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.state')}" width="100px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

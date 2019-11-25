@@ -1,5 +1,5 @@
 package com.alodiga.cms.web.controllers;
-
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -9,28 +9,43 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
+import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CollectionsRequest;
+import com.cms.commons.models.Program;
+
+
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListCollectionsRequestsController extends GenericAbstractListController<CollectionsRequest> {
+public class ListProgramController extends GenericAbstractListController<Program> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtDescription;
+    private Textbox txtName;
+    //private Datebox ;
+    private List<Program> programs = null;
+    private ProgramEJB programEJB = null;
     private UtilsEJB utilsEJB = null;
-    private List<CollectionsRequest> collectionsRequest = null;
+   
+    //private User currentUser;
+    //private Profile currentProfile;
+    
+    
+    //private User currentUser;
+    //private Profile currentProfile;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -38,10 +53,6 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
         initialize();
         
     }
-
-    public void startListener() {
-    }
-
 
     @Override
     public void initialize() {
@@ -51,32 +62,39 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            adminPage = "adminCollectionsRequest.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            //
+            adminPage = "adminProgram.zul";
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
-            loadList(collectionsRequest);
+            //List<Program> program = null ;
+            loadList(programs);
         } catch (Exception ex) {
             showError(ex);
         }
     }
+ //   public void ProgramListener() {
+   // }
 
-//    public List<CollectionsRequest> getFilteredList(String filter) {
-//        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
-//        CollectionsRequest collectionsRequest;
+
+    
+
+//    public List<Country> getFilteredList(String filter) {
+//        List<Country> countriesaux = new ArrayList<Country>();
+//        Country country;
 //        try {
 //            if (filter != null && !filter.equals("")) {
-//                collectionsRequest = utilsEJB.searchCollectionsRequest(filter);
-//                collectionsRequest.add(collectionsRequest);
+//                country = utilsEJB.searchCountry(filter);
+//                countriesaux.add(country);
 //            } else {
-//                return collectionsRequest;
+//                return countries;
 //            }
 //        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCollectionsRequest.class.getDescription()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(ListCountryController.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (Exception ex) {
 //            showError(ex);
 //        }
-//        return collectionsRequest;
-//   }
+//        return countriesaux;
+//    }
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
@@ -84,23 +102,29 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     }
 
     public void onClick$btnDelete() {
+        
+        
+        
+        
     }
 
-    public void loadList(List<CollectionsRequest> list) {
+    public void loadList(List<Program> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (CollectionsRequest collectionsRequest : list) {
-                    
-                   
+                //btnDownload.setVisible(true);
+                for (Program program : list) {
                     item = new Listitem();
-                    item.setValue(collectionsRequest);
-                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, collectionsRequest) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, collectionsRequest) : new Listcell());
+                    item.setValue(program);
+                    item.appendChild(new Listcell(program.getName()));
+                    item.appendChild(new Listcell(program.getDescription()));
+                    item.appendChild(new Listcell(program.getContractDate().toString()));
+                    item.appendChild(new Listcell(program.getProgramTypeId().getName()));
+                    item.appendChild(new Listcell(program.getProductTypeId().getName()));
+                    item.appendChild(new Listcell(program.getIssuerId().getName()));                
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, program) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, program) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -110,6 +134,10 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+               /* item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());*/
                 item.setParent(lbxRecords);
             }
 
@@ -119,40 +147,43 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     }
 
     public void getData() {
-        collectionsRequest = new ArrayList<CollectionsRequest>();
         try {
+            programs = new ArrayList<Program>();
             request.setFirst(0);
             request.setLimit(null);
-            collectionsRequest = utilsEJB.getCollectionsRequests(request);
-        } catch (NullParameterException ex) {
-            showError(ex);
+            programs = programEJB.getProgram(request);//getProgram(request);
         } catch (EmptyListException ex) {
-           showEmptyList();
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
-            showError(ex);
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     
-    private void showEmptyList(){     
+    private void showEmptyList(){
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                /*item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());*/
                 item.setParent(lbxRecords);  
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.bread.crumb.collectionsRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.country.list"));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtDescription.setText("");
+        txtName.setText("");
     }
 
 //    public void onClick$btnSearch() throws InterruptedException {
@@ -163,13 +194,21 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
 //        }
 //    }
 
-    public List<CollectionsRequest> getFilterList(String filter) {
+    @Override
+    public List<Program> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<CollectionsRequest> list) {
+    @Override
+    public void loadDataList(List<Program> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+  
+
+    public void startListener() {
+        
+    }
+    
 
 }
