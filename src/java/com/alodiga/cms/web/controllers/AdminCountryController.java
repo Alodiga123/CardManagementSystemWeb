@@ -121,7 +121,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
             country.setCode(txtCode.getText());
             country.setCodeIso2(txtShortName.getText());
             country.setCodeIso3(txtAlternativeName1.getText());
-            country.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());//prueba
+            country.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
             country = utilsEJB.saveCountry(country);
             countryParam = country;
             this.showMessage("sp.common.save.success", false, null);
