@@ -333,15 +333,32 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
     }
-
+    
     private void LoadCmbZipZone(Integer evenInteger) {
-        //cmbEdificationType
+        //cmbZipZone
         EJBRequest request1 = new EJBRequest();
         List<ZipZone> zipZones;
-
+ 
         try {
             zipZones = utilsEJB.getZipZones(request1);
-            loadGenericCombobox(zipZones, cmbZipZone, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getZipZoneId().getId() : 0));
+            cmbZipZone.getItems().clear();
+            for (ZipZone c : zipZones) {
+ 
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getCode());
+                item.setDescription(c.getName());
+                item.setParent(cmbZipZone);
+                if (addressParam != null && c.getId().equals(addressParam.getZipZoneId().getId())) {
+                    cmbZipZone.setSelectedItem(item);
+                }
+            }
+            /*if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbZipZone.setSelectedIndex(0);
+            }*/
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbZipZone.setDisabled(true);
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -354,6 +371,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         }
     }
 
+    
     private void loadCities(State state, Country country, City city) {
         try {
             cmbCity.getItems().clear();
