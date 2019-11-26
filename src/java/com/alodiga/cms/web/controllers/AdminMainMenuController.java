@@ -99,7 +99,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             /// Opction status
             Listitem item5 = new Listitem();
             Listcell listCell5 = new Listcell();
-            listCell5.setLabel(Labels.getLabel("sp.common.status"));
+            listCell5.setLabel(Labels.getLabel("cms.common.statusRequest"));
             listCell5.addEventListener("onClick", new RedirectListener("listStatusRequest.zul"));
             listCell5.setParent(item5);
             item5.setParent(lbxPermissions);  
@@ -120,7 +120,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell7.setParent(item7);
             item7.setParent(lbxPermissions); 
             
-             // Option State
+            // Option State
             Listitem item8 = new Listitem();
             Listcell listCell8 = new Listcell();
             listCell8.setLabel( Labels.getLabel("sp.common.state"));
@@ -128,7 +128,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell8.setParent(item8);
             item8.setParent(lbxPermissions); 
             
-             // Option Request Type
+            // Option Request Type
             Listitem item9 = new Listitem();
             Listcell listCell9 = new Listcell();
             listCell9.setLabel( Labels.getLabel("cms.menu.requestType.list"));
@@ -143,6 +143,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell10.addEventListener("onClick", new RedirectListener("listProgram.zul"));
             listCell10.setParent(item10);
             item10.setParent(lbxPermissions);
+            
+            // Option LegarPerson
+            Listitem item11 = new Listitem();
+            Listcell listCell11 = new Listcell();
+            listCell11.setLabel( Labels.getLabel("cms.menu.request.list"));
+            listCell11.addEventListener("onClick", new RedirectListener("listRequest.zul"));
+            listCell11.setParent(item11);
+            item11.setParent(lbxPermissions);
          }
     }
 

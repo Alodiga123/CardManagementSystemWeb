@@ -62,9 +62,9 @@ public class ListProgramController extends GenericAbstractListController<Program
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            //
             adminPage = "adminProgram.zul";
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             //List<Program> program = null ;
             loadList(programs);
@@ -134,10 +134,10 @@ public class ListProgramController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-               /* item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());*/
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
 
@@ -168,9 +168,9 @@ public class ListProgramController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                /*item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());*/
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);  
     }
 

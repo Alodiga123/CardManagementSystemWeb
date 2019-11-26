@@ -9,7 +9,7 @@ public class WebConstants {
     public static final int EVENT_DELETE = 3;
     public static final int EVENT_VIEW = 4;
     public static final int EVENT_ADD_DESCENDANT = 5;
-    public static final String EVENTYPE = "eventType"; 
+    public static final String EVENTYPE = "eventType";
     public static final String SESSION_ACCOUNT = "sp_account";
     public static final String SESSION_DISTRIBUTOR = "sp_loguedDistributor";
     public static final String SESSION_FULLSITE = "sp_fullSite";
@@ -110,4 +110,21 @@ public class WebConstants {
     public static final String VIEW = "view";
     public static final String PERMISSION_GROUP = "permission_group";
     public static final String HOME_ADMIN_ZUL = "home-admin.zul";
+    public static final String ID_ELEMENT = "id";
+
+    //CRUD Programs
+    public static final String PROGRAM_BRANDED_YES = "Yes";
+    public static final String PROGRAM_BRANDED_NO = "No";
+    public static final String PROGRAM_BRANDED_SI = "Si";
+    public static final String PROGRAM_RELOADABLE_YES = "Yes";
+    public static final String PROGRAM_RELOADABLE_SI = "Si";
+    public static final String PROGRAM_RELOADABLE_NO = "No";
+    public static final String PROGRAM_CASHACCES_YES = "Yes";
+    public static final String PROGRAM_CASHACCES_SI = "Si";
+    public static final String PROGRAM_PROGRAM_CASHACCES_NO = "No";
+    public static final String PROGRAM_INTERNATIONAL_YES = "Yes";
+    public static final String PROGRAM_INTERNATIONAL_SI = "Si";
+    public static final String PROGRAM_PROGRAM_INTERNATIONAL_NO = "No";
+    public static final String PROGRAM_SOURCE_OF_FOUND_OTHER = "Other";
+    public static final String PROGRAM_SOURCE_OF_FOUND_OTROS = "Otros";
 }

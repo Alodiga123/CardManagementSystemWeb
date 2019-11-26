@@ -13,14 +13,19 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.BinSponsor;
+import com.cms.commons.models.CardIssuanceType;
 import com.cms.commons.models.CardType;
 import com.cms.commons.models.NaturalPerson;
+import com.cms.commons.models.Network;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.ProgramHasNetwork;
 
 import com.cms.commons.models.ProgramType;
+import com.cms.commons.models.ResponsibleNetworkReporting;
+import com.cms.commons.models.SourceFunds;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
@@ -36,6 +41,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
+import com.alodiga.cms.web.utils.WebConstants;
 
 public class AdminProgramController extends GenericAbstractAdminController {
 
@@ -54,7 +60,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Radiogroup reloadable;
     private Combobox cmbSourceOfFound;
     private Textbox txtOther;
-    private Radiogroup CashAcces;
+    private Radiogroup cashAcces;
     private Radiogroup international;
     private Combobox cmbNetWork;
     private Textbox txtOtherNetWork;
@@ -84,6 +90,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
         super.initialize();
         try {
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -156,16 +163,31 @@ public class AdminProgramController extends GenericAbstractAdminController {
         Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
     }
 
+    public void onChange$cmbSourceOfFound() {
+        System.out.println("valor de source of found" + cmbSourceOfFound.getSelectedItem().getValue());
+        String sourceOfFoundsOther = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTROS;
+        if (cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOther)) {
+
+            txtOther.setReadonly(false);
+        } else {
+
+            txtOther.setReadonly(true);
+        }
+    }
+
     private void saveProgram(Program _program) {
+        short indBranded = 0;
+        short indReloadable = 0;
+        short indCashAcces = 0;
+        short indInternational = 0;
         try {
             Program program = null;
 
             if (_program != null) {
                 program = _program;
-            } else {//New country
+            } else {
                 program = new Program();
             }
-
             program.setName(txtName.getText());
             program.setDescription(txtDescription.getText());
             program.setContractDate(dtbContdate.getValue());
@@ -173,13 +195,47 @@ public class AdminProgramController extends GenericAbstractAdminController {
             program.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
             program.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
             program.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
-            //facta laCardType
+            String id = cmbProgramOwner.getSelectedItem().getParent().getId();
+            program.setCardProgramManagerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
+            program.setProgramOwnerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
             program.setWebSite(website.getText());
+            if ((branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_SI))) {
+                indBranded = 1;
+            } else {
+                indBranded = 0;
+            }
+            program.setSharedBrand(indBranded);
 
-            // program.((CardType) cmbCardType.getSelectedItem().getValue());
-            // program.
+            if ((reloadable.getSelectedItem().getValue().equals(WebConstants.PROGRAM_RELOADABLE_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_RELOADABLE_SI))) {
+                indReloadable = 1;
+            } else {
+                indReloadable = 0;
+            }
+
+            program.setSharedBrand(indReloadable);
+
+            program.setSourceFundsId((SourceFunds) cmbSourceOfFound.getSelectedItem().getValue());
+
+            if ((cashAcces.getSelectedItem().getValue().equals(WebConstants.PROGRAM_CASHACCES_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_CASHACCES_SI))) {
+                indCashAcces = 1;
+            } else {
+                indCashAcces = 0;
+            }
+
+            program.setSharedBrand(indCashAcces);
+
+            if ((international.getSelectedItem().getValue().equals(WebConstants.PROGRAM_INTERNATIONAL_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_INTERNATIONAL_SI))) {
+                indInternational = 1;
+            } else {
+                indInternational = 0;
+            }
+            program.setSharedBrand(indInternational);
+            program.setResponsibleNetworkReportingId((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue());
+            program.setCardIssuanceTypeId((CardIssuanceType) cmbCardIssuanceType.getSelectedItem().getValue());
+            //program.getBiniinNumber(txtBin.getText());
+            program.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
             program = programEJB.saveProgram(program);
-            programParam = program;
+
             this.showMessage("sp.common.save.success", false, null);
         } catch (WrongValueException ex) {
             showError(ex);
@@ -232,11 +288,12 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 txtDescription.setDisabled(true);
                 dtbContdate.setDisabled(true);
                 website.setDisabled(true);
-                txtOther.setDisabled(true);
+               txtOther.setDisabled(true);
                 txtOtherNetWork.setDisabled(true);
                 txtBin.setDisabled(true);
                 txtOtheBINN.setDisabled(true);
                 //me faltan los radio grp
+                
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -250,7 +307,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbcardIssuanceType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -269,50 +325,92 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void loadCmbIssuer(Integer evenInteger) {
-
+        //cmbIssuer
+        EJBRequest request1 = new EJBRequest();
+        List<Issuer> issuers;
+        try {
+            issuers = utilsEJB.getIssuers(request1);
+            loadGenericCombobox(issuers, cmbIssuer, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getIssuerId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
     }
 
     private void loadCmbBinSponsor(Integer evenInteger) {
-
+        EJBRequest request1 = new EJBRequest();
+        List<BinSponsor> binSponsors;
+        try {
+            binSponsors = utilsEJB.getBinSponsor(request1);
+            loadGenericCombobox(binSponsors, cmbBinSponsor, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getBinSponsorId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
     }
 
     private void loadCmbSourceOfFound(Integer evenInteger) {
 
+        //CmbSourceOfFound
+        EJBRequest request1 = new EJBRequest();
+        List<SourceFunds> sourceFundses;
+        try {
+            sourceFundses = utilsEJB.getSourceFunds(request1);
+            loadGenericCombobox(sourceFundses, cmbSourceOfFound, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getSourceFundsId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
     }
 
     private void loadCmbresponsibleNetwoork(Integer evenInteger) {
-
+        EJBRequest request1 = new EJBRequest();
+        List<ResponsibleNetworkReporting> responsibleNetworkReportings;
+        try {
+            responsibleNetworkReportings = utilsEJB.getResponsibleNetworkReportings(request1);
+            loadGenericCombobox(responsibleNetworkReportings, cmbResponsibleNetwoork, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getResponsibleNetworkReportingId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
     }
 
     private void loadCmbcardIssuanceType(Integer evenInteger) {
 
+        EJBRequest request1 = new EJBRequest();
+        List<CardIssuanceType> cardIssuanceTypes;
+        try {
+            cardIssuanceTypes = utilsEJB.getCardIssuanceTypes(request1);
+            loadGenericCombobox(cardIssuanceTypes, cmbCardIssuanceType, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getCardIssuanceTypeId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+
     }
 
     private void loadCmbCurrency(Integer evenInteger) {
+        //cmbCurrency
         EJBRequest request1 = new EJBRequest();
         List<Currency> currencies;
-
         try {
             currencies = utilsEJB.getCurrency(request1);
-            cmbCurrency.getItems().clear();
-            for (Currency c : currencies) {
-
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-                item.setLabel(c.getSymbol());
-                item.setDescription(c.getName());
-                item.setParent(cmbCurrency);
-                if (programParam != null && c.getId().equals(programParam.getCurrencyId().getId())) {
-                    cmbCurrency.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbCurrency.setSelectedIndex(1);
-            }
-            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbCurrency.setDisabled(true);
-            }
-
+            loadGenericCombobox(currencies, cmbCurrency, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -320,34 +418,15 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private void loadCmbProgramType(Integer evenInteger) {
+        //cmbProgramType
         EJBRequest request1 = new EJBRequest();
-        List<ProgramType> programTypes;
-
+        List<ProgramType> programType;
         try {
-            programTypes = utilsEJB.getProgramType(request);
-            cmbProgramType.getItems().clear();
-            for (ProgramType c : programTypes) {
-
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-
-                item.setDescription(c.getName());
-                item.setParent(cmbCurrency);
-                if (programParam != null && c.getId().equals(programParam.getProductTypeId().getId())) {
-                    cmbProgramType.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbProgramType.setSelectedIndex(1);
-            }
-            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbProgramType.setDisabled(true);
-            }
-
+            programType = utilsEJB.getProgramType(request1);
+            loadGenericCombobox(programType, cmbProgramType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -355,23 +434,109 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private void loadCmbNetWork(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<Network> networks;
+        try {
+            networks = utilsEJB.getNetworks(request1);
+            loadGenericCombobox(networks, cmbNetWork, "name", evenInteger, Long.valueOf(0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
 
     }
 
     private void loadCmbProductType(Integer evenInteger) {
-
+//CmbProductType
+        EJBRequest request1 = new EJBRequest();
+        List<ProductType> productType;
+        try {
+            productType = utilsEJB.getProductTypes(request1);
+            loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
     }
 
     private void loadCmbProgramOwner(Integer evenInteger) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EJBRequest request1 = new EJBRequest();
+        List<NaturalPerson> naturalPersons;
+        try {
+            naturalPersons = (List<NaturalPerson>) programEJB.getProgramOwner(request1);
+            cmbProgramOwner.getItems().clear();
+            for (NaturalPerson c : naturalPersons) {
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                StringBuilder nameProgramOwner = new StringBuilder(c.getFirstNames());
+                nameProgramOwner.append(" ");
+                nameProgramOwner.append(c.getLastNames());
+                item.setLabel(nameProgramOwner.toString());
+                item.setDescription(nameProgramOwner.toString());
+                item.setParent(cmbProgramOwner);
+                if (programParam != null && c.getId().equals(programParam.getProgramOwnerId().getId())) {
+                    cmbProgramOwner.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbProgramOwner.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
     }
 
     private void loadCmbCardType(Integer evenInteger) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        //cmbCurrency
+        EJBRequest request1 = new EJBRequest();
+        List<CardType> cardTypes;
 
+        try {
+            cardTypes = utilsEJB.getCardTypes(request1);
+            cmbCardType.getItems().clear();
+            for (CardType c : cardTypes) {
+
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getDescription());
+                // item.setDescription(c.);
+                item.setParent(cmbCardType);
+                if (programParam != null && c.getId().equals(programParam.getCardIssuanceTypeId().getId())) {
+                    cmbCardType.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
+                cmbProgramOwner.setSelectedIndex(1);
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbProgramOwner.setDisabled(true);
+            }
+
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
 }
