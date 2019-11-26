@@ -54,50 +54,41 @@
                                                         <row>
                                                             <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identification.list')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <!--<combobox id="cmbTypesPersons" width="10px" mold="rounded" readonly="true" />-->
-                                                            <textbox id="txtIdentification" value="" width="100px" maxlength="60"/>
+                                                            <textbox id="txtIdentificationNumber" value="" width="120px" maxlength="60"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.comercialDesignation')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.rif')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.companyName')}" sclass="lblbold"/>
+                                                            
                                                         </row>
                                                         <row>
                                                             <datebox id="txtExpirationDate" width="250px" constraint="no empty"/>
                                                             <textbox id="txtTradeName" value="" width="250px" maxlength="60"/>
-                                                            <textbox id="txtRif" value="" width="250px" maxlength="60"/>
-                                                        </row>
-                                                        <row>                                                            
-                                                            <label value="${c:l('cms.common.companyName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.comercialActivity')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.RegistrationDate')}" sclass="lblbold"/>
+                                                            <textbox id="txtEnterpriseName" value="" width="250px" maxlength="60"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEnterpriseName" value="" width="250px" maxlength="60"/>
-                                                            <textbox id="txtEconomicActivity" value="" width="250px" maxlength="60"/>
-                                                            <datebox id="txtRegistrationDate" width="250px" constraint="no empty"/>
-                                                        </row>
-                                                        <row>                                                            
-                                                            <label value="${c:l('cms.common.legalAddress')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.comercialActivity')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.RegistrationDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.registryNumber')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbEconomicActivity" width="250px" mold="rounded" readonly="true" />
+                                                            <datebox id="txtDateInscriptionRegister" width="250px" constraint="no empty"/>
+                                                            <textbox id="txtRegistryNumber" value="" width="250px" maxlength="60"/>
+                                                        </row>
+                                                        <row> 
                                                             <label value="${c:l('cms.common.paidInCapital')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtLegalAddress" value="" width="250px" maxlength="60"/>
-                                                            <textbox id="txtRegistryNumber" value="" width="250px" maxlength="60"/>
                                                             <textbox id="txtPaidInCapital" value="" width="250px" maxlength="60"/>
                                                         </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.capitalCurrency')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <textbox id="txtCapitalCurrency" value="" width="250px" maxlength="60"/>
-                                                        </row>
+                                                        
                                                     </rows>
                                                 </grid>
                                             </vlayout>
