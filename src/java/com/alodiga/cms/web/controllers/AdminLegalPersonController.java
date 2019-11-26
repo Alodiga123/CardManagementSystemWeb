@@ -11,6 +11,7 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
@@ -45,6 +46,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Textbox txtIdentificationNumber;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
+    private Textbox txtPhoneNumber;
     private Textbox txtRegistryNumber;
     private Textbox txtPaidInCapital;
     private Combobox cmbCountry;
@@ -83,6 +85,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         txtIdentificationNumber.setRawValue(null);
         txtTradeName.setRawValue(null);
         txtEnterpriseName.setRawValue(null);
+        txtPhoneNumber.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
         txtPaidInCapital.setRawValue(null);
     }
@@ -92,6 +95,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             txtTradeName.setText(legalPerson.getTradeName());
             txtEnterpriseName.setText(legalPerson.getEnterpriseName());
             txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
+            txtPhoneNumber.setValue(legalPerson.getPersonId().getPhonePerson().getNumberPhone());
             txtRegistryNumber.setText(legalPerson.getRegisterNumber());
             txtPaidInCapital.setText(legalPerson.getPayedCapital().toString());
             txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
@@ -104,6 +108,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         txtIdentificationNumber.setReadonly(true);
         txtTradeName.setReadonly(true);
         txtEnterpriseName.setReadonly(true);
+        txtPhoneNumber.setReadonly(true);
         txtRegistryNumber.setReadonly(true);
         txtPaidInCapital.setReadonly(true);
         txtExpirationDate.setDisabled(true);
@@ -125,6 +130,9 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtPhoneNumber.getText().isEmpty()) {
+            txtPhoneNumber.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
@@ -142,30 +150,29 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
     }
 
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
     private void saveLegalPerson(LegalPerson _legalPerson) {
         try {
             LegalPerson legalPerson = null;
 
             if (_legalPerson != null) {
                 legalPerson = _legalPerson;
-            } else {//New country
+            } else {//New LegalPerson
                 legalPerson = new LegalPerson();
             }
             legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             legalPerson.setTradeName(txtTradeName.getText());
             legalPerson.setEnterpriseName(txtEnterpriseName.getText());
+            //legalPerson.setPersonId((PhonePerson));
             legalPerson.setRegisterNumber(txtRegistryNumber.getText());
             
             //legalPerson.setPayedCapital(txtPaidInCapital.getText());
+            
             if(txtDateInscriptionRegister.getValue()!=null){
                     legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             }else{
                     legalPerson.setDateInscriptionRegister(new Timestamp(new Date().getTime()));
             }
+            
             legalPerson = utilsEJB.saveLegalPerson(legalPerson);
             legalPersonParam = legalPerson;
             this.showMessage("sp.common.save.success", false, null);
@@ -202,6 +209,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                 txtIdentificationNumber.setDisabled(true);
                 txtTradeName.setDisabled(true);
                 txtEnterpriseName.setDisabled(true);
+                txtPhoneNumber.setDisabled(true);
                 txtRegistryNumber.setDisabled(true);
                 txtPaidInCapital.setDisabled(true);
                 txtExpirationDate.setDisabled(true);
