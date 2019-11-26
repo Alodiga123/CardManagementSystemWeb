@@ -144,12 +144,12 @@
                                                             </hlayout>
                                                             
                                                            <hbox>
-                                                                <radiogroup id="CashAcces" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="cashAcces" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="ra5" label="${c:l('cms.commom.Yes')}"  radiogroup="CashAcces" />
-                                                                            <radio id="ra6" label="${c:l('cms.commom.No')}"   radiogroup="CashAcces" />
+                                                                            <radio id="ra5" label="${c:l('cms.commom.Yes')}"  radiogroup="cashAcces" />
+                                                                            <radio id="ra6" label="${c:l('cms.commom.No')}"   radiogroup="cashAcces" />
                                                                          </row>
                                                                     </rows>
                                                                 </grid>
@@ -189,7 +189,7 @@
                                                         <!--revisaar desde aca-->
                                                               <row>
                                                             <hlayout>
-                                                                <textbox id="txtbin" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtbin" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
