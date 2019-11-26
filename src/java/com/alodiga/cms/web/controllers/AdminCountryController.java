@@ -176,13 +176,10 @@ public class AdminCountryController extends GenericAbstractAdminController {
             loadGenericCombobox(currencies,cmbCurrency, "name",evenInteger,Long.valueOf(countryParam != null? countryParam.getCurrencyId().getId(): 0));            
         } catch (EmptyListException ex) {
             showError(ex);
-            ex.printStackTrace();
         } catch (GeneralException ex) {
             showError(ex);
-            ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
         }
     }
 }
