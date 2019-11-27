@@ -20,6 +20,7 @@ import com.cms.commons.models.ZipZone;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.sun.codemodel.writer.ZipCodeWriter;
+import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,6 +89,20 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             showError(ex);
         }
     }
+    
+    
+    public void onChange$cmbCountry() {
+        cmbCity.setVisible(true);
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        loadCmbState(eventType, country.getId());
+    }
+    
+    public void onChange$cmbState() {
+        cmbState.setVisible(true);
+        State state = (State) cmbState.getSelectedItem().getValue();
+        loadCmbCity(eventType, state.getId());
+    }
+    
 
     public void clearFields() {
         txtUbanization.setRawValue(null);
@@ -200,8 +215,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(addressParam);
                 loadCmbCountry(eventType);
-                loadCmbState(eventType);
-                loadCmbCity(eventType);
+                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
                 LoadCmbZipZone(eventType);
@@ -215,16 +229,14 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
                 txtFloor.setDisabled(true);
                 txtEmail.setDisabled(true);
                 loadCmbCountry(eventType);
-                loadCmbState(eventType);
-                loadCmbCity(eventType);
+                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
                 LoadCmbZipZone(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbState(eventType);
-                loadCmbCity(eventType);
+                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
                 LoadCmbZipZone(eventType);
@@ -254,13 +266,16 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         }
     }
 
-    private void loadCmbState(Integer evenInteger) {
+    private void loadCmbState(Integer evenInteger, int countryId) {
         //cmbState
         EJBRequest request1 = new EJBRequest();
+        cmbState.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        request1.setParams(params);
         List<State> states;
-
         try {
-            states = utilsEJB.getState(request1);
+            states = utilsEJB.getStatesByCountry(request1);
             loadGenericCombobox(states, cmbState, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getStateId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -274,13 +289,17 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         }
     }
 
-    private void loadCmbCity(Integer evenInteger) {
+    private void loadCmbCity(Integer evenInteger, int stateId) {
         //cmbCity
-        EJBRequest request1 = new EJBRequest();
+        /*EJBRequest request1 = new EJBRequest();
+        cmbCity.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_STATE_ID, stateId);
+        request1.setParams(params);
         List<City> citys;
 
         try {
-            citys = utilsEJB.getCitys(request1);
+            citys = utilsEJB.getCitiesByState(request1);
             loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -291,7 +310,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }
+        }*/
     }
 
     private void LoadCmbStreetType(Integer evenInteger) {
