@@ -55,39 +55,33 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.codeIso2')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="280px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
-                                                               <textbox id="txtCode" value="" width="280px" maxlength="4" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                               <textbox id="txtShortName" value="" width="50px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hbox>
                                                             <hlayout>
-                                                              <textbox id="txtCodeIso2" value="" width="280px" constraint="no empty: ${c:l('error.field.required')}" maxlength="2"/>
+                                                              <textbox id="txtCode" value="" width="50px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60" />
                                                               <label value="*" sclass="lblreq" />
                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hlayout>
                                                         </row>
                                                          <row>
                                                             <label value="${c:l('cms.common.codeIso3')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.currency')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.common.currency')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hbox>
-                                                              <textbox id="txtCodeIso3" value="" width="280px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                              <textbox id="txtAlternativeName1" value="" width="320px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hbox>
-                                                            <combobox id="currency" name="currency" value="${c:l('sp.common.currency')}" constraint="no empty">
-                                                              <comboitem label="Dolar"/>
-                                                              <comboitem label="Euro"/>
-                                                              <comboitem label="Bolivares"/>
-                                                              <comboitem label="Pesos"/>
-                                                            </combobox>
-                                                            <combobox id="cmbCurrency" width="320px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCurrency" width="150px" mold="rounded" readonly="true" />
                                                         </row>
                                                     </rows>
                                                 </grid>
