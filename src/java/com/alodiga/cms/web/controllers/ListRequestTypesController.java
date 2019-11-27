@@ -64,6 +64,7 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
             request.setFirst(0);
             request.setLimit(null);
             requestTypes = utilsEJB.getRequestType(request);
+            System.out.println("List of Request Type"+requestTypes);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -120,6 +121,7 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
                 for (RequestType requestType : list) {
                     item = new Listitem();
                     item.setValue(requestType);
+                    System.out.println("program"+requestType.getProgramId().getName());
                     item.appendChild(new Listcell(requestType.getProgramId().getName()));
                     item.appendChild(new Listcell(requestType.getProductTypeId().getName()));
                     item.appendChild(new Listcell(requestType.getCountryId().getName()));

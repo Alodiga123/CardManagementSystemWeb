@@ -65,6 +65,7 @@ public class ListCardRequestTypesController extends GenericAbstractListControlle
             request.setFirst(0);
             request.setLimit(null);
             cardRequestTypes = utilsEJB.getCardRequestType(request);
+            System.out.println("List of Card Request Type"+cardRequestTypes);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

@@ -65,12 +65,12 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
-                                                                <textbox id="txtdescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtDescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hbox>
                                                   
                                                             <hlayout>
-                                                                <datebox id="dtbcontdate"  width="265px"/>
+                                                                <datebox id="dtbContdate"  width="265px"/>
                                                             </hlayout>
                                                         </row>
                                                         <row>
@@ -140,16 +140,16 @@
                                                         <row>
                                                             <combobox id="cmbSourceOfFound" width="270px" mold="rounded" readonly="true"/>
                                                             <hlayout>
-                                                                <textbox id="txtother" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtOther" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hlayout>
                                                             
                                                            <hbox>
-                                                                <radiogroup id="CashAcces" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="cashAcces" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="ra5" label="${c:l('cms.commom.Yes')}"  radiogroup="CashAcces" />
-                                                                            <radio id="ra6" label="${c:l('cms.commom.No')}"   radiogroup="CashAcces" />
+                                                                            <radio id="ra5" label="${c:l('cms.commom.Yes')}"  radiogroup="cashAcces" />
+                                                                            <radio id="ra6" label="${c:l('cms.commom.No')}"   radiogroup="cashAcces" />
                                                                          </row>
                                                                     </rows>
                                                                 </grid>
@@ -189,7 +189,7 @@
                                                         <!--revisaar desde aca-->
                                                               <row>
                                                             <hlayout>
-                                                                <textbox id="txtbin" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtbin" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
@@ -198,7 +198,7 @@
                                                             </hbox>
                                                   
                                                             <hlayout>
-                                                                  <combobox id="cmbresponsibleNetwoork" width="270px" mold="rounded" readonly="true"/>
+                                                                  <combobox id="cmbResponsibleNetwoork" width="270px" mold="rounded" readonly="true"/>
                                                                
                                                             </hlayout>
                                                         </row>  
@@ -210,15 +210,15 @@
                                                         </row>     
                                                                  <row>
                                                             <hlayout>
-                                                                <textbox id="txtotheBINN" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtOtheBINN" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
-                                                                 <combobox id="cmbcardIssuanceType" width="270px" mold="rounded" readonly="true"/>
+                                                                 <combobox id="cmbCardIssuanceType" width="270px" mold="rounded" readonly="true"/>
                                                             </hbox>
                                                   
                                                             <hlayout>
-                                                                <datebox id="dtbexpectedLaunchDate"  width="265px"/>
+                                                                <datebox id="dtbExpectedLaunchDate"  width="265px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>                                                  
