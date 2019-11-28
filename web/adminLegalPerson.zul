@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCountry" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminLegalPersonController" class="general-window">
+    <window id="winAdminLegalPerson" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminLegalPersonController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -59,7 +59,7 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="120px" maxlength="60"/>
+                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="60"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
@@ -100,7 +100,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" onClick="Executions.sendRedirect(&quot;adminLegalPersonAddress.zul&quot;)"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;adminLegalPerson.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
