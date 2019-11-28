@@ -291,7 +291,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
 
     private void loadCmbCity(Integer evenInteger, int stateId) {
         //cmbCity
-        /*EJBRequest request1 = new EJBRequest();
+        EJBRequest request1 = new EJBRequest();
         cmbCity.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_STATE_ID, stateId);
@@ -310,7 +310,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }*/
+        }
     }
 
     private void LoadCmbStreetType(Integer evenInteger) {
