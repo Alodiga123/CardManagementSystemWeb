@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 <!--<?init class="com.alodiga.services.provider.web.security.InitiatorLoggedUser" ?>-->
 <zk xmlns:n="native">
-    <window id="winAdminRequestType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPersonClassificationController" class="general-window">
+    <window id="winAdminPersonClassification" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPersonClassificationController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
