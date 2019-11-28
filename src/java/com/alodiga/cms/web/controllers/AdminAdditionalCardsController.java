@@ -7,16 +7,12 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.CivilStatus;
+import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.EconomicActivity;
-import com.cms.commons.models.LegalPerson;
-import com.cms.commons.models.LegalRepresentatives;
-import com.cms.commons.models.NaturalPerson;
-import com.cms.commons.models.PhonePerson;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.sun.xml.ws.rx.mc.dev.AdditionalResponses;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,32 +35,27 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 
-public class AdminLegalRepresentativeController extends GenericAbstractAdminController {
+public class AdminAdditionalCardsController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtIdentificationNumber;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
-    private Textbox txtBirthPlace;
-    private Textbox txtAge;
-    private Textbox txtPhoneNumber;
+    private Textbox txtPositionEnterprise;
+    private Textbox txtProposedLimit;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
-    private Combobox cmbCivilState;
-    private RadioButton gender;
     private Datebox txtDueDateIdentification;
-    private Datebox txtBirthDay;
-    
+
     private UtilsEJB utilsEJB = null;
-    private LegalRepresentatives legalRepresentativesParam;
+    private CardRequestNaturalPerson cardRequestNaturalPersonParam;
     private Button btnSave;
     private Integer eventType;
-    
-    
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        legalRepresentativesParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalRepresentatives) Sessions.getCurrent().getAttribute("object") : null;
+        cardRequestNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CardRequestNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
         //initView(eventType, "sp.crud.country");
@@ -85,23 +76,18 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         txtIdentificationNumber.setRawValue(null);
         txtFullName.setRawValue(null);
         txtFullLastName.setRawValue(null);
-        txtBirthPlace.setRawValue(null);
-        txtAge.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
-        txtDueDateIdentification.setRawValue(null);
-        txtBirthDay.setRawValue(null);
+        txtPositionEnterprise.setRawValue(null);
+        txtProposedLimit.setRawValue(null);
     }
 
-    private void loadFields(LegalRepresentatives legalRepresentatives) {
+    private void loadFields(CardRequestNaturalPerson cardRequestNaturalPerson) {
         try {
-            txtIdentificationNumber.setText(legalRepresentatives.getIdentificationNumber());
-            txtFullName.setText(legalRepresentatives.getFirstNames());
-            txtFullLastName.setText(legalRepresentatives.getLastNames());
-            txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
-            txtAge.setText(legalRepresentatives.getAge().toString());
-            txtPhoneNumber.setText(legalRepresentatives.getPersonsId().getPhonePerson().getNumberPhone());
-            txtDueDateIdentification.setValue(legalRepresentatives.getDueDateDocumentIdentification());
-            txtBirthDay.setValue(legalRepresentatives.getDateBirth());
+            txtIdentificationNumber.setText(cardRequestNaturalPerson.getIdentificationNumber());
+            txtFullName.setText(cardRequestNaturalPerson.getFirstNames());
+            txtFullLastName.setText(cardRequestNaturalPerson.getLastNames());
+            txtPositionEnterprise.setText(cardRequestNaturalPerson.getPositionEnterprise());
+            txtProposedLimit.setText(cardRequestNaturalPerson.getProposedLimit().toString());
+            //txtProposedLimit.setText(cardRequestNaturalPerson.getPersonId().setNaturalPerson(null));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -111,13 +97,10 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         txtIdentificationNumber.setReadonly(true);
         txtFullName.setReadonly(true);
         txtFullLastName.setReadonly(true);
-        txtBirthPlace.setReadonly(true);
-        txtAge.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
+        txtPositionEnterprise.setDisabled(true);
+        txtProposedLimit.setDisabled(true);
         cmbCountry.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
-        txtDueDateIdentification.setDisabled(true);
-        txtBirthDay.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -131,14 +114,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         } else if (txtFullLastName.getText().isEmpty()) {
             txtFullLastName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
+        } else if (txtPositionEnterprise.getText().isEmpty()) {
+            txtPositionEnterprise.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtBirthPlace.getText().isEmpty()) {
-            txtBirthPlace.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
+        } else if (txtProposedLimit.getText().isEmpty()) {
+            txtProposedLimit.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -151,44 +131,25 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
     }
 
-    private void saveLegalRepresentatives(LegalRepresentatives _legalRepresentatives) {
+    private void saveLegalRepresentatives(CardRequestNaturalPerson _cardRequestNaturalPerson) {
         try {
-            LegalRepresentatives legalRepresentatives = null;
+            CardRequestNaturalPerson cardRequestNaturalPerson = null;
 
-            if (_legalRepresentatives != null) {
-                legalRepresentatives = _legalRepresentatives;
-            } else {//New LegalPerson
-                legalRepresentatives = new LegalRepresentatives();
-            }
-            
-            legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
-            legalRepresentatives.setFirstNames(txtFullName.getText());
-            legalRepresentatives.setLastNames(txtFullLastName.getText());
-            legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
-            legalRepresentatives.setAge(txtAge.getText().length());
-            legalRepresentatives.setDueDateDocumentIdentification(txtDueDateIdentification.getValue());
-            legalRepresentatives.setDateBirth(txtBirthDay.getValue());
-            //legalRepresentatives.setPersonsId((PhonePerson)txtPhoneNumber.getText());
-            //legalRepresentatives.setPersonsId(((PhonePerson) txtPhoneNumber.getText()).getPersonId());
-            
-            legalRepresentatives.setPersonsId(((NaturalPerson) cmbCivilState.getSelectedItem().getValue()).getPersonId());
-            
-           
-            
-            
-            if (txtDueDateIdentification.getValue() != null) {
-                legalRepresentatives.setDueDateDocumentIdentification(new Timestamp(txtDueDateIdentification.getValue().getTime()));
-            } else {
-                legalRepresentatives.setDueDateDocumentIdentification(new Timestamp(new Date().getTime()));
-            }
-            if (txtBirthDay.getValue() != null) {
-                legalRepresentatives.setDueDateDocumentIdentification(new Timestamp(txtBirthDay.getValue().getTime()));
-            } else {
-                legalRepresentatives.setDueDateDocumentIdentification(new Timestamp(new Date().getTime()));
+            if (_cardRequestNaturalPerson != null) {
+                cardRequestNaturalPerson = _cardRequestNaturalPerson;
+            } else {//New CardRequestNaturalPerson
+                cardRequestNaturalPerson = new CardRequestNaturalPerson();
             }
 
-            legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
-            legalRepresentativesParam = legalRepresentatives;
+            cardRequestNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
+            cardRequestNaturalPerson.setFirstNames(txtFullName.getText());
+            cardRequestNaturalPerson.setLastNames(txtFullLastName.getText());
+            cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
+            //cardRequestNaturalPerson.setLegalPersonid((txtPositionEnterprise));
+            //cardRequestNaturalPerson.setProposedLimit(txtProposedLimit.getText());
+
+            cardRequestNaturalPerson = utilsEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
+            cardRequestNaturalPersonParam = cardRequestNaturalPerson;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -202,7 +163,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                     saveLegalRepresentatives(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveLegalRepresentatives(legalRepresentativesParam);
+                    saveLegalRepresentatives(cardRequestNaturalPersonParam);
                     break;
                 default:
                     break;
@@ -213,29 +174,23 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(legalRepresentativesParam);
+                loadFields(cardRequestNaturalPersonParam);
                 loadCmbCountry(eventType);
                 loadCmbDocumentsPersonType(eventType);
-                loadCmbCivilState(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(legalRepresentativesParam);
+                loadFields(cardRequestNaturalPersonParam);
                 txtIdentificationNumber.setDisabled(true);
                 txtFullName.setDisabled(true);
                 txtFullLastName.setDisabled(true);
-                txtBirthPlace.setDisabled(true);
-                txtAge.setDisabled(true);
-                txtPhoneNumber.setDisabled(true);
-                txtDueDateIdentification.setDisabled(true);
-                txtBirthDay.setDisabled(true);
+                txtPositionEnterprise.setDisabled(true);
+                txtProposedLimit.setDisabled(true);
                 loadCmbCountry(eventType);
                 loadCmbDocumentsPersonType(eventType);
-                loadCmbCivilState(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 loadCmbDocumentsPersonType(eventType);
-                loadCmbCivilState(eventType);
                 break;
             default:
                 break;
@@ -249,7 +204,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(cardRequestNaturalPersonParam != null ? cardRequestNaturalPersonParam.getPersonId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -269,27 +224,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonTypes(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getDocumentsPersonTypeId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-    
-    private void loadCmbCivilState(Integer evenInteger) {
-        //cmbCivilState
-        EJBRequest request1 = new EJBRequest();
-        List<CivilStatus> civilStatuses;
-
-        try {
-            civilStatuses = utilsEJB.getCivilStatuses(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getNaturalPerson().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(cardRequestNaturalPersonParam != null ? cardRequestNaturalPersonParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -302,5 +237,4 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         }
     }
 
-    
 }
