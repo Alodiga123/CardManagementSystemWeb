@@ -65,7 +65,8 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         legalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalPerson) Sessions.getCurrent().getAttribute("object") : null;
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        eventType = 1;
         initialize();
         //initView(eventType, "sp.crud.country");
     }
