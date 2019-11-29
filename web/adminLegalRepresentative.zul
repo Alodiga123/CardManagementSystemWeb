@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCountry" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminLegalRepresentativeController" class="general-window">
+    <window id="winAdminlegalRepresentative" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminLegalRepresentativeController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -59,7 +59,7 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="120px" maxlength="60"/>
+                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="60"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/>
@@ -68,8 +68,8 @@
                                                         </row>
                                                         <row>
                                                             <datebox id="txtDueDateIdentification" width="250px"/>
-                                                            <textbox id="txtFullName" value="" width="120px" maxlength="60"/>
-                                                            <textbox id="txtFullLastName" value="" width="120px" maxlength="60"/>
+                                                            <textbox id="txtFullName" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="60"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>                                                            

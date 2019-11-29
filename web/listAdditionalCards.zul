@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListLegalRepresentativeController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListAdditionalCardsController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -53,22 +53,17 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identificationsTypes')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="130px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.expirationDate')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.birthday')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.aditionalCard.positionEnterprise')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.aditionalCard.proposedLimit')}" width="140px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
                                         </div>
-                                        <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
-                                        <!--Download button--> 
-                                        <div align="right"> 
-                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/> 
-                                        </div> 
                                     </vlayout>
                                 </div>
                                 <div></div>
