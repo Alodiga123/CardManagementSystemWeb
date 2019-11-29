@@ -42,17 +42,20 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.models.LegalPerson;
 
 public class AdminProgramController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtName;
     private Textbox txtDescription;
+    private Textbox txtBinIin;
     private Datebox dtbContdate;
     private Combobox cmbProgramType;
     private Combobox cmbProductType;
     private Combobox cmbIssuer;
     private Combobox cmbProgramOwner;
+    private Combobox cmbCardProgramManager;
     private Combobox cmbBinSponsor;
     private Combobox cmbCardType;
     private Textbox website;
@@ -64,7 +67,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Radiogroup international;
     private Combobox cmbNetWork;
     private Textbox txtOtherNetWork;
-    private Textbox txtBin;
+  
     private Combobox cmbCurrency;
     private Combobox cmbResponsibleNetwoork;
     private Textbox txtOtheBINN;
@@ -100,12 +103,13 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void clearFields() {
         txtName.setRawValue(null);
         txtDescription.setRawValue(null);
+        txtBinIin.setRawValue(null);
         dtbContdate.setRawValue(null);
         website.setRawValue(null);
         //Faltan los radio buton
         txtOther.setRawValue(null);
         txtOtherNetWork.setRawValue(null);
-        txtBin.setRawValue(null);
+        // txtBin.setRawValue(null);
         txtOtheBINN.setRawValue(null);
         dtbExpectedLaunchDate.setRawValue(null);
 //Cambio prueba
@@ -115,12 +119,13 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             txtName.setText(program.getName());
             txtDescription.setText(program.getDescription());
+            txtBinIin.setText(program.getBiniinNumber());
             dtbContdate.setValue(program.getContractDate());
+            dtbExpectedLaunchDate.setValue(program.getExpectedLaunchDate());
             website.setText(program.getWebSite());
             txtOther.setText(program.getOtherSourceFunds());
             txtOtherNetWork.setText(program.getOtherResponsibleNetworkReporting());
-            txtBin.setText(program.getBiniinNumber());
-            dtbExpectedLaunchDate.setValue(program.getExpectedLaunchDate());
+            // txtBin.setText(program.getBiniinNumber());
 
         } catch (Exception ex) {
             showError(ex);
@@ -130,12 +135,14 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void blockFields() {
         txtName.setReadonly(true);
         txtDescription.setReadonly(true);
+        txtBinIin.setReadonly(true);
         dtbContdate.setReadonly(true);
+        dtbExpectedLaunchDate.setReadonly(true);
         website.setReadonly(true);
         txtOther.setReadonly(true);
         txtOtherNetWork.setReadonly(true);
-        txtBin.setReadonly(true);
-        dtbExpectedLaunchDate.setReadonly(true);
+        // txtBin.setReadonly(true);
+        ;
 
         btnSave.setVisible(false);
     }
@@ -166,13 +173,15 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void onChange$cmbSourceOfFound() {
         System.out.println("valor de source of found" + cmbSourceOfFound.getSelectedItem().getValue());
         String sourceOfFoundsOther = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTROS;
-        if (cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOther)) {
+         String sourceOfFoundsOthers = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTHER;
+         txtOther.setDisabled(true);
+        if ((cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOther))|| (cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOthers))) {
 
-            txtOther.setReadonly(false);
-        } else {
+            txtOther.setDisabled(false);
+        } //else {
 
-            txtOther.setReadonly(true);
-        }
+          //  txtOther.setDisabled(false);
+       // }
     }
 
     private void saveProgram(Program _program) {
@@ -190,14 +199,18 @@ public class AdminProgramController extends GenericAbstractAdminController {
             }
             program.setName(txtName.getText());
             program.setDescription(txtDescription.getText());
+            program.setBiniinNumber(txtBinIin.getText());
             program.setContractDate(dtbContdate.getValue());
+            program.setExpectedLaunchDate(dtbExpectedLaunchDate.getValue());
             program.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
             program.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
             program.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
             program.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
             String id = cmbProgramOwner.getSelectedItem().getParent().getId();
-            program.setCardProgramManagerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
+            String ids = cmbCardProgramManager.getSelectedItem().getParent().getId();
+            program.setCardProgramManagerId(((LegalPerson) cmbCardProgramManager.getSelectedItem().getValue()).getPersonId());
             program.setProgramOwnerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
+
             program.setWebSite(website.getText());
             if ((branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_SI))) {
                 indBranded = 1;
@@ -232,7 +245,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             program.setSharedBrand(indInternational);
             program.setResponsibleNetworkReportingId((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue());
             program.setCardIssuanceTypeId((CardIssuanceType) cmbCardIssuanceType.getSelectedItem().getValue());
-            //program.getBiniinNumber(txtBin.getText());
+            
             program.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
             program = programEJB.saveProgram(program);
 
@@ -274,6 +287,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramType(eventType);
                 loadCmbIssuer(eventType);
                 loadCmbProgramOwner(eventType);
+                loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
@@ -286,19 +300,19 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadFields(programParam);
                 txtName.setDisabled(true);
                 txtDescription.setDisabled(true);
+                txtBinIin.setDisabled(true);
                 dtbContdate.setDisabled(true);
+                dtbExpectedLaunchDate.setDisabled(true);
                 website.setDisabled(true);
-               txtOther.setDisabled(true);
+                txtOther.setDisabled(true);
                 txtOtherNetWork.setDisabled(true);
-                txtBin.setDisabled(true);
                 txtOtheBINN.setDisabled(true);
-                //me faltan los radio grp
-                
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
                 loadCmbIssuer(eventType);
                 loadCmbProgramOwner(eventType);
+                loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
@@ -312,6 +326,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProductType(eventType);
                 loadCmbIssuer(eventType);
                 loadCmbProgramOwner(eventType);
+                loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
@@ -528,6 +543,40 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 cmbProgramOwner.setDisabled(true);
             }
 
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+
+    private void loadCmbCardProgramManager(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<LegalPerson> legalPersons;
+        try {
+            legalPersons = (List<LegalPerson>) programEJB.getCardManagementProgram(request1);
+            cmbCardProgramManager.getItems().clear();
+            for (LegalPerson c : legalPersons) {
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                StringBuilder nameCardProgramManager = new StringBuilder(c.getEnterpriseName());
+                nameCardProgramManager.append(" ");
+                nameCardProgramManager.append(c.getTradeName());
+                item.setLabel(nameCardProgramManager.toString());
+                item.setDescription(nameCardProgramManager.toString());
+                item.setParent(cmbCardProgramManager);
+                if (programParam != null && c.getId().equals(programParam.getCardProgramManagerId().getId())) {
+                    cmbCardProgramManager.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbProgramOwner.setDisabled(true);
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

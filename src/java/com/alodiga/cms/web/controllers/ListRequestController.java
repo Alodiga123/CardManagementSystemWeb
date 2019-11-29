@@ -7,13 +7,18 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
+import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.RequestType;
+import com.cms.commons.models.User;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -102,7 +107,7 @@ public class ListRequestController extends GenericAbstractListController<Request
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(request.getRequestNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
-                    item.appendChild(new Listcell(request.getRequestTypeId().getCardRequestTypeId().getDescription()));
+                    item.appendChild(new Listcell(request.getRequestTypeId().getDescription()));
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
@@ -180,6 +185,5 @@ public class ListRequestController extends GenericAbstractListController<Request
     public void loadDataList(List<Request> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }
