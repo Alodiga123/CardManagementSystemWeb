@@ -37,6 +37,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 
 public class AdminLegalRepresentativeController extends GenericAbstractAdminController {
@@ -51,7 +52,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
-    private RadioButton gender;
+    private Radiogroup gender;
     private Datebox txtDueDateIdentification;
     private Datebox txtBirthDay;
     
