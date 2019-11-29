@@ -10,20 +10,13 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.EdificationType;
-import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import com.sun.codemodel.writer.ZipCodeWriter;
 import com.cms.commons.util.QueryConstants;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +31,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabbox;
-import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Tabpanels;
-import org.zkoss.zul.Tabs;
 
 public class AdminLegalPersonAddressController extends GenericAbstractAdminController {
 
@@ -62,13 +48,11 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
     Map params = null;
-    private Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -104,10 +88,10 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         loadCmbCity(eventType, state.getId());
     }
     
-    public void onChange$cmbZipZone() {
+    public void onChange$cmbCity() {
         cmbZipZone.setVisible(true);
-        ZipZone zipZone = (ZipZone) cmbZipZone.getSelectedItem().getValue();
-        LoadCmbZipZone(eventType, zipZone.getId());
+        City city = (City) cmbCity.getSelectedItem().getValue();
+        LoadCmbZipZone(eventType, city.getId());
     }
     
 
@@ -145,7 +129,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         cmbState.setDisabled(true);
         cmbCity.setDisabled(true);
         cmbEdificationType.setDisabled(true);
-
         btnSave.setVisible(false);
     }
 
@@ -185,10 +168,9 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             address.setNameStreet(txtNameStreet.getText());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
-            //address.setFloor(txtFloor.get);
+            address.setFloor(Integer.parseInt(txtFloor.getText()));
             address.setEmail(txtEmail.getText());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            //address.set((State) cmbState.getSelectedItem().getValue());
             address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setStreetTypeId((StreetType) cmbStreetType.getSelectedItem().getValue());
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
@@ -222,10 +204,8 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(addressParam);
                 loadCmbCountry(eventType);
-                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                //LoadCmbZipZone(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(addressParam);
@@ -236,17 +216,13 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
                 txtFloor.setDisabled(true);
                 txtEmail.setDisabled(true);
                 loadCmbCountry(eventType);
-                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                //LoadCmbZipZone(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                //LoadCmbZipZone(eventType);
                 break;
             default:
                 break;
@@ -257,7 +233,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
-
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCountryId().getId() : 0));
@@ -304,7 +279,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         params.put(QueryConstants.PARAM_STATE_ID, stateId);
         request1.setParams(params);
         List<City> citys;
-
         try {
             citys = utilsEJB.getCitiesByState(request1);
             loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
@@ -324,7 +298,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         //cmbStreetType
         EJBRequest request1 = new EJBRequest();
         List<StreetType> streetTypes;
-
         try {
             streetTypes = utilsEJB.getStreetTypes(request1);
             loadGenericCombobox(streetTypes, cmbStreetType, "description", evenInteger, Long.valueOf(addressParam != null ? addressParam.getStreetTypeId().getId() : 0));
@@ -344,7 +317,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         //cmbEdificationType
         EJBRequest request1 = new EJBRequest();
         List<EdificationType> edificationTypes;
-
         try {
             edificationTypes = utilsEJB.getEdificationTypes(request1);
             loadGenericCombobox(edificationTypes, cmbEdificationType, "description", evenInteger, Long.valueOf(addressParam != null ? addressParam.getEdificationTypeId().getId() : 0));
@@ -368,7 +340,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         params.put(QueryConstants.PARAM_CITY_ID, cityId);
         request1.setParams(params);
         List<ZipZone> zipZones;
-        
         try {
             zipZones = utilsEJB.getZipZoneByCities(request1);
             loadGenericCombobox(zipZones, cmbZipZone, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
