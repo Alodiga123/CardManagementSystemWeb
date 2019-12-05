@@ -59,7 +59,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="280px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 
                                                             </hlayout>
                                                 
@@ -69,7 +69,7 @@
                                                             <label value="${c:l('sp.common.Country')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="320px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -53,14 +53,14 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.name')}"         width="90px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.date.Program')}" width="110px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.typeProgram')}"  width="110px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.ProductType')}"  width="110px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.Issuer')}"         width="110px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.expectedLaunche')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.name')}"         width="350px" sort="auto"/>
+                                                     <!--<listheader label="${c:l('cms.common.date.Program')}" width="110px" sort="auto"/>-->
+                                                    <listheader label="${c:l('cms.common.typeProgram')}"  width="136px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.ProductType')}"  width="136px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.Issuer')}"         width="136px" sort="auto"/>
+                                                    <!-- <listheader label="${c:l('cms.common.expectedLaunche')}" width="140px" sort="auto"/>-->
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

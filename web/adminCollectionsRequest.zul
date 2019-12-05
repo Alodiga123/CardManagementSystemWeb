@@ -25,9 +25,9 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('cms.bread.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('cms.crud.enterprise.data')}"/>
                                             </hlayout>
                                         </div>
@@ -67,8 +67,10 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
-                                                            <label value="*" sclass="lblreq" />
+                                                            <hlayout>
+                                                                <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -10,20 +10,16 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.EdificationType;
-import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import com.sun.codemodel.writer.ZipCodeWriter;
 import com.cms.commons.util.QueryConstants;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +35,7 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabbox;
-import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Tabpanels;
-import org.zkoss.zul.Tabs;
 
 public class AdminLegalPersonAddressController extends GenericAbstractAdminController {
 
@@ -62,19 +52,18 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
     Map params = null;
-    private Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         addressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Address) Sessions.getCurrent().getAttribute("object") : null;
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        eventType = 1;
         initialize();
         //initView(eventType, "sp.crud.country");
     }
@@ -89,20 +78,24 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             showError(ex);
         }
     }
-    
-    
+
     public void onChange$cmbCountry() {
         cmbCity.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbState(eventType, country.getId());
     }
-    
+
     public void onChange$cmbState() {
         cmbState.setVisible(true);
         State state = (State) cmbState.getSelectedItem().getValue();
         loadCmbCity(eventType, state.getId());
     }
-    
+
+    public void onChange$cmbCity() {
+        cmbZipZone.setVisible(true);
+        City city = (City) cmbCity.getSelectedItem().getValue();
+        LoadCmbZipZone(eventType, city.getId());
+    }
 
     public void clearFields() {
         txtUbanization.setRawValue(null);
@@ -137,7 +130,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         cmbState.setDisabled(true);
         cmbCity.setDisabled(true);
         cmbEdificationType.setDisabled(true);
-
         btnSave.setVisible(false);
     }
 
@@ -166,27 +158,41 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private void saveAddress(Address _address) {
         try {
             Address address = null;
+            PersonHasAddress personHasAddress = null;
 
             if (_address != null) {
                 address = _address;
             } else {//New address
                 address = new Address();
+                personHasAddress = new PersonHasAddress();
             }
-
-            address.setUrbanization(txtUbanization.getText());
-            address.setNameStreet(txtNameStreet.getText());
+            
+            
+            //Person
+            EJBRequest request1 = new EJBRequest();
+            request1 = new EJBRequest();
+            request1.setParam(Constants.PERSON_ID_KEY);
+            Person person = utilsEJB.loadPerson(request1);
+            
+            address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
-            //address.setFloor(txtFloor.get);
-            address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            //address.set((State) cmbState.getSelectedItem().getValue());
-            address.setCityId((City) cmbCity.getSelectedItem().getValue());
+            address.setFloor(Integer.parseInt(txtFloor.getText()));
             address.setStreetTypeId((StreetType) cmbStreetType.getSelectedItem().getValue());
-            address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
+            address.setNameStreet(txtNameStreet.getText());
+            address.setUrbanization(txtUbanization.getText());
+            address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
-
+            address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            address.setEmail(txtEmail.getText());
             address = utilsEJB.saveAddress(address);
             addressParam = address;
+            
+            //PersonHasAddress
+            personHasAddress.setAddressId(address);
+            personHasAddress.setPersonId(person);
+            personHasAddress = utilsEJB.savePersonHasAddress(personHasAddress);
+            
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -213,10 +219,11 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(addressParam);
                 loadCmbCountry(eventType);
-                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                LoadCmbZipZone(eventType);
+                onChange$cmbCountry();
+                onChange$cmbState();
+                onChange$cmbCity();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(addressParam);
@@ -227,17 +234,16 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
                 txtFloor.setDisabled(true);
                 txtEmail.setDisabled(true);
                 loadCmbCountry(eventType);
-                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                LoadCmbZipZone(eventType);
+                onChange$cmbCountry();
+                onChange$cmbState();
+                onChange$cmbCity();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                //loadCmbCity(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                LoadCmbZipZone(eventType);
                 break;
             default:
                 break;
@@ -248,7 +254,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
-
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCountryId().getId() : 0));
@@ -289,13 +294,12 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
 
     private void loadCmbCity(Integer evenInteger, int stateId) {
         //cmbCity
-        /*EJBRequest request1 = new EJBRequest();
+        EJBRequest request1 = new EJBRequest();
         cmbCity.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_STATE_ID, stateId);
         request1.setParams(params);
         List<City> citys;
-
         try {
             citys = utilsEJB.getCitiesByState(request1);
             loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
@@ -308,14 +312,13 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }*/
+        }
     }
 
     private void LoadCmbStreetType(Integer evenInteger) {
         //cmbStreetType
         EJBRequest request1 = new EJBRequest();
         List<StreetType> streetTypes;
-
         try {
             streetTypes = utilsEJB.getStreetTypes(request1);
             loadGenericCombobox(streetTypes, cmbStreetType, "description", evenInteger, Long.valueOf(addressParam != null ? addressParam.getStreetTypeId().getId() : 0));
@@ -335,7 +338,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         //cmbEdificationType
         EJBRequest request1 = new EJBRequest();
         List<EdificationType> edificationTypes;
-
         try {
             edificationTypes = utilsEJB.getEdificationTypes(request1);
             loadGenericCombobox(edificationTypes, cmbEdificationType, "description", evenInteger, Long.valueOf(addressParam != null ? addressParam.getEdificationTypeId().getId() : 0));
@@ -350,17 +352,20 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
     }
-    
-    private void LoadCmbZipZone(Integer evenInteger) {
+
+    private void LoadCmbZipZone(Integer evenInteger, int cityId) {
         //cmbZipZone
         EJBRequest request1 = new EJBRequest();
+        cmbZipZone.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_CITY_ID, cityId);
+        request1.setParams(params);
         List<ZipZone> zipZones;
- 
         try {
-            zipZones = utilsEJB.getZipZones(request1);
+            zipZones = utilsEJB.getZipZoneByCities(request1);
             cmbZipZone.getItems().clear();
             for (ZipZone c : zipZones) {
- 
+
                 Comboitem item = new Comboitem();
                 item.setValue(c);
                 item.setLabel(c.getCode());
@@ -370,9 +375,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
                     cmbZipZone.setSelectedItem(item);
                 }
             }
-            /*if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbZipZone.setSelectedIndex(0);
-            }*/
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbZipZone.setDisabled(true);
             }
@@ -385,34 +387,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }
-    }
-
-    
-    private void loadCities(State state, Country country, City city) {
-        try {
-            cmbCity.getItems().clear();
-            List<City> cities = null;
-            params = new HashMap();
-            request.setParams(params);
-            if (country != null) {
-                params.put(WebConstants.ID_ELEMENT, country.getId());
-                cities = utilsEJB.getCitys(request);
-            } else if (state != null) {
-                params.put(WebConstants.ID_ELEMENT, state.getId());
-                cities = utilsEJB.getCitys(request);
-            }
-            for (int i = 0; i < cities.size(); i++) {
-                Comboitem item = new Comboitem();
-                item.setValue(cities.get(i));
-                item.setLabel(cities.get(i).getName());
-                item.setParent(cmbCity);
-                if (cities.get(i).getId().equals(city.getId())) {
-                    cmbCity.setSelectedItem(item);
-                }
-            }
-        } catch (Exception ex) {
-            showError(ex);
         }
     }
 }

@@ -127,4 +127,7 @@ public class WebConstants {
     public static final String PROGRAM_PROGRAM_INTERNATIONAL_NO = "No";
     public static final String PROGRAM_SOURCE_OF_FOUND_OTHER = "Other";
     public static final String PROGRAM_SOURCE_OF_FOUND_OTROS = "Otros";
+    
+    public static final String LEGALREPRESENTATIVE_GENDER_FEMALE = "F";
+    public static final String LEGALREPRESENTATIVE_GENDER_MALE = "M";
 }
