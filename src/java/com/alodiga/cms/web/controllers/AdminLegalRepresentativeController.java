@@ -305,7 +305,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         List<CivilStatus> civilStatuses;
 
         try {
-            civilStatuses = utilsEJB.getCivilStatuses(request1);
+            civilStatuses = utilsEJB.getCivilStatus(request1);
             loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getNaturalPerson().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
