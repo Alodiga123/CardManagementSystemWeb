@@ -10,10 +10,12 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
+import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.Person;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import com.sun.xml.ws.rx.mc.dev.AdditionalResponses;
-import java.sql.Timestamp;
+import com.cms.commons.util.QueryConstants;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.RadioButton;
 import org.apache.http.impl.conn.Wire;
 import org.codehaus.groovy.tools.shell.Command;
 import org.jboss.weld.metadata.Selectors;
@@ -72,31 +73,36 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         }
     }
 
+    public void onChange$cmbCountry() {
+        cmbDocumentsPersonType.setVisible(true);
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        loadCmbDocumentsPersonType(eventType, country.getId());
+    }
+
     public void clearFields() {
-        txtIdentificationNumber.setRawValue(null);
         txtFullName.setRawValue(null);
         txtFullLastName.setRawValue(null);
+        txtIdentificationNumber.setRawValue(null);
         txtPositionEnterprise.setRawValue(null);
         txtProposedLimit.setRawValue(null);
     }
 
     private void loadFields(CardRequestNaturalPerson cardRequestNaturalPerson) {
         try {
-            txtIdentificationNumber.setText(cardRequestNaturalPerson.getIdentificationNumber());
             txtFullName.setText(cardRequestNaturalPerson.getFirstNames());
             txtFullLastName.setText(cardRequestNaturalPerson.getLastNames());
+            txtIdentificationNumber.setText(cardRequestNaturalPerson.getIdentificationNumber());
             txtPositionEnterprise.setText(cardRequestNaturalPerson.getPositionEnterprise());
             txtProposedLimit.setText(cardRequestNaturalPerson.getProposedLimit().toString());
-            //txtProposedLimit.setText(cardRequestNaturalPerson.getPersonId().setNaturalPerson(null));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtIdentificationNumber.setReadonly(true);
         txtFullName.setReadonly(true);
         txtFullLastName.setReadonly(true);
+        txtIdentificationNumber.setReadonly(true);
         txtPositionEnterprise.setDisabled(true);
         txtProposedLimit.setDisabled(true);
         cmbCountry.setDisabled(true);
@@ -131,7 +137,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
     }
 
-    private void saveLegalRepresentatives(CardRequestNaturalPerson _cardRequestNaturalPerson) {
+    private void saveCarRequestNaturalPerson(CardRequestNaturalPerson _cardRequestNaturalPerson) {
         try {
             CardRequestNaturalPerson cardRequestNaturalPerson = null;
 
@@ -141,13 +147,24 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
                 cardRequestNaturalPerson = new CardRequestNaturalPerson();
             }
 
-            cardRequestNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
+            //Person
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(Constants.PERSON_ID_KEY);
+            Person person = utilsEJB.loadPerson(request1);
+
+            //LegalPerson
+            request1 = new EJBRequest();
+            request1.setParam(Constants.PERSON_ID_KEY);
+            LegalPerson legalPerson = utilsEJB.loadLegalPerson(request1);
+
+            cardRequestNaturalPerson.setPersonId(person);
+            cardRequestNaturalPerson.setLegalPersonid(legalPerson);
             cardRequestNaturalPerson.setFirstNames(txtFullName.getText());
             cardRequestNaturalPerson.setLastNames(txtFullLastName.getText());
+            cardRequestNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
-            //cardRequestNaturalPerson.setLegalPersonid((txtPositionEnterprise));
-            //cardRequestNaturalPerson.setProposedLimit(txtProposedLimit.getText());
-
+            cardRequestNaturalPerson.setProposedLimit(Float.parseFloat(txtProposedLimit.getText()));
+            cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             cardRequestNaturalPerson = utilsEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             cardRequestNaturalPersonParam = cardRequestNaturalPerson;
             this.showMessage("sp.common.save.success", false, null);
@@ -160,10 +177,10 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveLegalRepresentatives(null);
+                    saveCarRequestNaturalPerson(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveLegalRepresentatives(cardRequestNaturalPersonParam);
+                    saveCarRequestNaturalPerson(cardRequestNaturalPersonParam);
                     break;
                 default:
                     break;
@@ -176,7 +193,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             case WebConstants.EVENT_EDIT:
                 loadFields(cardRequestNaturalPersonParam);
                 loadCmbCountry(eventType);
-                loadCmbDocumentsPersonType(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(cardRequestNaturalPersonParam);
@@ -186,11 +203,10 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
                 txtPositionEnterprise.setDisabled(true);
                 txtProposedLimit.setDisabled(true);
                 loadCmbCountry(eventType);
-                loadCmbDocumentsPersonType(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbDocumentsPersonType(eventType);
                 break;
             default:
                 break;
@@ -217,13 +233,17 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         }
     }
 
-    private void loadCmbDocumentsPersonType(Integer evenInteger) {
+    private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
         //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
+        cmbDocumentsPersonType.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
 
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonTypes(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(cardRequestNaturalPersonParam != null ? cardRequestNaturalPersonParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
