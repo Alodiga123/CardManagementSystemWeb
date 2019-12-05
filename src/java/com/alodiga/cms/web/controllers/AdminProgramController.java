@@ -22,7 +22,6 @@ import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramHasNetwork;
-
 import com.cms.commons.models.ProgramType;
 import com.cms.commons.models.ResponsibleNetworkReporting;
 import com.cms.commons.models.SourceFunds;
@@ -43,6 +42,10 @@ import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.LegalPerson;
+import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
+import java.text.Collator;
+import static junit.runner.Version.id;
+import org.zkoss.zul.Radio;
 
 public class AdminProgramController extends GenericAbstractAdminController {
 
@@ -50,7 +53,12 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Textbox txtName;
     private Textbox txtDescription;
     private Textbox txtBinIin;
-    private Datebox dtbContdate;
+    private Textbox txtOther;
+    private Textbox txtOtherNetWork;
+    private Textbox txtOtheBINN;
+    private Textbox website;
+    private Datebox dtbContrato;
+    private Datebox dtbExpectedLaunchDate;
     private Combobox cmbProgramType;
     private Combobox cmbProductType;
     private Combobox cmbIssuer;
@@ -58,21 +66,18 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Combobox cmbCardProgramManager;
     private Combobox cmbBinSponsor;
     private Combobox cmbCardType;
-    private Textbox website;
-    private Radiogroup branded;
-    private Radiogroup reloadable;
     private Combobox cmbSourceOfFound;
-    private Textbox txtOther;
-    private Radiogroup cashAcces;
-    private Radiogroup international;
     private Combobox cmbNetWork;
-    private Textbox txtOtherNetWork;
-  
     private Combobox cmbCurrency;
     private Combobox cmbResponsibleNetwoork;
-    private Textbox txtOtheBINN;
     private Combobox cmbCardIssuanceType;
-    private Datebox dtbExpectedLaunchDate;
+    private Radiogroup branded;
+    Radio radio;
+    
+    
+    private Radiogroup reloadable;
+    private Radiogroup cashAcces;
+    private Radiogroup international;
     private ProgramEJB programEJB = null;
     private UtilsEJB utilsEJB = null;
     private Program programParam;
@@ -85,7 +90,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         programParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Program) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -104,14 +108,14 @@ public class AdminProgramController extends GenericAbstractAdminController {
         txtName.setRawValue(null);
         txtDescription.setRawValue(null);
         txtBinIin.setRawValue(null);
-        dtbContdate.setRawValue(null);
-        website.setRawValue(null);
-        //Faltan los radio buton
         txtOther.setRawValue(null);
         txtOtherNetWork.setRawValue(null);
-        // txtBin.setRawValue(null);
         txtOtheBINN.setRawValue(null);
+        dtbContrato.setRawValue(null);
         dtbExpectedLaunchDate.setRawValue(null);
+        website.setRawValue(null);
+        
+
 //Cambio prueba
     }
 
@@ -120,12 +124,11 @@ public class AdminProgramController extends GenericAbstractAdminController {
             txtName.setText(program.getName());
             txtDescription.setText(program.getDescription());
             txtBinIin.setText(program.getBiniinNumber());
-            dtbContdate.setValue(program.getContractDate());
-            dtbExpectedLaunchDate.setValue(program.getExpectedLaunchDate());
-            website.setText(program.getWebSite());
             txtOther.setText(program.getOtherSourceFunds());
             txtOtherNetWork.setText(program.getOtherResponsibleNetworkReporting());
-            // txtBin.setText(program.getBiniinNumber());
+            dtbContrato.setValue(program.getContractDate());
+            dtbExpectedLaunchDate.setValue(program.getExpectedLaunchDate());
+            website.setText(program.getWebSite());
 
         } catch (Exception ex) {
             showError(ex);
@@ -136,13 +139,11 @@ public class AdminProgramController extends GenericAbstractAdminController {
         txtName.setReadonly(true);
         txtDescription.setReadonly(true);
         txtBinIin.setReadonly(true);
-        dtbContdate.setReadonly(true);
-        dtbExpectedLaunchDate.setReadonly(true);
-        website.setReadonly(true);
         txtOther.setReadonly(true);
         txtOtherNetWork.setReadonly(true);
-        // txtBin.setReadonly(true);
-        ;
+        dtbContrato.setReadonly(true);
+        dtbExpectedLaunchDate.setReadonly(true);
+        website.setReadonly(true);
 
         btnSave.setVisible(false);
     }
@@ -171,17 +172,43 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     public void onChange$cmbSourceOfFound() {
+
         System.out.println("valor de source of found" + cmbSourceOfFound.getSelectedItem().getValue());
         String sourceOfFoundsOther = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTROS;
-         String sourceOfFoundsOthers = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTHER;
-         txtOther.setDisabled(true);
-        if ((cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOther))|| (cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOthers))) {
+        String sourceOfFoundsOthers = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTHER;
+        String cadena = cmbSourceOfFound.getSelectedItem().getValue().toString();
+        txtOther.setDisabled(true);
+        System.out.println("paso");
+
+        /*if ((cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOther)) || (cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOthers))) {
 
             txtOther.setDisabled(false);
-        } //else {
+            System.out.println("el valor del combo1 es:" + cmbSourceOfFound.getSelectedItem().getValue().toString());
+        } else {
 
-          //  txtOther.setDisabled(false);
-       // }
+            txtOther.setDisabled(true);
+
+        }*/
+
+        Collator comparador = Collator.getInstance();
+        // Para no distinguir entre mayusculas, minusculas y letras con acentos.
+        comparador.setStrength(Collator.PRIMARY);
+
+        if (comparador.equals((cmbSourceOfFound.getSelectedItem().getValue()).toString(), sourceOfFoundsOther)) {
+
+            txtOther.setDisabled(false);
+            System.out.println("somos iguales");
+            System.out.println("el valor del combo es:" + cmbSourceOfFound.getSelectedItem().getValue().toString());
+        } else {
+            System.out.println("Revisame");
+            System.out.println("el valor del combo es:" + cmbSourceOfFound.getSelectedItem().getValue().toString());
+            System.out.println("el valor del variable es:" + sourceOfFoundsOther);
+            txtOther.setDisabled(true);
+        }
+
+        /*if (cmbSourceOfFound.getSelectedItem().getValue().toString().compareTo(sourceOfFoundsOther) == 0) {
+            txtOther.setDisabled(false);
+        }*/
     }
 
     private void saveProgram(Program _program) {
@@ -200,7 +227,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             program.setName(txtName.getText());
             program.setDescription(txtDescription.getText());
             program.setBiniinNumber(txtBinIin.getText());
-            program.setContractDate(dtbContdate.getValue());
+            program.setContractDate(dtbContrato.getValue());
             program.setExpectedLaunchDate(dtbExpectedLaunchDate.getValue());
             program.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
             program.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
@@ -212,7 +239,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             program.setProgramOwnerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
 
             program.setWebSite(website.getText());
-            if ((branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_SI))) {
+            if ((branded .getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_SI))) {
                 indBranded = 1;
             } else {
                 indBranded = 0;
@@ -245,10 +272,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
             program.setSharedBrand(indInternational);
             program.setResponsibleNetworkReportingId((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue());
             program.setCardIssuanceTypeId((CardIssuanceType) cmbCardIssuanceType.getSelectedItem().getValue());
-            
             program.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
             program = programEJB.saveProgram(program);
-
             this.showMessage("sp.common.save.success", false, null);
         } catch (WrongValueException ex) {
             showError(ex);
@@ -291,7 +316,17 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
-                loadCmbNetWork(eventType);
+                 {
+                    try {
+                        loadCmbNetWork(eventType);
+                    } catch (EmptyListException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GeneralException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (NullParameterException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
 
@@ -301,12 +336,13 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 txtName.setDisabled(true);
                 txtDescription.setDisabled(true);
                 txtBinIin.setDisabled(true);
-                dtbContdate.setDisabled(true);
+                dtbContrato.setDisabled(true);
                 dtbExpectedLaunchDate.setDisabled(true);
                 website.setDisabled(true);
                 txtOther.setDisabled(true);
                 txtOtherNetWork.setDisabled(true);
                 txtOtheBINN.setDisabled(true);
+                //      branded.setSelectedItem(true);
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -316,7 +352,17 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
-                loadCmbNetWork(eventType);
+                 {
+                    try {
+                        loadCmbNetWork(eventType);
+                    } catch (EmptyListException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GeneralException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (NullParameterException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
                 break;
@@ -330,7 +376,17 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
-                loadCmbNetWork(eventType);
+                 {
+                    try {
+                        loadCmbNetWork(eventType);
+                    } catch (EmptyListException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GeneralException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (NullParameterException ex) {
+                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
 
@@ -451,7 +507,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
         }
     }
 
-    private void loadCmbNetWork(Integer evenInteger) {
+    private void loadCmbNetWork(Integer evenInteger) throws EmptyListException, GeneralException, NullParameterException {
         EJBRequest request1 = new EJBRequest();
         List<Network> networks;
         try {
@@ -464,7 +520,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private void loadCmbProductType(Integer evenInteger) {
@@ -537,10 +592,10 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 }
             }
             if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbProgramOwner.setSelectedIndex(1);
+                cmbCardType.setSelectedIndex(1);
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbProgramOwner.setDisabled(true);
+                cmbCardType.setDisabled(true);
             }
 
         } catch (EmptyListException ex) {
@@ -575,7 +630,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 }
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbProgramOwner.setDisabled(true);
+                cmbCardProgramManager.setDisabled(true);
             }
         } catch (EmptyListException ex) {
             showError(ex);

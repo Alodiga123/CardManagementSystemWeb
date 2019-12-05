@@ -84,11 +84,11 @@ public class ListProgramController extends GenericAbstractListController<Program
                     item = new Listitem();
                     item.setValue(program);
                     item.appendChild(new Listcell(program.getName()));
-                    item.appendChild(new Listcell(program.getContractDate().toString()));
+                    //item.appendChild(new Listcell(program.getContractDate().toString()));
                     item.appendChild(new Listcell(program.getProgramTypeId().getName()));
                     item.appendChild(new Listcell(program.getProductTypeId().getName()));
                     item.appendChild(new Listcell(program.getIssuerId().getName()));
-                    item.appendChild(new Listcell(program.getExpectedLaunchDate().toString()));
+                   // item.appendChild(new Listcell(program.getExpectedLaunchDate().toString()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, program) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, program) : new Listcell());
                     item.setParent(lbxRecords);

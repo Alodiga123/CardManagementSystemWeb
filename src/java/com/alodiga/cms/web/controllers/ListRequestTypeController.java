@@ -27,7 +27,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListRequestTypesController extends GenericAbstractListController<RequestType> {
+public class ListRequestTypeController extends GenericAbstractListController<RequestType> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;

@@ -113,7 +113,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             txtNameEdification.setValue(address.getNameEdification());
             txtTower.setValue(address.getTower());
             txtFloor.setValue(address.getFloor().toString());
-            txtEmail.setValue(address.getEmail());
 
         } catch (Exception ex) {
             showError(ex);

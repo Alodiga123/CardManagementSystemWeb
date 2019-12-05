@@ -12,12 +12,8 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
-/**
- *
- * @author jose
- */
 public class AdminRequestTypeController extends GenericAbstractAdminController {
-    
+    //test
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtCode;
     private Textbox txtDescription;
@@ -137,4 +133,3 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
 
 
 }
-
