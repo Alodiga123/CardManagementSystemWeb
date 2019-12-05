@@ -43,7 +43,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -59,7 +59,7 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/>
@@ -68,8 +68,8 @@
                                                         </row>
                                                         <row>
                                                             <datebox id="txtDueDateIdentification" width="250px"/>
-                                                            <textbox id="txtFullName" value="" width="250px" maxlength="60"/>
-                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>                                                            
@@ -78,7 +78,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="40"/>
+                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
                                                             </hlayout>
                                                             <hbox>
                                                                 <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
@@ -92,7 +92,7 @@
                                                                 </grid>
                                                             </hbox>  
                                                             <hlayout>
-                                                                <textbox id="txtAge" value="" width="250px" maxlength="11"/> 
+                                                                <textbox id="txtAge" value="" width="250px" maxlength="3"/> 
                                                              </hlayout>
                                                         </row>                                                       
                                                         <row>
@@ -103,7 +103,7 @@
                                                         <row>
                                                             <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
                                                             <datebox id="txtBirthDay" width="250px"/>
-                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -43,7 +43,6 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
         initialize();
     }
 
-    
     @Override
     public void initialize() {
         super.initialize();
@@ -64,7 +63,6 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
             request.setFirst(0);
             request.setLimit(null);
             requestTypes = utilsEJB.getRequestType(request);
-            System.out.println("List of Request Type"+requestTypes);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -74,16 +72,15 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
     }
 
     public List<RequestType> getFilteredList(String filter) {
-        System.out.println("filter " + filter);
-        List<RequestType> requestTypesAux = new ArrayList<RequestType>();
+        List<RequestType> requestTypeAux = new ArrayList<RequestType>();
         for (Iterator<RequestType> i = requestTypes.iterator(); i.hasNext();) {
             RequestType tmp = i.next();
-            String field = tmp.getProgramId().getName();
+            String field = tmp.getDescription();
             if (field.indexOf(filter.trim().toLowerCase()) >= 0) {
-                requestTypesAux.add(tmp);
+                requestTypeAux.add(tmp);
             }
         }
-        return requestTypesAux;
+        return requestTypeAux;
     }
 
     public void onClick$btnAdd() throws InterruptedException {
@@ -92,9 +89,10 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
         Executions.getCurrent().sendRedirect(adminPage);
     }
     
+       
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.requestType.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -121,14 +119,10 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
                 for (RequestType requestType : list) {
                     item = new Listitem();
                     item.setValue(requestType);
-                    System.out.println("program"+requestType.getProgramId().getName());
-                    item.appendChild(new Listcell(requestType.getProgramId().getName()));
-                    item.appendChild(new Listcell(requestType.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(requestType.getCountryId().getName()));
-                    item.appendChild(new Listcell(requestType.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(requestType.getCardRequestTypeId().getDescription()));
-                    item.appendChild( new ListcellEditButton("", requestType));
-                    item.appendChild(new ListcellViewButton("", requestType,true));
+                    item.appendChild(new Listcell(requestType.getCode()));
+                    item.appendChild(new Listcell(requestType.getDescription()));
+                    item.appendChild( new ListcellEditButton("adminRequestType.zul", requestType));
+                    item.appendChild(new ListcellViewButton("adminRequestType.zul", requestType,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -138,11 +132,9 @@ public class ListRequestTypesController extends GenericAbstractListController<Re
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
            showError(ex);
         }

@@ -11,9 +11,12 @@ import com.cms.commons.models.Address;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.EdificationType;
+import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -31,6 +34,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 public class AdminLegalPersonAddressController extends GenericAbstractAdminController {
@@ -74,26 +78,24 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             showError(ex);
         }
     }
-    
-    
+
     public void onChange$cmbCountry() {
         cmbCity.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbState(eventType, country.getId());
     }
-    
+
     public void onChange$cmbState() {
         cmbState.setVisible(true);
         State state = (State) cmbState.getSelectedItem().getValue();
         loadCmbCity(eventType, state.getId());
     }
-    
+
     public void onChange$cmbCity() {
         cmbZipZone.setVisible(true);
         City city = (City) cmbCity.getSelectedItem().getValue();
         LoadCmbZipZone(eventType, city.getId());
     }
-    
 
     public void clearFields() {
         txtUbanization.setRawValue(null);
@@ -157,27 +159,41 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private void saveAddress(Address _address) {
         try {
             Address address = null;
+            PersonHasAddress personHasAddress = null;
 
             if (_address != null) {
                 address = _address;
             } else {//New address
                 address = new Address();
+                personHasAddress = new PersonHasAddress();
             }
-
-            address.setUrbanization(txtUbanization.getText());
-            address.setNameStreet(txtNameStreet.getText());
+            
+            
+            //Person
+            EJBRequest request1 = new EJBRequest();
+            request1 = new EJBRequest();
+            request1.setParam(Constants.PERSON_ID_KEY);
+            Person person = utilsEJB.loadPerson(request1);
+            
+            address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
             address.setFloor(Integer.parseInt(txtFloor.getText()));
-            address.setEmail(txtEmail.getText());
-            address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setStreetTypeId((StreetType) cmbStreetType.getSelectedItem().getValue());
-            address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
+            address.setNameStreet(txtNameStreet.getText());
+            address.setUrbanization(txtUbanization.getText());
+            address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
-
+            address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            address.setEmail(txtEmail.getText());
             address = utilsEJB.saveAddress(address);
             addressParam = address;
+            
+            //PersonHasAddress
+            personHasAddress.setAddressId(address);
+            personHasAddress.setPersonId(person);
+            personHasAddress = utilsEJB.savePersonHasAddress(personHasAddress);
+            
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -206,6 +222,9 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
                 loadCmbCountry(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
+                onChange$cmbCountry();
+                onChange$cmbState();
+                onChange$cmbCity();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(addressParam);
@@ -218,6 +237,9 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
                 loadCmbCountry(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
+                onChange$cmbCountry();
+                onChange$cmbState();
+                onChange$cmbCity();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
@@ -331,7 +353,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
     }
-    
+
     private void LoadCmbZipZone(Integer evenInteger, int cityId) {
         //cmbZipZone
         EJBRequest request1 = new EJBRequest();
@@ -342,7 +364,21 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         List<ZipZone> zipZones;
         try {
             zipZones = utilsEJB.getZipZoneByCities(request1);
-            loadGenericCombobox(zipZones, cmbZipZone, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
+            cmbZipZone.getItems().clear();
+            for (ZipZone c : zipZones) {
+
+                Comboitem item = new Comboitem();
+                item.setValue(c);
+                item.setLabel(c.getCode());
+                item.setDescription(c.getName());
+                item.setParent(cmbZipZone);
+                if (addressParam != null && c.getId().equals(addressParam.getZipZoneId().getId())) {
+                    cmbZipZone.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbZipZone.setDisabled(true);
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

@@ -73,7 +73,6 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         } catch (GeneralException ex) {
             showError(ex);
         }
-        btnSave.setVisible(true);
     }
 
     public void onClick$btnAdd() throws InterruptedException {

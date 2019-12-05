@@ -3,7 +3,7 @@ package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardRequestType;
+import com.cms.commons.models.RequestType;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import org.zkoss.zk.ui.Component;
@@ -12,13 +12,17 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
-public class AdminCardRequestTypeController extends GenericAbstractAdminController {
-    //test
+/**
+ *
+ * @author jose
+ */
+public class AdminRequestTypeController extends GenericAbstractAdminController {
+    
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtCode;
     private Textbox txtDescription;
     private UtilsEJB utilsEJB = null;
-    private CardRequestType cardRequestTypeParam;
+    private RequestType requestTypeParam;
     private Button btnSave;
     private Integer event;
 
@@ -26,15 +30,10 @@ public class AdminCardRequestTypeController extends GenericAbstractAdminControll
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         event = (Integer) Sessions.getCurrent().getAttribute("eventType");
-        cardRequestTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CardRequestType) Sessions.getCurrent().getAttribute("object") : null;
+        requestTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RequestType) Sessions.getCurrent().getAttribute("object") : null;
         initialize();
-//      initView(eventType, "sp.crud.requestType");
     }
 
-//    @Override
-//    public void initView(int eventType, String adminView) {
-//        super.initView(eventType, "sp.crud.requestType");
-//    }
     @Override
     public void initialize() {
         super.initialize();
@@ -51,10 +50,10 @@ public class AdminCardRequestTypeController extends GenericAbstractAdminControll
         txtDescription.setRawValue(null);
     }
 
-    private void loadFields(CardRequestType cardRequestType) {
+    private void loadFields(RequestType requestType) {
         try {
-            txtCode.setText(cardRequestType.getCode());
-            txtDescription.setText(cardRequestType.getDescription());
+            txtCode.setText(requestType.getCode());
+            txtDescription.setText(requestType.getDescription());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -87,19 +86,19 @@ public class AdminCardRequestTypeController extends GenericAbstractAdminControll
         Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
     }
 
-    private void saveCardRequestType(CardRequestType _cardRequestType) {
+    private void saveRequestType(RequestType _requestType) {
         try {
-            CardRequestType cardRequestType = null;
+            RequestType requestType = null;
 
-            if (_cardRequestType != null) {
-                cardRequestType = _cardRequestType;
+            if (_requestType != null) {
+                requestType = _requestType;
             } else {//New requestType
-                cardRequestType = new CardRequestType();
+                requestType = new RequestType();
             }
-            cardRequestType.setCode(txtCode.getText());
-            cardRequestType.setDescription(txtDescription.getText());
-            cardRequestType = utilsEJB.saveCardRequestType(cardRequestType);
-            cardRequestTypeParam = cardRequestType;
+            requestType.setCode(txtCode.getText());
+            requestType.setDescription(txtDescription.getText());
+            requestType = utilsEJB.saveRequestType(requestType);
+            requestTypeParam = requestType;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -111,10 +110,10 @@ public class AdminCardRequestTypeController extends GenericAbstractAdminControll
         if (validateEmpty()) {
             switch (event) {
                 case WebConstants.EVENT_ADD:
-                    saveCardRequestType(null);
+                    saveRequestType(null);
                 break;
                 case WebConstants.EVENT_EDIT:
-                   saveCardRequestType(cardRequestTypeParam);
+                   saveRequestType(requestTypeParam);
                 break;
             }
         }
@@ -123,10 +122,10 @@ public class AdminCardRequestTypeController extends GenericAbstractAdminControll
     public void loadData() {
         switch (event) {
             case WebConstants.EVENT_EDIT:
-                loadFields(cardRequestTypeParam);
+                loadFields(requestTypeParam);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(cardRequestTypeParam);
+                loadFields(requestTypeParam);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
@@ -138,3 +137,4 @@ public class AdminCardRequestTypeController extends GenericAbstractAdminControll
 
 
 }
+
