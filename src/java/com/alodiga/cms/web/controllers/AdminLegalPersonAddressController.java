@@ -120,7 +120,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             txtNameEdification.setValue(address.getNameEdification());
             txtTower.setValue(address.getTower());
             txtFloor.setValue(address.getFloor().toString());
-            txtEmail.setValue(address.getEmail());
 
         } catch (Exception ex) {
             showError(ex);
@@ -179,7 +178,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
             //address.setFloor(txtFloor.get);
-            address.setEmail(txtEmail.getText());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             //address.set((State) cmbState.getSelectedItem().getValue());
             address.setCityId((City) cmbCity.getSelectedItem().getValue());
