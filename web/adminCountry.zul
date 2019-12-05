@@ -60,15 +60,16 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                                <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
-                                                               <textbox id="txtShortName" value="" width="50px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                               <textbox id="txtShortName" value="" width="200px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                               <label value="*" sclass="lblreq" />
                                                                <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hbox>
                                                             <hlayout>
-                                                              <textbox id="txtCode" value="" width="50px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60" />
+                                                              <textbox id="txtCode" value="" width="230px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60" />
                                                               <label value="*" sclass="lblreq" />
                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hlayout>
@@ -79,9 +80,9 @@
                                                         </row>
                                                         <row>
                                                             <hbox>
-                                                              <textbox id="txtAlternativeName1" value="" width="320px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                              <textbox id="txtAlternativeName1" value="" width="250px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hbox>
-                                                            <combobox id="cmbCurrency" width="150px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbCurrency" width="250px" mold="rounded" readonly="true" />
                                                         </row>
                                                     </rows>
                                                 </grid>
