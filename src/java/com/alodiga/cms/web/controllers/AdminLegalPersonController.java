@@ -11,9 +11,13 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.LegalPerson;
-import com.cms.commons.models.PhonePerson;
+import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonClassification;
+import com.cms.commons.models.Request;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +53,9 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Textbox txtPhoneNumber;
     private Textbox txtRegistryNumber;
     private Textbox txtPaidInCapital;
+    private Textbox txtPersonId;
+    private Textbox txtWebSite;
+    private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbEconomicActivity;
@@ -56,9 +63,10 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Datebox txtDateInscriptionRegister;
     private UtilsEJB utilsEJB = null;
     private LegalPerson legalPersonParam;
+    private Person person;
     private Button btnSave;
     private Integer eventType;
-    
+
     private Tabbox tb;
 
     @Override
@@ -82,23 +90,36 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         }
     }
 
+    public void onChange$cmbCountry() {
+        cmbDocumentsPersonType.setVisible(true);
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        loadCmbDocumentsPersonType(eventType, country.getId());
+    }
+
     public void clearFields() {
-        txtIdentificationNumber.setRawValue(null);
+        txtPersonId.setRawValue(null);
         txtTradeName.setRawValue(null);
         txtEnterpriseName.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
+        txtDateInscriptionRegister.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
         txtPaidInCapital.setRawValue(null);
+        txtPhoneNumber.setRawValue(null);
+        txtWebSite.setRawValue(null);
+        txtEmail.setRawValue(null);
+        txtIdentificationNumber.setRawValue(null);
     }
 
     private void loadFields(LegalPerson legalPerson) {
         try {
+            txtPersonId.setText(legalPerson.getPersonId().toString());
             txtTradeName.setText(legalPerson.getTradeName());
             txtEnterpriseName.setText(legalPerson.getEnterpriseName());
             txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
-            txtPhoneNumber.setValue(legalPerson.getPersonId().getPhonePerson().getNumberPhone());
             txtRegistryNumber.setText(legalPerson.getRegisterNumber());
             txtPaidInCapital.setText(legalPerson.getPayedCapital().toString());
+            txtPhoneNumber.setValue(legalPerson.getEnterprisePhone());
+            txtWebSite.setValue(legalPerson.getWebSite());
+            txtEmail.setValue(legalPerson.getPersonId().getEmail());
             txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
         } catch (Exception ex) {
             showError(ex);
@@ -106,27 +127,25 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     }
 
     public void blockFields() {
-        txtIdentificationNumber.setReadonly(true);
         txtTradeName.setReadonly(true);
         txtEnterpriseName.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
+        txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
         txtPaidInCapital.setReadonly(true);
-        txtExpirationDate.setDisabled(true);
-        txtDateInscriptionRegister.setDisabled(true);
-        cmbCountry.setDisabled(true);
-        cmbDocumentsPersonType.setDisabled(true);
+        txtPhoneNumber.setReadonly(true);
+        txtWebSite.setReadonly(true);
+        txtEmail.setReadonly(true);
         cmbEconomicActivity.setDisabled(true);
-        
+        cmbDocumentsPersonType.setDisabled(true);
+        txtIdentificationNumber.setReadonly(true);
+        txtExpirationDate.setDisabled(true);
+        cmbCountry.setDisabled(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
         if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtTradeName.getText().isEmpty()) {
-            txtTradeName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
@@ -152,28 +171,49 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     }
 
     private void saveLegalPerson(LegalPerson _legalPerson) {
+        System.out.println("entre a guardar una persona legal");
         try {
             LegalPerson legalPerson = null;
+            Person person = null;
 
             if (_legalPerson != null) {
                 legalPerson = _legalPerson;
             } else {//New LegalPerson
                 legalPerson = new LegalPerson();
+                person = new Person();
             }
-            legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
+
+            //Request
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(Constants.REQUEST_ID_LEGAL_PERSON);
+            Request request = utilsEJB.loadRequest(request1);
+            //System.out.println("Solicitud cableada: " + request.getRequestNumber());
+
+            //PersonClassification
+            request1 = new EJBRequest();
+            request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
+            PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
+            
+            //Guardar Person
+            String id = cmbCountry.getSelectedItem().getParent().getId();
+            person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            person.setPersonTypeId(request.getPersonTypeId());
+            person.setEmail(txtEmail.getText());
+            person.setCreateDate(new Timestamp(new Date().getTime()));
+            person.setPersonClassificationId(personClassification);
+            person = utilsEJB.savePerson(person);
+
+            legalPerson.setPersonId(person);
             legalPerson.setTradeName(txtTradeName.getText());
             legalPerson.setEnterpriseName(txtEnterpriseName.getText());
-            //legalPerson.setPersonId((PhonePerson));
+            legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             legalPerson.setRegisterNumber(txtRegistryNumber.getText());
-            
-            //legalPerson.setPayedCapital(txtPaidInCapital.getText());
-            
-            if(txtDateInscriptionRegister.getValue()!=null){
-                    legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
-            }else{
-                    legalPerson.setDateInscriptionRegister(new Timestamp(new Date().getTime()));
-            }
-            
+            legalPerson.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
+            legalPerson.setEnterprisePhone(txtPhoneNumber.getText());
+            legalPerson.setWebSite(txtWebSite.getText());
+            legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
+            legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             legalPerson = utilsEJB.saveLegalPerson(legalPerson);
             legalPersonParam = legalPerson;
             this.showMessage("sp.common.save.success", false, null);
@@ -202,27 +242,27 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             case WebConstants.EVENT_EDIT:
                 loadFields(legalPersonParam);
                 loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 loadCmbEconomicActivity(eventType);
-                loadCmbDocumentsPersonType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(legalPersonParam);                                
-                txtIdentificationNumber.setDisabled(true);
+                loadFields(legalPersonParam);
                 txtTradeName.setDisabled(true);
                 txtEnterpriseName.setDisabled(true);
-                txtPhoneNumber.setDisabled(true);
+                txtDateInscriptionRegister.setDisabled(true);
                 txtRegistryNumber.setDisabled(true);
                 txtPaidInCapital.setDisabled(true);
-                txtExpirationDate.setDisabled(true);
-                txtDateInscriptionRegister.setDisabled(true);
+                txtPhoneNumber.setDisabled(true);
+                txtWebSite.setDisabled(true);
+                txtEmail.setDisabled(true);
+                txtIdentificationNumber.setDisabled(true);
                 loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
-                loadCmbDocumentsPersonType(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
-                loadCmbDocumentsPersonType(eventType);
                 break;
             default:
                 break;
@@ -248,15 +288,18 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
-    private void loadCmbDocumentsPersonType(Integer evenInteger) {
+
+    private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
         //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
+        cmbDocumentsPersonType.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
-
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonTypes(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger,Long.valueOf(legalPersonParam != null ? legalPersonParam.getDocumentsPersonTypeId().getId() : 0));
+            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -268,9 +311,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
-      
-    
+
     private void loadCmbEconomicActivity(Integer evenInteger) {
         //cmbEconomicActivity
         EJBRequest request = new EJBRequest();
@@ -290,7 +331,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
+
     public class TabboxVM {
 
         Tabbox tb_tabbox;
