@@ -62,15 +62,15 @@
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
+                                                                
                                                             </hlayout>
                                                             <hbox>
                                                                 <textbox id="txtDescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
+                                                            
                                                             </hbox>
                                                   
                                                             <hlayout>
-                                                                <datebox id="dtbContdate"  width="265px"/>
+                                                                <datebox id="dtbContrato"  width="265px"/>
                                                             </hlayout>
                                                         </row>
                                                         <row>
@@ -110,8 +110,8 @@
                                                             <combobox id="cmbCardType"      width="270px" mold="rounded" readonly="true"/>
                                                             
                                                             <hbox>
-                                                                <radiogroup id="branded" onCheck="choice1.value = self.selectedItem.label" />
-                                                                <radiogroup id="reloadable" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="branded" onCheck="value = self.selectedItem.label" />
+                                                                <radiogroup id="reloadable" onCheck="value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
@@ -141,13 +141,13 @@
                                                             <label value="${c:l('cms.common.Cash.Acces')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbSourceOfFound" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbSourceOfFound" width="270px" mold="rounded" readonly="true" />
                                                             <hlayout>
                                                                 <textbox id="txtOther" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hlayout>
                                                             
                                                             <hbox>
-                                                                <radiogroup id="cashAcces" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="cashAcces" onCheck="value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
@@ -166,7 +166,7 @@
                                                         <!--revisaar desde aca-->
                                                         <row>
                                                             <hbox>
-                                                                <radiogroup id="international" onCheck="choice1.value = self.selectedItem.label" />
+                                                               <radiogroup id="international" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
@@ -241,8 +241,14 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
+                                          
+                                            
+
                                             <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProgram.zul&quot;)"/>
                                         </div>
+                                        
+                                        
+                                        
                                     </vlayout>
                                 </div>
                             </hlayout>
