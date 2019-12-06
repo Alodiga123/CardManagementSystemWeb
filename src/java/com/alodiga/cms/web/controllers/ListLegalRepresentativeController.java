@@ -14,7 +14,9 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -22,12 +24,18 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Window;
 
 public class ListLegalRepresentativeController extends GenericAbstractListController<LegalRepresentatives> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Tab tabAddress;
     private Textbox txtAlias;
     private UtilsEJB utilsEJB = null;
     private List<LegalRepresentatives> legalRepresentatives = null;
@@ -49,7 +57,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "adminLegalRepresentative.zul";
+            adminPage = "/adminLegalRepresentative.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadList(legalRepresentatives);
@@ -59,27 +67,35 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     }
 
     /*public List<LegalRepresentatives> getFilteredList(String filter) {
-        List<LegalRepresentatives> legalRepresentativesaux = new ArrayList<LegalRepresentatives>();
-        LegalRepresentatives legalRepresentatives;
-        try {
-            if (filter != null && !filter.equals("")) {
-                legalRepresentatives = utilsEJB.searchRequest(filter);
-                legalRepresentativesaux.add(legalRepresentatives);
-            } else {
-                return legalRepresentatives;
-            }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        return legalRepresentativesaux;
-    }*/
-    
-    
+     List<LegalRepresentatives> legalRepresentativesaux = new ArrayList<LegalRepresentatives>();
+     LegalRepresentatives legalRepresentatives;
+     try {
+     if (filter != null && !filter.equals("")) {
+     legalRepresentatives = utilsEJB.searchRequest(filter);
+     legalRepresentativesaux.add(legalRepresentatives);
+     } else {
+     return legalRepresentatives;
+     }
+     } catch (RegisterNotFoundException ex) {
+     Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
+     } catch (Exception ex) {
+     showError(ex);
+     }
+     return legalRepresentativesaux;
+     }*/
+
     public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect(adminPage);
+//        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+//        Executions.getCurrent().sendRedirect(adminPage);
+        try {
+            String view = "/adminLegalRepresentative.zul";
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", legalRepresentatives);
+            final Window window = (Window) Executions.createComponents(view, null, paramsPass);
+            window.doModal();
+        } catch (Exception ex) {
+            this.showMessage("sp.error.general", true, ex);
+        }
     }
 
     public void onClick$btnDelete() {
