@@ -55,6 +55,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Textbox txtPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
+    private Tab tabAddress;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -67,7 +68,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
 
-    private Tabbox tb;
+    public Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -171,7 +172,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     }
 
     private void saveLegalPerson(LegalPerson _legalPerson) {
-        System.out.println("entre a guardar una persona legal");
+        tabAddress.setSelected(true);
         try {
             LegalPerson legalPerson = null;
             Person person = null;
