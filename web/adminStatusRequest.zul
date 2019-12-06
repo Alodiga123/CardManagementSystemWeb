@@ -46,13 +46,12 @@
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="500px"/>
+                                                        <column label="" width="250"/>
+                                                        <column label="" width="650px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.descriptionStatus')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
+                                                            <label value="${c:l('cms.common.descriptionStatusRequest')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
