@@ -184,7 +184,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            address.setEmail(txtEmail.getText());
             address = utilsEJB.saveAddress(address);
             addressParam = address;
             
