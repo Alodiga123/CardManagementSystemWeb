@@ -23,6 +23,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
 public class ListAdditionalCardsController extends GenericAbstractListController<CardRequestNaturalPerson> {
@@ -31,6 +32,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private Listbox lbxRecords;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
+    private Tab tabAddress;
     private List<CardRequestNaturalPerson> cardRequestNaturalPerson = null;
     private User currentUser;
     private Button btnSave;
