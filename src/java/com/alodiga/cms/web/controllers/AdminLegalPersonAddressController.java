@@ -35,6 +35,7 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
 public class AdminLegalPersonAddressController extends GenericAbstractAdminController {
@@ -52,6 +53,8 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
+    
+    private Tab tabLegalRepresentatives;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
     private Button btnSave;
@@ -156,6 +159,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     }
 
     private void saveAddress(Address _address) {
+        tabLegalRepresentatives.setSelected(true);
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
