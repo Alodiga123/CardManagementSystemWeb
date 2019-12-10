@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -53,8 +54,8 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-    
     private Tab tabLegalRepresentatives;
+    private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
     private Button btnSave;
@@ -176,7 +177,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             EJBRequest request1 = new EJBRequest();
             request1 = new EJBRequest();
             request1.setParam(Constants.PERSON_ID_KEY);
-            Person person = utilsEJB.loadPerson(request1);
+            Person person = personEJB.loadPerson(request1);
             
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());

@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -63,6 +64,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Datebox txtExpirationDate;
     private Datebox txtDateInscriptionRegister;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private LegalPerson legalPersonParam;
     private Person person;
     private Button btnSave;
@@ -202,7 +204,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             person.setEmail(txtEmail.getText());
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
-            person = utilsEJB.savePerson(person);
+            person = personEJB.savePerson(person);
 
             legalPerson.setPersonId(person);
             legalPerson.setTradeName(txtTradeName.getText());
