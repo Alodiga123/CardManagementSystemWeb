@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?taglib uri="/WEB-INF/tld/core.dsp.tld" prefix="c" ?>
-<?page title="${c:l('sp.crud.profile.admin')}"?>
+<?page title="${c:l('sp.common.page.title')}"?>
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
+<?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winAdminStatusRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminStatusRequestController" class="general-window">
+    <window id="winTabNaturalPerson" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminNaturalPersonController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -25,10 +26,8 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.status.list')}" onClick='Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton label="${c:l('sp.common.status')}"/>
+                                                |
+                                                <toolbarbutton label="${c:l('cms.menu.tab.naturalPerson')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -43,30 +42,31 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
-                                                <grid fixedLayout="true">
-                                                    <columns>
-                                                        <column label="" width="250"/>
-                                                        <column label="" width="650px"/>
-                                                    </columns>
-                                                    <rows>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.descriptionStatusRequest')}" sclass="lblbold"/>
-                                                            <hlayout>
-                                                                <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                        </row>
-                                                    </rows>
-                                                </grid>
+                                                <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
+                                                    <tabs>
+                                                        <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}" />
+                                                        <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
+                                                        <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}" />
+                                                        <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />
+                                                    </tabs>
+                                                    <tabpanels>
+                                                        <tabpanel>
+                                                            <include src="adminNaturalPerson.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="adminLegalPersonAddress.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listLegalRepresentative.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listAdditionalCards.zul"/>
+                                                        </tabpanel>
+                                                    </tabpanels>
+                                                </tabbox>
                                             </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
-                                        <!--Buttons-->
-                                        <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)"/>
-                                        </div>
                                     </vlayout>
                                 </div>
                                 <div></div>

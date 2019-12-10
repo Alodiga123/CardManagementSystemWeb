@@ -29,6 +29,10 @@ import org.zkoss.zul.Textbox;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Window;
 
 public class ListLegalRepresentativeController extends GenericAbstractListController<LegalRepresentatives> {
@@ -36,7 +40,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Tab tabAddress;
-    private Textbox txtAlias;
+    private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private List<LegalRepresentatives> legalRepresentatives = null;
 
@@ -44,9 +48,19 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
     }
 
+    
     public void startListener() {
+        EventQueue que = EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(legalRepresentatives);
+            }
+        });
     }
 
     @Override
@@ -60,7 +74,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             adminPage = "/adminLegalRepresentative.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadList(legalRepresentatives);
+            loadDataList(legalRepresentatives);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -83,15 +97,14 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
      }
      return legalRepresentativesaux;
      }*/
-
+    
+    
     public void onClick$btnAdd() throws InterruptedException {
-//        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-//        Executions.getCurrent().sendRedirect(adminPage);
         try {
-            String view = "/adminLegalRepresentative.zul";
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
             paramsPass.put("object", legalRepresentatives);
-            final Window window = (Window) Executions.createComponents(view, null, paramsPass);
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
             this.showMessage("sp.error.general", true, ex);
@@ -101,7 +114,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<LegalRepresentatives> list) {
+    public void loadDataList(List<LegalRepresentatives> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -172,7 +185,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtAlias.setText("");
+        txtName.setText("");
     }
 
 //    public void onClick$btnSearch() throws InterruptedException {
@@ -187,9 +200,8 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void loadDataList(List<LegalRepresentatives> list) {
+    /*public void loadDataList(List<LegalRepresentatives> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }*/
 
 }

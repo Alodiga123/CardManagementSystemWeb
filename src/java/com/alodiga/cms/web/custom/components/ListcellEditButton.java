@@ -26,6 +26,6 @@ public class ListcellEditButton extends Listcell {
         button.setClass("open orange");
         button.setParent(this);
     }
-    
-
+     
+     
 }
