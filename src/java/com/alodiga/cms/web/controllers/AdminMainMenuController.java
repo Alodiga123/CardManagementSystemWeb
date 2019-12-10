@@ -140,7 +140,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
             item11.setParent(lbxPermissions);
             
             // Option AdditionalCards
-            Listitem item12 = new Listitem();
+           /* Listitem item12 = new Listitem();
             Listcell listCell12 = new Listcell();
             listCell12.setLabel( Labels.getLabel("cms.menu.legalPerson.list"));
             listCell12.addEventListener("onClick", new RedirectListener("adminLegalPerson.zul"));
@@ -153,13 +153,13 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell13.setLabel( Labels.getLabel("cms.menu.additionalCards.list"));
             listCell13.addEventListener("onClick", new RedirectListener("listAdditionalCards.zul"));
             listCell13.setParent(item13);
-            item13.setParent(lbxPermissions);
+            item13.setParent(lbxPermissions);*/
             
             // Option tab
             Listitem item14 = new Listitem();
             Listcell listCell14 = new Listcell();
-            listCell14.setLabel( Labels.getLabel("cms.menu.tab.list"));
-            listCell14.addEventListener("onClick", new RedirectListener("tab.zul"));
+            listCell14.setLabel( Labels.getLabel("cms.menu.tab.legalPerson"));
+            listCell14.addEventListener("onClick", new RedirectListener("TabLegalPerson.zul"));
             listCell14.setParent(item14);
             item14.setParent(lbxPermissions);
          }
