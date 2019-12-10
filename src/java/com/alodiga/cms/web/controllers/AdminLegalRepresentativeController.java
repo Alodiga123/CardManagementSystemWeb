@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -35,6 +36,8 @@ import org.jboss.weld.metadata.Selectors;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -44,6 +47,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 public class AdminLegalRepresentativeController extends GenericAbstractAdminController {
 
@@ -62,11 +66,13 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     private Radio genderFemale;
     private Datebox txtDueDateIdentification;
     private Datebox txtBirthDay;
-//    private Tab tabLegalRepresentatives;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private LegalRepresentatives legalRepresentativesParam;
     private Button btnSave;
     private Integer eventType;
+    public Window winAdminlegalRepresentative;
+    public String indGender = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -153,13 +159,9 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
     private void saveLegalRepresentatives(LegalRepresentatives _legalRepresentatives) {
         //tabLegalRepresentatives.setSelected(true);
-        String indGender = null;
+        //String indGender = null;
         try {
             LegalRepresentatives legalRepresentatives = null;
             LegalPersonHasLegalRepresentatives legalPersonHasLegalRepresentatives = null;
@@ -175,7 +177,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             //Person
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.PERSON_ID_KEY);
-            Person person = utilsEJB.loadPerson(request1);
+            Person person = personEJB.loadPerson(request1);
 
             legalRepresentatives.setPersonsId(person);
             legalRepresentatives.setFirstNames(txtFullName.getText());
@@ -206,6 +208,8 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
             phonePerson = utilsEJB.savePhonePerson(phonePerson);
             this.showMessage("sp.common.save.success", false, null);
+
+            EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -216,9 +220,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveLegalRepresentatives(null);
+                    //winAdminlegalRepresentative.detach();
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveLegalRepresentatives(legalRepresentativesParam);
+                    //winAdminlegalRepresentative.detach();
                     break;
                 default:
                     break;
@@ -226,14 +232,23 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         }
     }
 
+    public void onClick$btnBack() {
+        winAdminlegalRepresentative.detach();
+    }
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(legalRepresentativesParam);
                 loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
-                onChange$cmbCountry();
+//                if (genderFemale.isChecked()) {
+//                    indGender = "F";
+//                } else {
+//                    indGender = "M";
+//                }
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(legalRepresentativesParam);
@@ -249,6 +264,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
+//                if (genderFemale.isChecked()) {
+//                    indGender = "F";
+//                } else {
+//                    indGender = "M";
+//                }
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
