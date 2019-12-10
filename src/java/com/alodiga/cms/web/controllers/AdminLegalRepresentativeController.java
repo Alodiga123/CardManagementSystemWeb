@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.RadioButton;
 import org.apache.http.impl.conn.Wire;
 import org.codehaus.groovy.tools.shell.Command;
 import org.jboss.weld.metadata.Selectors;
@@ -305,7 +304,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         List<CivilStatus> civilStatuses;
 
         try {
-            civilStatuses = utilsEJB.getCivilStatuses(request1);
+            civilStatuses = utilsEJB.getCivilStatus(request1);
             loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getNaturalPerson().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

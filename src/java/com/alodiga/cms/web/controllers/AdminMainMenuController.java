@@ -162,6 +162,15 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell14.addEventListener("onClick", new RedirectListener("tab.zul"));
             listCell14.setParent(item14);
             item14.setParent(lbxPermissions);
+            
+            // Option PhoneType
+            Listitem item15 = new Listitem();
+            Listcell listCell15 = new Listcell();
+            listCell15.setLabel( Labels.getLabel("cms.menu.phoneType.list"));
+            listCell15.addEventListener("onClick", new RedirectListener("listPhoneType.zul"));
+            listCell15.setParent(item15);
+            item15.setParent(lbxPermissions);
+            
          }
     }
 
