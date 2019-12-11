@@ -34,6 +34,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
 public class AdminAdditionalCardsController extends GenericAbstractAdminController {
@@ -46,8 +47,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Textbox txtProposedLimit;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
-    private Datebox txtDueDateIdentification;
-
+//    private Tab tabAdditionalCards;
     private UtilsEJB utilsEJB = null;
     private CardRequestNaturalPerson cardRequestNaturalPersonParam;
     private Button btnSave;
@@ -138,6 +138,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     }
 
     private void saveCarRequestNaturalPerson(CardRequestNaturalPerson _cardRequestNaturalPerson) {
+//        tabAdditionalCards.setSelected(true);
         try {
             CardRequestNaturalPerson cardRequestNaturalPerson = null;
 
