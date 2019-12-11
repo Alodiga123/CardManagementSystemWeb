@@ -56,7 +56,7 @@ public class ListPhoneTypeController extends GenericAbstractListController<Phone
     
    public void getData() {
     phoneTypeList = new ArrayList<PhoneType>();
-        /*try {
+        try {
             request.setFirst(0);
             request.setLimit(null);
             phoneTypeList = personEJB.getPhoneType(request);
@@ -65,7 +65,7 @@ public class ListPhoneTypeController extends GenericAbstractListController<Phone
         } catch (EmptyListException ex) {
         } catch (GeneralException ex) {
             showError(ex);
-        }*/
+        }
     }
 
 
