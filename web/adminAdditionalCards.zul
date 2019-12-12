@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminAdditionalCards" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminAdditionalCardsController" class="general-window">
+    <window id="winAdminAdditionalCards" title="${c:l('cms.tab.additionalCards')}" width="950px" height="480px" apply="com.alodiga.cms.web.controllers.AdminAdditionalCardsController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -62,7 +62,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listAdditionalCards.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray"/>
                                         </div>
                                     </vlayout>
                                 </div>

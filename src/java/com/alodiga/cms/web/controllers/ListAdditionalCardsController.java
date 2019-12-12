@@ -15,17 +15,24 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 public class ListAdditionalCardsController extends GenericAbstractListController<CardRequestNaturalPerson> {
 
@@ -43,6 +50,19 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
+    }
+    
+    
+    public void startListener() {
+        EventQueue que = EventQueues.lookup("updateCardRequestNaturalPerson", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(cardRequestNaturalPerson);
+            }
+        });
     }
 
     @Override
@@ -62,9 +82,6 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             showError(ex);
         }
     }
-    
-    public void startListener() {
-    }
 
     public void getData() {
         cardRequestNaturalPerson = new ArrayList<CardRequestNaturalPerson>();
@@ -80,15 +97,28 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         }
     }
 
-    public void onClick$btnAdd() throws InterruptedException {
+   /* public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
+        
+    }*/
+    
+        public void onClick$btnAdd() throws InterruptedException {
+        try {
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", cardRequestNaturalPerson);
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+            window.doModal();
+        } catch (Exception ex) {
+            this.showMessage("sp.error.general", true, ex);
+        }
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.additionalCards.list"));
         } catch (Exception ex) {
             showError(ex);
         }

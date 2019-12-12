@@ -55,6 +55,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
     private Tab tabLegalRepresentatives;
+    private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private Address addressParam;
