@@ -123,7 +123,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             txtAge.setText(legalRepresentatives.getAge().toString());
             txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
             txtBirthDay.setValue(legalRepresentatives.getDateBirth());
-            txtPhoneNumber.setText(legalRepresentatives.getPersonsId().getPhonePerson().getNumberPhone());
+            txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -182,7 +182,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             request1.setParam(Constants.PERSON_ID_KEY);
             Person person = personEJB.loadPerson(request1);
 
-            legalRepresentatives.setPersonsId(person);
+            legalRepresentatives.setPersonId(person);
             legalRepresentatives.setFirstNames(txtFullName.getText());
             legalRepresentatives.setLastNames(txtFullLastName.getText());
             legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
@@ -209,7 +209,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
             phonePerson.setPersonId(person);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = utilsEJB.savePhonePerson(phonePerson);
+            phonePerson = personEJB.savePhonePerson(phonePerson);
             this.showMessage("sp.common.save.success", false, null);
 
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
@@ -290,7 +290,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -333,7 +333,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getNaturalPerson().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonId().getNaturalPerson().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -353,7 +353,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
         try {
             phoneType = personEJB.getPhoneType(request1);
-            loadGenericCombobox(phoneType, cmbPhoneType, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonsId().getPhonePerson().getPhoneTypeId().getId() : 0));
+            loadGenericCombobox(phoneType, cmbPhoneType, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

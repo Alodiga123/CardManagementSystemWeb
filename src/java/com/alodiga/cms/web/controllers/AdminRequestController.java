@@ -13,6 +13,7 @@ import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtDescription;
     
-    private CollectionsRequest collectionsRequestParam;
+    private Request requestParam;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
     private Combobox cmbCountry;
@@ -43,10 +44,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        collectionsRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionsRequest) Sessions.getCurrent().getAttribute("object") : null;
+        requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -65,9 +65,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
         txtDescription.setRawValue(null);
     }
 
-    private void loadFields(CollectionsRequest collectionsRequest) {
+    private void loadFields(Request request) {
         try {
-            txtDescription.setText(collectionsRequest.getDescription());
+            
         } catch (Exception ex) {
             showError(ex);
         }
@@ -89,22 +89,21 @@ public class AdminRequestController extends GenericAbstractAdminController {
 
     }
 
-    private void saveCollectionsRequest(CollectionsRequest _collectionsRequest) {
+    private void saveRequest(Request _request) {
         try {
-            CollectionsRequest collectionsRequest = null;
+            Request request = null;
 
-            if (_collectionsRequest != null) {
-                collectionsRequest = _collectionsRequest;
+            if (_request != null) {
+                request = _request;
             } else {//New collectionsRequest
-                collectionsRequest = new CollectionsRequest();
+                request = new Request();
             }
-            collectionsRequest.setDescription(txtDescription.getText());
-            collectionsRequest.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            collectionsRequest.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
-            collectionsRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
-            collectionsRequest.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
-            collectionsRequest = utilsEJB.saveCollectionRequest(collectionsRequest);
-            collectionsRequestParam = collectionsRequest;
+            request.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            request.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
+            request.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
+            request.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
+            request = utilsEJB.saveRequest(request);
+            requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -116,10 +115,10 @@ public class AdminRequestController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveCollectionsRequest(null);
+                    saveRequest(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveCollectionsRequest(collectionsRequestParam);
+                    saveRequest(requestParam);
                     break;
                 default:
                     break;
@@ -130,14 +129,14 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(collectionsRequestParam);
+                loadFields(requestParam);
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(collectionsRequestParam);
+                loadFields(requestParam);
                 txtDescription.setDisabled(true);
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
@@ -307,7 +306,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
 
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
+            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(requestParam != null? requestParam.getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -328,7 +327,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
         List<ProductType> productTypes;
         try {
             productTypes = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productTypes,cmbProductType, "name",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
+            loadGenericCombobox(productTypes,cmbProductType, "name",evenInteger,Long.valueOf(requestParam != null? requestParam.getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -349,7 +348,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
         
         try {
             programs = programEJB.getProgram(request1);
-            loadGenericCombobox(programs,cmbPrograms, "name",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
+            loadGenericCombobox(programs,cmbPrograms, "name",evenInteger,Long.valueOf(requestParam != null? requestParam.getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -369,7 +368,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
         
         try {
             personTypes = utilsEJB.getPersonTypes(request1);
-            loadGenericCombobox(personTypes,cmbPersonType, "description",evenInteger,Long.valueOf(collectionsRequestParam != null? collectionsRequestParam.getId(): 0) );            
+            loadGenericCombobox(personTypes,cmbPersonType, "description",evenInteger,Long.valueOf(requestParam != null? requestParam.getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

@@ -57,6 +57,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Tab tabLegalRepresentatives;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
@@ -77,6 +78,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -195,7 +197,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             //PersonHasAddress
             personHasAddress.setAddressId(address);
             personHasAddress.setPersonId(person);
-            personHasAddress = utilsEJB.savePersonHasAddress(personHasAddress);
+            personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {

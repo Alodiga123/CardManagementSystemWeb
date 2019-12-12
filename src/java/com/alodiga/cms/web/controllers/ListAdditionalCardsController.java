@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -39,6 +40,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private Listbox lbxRecords;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private Tab tabAddress;
     private List<CardRequestNaturalPerson> cardRequestNaturalPerson = null;
     private User currentUser;
@@ -73,6 +75,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             permissionRead = true;
             adminPage = "adminAdditionalCards.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(cardRequestNaturalPerson);
         } catch (Exception ex) {
@@ -85,7 +88,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         try {
             request.setFirst(0);
             request.setLimit(null);
-            cardRequestNaturalPerson = utilsEJB.getCardRequestNaturalPersons(request);
+            cardRequestNaturalPerson = personEJB.getCardRequestNaturalPersons(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

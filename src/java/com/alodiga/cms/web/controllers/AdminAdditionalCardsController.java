@@ -72,6 +72,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -167,7 +168,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
             cardRequestNaturalPerson.setProposedLimit(Float.parseFloat(txtProposedLimit.getText()));
             cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            cardRequestNaturalPerson = utilsEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
+            cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             cardRequestNaturalPersonParam = cardRequestNaturalPerson;
             this.showMessage("sp.common.save.success", false, null);
             
