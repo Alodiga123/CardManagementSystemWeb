@@ -57,7 +57,6 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Tab tabLegalRepresentatives;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
-    private PersonEJB personEJB = null;
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
