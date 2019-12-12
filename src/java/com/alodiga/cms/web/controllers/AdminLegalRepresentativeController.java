@@ -69,7 +69,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     private Datebox txtBirthDay;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
-    private PersonEJB personEJB = null;
     private LegalRepresentatives legalRepresentativesParam;
     private Button btnSave;
     private Integer eventType;

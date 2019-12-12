@@ -242,7 +242,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
             phonePerson.setPersonId(person);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = utilsEJB.savePhonePerson(phonePerson);
+            phonePerson = personEJB.savePhonePerson(phonePerson);
             this.showMessage("sp.common.save.success", false, null);
 
         } catch (Exception ex) {
@@ -354,7 +354,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         List<CivilStatus> civilStatuses;
 
         try {
-            civilStatuses = utilsEJB.getCivilStatus(request1);
+            civilStatuses = personEJB.getCivilStatus(request1);
             loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalPersonParam != null ? naturalPersonParam.getPersonId().getNaturalPerson().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -394,7 +394,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         List<Profession> profession;
 
         try {
-            profession = utilsEJB.getProfession(request1);
+            profession = personEJB.getProfession(request1);
             loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(naturalPersonParam != null ? naturalPersonParam.getProfessionId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
