@@ -11,6 +11,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.util.resource.Labels;
 
 public class AdminRequestTypeController extends GenericAbstractAdminController {
     //test
@@ -21,18 +23,32 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     private RequestType requestTypeParam;
     private Button btnSave;
     private Integer event;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        event = (Integer) Sessions.getCurrent().getAttribute("eventType");
         requestTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RequestType) Sessions.getCurrent().getAttribute("object") : null;
+        event = (Integer) Sessions.getCurrent().getAttribute("eventType");
         initialize();
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        switch (event) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();

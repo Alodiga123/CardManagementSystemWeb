@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -49,6 +50,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Combobox cmbDocumentsPersonType;
 //    private Tab tabAdditionalCards;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private CardRequestNaturalPerson cardRequestNaturalPersonParam;
     private Button btnSave;
     private Integer eventType;
@@ -67,6 +69,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -151,7 +154,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             //Person
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.PERSON_ID_KEY);
-            Person person = utilsEJB.loadPerson(request1);
+            Person person = personEJB.loadPerson(request1);
 
             //LegalPerson
             request1 = new EJBRequest();
@@ -166,7 +169,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
             cardRequestNaturalPerson.setProposedLimit(Float.parseFloat(txtProposedLimit.getText()));
             cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            cardRequestNaturalPerson = utilsEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
+            cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             cardRequestNaturalPersonParam = cardRequestNaturalPerson;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
