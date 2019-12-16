@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.RadioButton;
 import org.apache.http.impl.conn.Wire;
 import org.codehaus.groovy.tools.shell.Command;
 import org.jboss.weld.metadata.Selectors;
