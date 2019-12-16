@@ -13,6 +13,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.util.resource.Labels;
 
 public class AdminRequestTypeController extends GenericAbstractAdminController {
     //test
@@ -23,13 +24,13 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     private RequestType requestTypeParam;
     private Button btnSave;
     private Integer event;
-    private Toolbarbutton tbbTitle; 
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        event = (Integer) Sessions.getCurrent().getAttribute("eventType");
         requestTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RequestType) Sessions.getCurrent().getAttribute("object") : null;
+        event = (Integer) Sessions.getCurrent().getAttribute("eventType");
         initialize();
     }
 

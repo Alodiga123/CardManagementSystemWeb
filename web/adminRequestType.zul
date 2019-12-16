@@ -28,9 +28,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.crud.requestType.list')}" onClick='Executions.sendRedirect(&quot;listCardRequestType.zul&quot;)'/>
                                                  |
-                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.requestType.add')}"/>
-                                                 |
-                                                <toolbarbutton id="tbbCurrentAction" />
+                                                 <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.requestType.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>

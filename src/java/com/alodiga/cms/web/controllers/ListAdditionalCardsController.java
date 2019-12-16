@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -14,17 +15,24 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 public class ListAdditionalCardsController extends GenericAbstractListController<CardRequestNaturalPerson> {
 
@@ -32,6 +40,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private Listbox lbxRecords;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private Tab tabAddress;
     private List<CardRequestNaturalPerson> cardRequestNaturalPerson = null;
     private User currentUser;
@@ -41,6 +50,19 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
+    }
+    
+    
+    public void startListener() {
+        EventQueue que = EventQueues.lookup("updateCardRequestNaturalPerson", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(cardRequestNaturalPerson);
+            }
+        });
     }
 
     @Override
@@ -53,14 +75,12 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             permissionRead = true;
             adminPage = "adminAdditionalCards.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(cardRequestNaturalPerson);
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-    
-    public void startListener() {
     }
 
     public void getData() {
@@ -68,7 +88,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         try {
             request.setFirst(0);
             request.setLimit(null);
-            cardRequestNaturalPerson = utilsEJB.getCardRequestNaturalPersons(request);
+            cardRequestNaturalPerson = personEJB.getCardRequestNaturalPersons(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -77,15 +97,28 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         }
     }
 
-    public void onClick$btnAdd() throws InterruptedException {
+   /* public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
+        
+    }*/
+    
+        public void onClick$btnAdd() throws InterruptedException {
+        try {
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", cardRequestNaturalPerson);
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+            window.doModal();
+        } catch (Exception ex) {
+            this.showMessage("sp.error.general", true, ex);
+        }
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.additionalCards.list"));
         } catch (Exception ex) {
             showError(ex);
         }
