@@ -33,7 +33,7 @@ public class ListRequestController extends GenericAbstractListController<Request
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtAlias;
+    private Textbox txtRequestNumber;
     private UtilsEJB utilsEJB = null;
     private List<Request> requests = null;
 
@@ -63,26 +63,7 @@ public class ListRequestController extends GenericAbstractListController<Request
             showError(ex);
         }
     }
-
-//    public List<Request> getFilteredList(String filter) {
-//        List<Request> requestsaux = new ArrayList<Request>();
-//        Request country;
-//        try {
-//            if (filter != null && !filter.equals("")) {
-//                requests = utilsEJB.searchRequest(filter);
-//                requestsaux.add(requests);
-//            } else {
-//                return countries;
-//            }
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//        return requestsaux;
-//    }
-
-    
+ 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect(adminPage);
@@ -92,23 +73,31 @@ public class ListRequestController extends GenericAbstractListController<Request
     }
 
     public void loadList(List<Request> list) {
+        String applicantName = "";
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (Request request : list) {
                     item = new Listitem();
                     item.setValue(request);
-                    StringBuilder builder = new StringBuilder(request.getPersonId().getNaturalPerson().getFirstNames());
-                    builder.append(" ");
-                    builder.append(request.getPersonId().getNaturalPerson().getLastNames());
+                    if (request.getPersonId() != null) {
+                        if (request.getPersonId().getApplicantNaturalPerson() != null) {
+                            applicantName = request.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                            applicantName.concat(" ");
+                            applicantName.concat(request.getPersonId().getApplicantNaturalPerson().getLastNames());
+                        } else {
+                           applicantName = request.getPersonId().getLegalPerson().getEnterpriseName(); 
+                        }   
+                    }
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(request.getRequestNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
                     item.appendChild(new Listcell(request.getRequestTypeId().getDescription()));
-                    item.appendChild(new Listcell(builder.toString()));
+                    if (request.getPersonId() != null) {
+                        item.appendChild(new Listcell(applicantName));
+                    }
                     item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
@@ -123,7 +112,6 @@ public class ListRequestController extends GenericAbstractListController<Request
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-            
         } catch (Exception ex) {
             showError(ex);
         }
@@ -154,7 +142,6 @@ public class ListRequestController extends GenericAbstractListController<Request
                 item.setParent(lbxRecords);  
     }
 
-    
     public void onClick$btnDownload() throws InterruptedException {
         try {
             Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
@@ -163,18 +150,9 @@ public class ListRequestController extends GenericAbstractListController<Request
         }
     }
 
-    
     public void onClick$btnClear() throws InterruptedException {
-        txtAlias.setText("");
+        txtRequestNumber.setText("");
     }
-
-//    public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilteredList(txtAlias.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
 
     @Override
     public List<Request> getFilterList(String filter) {

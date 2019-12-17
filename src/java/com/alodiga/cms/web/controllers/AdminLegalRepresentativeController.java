@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
@@ -14,7 +13,6 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.LegalRepresentatives;
-import com.cms.commons.models.NaturalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
@@ -22,30 +20,17 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.http.impl.conn.Wire;
-import org.codehaus.groovy.tools.shell.Command;
-import org.jboss.weld.metadata.Selectors;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Radiogroup;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -122,6 +107,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
             txtBirthDay.setValue(legalRepresentatives.getDateBirth());
             txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
+            if(legalRepresentatives.getGender().trim().equalsIgnoreCase("F")){
+                genderFemale.setChecked(true);
+            }else{
+                genderMale.setChecked(true);
+            }     
         } catch (Exception ex) {
             showError(ex);
         }
@@ -197,11 +187,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentatives.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
-
-            //LegalPersonHasLegalRepresentatives
-            legalPersonHasLegalRepresentatives.setLegalPersonId(person.getLegalPerson());
-            legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
-            legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
+            this.showMessage("sp.common.save.success", false, null);
 
             //phonePerson
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
@@ -209,6 +195,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
             phonePerson = personEJB.savePhonePerson(phonePerson);
             this.showMessage("sp.common.save.success", false, null);
+            
+            //LegalPersonHasLegalRepresentatives
+            legalPersonHasLegalRepresentatives.setLegalPersonId(person.getLegalPerson());
+            legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
+            legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
 
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
@@ -245,11 +236,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
-//                if (genderFemale.isChecked()) {
-//                    indGender = "F";
-//                } else {
-//                    indGender = "M";
-//                }
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(legalRepresentativesParam);
@@ -265,11 +251,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
-//                if (genderFemale.isChecked()) {
-//                    indGender = "F";
-//                } else {
-//                    indGender = "M";
-//                }
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
