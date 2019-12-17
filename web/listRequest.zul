@@ -34,8 +34,8 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
-                                                    <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
+                                                    <label value="${c:l('cms.common.requestNumber')}" width="80px" sclass="lblbold"/>
+                                                    <textbox id="txtRequestNumber" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
                                                     <!--Add button-->
