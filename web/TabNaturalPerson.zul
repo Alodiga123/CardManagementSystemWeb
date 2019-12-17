@@ -47,20 +47,20 @@
                                                         <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}" />
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}" />
-                                                        <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />
+                                                        <tab id="tabAdditionalCards" label="${c:l('cms.tab.cardComplementaries')}" />
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
                                                             <include src="adminNaturalPerson.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminLegalPersonAddress.zul"/>
+                                                            <include src="adminNaturalPersonAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listLegalRepresentative.zul"/>
+                                                            <include src="listFamilyReferences.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listAdditionalCards.zul"/>
+                                                            <include src="listCardsComplementaries.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

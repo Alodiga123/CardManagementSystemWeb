@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -9,10 +10,12 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardRequestNaturalPerson;
-import com.cms.commons.models.User;
+import com.cms.commons.models.FamilyReferences;
+import com.cms.commons.models.LegalRepresentatives;
+import com.cms.commons.models.Person;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,28 +24,30 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListAdditionalCardsController extends GenericAbstractListController<CardRequestNaturalPerson> {
+public class ListFamilyReferencesController extends GenericAbstractListController<FamilyReferences> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Tab tabAddress;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
-    private Tab tabAddress;
-    private List<CardRequestNaturalPerson> cardRequestNaturalPerson = null;
-    private User currentUser;
-    private Button btnSave;
+    private PersonEJB personEJB = null;
+    private List<FamilyReferences> familyReferences = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -50,15 +55,15 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         initialize();
         startListener();
     }
-    
+
     
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateCardRequestNaturalPerson", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(cardRequestNaturalPerson);
+                loadDataList(familyReferences);
             }
         });
     }
@@ -71,41 +76,40 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "adminAdditionalCards.zul";
+            adminPage = "/adminFamilyReferences.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
-            loadDataList(cardRequestNaturalPerson);
+            loadDataList(familyReferences);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void getData() {
-        cardRequestNaturalPerson = new ArrayList<CardRequestNaturalPerson>();
-        try {
-            request.setFirst(0);
-            request.setLimit(null);
-            cardRequestNaturalPerson = utilsEJB.getCardRequestNaturalPersons(request);
-        } catch (NullParameterException ex) {
-            showError(ex);
-        } catch (EmptyListException ex) {
-        } catch (GeneralException ex) {
-            showError(ex);
-        }
-    }
-
-   /* public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
-        Sessions.getCurrent().removeAttribute("object");
-        Executions.getCurrent().sendRedirect(adminPage);
-        
-    }*/
+    /*public List<LegalRepresentatives> getFilteredList(String filter) {
+     List<LegalRepresentatives> legalRepresentativesaux = new ArrayList<LegalRepresentatives>();
+     LegalRepresentatives legalRepresentatives;
+     try {
+     if (filter != null && !filter.equals("")) {
+     legalRepresentatives = utilsEJB.searchRequest(filter);
+     legalRepresentativesaux.add(legalRepresentatives);
+     } else {
+     return legalRepresentatives;
+     }
+     } catch (RegisterNotFoundException ex) {
+     Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
+     } catch (Exception ex) {
+     showError(ex);
+     }
+     return legalRepresentativesaux;
+     }*/
     
-        public void onClick$btnAdd() throws InterruptedException {
+    
+    public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", cardRequestNaturalPerson);
+            paramsPass.put("object", familyReferences);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -113,45 +117,28 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         }
     }
 
-    public void onClick$btnDownload() throws InterruptedException {
-        try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.additionalCards.list"));
-        } catch (Exception ex) {
-            showError(ex);
-        }
+    public void onClick$btnDelete() {
     }
 
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
-    }
-
-
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-    
-    
-    public void loadDataList(List<CardRequestNaturalPerson> list) {
+    public void loadDataList(List<FamilyReferences> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
-                for (CardRequestNaturalPerson cardRequestNaturalPerson : list) {
+                for (FamilyReferences familyReferences : list) {
                     item = new Listitem();
-                    item.setValue(cardRequestNaturalPerson);
-                    StringBuilder builder = new StringBuilder(cardRequestNaturalPerson.getFirstNames());
+                    item.setValue(familyReferences);
+                    StringBuilder builder = new StringBuilder(familyReferences.getFirstNames());
                     builder.append(" ");
-                    builder.append(cardRequestNaturalPerson.getLastNames());                    
+                    builder.append(familyReferences.getLastNames());
                     item.appendChild(new Listcell(builder.toString()));
-                    item.appendChild(new Listcell(cardRequestNaturalPerson.getDocumentsPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(cardRequestNaturalPerson.getIdentificationNumber()));
-                    item.appendChild(new Listcell(cardRequestNaturalPerson.getPositionEnterprise()));
-                    item.appendChild(new Listcell(cardRequestNaturalPerson.getProposedLimit().toString()));
-                    item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
-                    item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
-//                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());
-//                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, cardRequestNaturalPerson) : new Listcell());
+                    item.appendChild(new Listcell(familyReferences.getLocalPhone()));
+                    item.appendChild(new Listcell(familyReferences.getCellPhone()));
+                    item.appendChild(new Listcell(familyReferences.getCity()));
+                    item.appendChild(createButtonEditModal(familyReferences));
+                    item.appendChild(createButtonViewModal(familyReferences));
+                    //item.appendChild(permissionRead ? new ListcellViewButton(adminPage, familyReferences) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -168,8 +155,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             showError(ex);
         }
     }
-    
-    
+
     public Listcell createButtonEditModal(final Object obg) {
        Listcell listcellEditModal = new Listcell();
         try {    
@@ -219,10 +205,58 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         }
         return listcellViewModal;
     }
+    
+    
+    public void getData() {
+        familyReferences = new ArrayList<FamilyReferences>();
+        try {
+            request.setFirst(0);
+            request.setLimit(null);
+            familyReferences = personEJB.getFamilyReferences(request);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {
+            showEmptyList();
+        } catch (GeneralException ex) {
+            showError(ex);
+        }
+    }
 
+    private void showEmptyList() {
+        Listitem item = new Listitem();
+        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);
+    }
+
+    public void onClick$btnDownload() throws InterruptedException {
+        try {
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
+//    public void onClick$btnSearch() throws InterruptedException {
+//        try {
+//            loadList(getFilteredList(txtAlias.getText()));
+//        } catch (Exception ex) {
+//            showError(ex);
+//        }
+//    }
     @Override
-    public List<CardRequestNaturalPerson> getFilterList(String filter) {
+    public List<FamilyReferences> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /*public void loadDataList(List<LegalRepresentatives> list) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }*/
 
 }

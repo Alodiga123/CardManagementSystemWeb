@@ -9,6 +9,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
+import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.EdificationType;
@@ -32,7 +33,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
-public class AdminLegalPersonAddressController extends GenericAbstractAdminController {
+public class AdminCardComplementariesAddressController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtUbanization;
@@ -47,7 +48,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-    private Tab tabLegalRepresentatives;
+    private Tab tabFamilyReferencesMain;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
@@ -58,9 +59,9 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        addressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Address) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        addressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Address)(((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")).getPersonId().getPersonHasAddress().getAddressId()) : null;
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        //eventType = 1;
         initialize();
         //initView(eventType, "sp.crud.country");
     }
@@ -78,13 +79,13 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     }
 
     public void onChange$cmbCountry() {
-        cmbCity.setVisible(true);
+        cmbState.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbState(eventType, country.getId());
     }
 
     public void onChange$cmbState() {
-        cmbState.setVisible(true);
+        cmbCity.setVisible(true);
         State state = (State) cmbState.getSelectedItem().getValue();
         loadCmbCity(eventType, state.getId());
     }
@@ -154,7 +155,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     }
 
     private void saveAddress(Address _address) {
-        tabLegalRepresentatives.setSelected(true);
+        //tabFamilyReferencesMain.setSelected(true);
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
@@ -170,10 +171,9 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             //Person
             EJBRequest request1 = new EJBRequest();
             request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_ID_KEY);
+            request1.setParam(Constants.PERSON_NATURAL_ID_KEY);
             Person person = personEJB.loadPerson(request1);
             
-            //Address
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());

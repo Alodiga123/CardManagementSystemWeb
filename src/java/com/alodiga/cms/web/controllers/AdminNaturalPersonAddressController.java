@@ -32,7 +32,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 
-public class AdminLegalPersonAddressController extends GenericAbstractAdminController {
+public class AdminNaturalPersonAddressController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtUbanization;
@@ -47,7 +47,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-    private Tab tabLegalRepresentatives;
+    private Tab tabFamilyReferencesMain;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
@@ -78,13 +78,13 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     }
 
     public void onChange$cmbCountry() {
-        cmbCity.setVisible(true);
+        cmbState.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbState(eventType, country.getId());
     }
 
     public void onChange$cmbState() {
-        cmbState.setVisible(true);
+        cmbCity.setVisible(true);
         State state = (State) cmbState.getSelectedItem().getValue();
         loadCmbCity(eventType, state.getId());
     }
@@ -154,7 +154,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
     }
 
     private void saveAddress(Address _address) {
-        tabLegalRepresentatives.setSelected(true);
+        tabFamilyReferencesMain.setSelected(true);
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
@@ -170,10 +170,9 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             //Person
             EJBRequest request1 = new EJBRequest();
             request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_ID_KEY);
+            request1.setParam(Constants.PERSON_NATURAL_ID_KEY);
             Person person = personEJB.loadPerson(request1);
             
-            //Address
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());

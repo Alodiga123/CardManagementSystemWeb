@@ -12,6 +12,7 @@ import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CivilStatus;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
+import com.cms.commons.models.KinShipApplicant;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PhonePerson;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
@@ -36,33 +39,35 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Window;
 
-public class AdminNaturalPersonController extends GenericAbstractAdminController {
+public class AdminCardComplementariesController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtIdentificationNumber;
     private Textbox txtIdentificationNumberOld;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
-    private Textbox txtMarriedLastName;
     private Textbox txtBirthPlace;
-    private Textbox txtPhoneNumber;
-    private Textbox txtFamilyResponsibilities;
+    private Textbox txtLocalPhone;
+    private Textbox txtCellPhone;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
     private Combobox cmbProfession;
-    private Combobox cmbPhoneType;
+    private Combobox cmbRelationship;
     private Datebox txtBirthDay;
     private Datebox txtDueDateDocumentIdentification;
     private Radio genderMale;
     private Radio genderFemale;
     public String indGender = null;
     private Tab tabAddress;
+    public Window winAdminCardComplementaries;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
+    
     private Person person;
     private Button btnSave;
     private Integer eventType;
@@ -72,8 +77,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         applicantNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        //eventType = 1;
         initialize();
         //initView(eventType, "sp.crud.country");
     }
@@ -102,27 +107,30 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtIdentificationNumberOld.setRawValue(null);
         txtFullName.setRawValue(null);
         txtFullLastName.setRawValue(null);
-        txtMarriedLastName.setRawValue(null);
         txtBirthPlace.setRawValue(null);
         txtBirthDay.setRawValue(null);
-        txtFamilyResponsibilities.setRawValue(null);
         txtEmail.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
+        txtLocalPhone.setRawValue(null);
+        txtCellPhone.setRawValue(null);
     }
 
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
         try {
             txtIdentificationNumber.setText(applicantNaturalPerson.getIdentificationNumber());
-            txtDueDateDocumentIdentification.setText(applicantNaturalPerson.getDueDateDocumentIdentification().toString());
+            txtDueDateDocumentIdentification.setValue(applicantNaturalPerson.getDueDateDocumentIdentification());
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
             txtFullName.setText(applicantNaturalPerson.getFirstNames());
             txtFullLastName.setText(applicantNaturalPerson.getLastNames());
-            txtMarriedLastName.setText(applicantNaturalPerson.getMarriedLastName());
+            if(applicantNaturalPerson.getGender().trim().equalsIgnoreCase("F")){
+                genderFemale.setChecked(true);
+            }else{
+                genderMale.setChecked(true);
+            }
             txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
-            txtBirthDay.setText(applicantNaturalPerson.getDateBirth().toString());
-            txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
+            txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
             txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
-            txtPhoneNumber.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+            txtLocalPhone.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+            txtCellPhone.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -134,16 +142,14 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtIdentificationNumberOld.setReadonly(true);
         txtFullName.setReadonly(true);
         txtFullLastName.setReadonly(true);
-        txtMarriedLastName.setReadonly(true);
         txtBirthPlace.setReadonly(true);
         txtBirthDay.setReadonly(true);
-        txtFamilyResponsibilities.setReadonly(true);
         txtEmail.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
+        txtLocalPhone.setReadonly(true);
+        txtCellPhone.setReadonly(true);
         cmbCountry.setReadonly(true);
         cmbCivilState.setReadonly(true);
         cmbProfession.setReadonly(true);
-        cmbPhoneType.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -157,9 +163,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (txtBirthPlace.getText().isEmpty()) {
             txtBirthPlace.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
         }
@@ -172,14 +175,14 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         try {
             ApplicantNaturalPerson applicantNaturalPerson = null;
             Person person = null;
-            PhonePerson phonePerson = null;
+            PhonePerson phonePerson1 = null;
+            PhonePerson phonePerson2 = null;
 
             if (_applicantNaturalPerson != null) {
                 applicantNaturalPerson = _applicantNaturalPerson;
             } else {//New ApplicantNaturalPerson
                 applicantNaturalPerson = new ApplicantNaturalPerson();
                 person = new Person();
-                phonePerson = new PhonePerson();
             }
             
             if (genderFemale.isChecked()) {
@@ -194,10 +197,25 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             Request request = utilsEJB.loadRequest(request1);
 
             //PersonClassification
-            request1 = new EJBRequest();
-            request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
-            PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
-
+            EJBRequest request2 = new EJBRequest();
+            request2.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
+            PersonClassification personClassification = utilsEJB.loadPersonClassification(request2);
+            
+            //applicantNaturalPerson
+            EJBRequest request3 = new EJBRequest();
+            request3.setParam(Constants.APPLICANT_NATURAL_PERSON);
+            ApplicantNaturalPerson applicantParent = personEJB.loadApplicantNaturalPerson(request3);
+            
+            //PhoneType Habitacion
+            EJBRequest request4 = new EJBRequest();
+            request4.setParam(Constants.CLASSIFICATION_PHONE_PERSON_TYPE1);
+            PhoneType phonePersonH = personEJB.loadPhoneType(request4);
+            
+            //PhoneType Celular
+            EJBRequest request5 = new EJBRequest();
+            request5.setParam(Constants.CLASSIFICATION_PHONE_PERSON_TYPE2);
+            PhoneType phonePersonC = personEJB.loadPhoneType(request5);
+            
             //Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
@@ -206,7 +224,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
-
+                        
             //naturalPerson            
             applicantNaturalPerson.setPersonId(person);
             applicantNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
@@ -214,24 +232,34 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setIdentificationNumberOld(txtIdentificationNumberOld.getText());
             applicantNaturalPerson.setFirstNames(txtFullName.getText());
             applicantNaturalPerson.setLastNames(txtFullLastName.getText());
-            applicantNaturalPerson.setMarriedLastName(txtMarriedLastName.getText());
             applicantNaturalPerson.setGender(indGender);
             applicantNaturalPerson.setPlaceBirth(txtBirthPlace.getText());
             applicantNaturalPerson.setDateBirth(txtBirthDay.getValue());
-            applicantNaturalPerson.setFamilyResponsibilities(Integer.parseInt(txtFamilyResponsibilities.getText()));
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
             applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
+            applicantNaturalPerson.setApplicantParentId(applicantParent);
+            applicantNaturalPerson.setKinShipApplicantId((KinShipApplicant) cmbRelationship.getSelectedItem().getValue());
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
 
             //phonePerson
-            phonePerson.setNumberPhone(txtPhoneNumber.getText());
-            phonePerson.setPersonId(person);
-            phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = personEJB.savePhonePerson(phonePerson);
+            phonePerson1 = new PhonePerson();
+            phonePerson1.setNumberPhone(txtLocalPhone.getText());
+            phonePerson1.setPersonId(person);
+            phonePerson1.setPhoneTypeId(phonePersonH);
+            phonePerson1 = personEJB.savePhonePerson(phonePerson1);
+            
+            //phonePerson
+            phonePerson2 = new PhonePerson();
+            phonePerson2.setNumberPhone(txtCellPhone.getText());
+            phonePerson2.setPersonId(person);
+            phonePerson2.setPhoneTypeId(phonePersonC);
+            phonePerson2 = personEJB.savePhonePerson(phonePerson2);
             this.showMessage("sp.common.save.success", false, null);
+            
+            EventQueues.lookup("updateCardComplementaries", EventQueues.APPLICATION, true).publish(new Event(""));
 
         } catch (Exception ex) {
             showError(ex);
@@ -260,8 +288,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
-                loadCmbPhoneType(eventType);
                 loadCmbProfession(eventType);
+                loadCmbRelationship(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(applicantNaturalPersonParam);
@@ -270,23 +298,20 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 txtIdentificationNumberOld.setDisabled(true);
                 txtFullName.setDisabled(true);
                 txtFullLastName.setDisabled(true);
-                txtMarriedLastName.setDisabled(true);
                 txtBirthPlace.setDisabled(true);
                 txtBirthDay.setDisabled(true);
-                txtFamilyResponsibilities.setDisabled(true);
                 txtEmail.setDisabled(true);
-                txtPhoneNumber.setDisabled(true);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
-                loadCmbPhoneType(eventType);
                 loadCmbProfession(eventType);
+                loadCmbRelationship(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
-                loadCmbPhoneType(eventType);
                 loadCmbProfession(eventType);
+                loadCmbRelationship(eventType);
                 break;
             default:
                 break;
@@ -356,26 +381,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         }
     }
 
-    private void loadCmbPhoneType(Integer evenInteger) {
-        //cmbPhoneType
-        EJBRequest request1 = new EJBRequest();
-        List<PhoneType> phoneType;
-
-        try {
-            phoneType = personEJB.getPhoneType(request1);
-            loadGenericCombobox(phoneType, cmbPhoneType, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-
     private void loadCmbProfession(Integer evenInteger) {
         //cmbProfession
         EJBRequest request1 = new EJBRequest();
@@ -396,4 +401,23 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         }
     }
 
+    private void loadCmbRelationship(Integer evenInteger) {
+        //cmbRelationship
+        EJBRequest request1 = new EJBRequest();
+        List<KinShipApplicant> kinShipApplicant;
+
+        try {
+            kinShipApplicant = personEJB.getKinShipApplicant(request1);
+            loadGenericCombobox(kinShipApplicant, cmbRelationship, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getKinShipApplicantId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
 }
