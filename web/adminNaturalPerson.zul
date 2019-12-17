@@ -88,7 +88,7 @@
                                                         <row>
                                                             <combobox id="cmbProfession" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbPhoneType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="2"/>
+                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="30"/>
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.common.naturalperson.familyResponsibilities')}" sclass="lblbold"/>
@@ -96,7 +96,7 @@
                                                         </row>
                                                         <row>
                                                             <textbox id="txtFamilyResponsibilities" value="" width="250px" maxlength="2"/>
-                                                            <textbox id="txtEmail" value="" width="250px" maxlength="2"/>
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -106,7 +106,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" />
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;adminNaturalPerson.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;TabNaturalPerson.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

@@ -37,21 +37,19 @@
                                                             <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.aditionalCard.positionEnterprise')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="txtDueDateIdentification" width="250px"/>
                                                             <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
                                                             <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtPositionEnterprise" value="" width="250px" maxlength="50"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.aditionalCard.positionEnterprise')}" sclass="lblbold"/>                                                            
                                                             <label value="${c:l('cms.common.aditionalCard.proposedLimit')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtPositionEnterprise" value="" width="250px" maxlength="50"/>
                                                             <textbox id="txtProposedLimit" value="" width="250px" maxlength="11"/> 
                                                         </row>
                                                     </rows>
