@@ -2,9 +2,9 @@
 <?taglib uri="/WEB-INF/tld/core.dsp.tld" prefix="c" ?>
 <?page title="${c:l('sp.crud.profile.admin')}"?>
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
-<!--<?init class="com.alodiga.services.provider.web.security.InitiatorLoggedUser" ?>-->
+
 <zk xmlns:n="native">
-    <window id="winAdminCardRequestType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRequestTypeController" class="general-window">
+    <window id="winAdminDocumentsPersonType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPersonTypeController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,14 +26,15 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.requestType.list')}" onClick='Executions.sendRedirect(&quot;listCardRequestType.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('sp.crud.documents.person.type.list')}" onClick='Executions.sendRedirect(&quot;listDocumentsPersonType.zul&quot;)'/>
                                                  |
-                                                 <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.requestType.add')}"/>
+                                                <toolbarbutton label="${c:l('sp.crud.documents.person.type.add')}"/>
+                                                 |
+                                                <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                        
                                             <vlayout>
                                                 <div align="right">
                                                     <hlayout>
@@ -47,35 +48,34 @@
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="200px"/>
-                                                        <column label="" width="690px"/>
-                                                        
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.code')}" sclass="lblbold"/>
-                                                            <hlayout>
-                                                                <textbox id="txtCode" width="60px" constraint="no empty: ${c:l('error.field.required')}" maxlength="10"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <label value="${c:l('cms.common.person.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.document')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identityCode')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('sp.common.description')}" sclass="lblbold"/>
+                                                            <combobox id="cmbPersonType" width="250px" mold="rounded" readonly="true" />
                                                             <hlayout>
-                                                                <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                                <textbox id="txtDocumentPerson" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                                <textbox id="txtIdentityCode" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>
                                             </vlayout>
-                                                
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequestType.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listDocumentsPersonType.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

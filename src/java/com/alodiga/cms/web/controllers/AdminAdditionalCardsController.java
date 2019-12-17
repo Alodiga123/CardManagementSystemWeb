@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -29,6 +30,8 @@ import org.jboss.weld.metadata.Selectors;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -36,6 +39,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 public class AdminAdditionalCardsController extends GenericAbstractAdminController {
 
@@ -47,9 +51,10 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Textbox txtProposedLimit;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
-//    private Tab tabAdditionalCards;
     private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
     private CardRequestNaturalPerson cardRequestNaturalPersonParam;
+    public Window winAdminAdditionalCards;
     private Button btnSave;
     private Integer eventType;
 
@@ -67,6 +72,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -133,12 +139,8 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
 
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
 
-    private void saveCarRequestNaturalPerson(CardRequestNaturalPerson _cardRequestNaturalPerson) {
-//        tabAdditionalCards.setSelected(true);
+    private void saveCardRequestNaturalPerson(CardRequestNaturalPerson _cardRequestNaturalPerson) {
         try {
             CardRequestNaturalPerson cardRequestNaturalPerson = null;
 
@@ -151,7 +153,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             //Person
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.PERSON_ID_KEY);
-            Person person = utilsEJB.loadPerson(request1);
+            Person person = personEJB.loadPerson(request1);
 
             //LegalPerson
             request1 = new EJBRequest();
@@ -166,9 +168,11 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
             cardRequestNaturalPerson.setProposedLimit(Float.parseFloat(txtProposedLimit.getText()));
             cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            cardRequestNaturalPerson = utilsEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
+            cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             cardRequestNaturalPersonParam = cardRequestNaturalPerson;
             this.showMessage("sp.common.save.success", false, null);
+            
+            EventQueues.lookup("updateCardRequestNaturalPerson", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -178,15 +182,21 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveCarRequestNaturalPerson(null);
+                    saveCardRequestNaturalPerson(null);
+                    //winAdminAdditionalCards.detach();
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveCarRequestNaturalPerson(cardRequestNaturalPersonParam);
+                    saveCardRequestNaturalPerson(cardRequestNaturalPersonParam);
+                    //winAdminAdditionalCards.detach();
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    public void onClick$btnBack() {
+        winAdminAdditionalCards.detach();
     }
 
     public void loadData() {
