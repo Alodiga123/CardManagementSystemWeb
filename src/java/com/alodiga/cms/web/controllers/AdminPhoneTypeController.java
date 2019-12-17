@@ -1,9 +1,10 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.RequestType;
+import com.cms.commons.models.PhoneType;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import org.zkoss.util.resource.Labels;
@@ -13,23 +14,21 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
-import org.zkoss.util.resource.Labels;
 
-public class AdminRequestTypeController extends GenericAbstractAdminController {
+public class AdminPhoneTypeController extends GenericAbstractAdminController {
     //test
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtCode;
     private Textbox txtDescription;
-    private UtilsEJB utilsEJB = null;
-    private RequestType requestTypeParam;
+    private PersonEJB personEJB = null;
+    private PhoneType phoneTypeParam;
     private Button btnSave;
     private Integer event;
-    private Toolbarbutton tbbTitle;
+    private Toolbarbutton tbbTitle; 
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        requestTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RequestType) Sessions.getCurrent().getAttribute("object") : null;
+        phoneTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PhoneType) Sessions.getCurrent().getAttribute("object") : null;
         event = (Integer) Sessions.getCurrent().getAttribute("eventType");
         initialize();
     }
@@ -39,19 +38,19 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
         super.initialize();
         switch (event) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneType.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneType.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneType.add"));
                 break;
             default:
                 break;
         }
         try {
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -59,30 +58,24 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     }
 
     public void clearFields() {
-        txtCode.setRawValue(null);
         txtDescription.setRawValue(null);
     }
 
-    private void loadFields(RequestType requestType) {
+    private void loadFields(PhoneType phoneType) {
         try {
-            txtCode.setText(requestType.getCode());
-            txtDescription.setText(requestType.getDescription());
+            txtDescription.setText(phoneType.getDescription());
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtCode.setReadonly(true);
         txtDescription.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtCode.getText().isEmpty()) {
-            txtCode.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtDescription.getText().isEmpty()) {
+        if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);    
         } else {
@@ -91,27 +84,18 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
         return false;
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
-    private void saveRequestType(RequestType _requestType) {
+    private void savePhoneType(PhoneType _phoneType) {
         try {
-            RequestType requestType = null;
+            PhoneType phoneType = null;
 
-            if (_requestType != null) {
-                requestType = _requestType;
-            } else {//New requestType
-                requestType = new RequestType();
+            if (_phoneType != null) {
+                phoneType = _phoneType;
+            } else {//New phoneType
+                phoneType = new PhoneType();
             }
-            requestType.setCode(txtCode.getText());
-            requestType.setDescription(txtDescription.getText());
-            requestType = utilsEJB.saveRequestType(requestType);
-            requestTypeParam = requestType;
+            phoneType.setDescription(txtDescription.getText());
+            phoneType = personEJB.savePhoneType(phoneType);
+            phoneTypeParam = phoneType;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -123,10 +107,10 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (event) {
                 case WebConstants.EVENT_ADD:
-                    saveRequestType(null);
+                    savePhoneType(null);
                 break;
                 case WebConstants.EVENT_EDIT:
-                   saveRequestType(requestTypeParam);
+                   savePhoneType(phoneTypeParam);
                 break;
             }
         }
@@ -135,10 +119,10 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     public void loadData() {
         switch (event) {
             case WebConstants.EVENT_EDIT:
-                loadFields(requestTypeParam);
+                loadFields(phoneTypeParam);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(requestTypeParam);
+                loadFields(phoneTypeParam);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
