@@ -24,15 +24,8 @@ import com.cms.commons.util.QueryConstants;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.http.impl.conn.Wire;
-import org.codehaus.groovy.tools.shell.Command;
-import org.jboss.weld.metadata.Selectors;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -77,6 +70,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -179,6 +173,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             request1.setParam(Constants.PERSON_ID_KEY);
             Person person = personEJB.loadPerson(request1);
             
+            //Address
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
