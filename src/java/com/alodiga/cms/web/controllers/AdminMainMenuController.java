@@ -154,6 +154,57 @@ public class AdminMainMenuController extends GenericForwardComposer {
             listCell13.addEventListener("onClick", new RedirectListener("TabNaturalPerson.zul"));
             listCell13.setParent(item13);
             item13.setParent(lbxPermissions);
+            
+            // Option AdditionalCards
+           /* Listitem item12 = new Listitem();
+            Listcell listCell12 = new Listcell();
+            listCell12.setLabel( Labels.getLabel("cms.menu.legalPerson.list"));
+            listCell12.addEventListener("onClick", new RedirectListener("adminLegalPerson.zul"));
+            listCell12.setParent(item12);
+            item12.setParent(lbxPermissions);
+            
+            // Option AdditionalCards
+            Listitem item13 = new Listitem();
+            Listcell listCell13 = new Listcell();
+            listCell13.setLabel( Labels.getLabel("cms.menu.additionalCards.list"));
+            listCell13.addEventListener("onClick", new RedirectListener("listAdditionalCards.zul"));
+            listCell13.setParent(item13);
+            item13.setParent(lbxPermissions);*/
+            
+            // Option tab
+            Listitem item14 = new Listitem();
+            Listcell listCell14 = new Listcell();
+            listCell14.setLabel( Labels.getLabel("cms.menu.tab.legalPerson"));
+            listCell14.addEventListener("onClick", new RedirectListener("TabLegalPerson.zul"));
+            listCell14.setParent(item14);
+            item14.setParent(lbxPermissions);
+            
+            // Option PhoneType
+            Listitem item15 = new Listitem();
+            Listcell listCell15 = new Listcell();
+            listCell15.setLabel( Labels.getLabel("cms.menu.phoneType.list"));
+            listCell15.addEventListener("onClick", new RedirectListener("listPhoneType.zul"));
+            listCell15.setParent(item15);
+            item15.setParent(lbxPermissions);
+            
+            // Option PersonType
+            Listitem item16 = new Listitem();
+            Listcell listCell16 = new Listcell();
+            listCell16.setLabel( Labels.getLabel("cms.menu.personType.list"));
+            listCell16.addEventListener("onClick", new RedirectListener("listPersonType.zul"));
+            listCell16.setParent(item16);
+            item16.setParent(lbxPermissions);
+            
+            // Option DocumentsPersonType
+            Listitem item17 = new Listitem();
+            Listcell listCell17 = new Listcell();
+            listCell17.setLabel( Labels.getLabel("cms.menu.documentspersonType.list"));
+            listCell17.addEventListener("onClick", new RedirectListener("listDocumentsPersonType.zul"));
+            listCell17.setParent(item17);
+            item17.setParent(lbxPermissions);
+            
+            
+            
          }
     }
 
