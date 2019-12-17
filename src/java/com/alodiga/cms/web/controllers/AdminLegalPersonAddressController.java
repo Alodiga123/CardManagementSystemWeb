@@ -190,7 +190,7 @@ public class AdminLegalPersonAddressController extends GenericAbstractAdminContr
             //PersonHasAddress
             personHasAddress.setAddressId(address);
             personHasAddress.setPersonId(person);
-            personHasAddress = utilsEJB.savePersonHasAddress(personHasAddress);
+            personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {

@@ -63,15 +63,16 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
+    private Request requestParam;
     private Person person;
     private Button btnSave;
     private Integer eventType;
-    public Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         applicantNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
+        requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
         //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         eventType = 1;
         initialize();
@@ -225,6 +226,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
+            
+            //Actualizar Solicitante en la Solicitud de Tarjeta
+            Request requestApplicant = requestParam;
 
             //phonePerson
             phonePerson.setNumberPhone(txtPhoneNumber.getText());

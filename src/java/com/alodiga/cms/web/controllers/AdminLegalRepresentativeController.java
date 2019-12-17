@@ -193,7 +193,8 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
             phonePerson.setPersonId(person);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = utilsEJB.savePhonePerson(phonePerson);
+            phonePerson = personEJB.savePhonePerson(phonePerson);
+            this.showMessage("sp.common.save.success", false, null);
             
             //LegalPersonHasLegalRepresentatives
             legalPersonHasLegalRepresentatives.setLegalPersonId(person.getLegalPerson());

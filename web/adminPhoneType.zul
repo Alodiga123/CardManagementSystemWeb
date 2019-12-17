@@ -2,9 +2,9 @@
 <?taglib uri="/WEB-INF/tld/core.dsp.tld" prefix="c" ?>
 <?page title="${c:l('sp.crud.profile.admin')}"?>
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
-
+<!--<?init class="com.alodiga.services.provider.web.security.InitiatorLoggedUser" ?>-->
 <zk xmlns:n="native">
-    <window id="winAdminRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRequestController" class="general-window">
+    <window id="winPhoneType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPhoneTypeController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,9 +26,10 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.request.add')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.phoneType')}" onClick='Executions.sendRedirect(&quot;listPhoneType.zul&quot;)'/> 
+                                                |
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.phoneType.add')}"/>                     
+                                                         
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -46,29 +47,18 @@
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
-                                                    </columns>
+                                                        <column label="" width="200px"/>
+                                                        <column label="" width="690px"/>
+                                                    </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.phoneType')}" sclass="lblbold"/>
+                                                            <hlayout>
+                                                                <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
-                                                        <row> 
-                                                            <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionRequestType')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbRequestType" width="200px" mold="rounded" readonly="true"/>
-                                                        </row>
+                                                        
                                                     </rows>
                                                 </grid>
                                             </vlayout>
@@ -77,7 +67,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listPhoneType.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

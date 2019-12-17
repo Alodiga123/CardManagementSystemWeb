@@ -48,7 +48,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-    private Tab tabFamilyReferencesMain;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
@@ -155,7 +154,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     }
 
     private void saveAddress(Address _address) {
-        //tabFamilyReferencesMain.setSelected(true);
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
@@ -190,7 +188,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             //PersonHasAddress
             personHasAddress.setAddressId(address);
             personHasAddress.setPersonId(person);
-            personHasAddress = utilsEJB.savePersonHasAddress(personHasAddress);
+            personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
@@ -226,12 +224,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(addressParam);
-                txtUbanization.setDisabled(true);
-                txtNameStreet.setDisabled(true);
-                txtNameEdification.setDisabled(true);
-                txtTower.setDisabled(true);
-                txtFloor.setDisabled(true);
-                txtEmail.setDisabled(true);
+                blockFields();
                 loadCmbCountry(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);

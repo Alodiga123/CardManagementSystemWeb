@@ -87,6 +87,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -333,47 +334,5 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             showError(ex);
             ex.printStackTrace();
         }
-    }
-
-    public class TabboxVM {
-
-        Tabbox tb_tabbox;
-
-        public void window1() {
-            agregarTab("Ventana 1", "v1", "v1.zul");
-        }
-
-        public void window2() {
-            agregarTab("Ventana 2", "v2", "v2.zul");
-        }
-
-        public void window3() {
-            agregarTab("Ventana 3", "v3", "v3.zul");
-        }
-
-        private void agregarTab(String titulo, String id, String zul) {
-            Map<String, Object> arguments = new HashMap<String, Object>();
-            Tabpanel tabpanel = new Tabpanel();
-            Tab tab = new Tab(titulo);
-            tab.setId(id);
-
-            tab.setClosable(true);
-            tab.setSelected(true);
-
-            if (tb_tabbox.getTabs() == null) {
-                tb_tabbox.appendChild(new Tabs());
-                tb_tabbox.appendChild(new Tabpanels());
-            }
-
-            tb_tabbox.getTabs().appendChild(tab);
-
-            arguments.put("tabularIndex", tab.getIndex());
-
-            tb_tabbox.getTabpanels().appendChild(tabpanel);
-            tb_tabbox.invalidate();
-
-            Executions.createComponents(zul, tabpanel, arguments);
-        }
-
     }
 }

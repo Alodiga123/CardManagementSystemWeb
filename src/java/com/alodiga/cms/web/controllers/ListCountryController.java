@@ -37,12 +37,10 @@ public class ListCountryController extends GenericAbstractListController<Country
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
-        
     }
 
     public void startListener() {
     }
-
 
     @Override
     public void initialize() {
@@ -52,8 +50,6 @@ public class ListCountryController extends GenericAbstractListController<Country
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            //
-            
             adminPage = "adminCountry.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
