@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jboss.logging.Param;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -33,6 +34,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
 public class ListLegalRepresentativeController extends GenericAbstractListController<LegalRepresentatives> {
@@ -118,6 +120,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
+            Param param = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
                 for (LegalRepresentatives legalRepresentatives : list) {
@@ -133,8 +136,9 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
                     item.appendChild(new Listcell(legalRepresentatives.getIdentificationNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getDueDateDocumentIdentification())));
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getDateBirth())));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, legalRepresentatives) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, legalRepresentatives) : new Listcell());
+                    item.appendChild(createButtonEditModal(legalRepresentatives));
+                    item.appendChild(createButtonViewModal(legalRepresentatives));
+                    //item.appendChild(permissionRead ? new ListcellViewButton(adminPage, legalRepresentatives) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -151,7 +155,60 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             showError(ex);
         }
     }
+    
+    
+    public Listcell createButtonEditModal(final Object obg) {
+       Listcell listcellEditModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-edit.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
 
+            });
+            button.setParent(listcellEditModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellEditModal;
+    }
+    
+    
+    public Listcell createButtonViewModal(final Object obg) {
+       Listcell listcellViewModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-invoice.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+
+            });
+            button.setParent(listcellViewModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellViewModal;
+    }
+    
+   
     public void getData() {
         legalRepresentatives = new ArrayList<LegalRepresentatives>();
         try {

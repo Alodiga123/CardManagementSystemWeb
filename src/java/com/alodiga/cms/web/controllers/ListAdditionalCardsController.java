@@ -148,8 +148,10 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getIdentificationNumber()));
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getPositionEnterprise()));
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getProposedLimit().toString()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, cardRequestNaturalPerson) : new Listcell());
+                    item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
+                    item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
+//                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());
+//                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, cardRequestNaturalPerson) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -165,6 +167,57 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    
+    public Listcell createButtonEditModal(final Object obg) {
+       Listcell listcellEditModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-edit.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+
+            });
+            button.setParent(listcellEditModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellEditModal;
+    }
+    
+    public Listcell createButtonViewModal(final Object obg) {
+       Listcell listcellViewModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-invoice.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+
+            });
+            button.setParent(listcellViewModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellViewModal;
     }
 
     @Override
