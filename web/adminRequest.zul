@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.bread.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.enterprise.data')}"/>
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.request.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -53,24 +53,21 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
                                                             <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <hlayout>
-                                                                <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.descriptionRequestType')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbRequestType" width="200px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
