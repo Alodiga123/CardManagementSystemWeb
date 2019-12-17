@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.custom.components;
 
-
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.UiException;
@@ -27,8 +26,7 @@ public class ShowAdminViewListener implements EventListener {
         this.object = o;
         this.permissionId = permissionId;
     }
-    
-    
+  
     public ShowAdminViewListener(int eventType, String view, Object o) {
         this.eventType = eventType;
         this.view = view;
