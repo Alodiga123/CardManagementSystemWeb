@@ -10,7 +10,6 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.ProductType;
@@ -18,31 +17,27 @@ import com.cms.commons.models.Program;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestType;
 import com.cms.commons.models.Sequences;
-import com.cms.commons.models.State;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabbox;
+
 import org.zkoss.zul.Toolbarbutton;
 
 public class AdminRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    
     private Request requestParam;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
@@ -53,33 +48,23 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Combobox cmbProductType;
     private Combobox cmbRequestType;
     private Button btnSave;
+    private Tab tabMain;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
+    public Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        eventType = 1;
         initialize();
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
-                break;
-            case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
-                break;
-            default:
-                break;
-        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
@@ -149,6 +134,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request = utilsEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
+            tabMain.setSelected(true);
         } catch (Exception ex) {
             showError(ex);
         }
