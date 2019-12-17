@@ -5,7 +5,7 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabNaturalPerson" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminNaturalPersonController" class="general-window">
+    <window id="winTabNaturalPerson" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRequestController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -44,12 +44,16 @@
                                                 </div>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
                                                     <tabs>
+                                                        <tab id="tabRequest" label="${c:l('cms.crud.request.add')}" />
                                                         <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}" />
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}" />
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.cardComplementaries')}" />
                                                     </tabs>
                                                     <tabpanels>
+                                                        <tabpanel>
+                                                            <include src="adminRequestNaturalP.zul"/>
+                                                        </tabpanel>
                                                         <tabpanel>
                                                             <include src="adminNaturalPerson.zul"/>
                                                         </tabpanel>
