@@ -62,7 +62,6 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
         //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         eventType = 1;
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -154,6 +153,7 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
     }
 
     private void saveAddress(Address _address) {
+        Person applicantCard = null;
         tabFamilyReferencesMain.setSelected(true);
         try {
             Address address = null;
@@ -167,12 +167,13 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
             }
             
             
-            //Person
-            EJBRequest request1 = new EJBRequest();
-            request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_NATURAL_ID_KEY);
-            Person person = personEJB.loadPerson(request1);
+            //Se obtiene la persona asociada al solicitante de tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicant() != null) {
+                applicantCard = adminNaturalPerson.getApplicant();
+            }
             
+            //Guarda la dirección del solicitante
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
@@ -186,9 +187,9 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
             address = utilsEJB.saveAddress(address);
             addressParam = address;
             
-            //PersonHasAddress
+            //Asocia la dirección al solicitante y la guarda en BD
             personHasAddress.setAddressId(address);
-            personHasAddress.setPersonId(person);
+            personHasAddress.setPersonId(applicantCard);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             
             this.showMessage("sp.common.save.success", false, null);
