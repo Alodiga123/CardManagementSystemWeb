@@ -36,6 +36,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
+import com.alodiga.cms.web.controllers.AdminRequestController;
 
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
@@ -63,16 +64,15 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
-    private Request requestParam;
     private Person person;
     private Button btnSave;
     private Integer eventType;
+    public static Person applicant = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         applicantNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
-        requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
         //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         eventType = 1;
         initialize();
@@ -90,7 +90,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             showError(ex);
         }
     }
-
+    
+    public Person getApplicant() {
+        return applicant;
+    }
+    
     public void onChange$cmbCountry() {
         cmbDocumentsPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
@@ -165,13 +169,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             return true;
         }
         return false;
-
     }
 
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
         tabAddress.setSelected(true);
+        ApplicantNaturalPerson applicantNaturalPerson = null;
         try {
-            ApplicantNaturalPerson applicantNaturalPerson = null;
             Person person = null;
             PhonePerson phonePerson = null;
 
@@ -189,24 +192,23 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 indGender = "M";
             }
 
-            //Request
-            EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.REQUEST_ID_NATURAL_PERSON);
-            Request request = utilsEJB.loadRequest(request1);
+            //Instanciar controlador Request
+            AdminRequestController adminRequest = new AdminRequestController();
 
             //PersonClassification
-            request1 = new EJBRequest();
+            EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
             //Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(request.getPersonTypeId());
+            person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
             person.setEmail(txtEmail.getText());
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
+            applicant = person;
 
             //naturalPerson            
             applicantNaturalPerson.setPersonId(person);
@@ -228,8 +230,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPersonParam = applicantNaturalPerson;
             
             //Actualizar Solicitante en la Solicitud de Tarjeta
-            Request requestApplicant = requestParam;
-
+            if (adminRequest.getRequest() != null) {
+                Request requestCard = adminRequest.getRequest();
+                requestCard.setPersonId(person);
+                utilsEJB.saveRequest(requestCard); 
+            }
+            
             //phonePerson
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
             phonePerson.setPersonId(person);

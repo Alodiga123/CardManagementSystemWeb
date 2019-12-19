@@ -168,5 +168,4 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             showError(ex);
         }
     }
-    
 }

@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.custom.components;
 
 import com.alodiga.cms.web.utils.WebConstants;
-import org.jboss.logging.Param;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 

@@ -64,9 +64,14 @@ public class ListRequestController extends GenericAbstractListController<Request
         }
     }
  
-    public void onClick$btnAdd() throws InterruptedException {
+    public void onClick$btnAddNaturalPersonRequest() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect(adminPage);
+        Executions.getCurrent().sendRedirect("TabNaturalPerson.zul");
+    }
+    
+    public void onClick$btnAddLegalPersonRequest() throws InterruptedException {
+        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+        Executions.getCurrent().sendRedirect("TabLegalPerson.zul");
     }
 
     public void onClick$btnDelete() {
