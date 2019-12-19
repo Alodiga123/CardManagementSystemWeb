@@ -206,5 +206,4 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             ex.printStackTrace();
         }
     }
-    
 }
