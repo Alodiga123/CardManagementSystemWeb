@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminDocumentsPersonType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPersonTypeController" class="general-window">
+    <window id="winAdminDocumentsPersonType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminDocumentsPersonTypeController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,11 +26,11 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.documents.person.type.list')}" onClick='Executions.sendRedirect(&quot;listDocumentsPersonType.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.documents.person.type.list')}" onClick='Executions.sendRedirect(&quot;listDocumentsPersonType.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.documents.person.type.add')}"/>
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.documents.person.type.add')}"/>
                                                  |
-                                                <toolbarbutton id="tbbCurrentAction" />
+                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -48,22 +48,27 @@
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="220px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.person.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.document')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identityCode')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row>
-                                                            <combobox id="cmbPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <hlayout>
-                                                                <textbox id="txtDocumentPerson" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                        <row> 
+                                                            <combobox id="cmbCountry" width="190px" mold="rounded" readonly="true"/>                                                            
+                                                            <combobox id="cmbPersonType" width="190px" mold="rounded" readonly="true"/>
+                                                            <hbox>
+                                                                <textbox id="txtDocumentPerson" width="190px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                                <textbox id="txtIdentityCode" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                            </hbox>
+                                                            <hlayout>        
+                                                                <textbox id="txtIdentityCode" width="190px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
