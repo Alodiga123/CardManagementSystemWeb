@@ -97,6 +97,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     }
 
     private void saveFamilyReferences(FamilyReferences _familyReferences) {
+        ApplicantNaturalPerson applicantNaturalPerson = null;
         try {
             FamilyReferences familyReferences = null;
             
@@ -105,11 +106,14 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
             } else {//New LegalPerson
                 familyReferences = new FamilyReferences();
             }
-            //ApplicantNaturalPerson
-            EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_NATURAL_ID_KEY);
-            ApplicantNaturalPerson applicantNaturalPerson = personEJB.loadApplicantNaturalPerson(request1);
-
+            
+            //Solicitante
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            }
+            
+            //Guarda la referencia familiar asociada al solicitante
             familyReferences.setFirstNames(txtFullName.getText());
             familyReferences.setApplicantNaturalPersonId(applicantNaturalPerson);
             familyReferences.setCity(txtCity.getText());
@@ -119,7 +123,6 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
             familyReferences = personEJB.saveFamilyReferences(familyReferences);
             familyReferencesParam = familyReferences;
             this.showMessage("sp.common.save.success", false, null);
-
             EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);

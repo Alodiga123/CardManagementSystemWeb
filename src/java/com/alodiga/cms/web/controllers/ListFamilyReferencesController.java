@@ -10,9 +10,12 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.LegalRepresentatives;
 import com.cms.commons.models.Person;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -209,10 +212,20 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
     
     public void getData() {
         familyReferences = new ArrayList<FamilyReferences>();
+        ApplicantNaturalPerson applicantNaturalPerson = null;
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            familyReferences = personEJB.getFamilyReferences(request);
+            //Solicitante de Tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            }
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+            request1.setParams(params);
+//            request.setFirst(0);
+//            request.setLimit(null);
+            familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
