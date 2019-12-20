@@ -2,6 +2,7 @@ package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -43,6 +44,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
     private PersonEJB personEJB = null;
+    private RequestEJB requestEJB = null;
     private Combobox cmbCountry;
     private Combobox cmbPrograms;
     private Combobox cmbPersonType;
@@ -70,6 +72,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -136,7 +139,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
             request.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
             request.setRequestTypeId((RequestType) cmbRequestType.getSelectedItem().getValue());
-            request = utilsEJB.saveRequest(request);
+            request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
             tabMain.setSelected(true);
