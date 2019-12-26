@@ -498,8 +498,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         EJBRequest request1 = new EJBRequest();
         List<CardType> cardTypes;
         try {
-            productType = productEJB.getProductTypes(request1);
-            loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
             cardTypes = utilsEJB.getCardTypes(request1);
             loadGenericCombobox(cardTypes, cmbCardType, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
