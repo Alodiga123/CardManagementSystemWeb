@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
@@ -73,6 +74,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private ProgramEJB programEJB = null;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
+    private ProductEJB productEJB = null;
     private Program programParam;
     private Tab tabNetwork;
     private Button btnSave;
@@ -94,6 +96,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
@@ -495,6 +498,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
         EJBRequest request1 = new EJBRequest();
         List<CardType> cardTypes;
         try {
+            productType = productEJB.getProductTypes(request1);
+            loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
             cardTypes = utilsEJB.getCardTypes(request1);
             loadGenericCombobox(cardTypes, cmbCardType, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
