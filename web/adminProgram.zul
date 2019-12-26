@@ -4,47 +4,20 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminProgram" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProgramController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProgramController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
-            <north border="none" size="52px" class="content-transparent">
-                <include src="adminHeader.zul"/>
-            </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
-                                <div>
-                                    <include src="adminMainMenu.zul"/>
-                                </div>
                                 <div width="900px">
                                     <vlayout>
-                                        <div height="20px" width="100%" align="left">
-                                            <!--Bread crumb-->
-                                            <hlayout>
-                                                <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton label="${c:l('cms.crud.Program.list')}" onClick='Executions.sendRedirect(&quot;listProgram.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton label="${c:l('cms.common.Program')}"/>
-                                                |
-                                                <toolbarbutton id="tbbCurrentAction" />
-                                            </hlayout>
-                                        </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -58,83 +31,61 @@
                                                             <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.date.Program')}" sclass="lblbold"/>
                                                         </row>
-                                                        <!--revisaar desde aca-->
                                                         <row>
-                                                            <hlayout>
-                                                                <textbox id="txtName" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                
-                                                            </hlayout>
-                                                            <hbox>
-                                                                <textbox id="txtDescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            
-                                                            </hbox>
-                                                  
-                                                            <hlayout>
-                                                                <datebox id="dtbContrato"  width="265px"/>
-                                                            </hlayout>
+                                                            <textbox id="txtName" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <textbox id="txtDescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                            <datebox id="dtbContrato"  width="265px"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.typeProgram')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.ProductType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.BinSponsor')}" sclass="lblbold"/>
-                                                           
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbProgramType" width="270px" mold="rounded" readonly="true"/>
                                                             <combobox id="cmbProductType" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbBinSponsor" width="270px" mold="rounded" readonly="true"/>
-                                                           
+                                                            <combobox id="cmbBinSponsor" width="270px" mold="rounded" readonly="true"/>  
                                                         </row>
-                                                      
                                                         <row>
                                                             <label value="${c:l('cms.common.Issuer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Program.Owner')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.cardProgramManager')}" sclass="lblbold"/>
-                                                           
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbIssuer"      width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbIssuer" width="270px" mold="rounded" readonly="true"/>
                                                             <combobox id="cmbProgramOwner" width="270px" mold="rounded" readonly="true"/>
                                                             <combobox id="cmbCardProgramManager" width="270px" mold="rounded" readonly="true"/>
-                                                                         
                                                         </row>
-                                                     
                                                         <row>
                                                             <label value="${c:l('cms.common.Card.Type')}" sclass="lblbold"/>
-                                                            
                                                             <label value="${c:l('cms.common.co.branded')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.reloadable')}" sclass="lblbold"/>
                                                         </row>
-                                                        
                                                         <row>
-                                                            <combobox id="cmbCardType"      width="270px" mold="rounded" readonly="true"/>
-                                                            
+                                                            <combobox id="cmbCardType" width="270px" mold="rounded" readonly="true"/>
                                                             <hbox>
-                                                                <radiogroup id="branded" onCheck="value = self.selectedItem.label" />
-                                                                <radiogroup id="reloadable" onCheck="value = self.selectedItem.label" />
+                                                                <radiogroup id="branded" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="ra1" label="${c:l('cms.commom.Yes')}"  radiogroup="branded" />
-                                                                            <radio id="ra2" label="${c:l('cms.commom.No')} "  radiogroup="branded" />
+                                                                            <radio id="rBrandedYes" label="${c:l('cms.commom.Yes')}" radiogroup="branded" />
+                                                                            <radio id="rBrandedNo" label="${c:l('cms.commom.No')} " radiogroup="branded" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
                                                             </hbox>
-                                                            <hlayout>
+                                                            <hbox>
+                                                                <radiogroup id="reloadable" onCheck="value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="ra3" label="${c:l('cms.commom.Yes')}"  radiogroup="reloadable" />
-                                                                            <radio id="ra4" label="${c:l('cms.commom.No')}"   radiogroup="reloadable" />
-                                                                          
+                                                                            <radio id="rReloadableYes" label="${c:l('cms.commom.Yes')}" radiogroup="reloadable" />
+                                                                            <radio id="rReloadableNo" label="${c:l('cms.commom.No')}" radiogroup="reloadable" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            </hbox>
                                                         </row> 
-                                                        
                                                         <row>
                                                             <label value="${c:l('cms.common.SourceOfFound')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Other')}" sclass="lblbold"/>
@@ -143,16 +94,15 @@
                                                         <row>
                                                             <combobox id="cmbSourceOfFound" width="270px" mold="rounded" readonly="true" />
                                                             <hlayout>
-                                                                <textbox id="txtOther" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtOtherSourceOfFound" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hlayout>
-                                                            
                                                             <hbox>
                                                                 <radiogroup id="cashAcces" onCheck="value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="ra5" label="${c:l('cms.commom.Yes')}"  radiogroup="cashAcces" />
-                                                                            <radio id="ra6" label="${c:l('cms.commom.No')}"   radiogroup="cashAcces" />
+                                                                            <radio id="rCashAccesYes" label="${c:l('cms.commom.Yes')}"  radiogroup="cashAcces" />
+                                                                            <radio id="rCashAccesNo" label="${c:l('cms.commom.No')}"   radiogroup="cashAcces" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
@@ -160,79 +110,45 @@
                                                         </row> 
                                                         <row>
                                                             <label value="${c:l('cms.common.international.Use')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.netWork')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.Other')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.bin')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.currency')}" sclass="lblbold"/>
                                                         </row>
-                                                        <!--revisaar desde aca-->
                                                         <row>
                                                             <hbox>
-                                                               <radiogroup id="international" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="international" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="ra7" label="${c:l('cms.commom.Yes')}"  radiogroup="international" />
-                                                                            <radio id="ra8" label="${c:l('cms.commom.No')}"   radiogroup="international" />
+                                                                            <radio id="rInternationalYes" label="${c:l('cms.commom.Yes')}"  radiogroup="international" />
+                                                                            <radio id="rInternationalNo" label="${c:l('cms.commom.No')}"   radiogroup="international" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
                                                             </hbox> 
-                                                            <hbox>
-                                                                <combobox id="cmbNetWork" width="270px" mold="rounded" readonly="true"/>
-                                                            </hbox>
-                                                            <hlayout>
-                                                                <textbox id="txtOtherNetWork" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                        </row>  
-                                                        <row>
-                                                            <label value="${c:l('cms.common.bin')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.currency')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.responsibleNetwoork')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <!--revisaar desde aca-->
-                                                        <row>
                                                             <hlayout>
                                                                 <textbox id="txtBinIin" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <hbox>
-                                                                <combobox id="cmbCurrency" width="270px" mold="rounded" readonly="true"/>
-                                                               
-                                                            </hbox>
-                                                  
-                                                            <hlayout>
-                                                                <combobox id="cmbResponsibleNetwoork" width="270px" mold="rounded" readonly="true"/>
-                                                               
-                                                            </hlayout>
+                                                            <combobox id="cmbCurrency" width="270px" mold="rounded" readonly="true"/>
                                                         </row>  
-                                                          
                                                         <row>
+                                                            <label value="${c:l('cms.common.responsibleNetwoork')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Other')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.card.Issuance.Type')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbResponsibleNetwoork" width="270px" mold="rounded" readonly="true"/>
+                                                            <textbox id="txtOtheResponsibleNetwoork" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <combobox id="cmbCardIssuanceType" width="270px" mold="rounded" readonly="true"/>
+                                                        </row>  
+                                                        <row>
                                                             <label value="${c:l('cms.common.expectedLaunchDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.website')}" sclass="lblbold"/>    
                                                         </row>     
-                                                        <row>
-                                                            <hlayout>
-                                                                <textbox id="txtOtheBINN" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hbox>
-                                                                <combobox id="cmbCardIssuanceType" width="270px" mold="rounded" readonly="true"/>
-                                                            </hbox>
-                                                  
-                                                            <hlayout>
-                                                                <datebox id="dtbExpectedLaunchDate"  width="265px"/>
-                                                               
-                                                            </hlayout>
-                                                        </row>                                                  
-                                                        <row>
-                                                            <label value="${c:l('cms.common.website')}" sclass="lblbold"/>
-                                                        </row>      
-                                                        <row>
-                                                            <hlayout>
-                                                                <textbox id="website" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            </hlayout>
-                                                        </row>                                                                                                                                                       
+                                                        <row> 
+                                                            <datebox id="dtbExpectedLaunchDate"  width="265px"/>
+                                                            <textbox id="website" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                        </row>                                                                                                                                                                                                     
                                                     </rows>
                                                 </grid>
                                             </vlayout>
@@ -241,14 +157,8 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                          
-                                            
-
                                             <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProgram.zul&quot;)"/>
                                         </div>
-                                        
-                                        
-                                        
                                     </vlayout>
                                 </div>
                             </hlayout>
@@ -256,9 +166,6 @@
                     </hlayout>
                 </div>
             </center>
-            <south border="none" size="40px">
-                <include src="adminFooter.zul"/>
-            </south>
         </borderlayout>
     </window>
 </zk>
