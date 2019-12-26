@@ -36,8 +36,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabbox;
-import com.alodiga.cms.web.controllers.AdminRequestController;
 
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
