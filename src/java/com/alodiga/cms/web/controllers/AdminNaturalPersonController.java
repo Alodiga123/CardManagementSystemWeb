@@ -228,7 +228,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPersonParam = applicantNaturalPerson;
             
             //Actualizar Solicitante en la Solicitud de Tarjeta
-            Request requestApplicant = requestParam;
+            //Request requestApplicant = requestParam;
 
             //phonePerson
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
