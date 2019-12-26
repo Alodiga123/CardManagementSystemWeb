@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -34,7 +35,7 @@ public class ListRequestController extends GenericAbstractListController<Request
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtRequestNumber;
-    private UtilsEJB utilsEJB = null;
+    private RequestEJB requestEJB = null;
     private List<Request> requests = null;
 
     @Override
@@ -56,7 +57,7 @@ public class ListRequestController extends GenericAbstractListController<Request
             permissionAdd = true; 
             permissionRead = true;
             adminPage = "adminRequest.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadList(requests);
         } catch (Exception ex) {
@@ -127,7 +128,7 @@ public class ListRequestController extends GenericAbstractListController<Request
         try {
             request.setFirst(0);
             request.setLimit(null);
-            requests = utilsEJB.getRequests(request);
+            requests = requestEJB.getRequests(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

@@ -39,6 +39,7 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        Sessions.getCurrent();
         personTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();

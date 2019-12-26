@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -63,11 +64,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Tab tabAddress;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
+    private RequestEJB requestEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
     private Person person;
     private Button btnSave;
     private Integer eventType;
     public static Person applicant = null;
+    public static ApplicantNaturalPerson applicantNaturalPersonParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -85,6 +88,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -93,6 +97,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     
     public Person getApplicant() {
         return applicant;
+    }
+     
+    public ApplicantNaturalPerson getApplicantNaturalPerson() {
+        return applicantNaturalPersonParent;
     }
     
     public void onChange$cmbCountry() {
@@ -228,12 +236,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
+            applicantNaturalPersonParent = applicantNaturalPerson;
             
             //Actualizar Solicitante en la Solicitud de Tarjeta
             if (adminRequest.getRequest() != null) {
                 Request requestCard = adminRequest.getRequest();
                 requestCard.setPersonId(person);
-                utilsEJB.saveRequest(requestCard); 
+                requestEJB.saveRequest(requestCard); 
             }
             
             //phonePerson
