@@ -47,7 +47,7 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
         super.initialize();
         try {
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminPersonType.zul";
+            adminPage = "adminDocumentsPersonType.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(documentsPersonTypeList);
@@ -100,6 +100,8 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
                 for (DocumentsPersonType documentsPersonType : list) {
                     item = new Listitem();
                     item.setValue(documentsPersonType);
+                    
+                    item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getCountryId().getName()));
                     item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(documentsPersonType.getDescription()));
                     item.appendChild(new Listcell(documentsPersonType.getCodeIdentificationNumber()));
