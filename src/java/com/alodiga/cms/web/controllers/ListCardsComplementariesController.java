@@ -139,8 +139,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
                     item.appendChild(new Listcell(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone()));
                     item.appendChild(createButtonEditModal(applicantNaturalPerson));
                     item.appendChild(createButtonViewModal(applicantNaturalPerson));
-//                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, applicantNaturalPerson) : new Listcell());
-//                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, applicantNaturalPerson) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
