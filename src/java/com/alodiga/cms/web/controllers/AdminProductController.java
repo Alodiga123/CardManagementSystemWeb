@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -12,6 +13,7 @@ import com.cms.commons.models.Currency;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.OriginApplication;
 import com.cms.commons.models.PersonType;
+import com.cms.commons.models.Product;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -30,22 +32,23 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
-public class AdminDocumentsPersonTypeController extends GenericAbstractAdminController {
+public class AdminProductController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private UtilsEJB utilsEJB = null;
-    private DocumentsPersonType documentsPersonTypeParam;
-    private Combobox cmbPersonType;
+    private ProductEJB productEJB = null;
+    private Product productParam;
+    private Textbox txtName;
     private Combobox cmbCountry;
-    private Textbox txtDocumentPerson;
-    private Textbox txtIdentityCode;
+    private Combobox cmbCardType;
+    private Combobox cmbBinSponsor;
     private Button btnSave;
     private Integer eventType;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        documentsPersonTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (DocumentsPersonType) Sessions.getCurrent().getAttribute("object") : null;
+        productParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Product) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
         //initView(eventType, "sp.crud.country");
@@ -55,7 +58,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     public void initialize() {
         super.initialize();
         try {
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -63,41 +66,41 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     }
     
     public void onChange$cmbCountry() {
-        cmbPersonType.setVisible(true);
+        cmbCardType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbPersonType(eventType, country.getId());
+//        loadCmbPersonType(eventType, country.getId());
     }
 
     public void clearFields() {
-        txtDocumentPerson.setRawValue(null);
-        txtIdentityCode.setRawValue(null);
+        txtName.setRawValue(null);
+        
     }
 
-    private void loadFields(DocumentsPersonType documentsPersonType) {
+    private void loadFields(Product product) {
         try {
-            txtDocumentPerson.setText(documentsPersonType.getDescription());
-            txtIdentityCode.setText(documentsPersonType.getCodeIdentificationNumber());
+            txtName.setText(product.getName());
+//            txtIdentityCode.setText(documentsPersonType.getCodeIdentificationNumber());
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtDocumentPerson.setReadonly(true);
-        txtIdentityCode.setReadonly(true);
+//        txtDocumentPerson.setReadonly(true);
+//        txtIdentityCode.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtDocumentPerson.getText().isEmpty()) {
-            txtDocumentPerson.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtIdentityCode.getText().isEmpty()) {
-            txtIdentityCode.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else {
-            return true;
-        }
+//        if (txtDocumentPerson.getText().isEmpty()) {
+//            txtDocumentPerson.setFocus(true);
+//            this.showMessage("sp.error.field.cannotNull", true, null);
+//        } else if (txtIdentityCode.getText().isEmpty()) {
+//            txtIdentityCode.setFocus(true);
+//            this.showMessage("sp.error.field.cannotNull", true, null);
+//        } else {
+//            return true;
+//        }
         return false;
     }
 
@@ -109,19 +112,19 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
     }
 
-    private void saveDocumentsPersonType(DocumentsPersonType _documentsPersonType) {
+    private void saveProduct(Product _product) {
         try {
-            DocumentsPersonType documentsPersonType = null;
-            if (_documentsPersonType != null) {
-                documentsPersonType = _documentsPersonType;
-            } else {//New DocumentsPersonType
-                documentsPersonType = new DocumentsPersonType();
+            Product product = null;
+            if (_product != null) {
+                product = _product;
+            } else {//New Product
+                product = new Product();
             }
-            documentsPersonType.setDescription(txtDocumentPerson.getText());
-            documentsPersonType.setCodeIdentificationNumber(txtIdentityCode.getText());
-            documentsPersonType.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
-            documentsPersonType = utilsEJB.saveDocumentsPersonType(documentsPersonType);
-            documentsPersonTypeParam = documentsPersonType;
+//            product.setDescription(txtDocumentPerson.getText());
+//            product.setCodeIdentificationNumber(txtIdentityCode.getText());
+//            product.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
+            product = productEJB.saveProduct(product);
+            productParam = product;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -132,10 +135,10 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveDocumentsPersonType(null);
+                    saveProduct(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveDocumentsPersonType(documentsPersonTypeParam);
+//                    saveProduct(product);
                     break;
                 default:
                     break;
@@ -146,14 +149,14 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(documentsPersonTypeParam);
+                loadFields(productParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(documentsPersonTypeParam);
-                txtDocumentPerson.setDisabled(true);
-                txtIdentityCode.setDisabled(true);
+                loadFields(productParam);
+                txtName.setDisabled(true);
+//                txtIdentityCode.setDisabled(true);
                 blockFields();
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -172,7 +175,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         List<Country> countries;
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(documentsPersonTypeParam != null? documentsPersonTypeParam.getPersonTypeId().getCountryId().getId(): 0) );            
+            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(productParam != null? productParam.getCountryId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -185,7 +188,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         }
     }
     
-    private void loadCmbPersonType(Integer evenInteger, int countryId) {
+    /*private void loadCmbPersonType(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
         cmbPersonType.getItems().clear();
         Map params = new HashMap();
@@ -206,5 +209,5 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             showError(ex);
             ex.printStackTrace();
         }
-    }
+    }*/
 }

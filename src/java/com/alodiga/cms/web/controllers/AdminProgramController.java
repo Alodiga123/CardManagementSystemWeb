@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
@@ -80,6 +81,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Radiogroup international;
     private ProgramEJB programEJB = null;
     private UtilsEJB utilsEJB = null;
+    private ProductEJB productEJB = null;
     private Program programParam;
     private Button btnSave;
     private Integer eventType;
@@ -98,6 +100,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -527,7 +530,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
         EJBRequest request1 = new EJBRequest();
         List<ProductType> productType;
         try {
-            productType = utilsEJB.getProductTypes(request1);
+            productType = productEJB.getProductTypes(request1);
             loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

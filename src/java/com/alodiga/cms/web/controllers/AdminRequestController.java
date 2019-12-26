@@ -39,6 +39,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Request requestParam;
+    public static Request requestCard = null;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
     private PersonEJB personEJB = null;
@@ -73,6 +74,10 @@ public class AdminRequestController extends GenericAbstractAdminController {
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public Request getRequest() {
+        return this.requestCard;
     }
     
     public void onChange$cmbCountry() {
@@ -135,6 +140,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
             tabMain.setSelected(true);
+            requestCard = request;
         } catch (Exception ex) {
             showError(ex);
         }
