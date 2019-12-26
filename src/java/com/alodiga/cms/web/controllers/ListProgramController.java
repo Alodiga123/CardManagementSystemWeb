@@ -10,15 +10,12 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
-import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Program;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
@@ -29,19 +26,16 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 
 public class ListProgramController extends GenericAbstractListController<Program> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    //private Datebox ;
     private List<Program> programs = null;
     private ProgramEJB programEJB = null;
     private UtilsEJB utilsEJB = null;
@@ -110,11 +104,9 @@ public class ListProgramController extends GenericAbstractListController<Program
                     item = new Listitem();
                     item.setValue(program);
                     item.appendChild(new Listcell(program.getName()));
-                    //item.appendChild(new Listcell(program.getContractDate().toString()));
                     item.appendChild(new Listcell(program.getProgramTypeId().getName()));
                     item.appendChild(new Listcell(program.getProductTypeId().getName()));
                     item.appendChild(new Listcell(program.getIssuerId().getName()));
-                    // item.appendChild(new Listcell(program.getExpectedLaunchDate().toString()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, program) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, program) : new Listcell());
                     item.setParent(lbxRecords);
