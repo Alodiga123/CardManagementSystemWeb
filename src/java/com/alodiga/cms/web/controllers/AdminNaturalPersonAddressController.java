@@ -9,6 +9,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
+import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.EdificationType;
@@ -54,7 +55,7 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
     private Button btnSave;
     private Integer eventType;
     Map params = null;
-
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -166,10 +167,9 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
                 personHasAddress = new PersonHasAddress();
             }
             
-            
             //Se obtiene la persona asociada al solicitante de tarjeta
             AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicant() != null) {
+            if (adminNaturalPerson.getApplicant().getId() != null) {
                 applicantCard = adminNaturalPerson.getApplicant();
             }
             
