@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
@@ -33,6 +34,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     private CollectionsRequest collectionsRequestParam;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
+    private ProductEJB productEJB = null;
     private Combobox cmbCountry;
     private Combobox cmbPrograms;
     private Combobox cmbPersonType;
@@ -55,6 +57,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -197,7 +200,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         List<ProductType> productTypes;
  
         try {
-            productTypes = utilsEJB.getProductTypes(request1);
+            productTypes = productEJB.getProductTypes(request1);
             cmbProductType.getItems().clear();
             for (ProductType c : productTypes) {
  
