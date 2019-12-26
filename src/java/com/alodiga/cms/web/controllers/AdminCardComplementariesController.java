@@ -172,11 +172,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
         tabAddress.setSelected(true);
+        ApplicantNaturalPerson applicantNaturalPersonParent = null;
+        Request requestCard = null;
         try {
             ApplicantNaturalPerson applicantNaturalPerson = null;
             Person person = null;
-            PhonePerson phonePerson1 = null;
-            PhonePerson phonePerson2 = null;
 
             if (_applicantNaturalPerson != null) {
                 applicantNaturalPerson = _applicantNaturalPerson;
@@ -190,21 +190,17 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             } else {
                 indGender = "M";
             }
-
-            //Request
-            EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.REQUEST_ID_NATURAL_PERSON);
-            Request request = utilsEJB.loadRequest(request1);
-
-            //PersonClassification
+            
+           //PersonClassification
             EJBRequest request2 = new EJBRequest();
             request2.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request2);
             
-            //applicantNaturalPerson
-            EJBRequest request3 = new EJBRequest();
-            request3.setParam(Constants.APPLICANT_NATURAL_PERSON);
-            ApplicantNaturalPerson applicantParent = personEJB.loadApplicantNaturalPerson(request3);
+            //Solicitante Principal
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPersonParent = adminNaturalPerson.getApplicantNaturalPerson();
+            }
             
             //PhoneType Habitacion
             EJBRequest request4 = new EJBRequest();
@@ -219,7 +215,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             //Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(request.getPersonTypeId());
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person.setEmail(txtEmail.getText());
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
@@ -238,21 +234,21 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
             applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
-            applicantNaturalPerson.setApplicantParentId(applicantParent);
+            applicantNaturalPerson.setApplicantParentId(applicantNaturalPersonParent);
             applicantNaturalPerson.setKinShipApplicantId((KinShipApplicant) cmbRelationship.getSelectedItem().getValue());
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
 
             //phonePerson
-            phonePerson1 = new PhonePerson();
+            PhonePerson phonePerson1 = new PhonePerson();
             phonePerson1.setNumberPhone(txtLocalPhone.getText());
             phonePerson1.setPersonId(person);
             phonePerson1.setPhoneTypeId(phonePersonH);
             phonePerson1 = personEJB.savePhonePerson(phonePerson1);
             
             //phonePerson
-            phonePerson2 = new PhonePerson();
+            PhonePerson phonePerson2 = new PhonePerson();
             phonePerson2.setNumberPhone(txtCellPhone.getText());
             phonePerson2.setPersonId(person);
             phonePerson2.setPhoneTypeId(phonePersonC);

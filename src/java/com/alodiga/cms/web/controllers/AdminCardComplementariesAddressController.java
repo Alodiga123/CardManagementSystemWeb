@@ -154,6 +154,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     }
 
     private void saveAddress(Address _address) {
+        Person applicantPersonCard = null;
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
@@ -165,13 +166,12 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
                 personHasAddress = new PersonHasAddress();
             }
             
-            
-            //Person
-            EJBRequest request1 = new EJBRequest();
-            request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_NATURAL_ID_KEY);
-            Person person = personEJB.loadPerson(request1);
-            
+            //Se obtiene la persona asociada al solicitante de tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicant().getId() != null) {
+                applicantPersonCard = adminNaturalPerson.getApplicant();
+            }
+                      
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
@@ -187,7 +187,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             
             //PersonHasAddress
             personHasAddress.setAddressId(address);
-            personHasAddress.setPersonId(person);
+            personHasAddress.setPersonId(applicantPersonCard);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             
             this.showMessage("sp.common.save.success", false, null);

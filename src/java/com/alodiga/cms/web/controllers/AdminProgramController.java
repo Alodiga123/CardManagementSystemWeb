@@ -78,7 +78,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Button btnSave;
     private Button btnAddNetWork;
     private Integer eventType;
-    private static Program programObj = null;
+    public static Program programParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -112,8 +112,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
         website.setRawValue(null);
     }
 
-    public static Program getProgramObj() {
-        return programObj;
+    public Program getProgramParent() {
+        return programParent;
     }
 
     private void loadFields(Program program) {
@@ -146,6 +146,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 rInternationalNo.setChecked(true);
             }
             txtOtheResponsibleNetwoork.setText(program.getOtherResponsibleNetworkReporting());
+            programParent = program;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -270,6 +271,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 program.setOtherResponsibleNetworkReporting(txtOtheResponsibleNetwoork.getText());
             }
             program = programEJB.saveProgram(program);
+            programParent = program;
+            
             this.showMessage("sp.common.save.success", false, null);
             
         } catch (WrongValueException ex) {

@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -65,6 +66,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Datebox txtDateInscriptionRegister;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
+    private RequestEJB requestEJB = null;
     private LegalPerson legalPersonParam;
     private Person person;
     private Button btnSave;
@@ -88,6 +90,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -190,7 +193,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             //Request
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.REQUEST_ID_LEGAL_PERSON);
-            Request request = utilsEJB.loadRequest(request1);
+            Request request = requestEJB.loadRequest(request1);
             //System.out.println("Solicitud cableada: " + request.getRequestNumber());
 
             //PersonClassification

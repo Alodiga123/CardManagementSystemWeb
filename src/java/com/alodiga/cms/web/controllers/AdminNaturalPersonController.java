@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -35,7 +36,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabbox;
 
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
@@ -62,17 +62,18 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Tab tabAddress;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
+    private RequestEJB requestEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
-    private Request requestParam;
     private Person person;
     private Button btnSave;
     private Integer eventType;
+    public static Person applicant = null;
+    public static ApplicantNaturalPerson applicantNaturalPersonParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         applicantNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
-        requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
         //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         eventType = 1;
         initialize();
@@ -85,12 +86,21 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
+    
+    public Person getApplicant() {
+        return applicant;
+    }
+     
+    public ApplicantNaturalPerson getApplicantNaturalPerson() {
+        return applicantNaturalPersonParent;
+    }
+    
     public void onChange$cmbCountry() {
         cmbDocumentsPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
@@ -165,13 +175,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             return true;
         }
         return false;
-
     }
 
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
         tabAddress.setSelected(true);
+        ApplicantNaturalPerson applicantNaturalPerson = null;
         try {
-            ApplicantNaturalPerson applicantNaturalPerson = null;
             Person person = null;
             PhonePerson phonePerson = null;
 
@@ -189,24 +198,23 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 indGender = "M";
             }
 
-            //Request
-            EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.REQUEST_ID_NATURAL_PERSON);
-            Request request = utilsEJB.loadRequest(request1);
+            //Instanciar controlador Request
+            AdminRequestController adminRequest = new AdminRequestController();
 
             //PersonClassification
-            request1 = new EJBRequest();
+            EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
             //Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(request.getPersonTypeId());
+            person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
             person.setEmail(txtEmail.getText());
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
+            applicant = person;
 
             //naturalPerson            
             applicantNaturalPerson.setPersonId(person);
@@ -226,10 +234,15 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
+            applicantNaturalPersonParent = applicantNaturalPerson;
             
             //Actualizar Solicitante en la Solicitud de Tarjeta
-            //Request requestApplicant = requestParam;
-
+            if (adminRequest.getRequest() != null) {
+                Request requestCard = adminRequest.getRequest();
+                requestCard.setPersonId(person);
+                requestEJB.saveRequest(requestCard); 
+            }
+            
             //phonePerson
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
             phonePerson.setPersonId(person);
