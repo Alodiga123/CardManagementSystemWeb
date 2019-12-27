@@ -42,7 +42,6 @@ import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.LegalPerson;
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.string;
 import java.text.Collator;
 import static junit.runner.Version.id;
 import org.zkoss.zul.Radio;

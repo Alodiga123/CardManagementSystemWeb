@@ -54,14 +54,15 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
+    private AdminRequestController adminRequest = null;
     Map params = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         addressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Address) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        AdminRequestController adminRequest = new AdminRequestController();
+        eventType = (Integer) adminRequest.eventType; 
         initialize();
     }
 

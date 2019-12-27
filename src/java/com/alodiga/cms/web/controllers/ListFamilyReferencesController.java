@@ -223,8 +223,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             Map params = new HashMap();
             params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
             request1.setParams(params);
-//            request.setFirst(0);
-//            request.setLimit(null);
             familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
         } catch (NullParameterException ex) {
             showError(ex);

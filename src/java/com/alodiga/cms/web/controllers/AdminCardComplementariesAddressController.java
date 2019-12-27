@@ -32,6 +32,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 public class AdminCardComplementariesAddressController extends GenericAbstractAdminController {
 
@@ -54,6 +55,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     private Button btnSave;
     private Integer eventType;
     Map params = null;
+    public Window winAdminCardComplementariesAddress;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -166,10 +168,10 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
                 personHasAddress = new PersonHasAddress();
             }
             
-            //Se obtiene la persona asociada al solicitante de tarjeta
-            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicant().getId() != null) {
-                applicantPersonCard = adminNaturalPerson.getApplicant();
+            //Se obtiene la persona asociada a la tarjeta complementaria
+            AdminCardComplementariesController adminCardComplementary = new AdminCardComplementariesController();
+            if (adminCardComplementary.getPersonCardComplementary().getId() != null) {
+                applicantPersonCard = adminCardComplementary.getPersonCardComplementary();
             }
                       
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
@@ -210,7 +212,11 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             }
         }
     }
-
+    
+    public void onClick$btnBack() {
+        winAdminCardComplementariesAddress.detach();
+    }
+    
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
