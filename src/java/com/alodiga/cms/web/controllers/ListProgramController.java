@@ -10,7 +10,6 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
-import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Program;
 import com.cms.commons.util.EJBServiceLocator;
@@ -23,7 +22,10 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zul.Datebox;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -34,7 +36,6 @@ public class ListProgramController extends GenericAbstractListController<Program
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    //private Datebox ;
     private List<Program> programs = null;
     private ProgramEJB programEJB = null;
     private UtilsEJB utilsEJB = null;
@@ -43,7 +44,17 @@ public class ListProgramController extends GenericAbstractListController<Program
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+    }
 
+    public void startListener() {
+        EventQueue que = EventQueues.lookup("updateProgramNetwork", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(programs);
+            }
+        });
     }
 
     @Override
@@ -54,27 +65,36 @@ public class ListProgramController extends GenericAbstractListController<Program
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "adminProgram.zul";
+            adminPage = "TabProgramNetwork.zul";
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            //List<Program> program = null ;
-            loadList(programs);
+            loadDataList(programs);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect(adminPage);
+    public void getData() {
+        try {
+            programs = new ArrayList<Program>();
+            request.setFirst(0);
+            request.setLimit(null);
+            programs = programEJB.getProgram(request);//getProgram(request);
+        } catch (EmptyListException ex) {
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void onClick$btnDelete() {
 
     }
 
-    public void loadList(List<Program> list) {
+    public void loadDataList(List<Program> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -84,11 +104,9 @@ public class ListProgramController extends GenericAbstractListController<Program
                     item = new Listitem();
                     item.setValue(program);
                     item.appendChild(new Listcell(program.getName()));
-                    //item.appendChild(new Listcell(program.getContractDate().toString()));
                     item.appendChild(new Listcell(program.getProgramTypeId().getName()));
                     item.appendChild(new Listcell(program.getProductTypeId().getName()));
                     item.appendChild(new Listcell(program.getIssuerId().getName()));
-                   // item.appendChild(new Listcell(program.getExpectedLaunchDate().toString()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, program) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, program) : new Listcell());
                     item.setParent(lbxRecords);
@@ -111,21 +129,23 @@ public class ListProgramController extends GenericAbstractListController<Program
             showError(ex);
         }
     }
-
-    public void getData() {
-        try {
-            programs = new ArrayList<Program>();
-            request.setFirst(0);
-            request.setLimit(null);
-            programs = programEJB.getProgram(request);//getProgram(request);
-        } catch (EmptyListException ex) {
-            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GeneralException ex) {
-            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullParameterException ex) {
-            Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    
+    public void onClick$btnAdd() throws InterruptedException {
+        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+        Executions.getCurrent().sendRedirect(adminPage);
     }
+
+//    public void onClick$btnAdd() throws InterruptedException {
+//        try {
+//            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+//            Map<String, Object> paramsPass = new HashMap<String, Object>();
+//            paramsPass.put("object", programs);
+//            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+//            window.doModal();
+//        } catch (Exception ex) {
+//            this.showMessage("sp.error.general", true, ex);
+//        }
+//    }
 
     private void showEmptyList() {
         Listitem item = new Listitem();
@@ -154,15 +174,6 @@ public class ListProgramController extends GenericAbstractListController<Program
     @Override
     public List<Program> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void loadDataList(List<Program> list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void startListener() {
-
     }
 
 }

@@ -1,5 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
@@ -7,21 +9,15 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
-import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.BinSponsor;
 import com.cms.commons.models.CardIssuanceType;
 import com.cms.commons.models.CardType;
 import com.cms.commons.models.NaturalPerson;
-import com.cms.commons.models.Network;
-import com.cms.commons.models.Person;
-import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
-import com.cms.commons.models.ProgramHasNetwork;
 import com.cms.commons.models.ProgramType;
 import com.cms.commons.models.ResponsibleNetworkReporting;
 import com.cms.commons.models.SourceFunds;
@@ -31,20 +27,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.LegalPerson;
-import java.text.Collator;
-import static junit.runner.Version.id;
+import java.sql.Timestamp;
+import java.util.Date;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 
 public class AdminProgramController extends GenericAbstractAdminController {
 
@@ -52,36 +47,40 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Textbox txtName;
     private Textbox txtDescription;
     private Textbox txtBinIin;
-    private Textbox txtOther;
-    private Textbox txtOtherNetWork;
-    private Textbox txtOtheBINN;
+    private Textbox txtOtherSourceOfFound;
+    private Textbox txtOtheResponsibleNetwoork;
     private Textbox website;
     private Datebox dtbContrato;
     private Datebox dtbExpectedLaunchDate;
     private Combobox cmbProgramType;
     private Combobox cmbProductType;
+    private Combobox cmbBinSponsor;
     private Combobox cmbIssuer;
     private Combobox cmbProgramOwner;
     private Combobox cmbCardProgramManager;
-    private Combobox cmbBinSponsor;
     private Combobox cmbCardType;
     private Combobox cmbSourceOfFound;
-    private Combobox cmbNetWork;
     private Combobox cmbCurrency;
     private Combobox cmbResponsibleNetwoork;
     private Combobox cmbCardIssuanceType;
-    private Radiogroup branded;
-    Radio radio;
-    
-    
-    private Radiogroup reloadable;
-    private Radiogroup cashAcces;
-    private Radiogroup international;
+    private Radio rBrandedYes;
+    private Radio rBrandedNo;
+    private Radio rReloadableYes;
+    private Radio rReloadableNo;
+    private Radio rCashAccesYes;
+    private Radio rCashAccesNo;
+    private Radio rInternationalYes;
+    private Radio rInternationalNo;
     private ProgramEJB programEJB = null;
+    private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
+    private ProductEJB productEJB = null;
     private Program programParam;
+    private Tab tabNetwork;
     private Button btnSave;
+    private Button btnAddNetWork;
     private Integer eventType;
+    public static Program programParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -97,6 +96,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -106,29 +107,49 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void clearFields() {
         txtName.setRawValue(null);
         txtDescription.setRawValue(null);
-        txtBinIin.setRawValue(null);
-        txtOther.setRawValue(null);
-        txtOtherNetWork.setRawValue(null);
-        txtOtheBINN.setRawValue(null);
         dtbContrato.setRawValue(null);
+        txtOtherSourceOfFound.setRawValue(null);
+        txtBinIin.setRawValue(null);
+        txtOtheResponsibleNetwoork.setRawValue(null);
         dtbExpectedLaunchDate.setRawValue(null);
         website.setRawValue(null);
-        
+    }
 
-//Cambio prueba
+    public Program getProgramParent() {
+        return programParent;
     }
 
     private void loadFields(Program program) {
         try {
             txtName.setText(program.getName());
             txtDescription.setText(program.getDescription());
-            txtBinIin.setText(program.getBiniinNumber());
-            txtOther.setText(program.getOtherSourceFunds());
-            txtOtherNetWork.setText(program.getOtherResponsibleNetworkReporting());
             dtbContrato.setValue(program.getContractDate());
             dtbExpectedLaunchDate.setValue(program.getExpectedLaunchDate());
+            if (program.getReloadable() == 1) {
+                rReloadableYes.setChecked(true);
+            } else {
+                rReloadableNo.setChecked(true);
+            }
+            txtOtherSourceOfFound.setText(program.getOtherSourceFunds());
+            if (program.getSharedBrand() == 1) {
+                rBrandedYes.setChecked(true);
+            } else {
+                rBrandedNo.setChecked(true);
+            }
             website.setText(program.getWebSite());
-
+            if (program.getCashAccess() == 1) {
+                rCashAccesYes.setChecked(true);
+            } else {
+                rCashAccesNo.setChecked(true);
+            }
+            txtBinIin.setText(program.getBiniinNumber());
+            if (program.getUseInternational() == 1) {
+                rInternationalYes.setChecked(true);
+            } else {
+                rInternationalNo.setChecked(true);
+            }
+            txtOtheResponsibleNetwoork.setText(program.getOtherResponsibleNetworkReporting());
+            programParent = program;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -137,13 +158,12 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void blockFields() {
         txtName.setReadonly(true);
         txtDescription.setReadonly(true);
+        dtbContrato.setDisabled(true);
+        txtOtherSourceOfFound.setReadonly(true);
         txtBinIin.setReadonly(true);
-        txtOther.setReadonly(true);
-        txtOtherNetWork.setReadonly(true);
-        dtbContrato.setReadonly(true);
-        dtbExpectedLaunchDate.setReadonly(true);
+        txtOtheResponsibleNetwoork.setReadonly(true);
+        dtbExpectedLaunchDate.setDisabled(true);
         website.setReadonly(true);
-
         btnSave.setVisible(false);
     }
 
@@ -154,63 +174,41 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } else if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-
         } else {
             return true;
         }
         return false;
-
-    }
-
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
     }
 
     public void onChange$cmbSourceOfFound() {
-
-        System.out.println("valor de source of found" + cmbSourceOfFound.getSelectedItem().getValue());
         String sourceOfFoundsOther = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTROS;
         String sourceOfFoundsOthers = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTHER;
-        String cadena = cmbSourceOfFound.getSelectedItem().getValue().toString();
-        txtOther.setDisabled(true);
-        System.out.println("paso");
 
-        /*if ((cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOther)) || (cmbSourceOfFound.getSelectedItem().getValue().toString().equals(sourceOfFoundsOthers))) {
+        String cadena = (((SourceFunds) cmbSourceOfFound.getSelectedItem().getValue()).getDescription());
 
-            txtOther.setDisabled(false);
-            System.out.println("el valor del combo1 es:" + cmbSourceOfFound.getSelectedItem().getValue().toString());
+        if ((cadena.equals(sourceOfFoundsOther)) || (cadena.equals(sourceOfFoundsOthers))) {
+            txtOtherSourceOfFound.setDisabled(false);
         } else {
-
-            txtOther.setDisabled(true);
-
-        }*/
-
-        Collator comparador = Collator.getInstance();
-        // Para no distinguir entre mayusculas, minusculas y letras con acentos.
-        comparador.setStrength(Collator.PRIMARY);
-
-        if (comparador.equals((cmbSourceOfFound.getSelectedItem().getValue()).toString(), sourceOfFoundsOther)) {
-
-            txtOther.setDisabled(false);
-            System.out.println("somos iguales");
-            System.out.println("el valor del combo es:" + cmbSourceOfFound.getSelectedItem().getValue().toString());
-        } else {
-            System.out.println("Revisame");
-            System.out.println("el valor del combo es:" + cmbSourceOfFound.getSelectedItem().getValue().toString());
-            System.out.println("el valor del variable es:" + sourceOfFoundsOther);
-            txtOther.setDisabled(true);
+            txtOtherSourceOfFound.setDisabled(true);
         }
-
-        /*if (cmbSourceOfFound.getSelectedItem().getValue().toString().compareTo(sourceOfFoundsOther) == 0) {
-            txtOther.setDisabled(false);
-        }*/
     }
 
+    public void onChange$cmbResponsibleNetwoork() {
+        String responsibleNetwoorkOther = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTROS;
+        String responsibleNetwoorkOthers = WebConstants.PROGRAM_SOURCE_OF_FOUND_OTHER;
+
+        String cadena = (((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue()).getDescription());
+
+        if ((cadena.equals(responsibleNetwoorkOther)) || (cadena.equals(responsibleNetwoorkOthers))) {
+            txtOtheResponsibleNetwoork.setDisabled(false);
+        } else {
+            txtOtheResponsibleNetwoork.setDisabled(true);
+        }
+    }
+    
     private void saveProgram(Program _program) {
+        tabNetwork.setSelected(true);
+        
         short indBranded = 0;
         short indReloadable = 0;
         short indCashAcces = 0;
@@ -223,60 +221,65 @@ public class AdminProgramController extends GenericAbstractAdminController {
             } else {
                 program = new Program();
             }
-            program.setName(txtName.getText());
-            program.setDescription(txtDescription.getText());
-            program.setBiniinNumber(txtBinIin.getText());
-            program.setContractDate(dtbContrato.getValue());
-            program.setExpectedLaunchDate(dtbExpectedLaunchDate.getValue());
-            program.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
-            program.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
-            program.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
-            program.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
-            String id = cmbProgramOwner.getSelectedItem().getParent().getId();
-            String ids = cmbCardProgramManager.getSelectedItem().getParent().getId();
-            program.setCardProgramManagerId(((LegalPerson) cmbCardProgramManager.getSelectedItem().getValue()).getPersonId());
-            program.setProgramOwnerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
 
-            program.setWebSite(website.getText());
-            if ((branded .getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_BRANDED_SI))) {
+            if (rBrandedYes.isChecked()) {
                 indBranded = 1;
             } else {
                 indBranded = 0;
             }
-            program.setSharedBrand(indBranded);
 
-            if ((reloadable.getSelectedItem().getValue().equals(WebConstants.PROGRAM_RELOADABLE_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_RELOADABLE_SI))) {
+            if (rReloadableYes.isChecked()) {
                 indReloadable = 1;
             } else {
                 indReloadable = 0;
             }
 
-            program.setSharedBrand(indReloadable);
-
-            program.setSourceFundsId((SourceFunds) cmbSourceOfFound.getSelectedItem().getValue());
-
-            if ((cashAcces.getSelectedItem().getValue().equals(WebConstants.PROGRAM_CASHACCES_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_CASHACCES_SI))) {
+            if (rCashAccesYes.isChecked()) {
                 indCashAcces = 1;
             } else {
                 indCashAcces = 0;
             }
 
-            program.setSharedBrand(indCashAcces);
-
-            if ((international.getSelectedItem().getValue().equals(WebConstants.PROGRAM_INTERNATIONAL_YES)) || (branded.getSelectedItem().getValue().equals(WebConstants.PROGRAM_INTERNATIONAL_SI))) {
+            if (rInternationalYes.isChecked()) {
                 indInternational = 1;
             } else {
                 indInternational = 0;
             }
-            program.setSharedBrand(indInternational);
-            program.setResponsibleNetworkReportingId((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue());
+
+            program.setName(txtName.getText());
+            program.setDescription(txtDescription.getText());
+            program.setContractDate(dtbContrato.getValue());
+            program.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
+            program.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
+            program.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
+            program.setProgramOwnerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
+            program.setCardProgramManagerId(((LegalPerson) cmbCardProgramManager.getSelectedItem().getValue()).getPersonId());
+            program.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
+            program.setExpectedLaunchDate(dtbExpectedLaunchDate.getValue());
             program.setCardIssuanceTypeId((CardIssuanceType) cmbCardIssuanceType.getSelectedItem().getValue());
+            program.setReloadable(indReloadable);
+            program.setSourceFundsId((SourceFunds) cmbSourceOfFound.getSelectedItem().getValue());
+            if (!txtOtherSourceOfFound.getText().equals("")) {
+                program.setOtherSourceFunds(txtOtherSourceOfFound.getText());
+            }
+            program.setSharedBrand(indBranded);
+            program.setWebSite(website.getText());
+            program.setCashAccess(indCashAcces);
+            program.setBiniinNumber(txtBinIin.getText());
             program.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
+            program.setUseInternational(indInternational);
+            program.setCreateDate(new Timestamp(new Date().getTime()));
+            program.setResponsibleNetworkReportingId((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue());
+            if (!txtOtheResponsibleNetwoork.getText().equals("")) {
+                program.setOtherResponsibleNetworkReporting(txtOtheResponsibleNetwoork.getText());
+            }
             program = programEJB.saveProgram(program);
+            programParent = program;
+            
             this.showMessage("sp.common.save.success", false, null);
+            
         } catch (WrongValueException ex) {
             showError(ex);
-
         } catch (GeneralException ex) {
             Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (RegisterNotFoundException ex) {
@@ -284,7 +287,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public void onClick$btnSave() {
@@ -302,9 +304,24 @@ public class AdminProgramController extends GenericAbstractAdminController {
         }
     }
 
+//    public void onClick$btnAddNetWork() {
+//        try {
+//            String view = "/adminAddNetwork.zul";
+//            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+//            Map<String, Object> paramsPass = new HashMap<String, Object>();
+//            paramsPass.put("object", programParam);
+//            final Window window = (Window) Executions.createComponents(view, null, paramsPass);
+//            window.doModal();
+//        } catch (Exception ex) {
+//            this.showMessage("sp.error.general", true, ex);
+//        }
+//    }
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                txtOtherSourceOfFound.setDisabled(true);
+                txtOtheResponsibleNetwoork.setDisabled(true);
                 loadFields(programParam);
                 loadCmbCurrency(eventType);
                 loadCmbProductType(eventType);
@@ -315,33 +332,12 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
-                 {
-                    try {
-                        loadCmbNetWork(eventType);
-                    } catch (EmptyListException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GeneralException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (NullParameterException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
-
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(programParam);
-                txtName.setDisabled(true);
-                txtDescription.setDisabled(true);
-                txtBinIin.setDisabled(true);
-                dtbContrato.setDisabled(true);
-                dtbExpectedLaunchDate.setDisabled(true);
-                website.setDisabled(true);
-                txtOther.setDisabled(true);
-                txtOtherNetWork.setDisabled(true);
-                txtOtheBINN.setDisabled(true);
-                //      branded.setSelectedItem(true);
+                blockFields();
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -351,21 +347,12 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
-                 {
-                    try {
-                        loadCmbNetWork(eventType);
-                    } catch (EmptyListException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GeneralException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (NullParameterException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                txtOtherSourceOfFound.setDisabled(true);
+                txtOtheResponsibleNetwoork.setDisabled(true);
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -375,20 +362,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbBinSponsor(eventType);
                 loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
-                 {
-                    try {
-                        loadCmbNetWork(eventType);
-                    } catch (EmptyListException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GeneralException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (NullParameterException ex) {
-                        Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
-
             default:
                 break;
         }
@@ -426,7 +401,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void loadCmbSourceOfFound(Integer evenInteger) {
-
         //CmbSourceOfFound
         EJBRequest request1 = new EJBRequest();
         List<SourceFunds> sourceFundses;
@@ -458,7 +432,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void loadCmbcardIssuanceType(Integer evenInteger) {
-
+        //cmbCardIssuanceType
         EJBRequest request1 = new EJBRequest();
         List<CardIssuanceType> cardIssuanceTypes;
         try {
@@ -506,12 +480,13 @@ public class AdminProgramController extends GenericAbstractAdminController {
         }
     }
 
-    private void loadCmbNetWork(Integer evenInteger) throws EmptyListException, GeneralException, NullParameterException {
+    private void loadCmbProductType(Integer evenInteger) {
+        //CmbProductType
         EJBRequest request1 = new EJBRequest();
-        List<Network> networks;
+        List<ProductType> productType;
         try {
-            networks = utilsEJB.getNetworks(request1);
-            loadGenericCombobox(networks, cmbNetWork, "name", evenInteger, Long.valueOf(0));
+            productType = utilsEJB.getProductTypes(request1);
+            loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -521,13 +496,13 @@ public class AdminProgramController extends GenericAbstractAdminController {
         }
     }
 
-    private void loadCmbProductType(Integer evenInteger) {
-//CmbProductType
+    private void loadCmbCardType(Integer evenInteger) {
+        //cmbCardType
         EJBRequest request1 = new EJBRequest();
-        List<ProductType> productType;
+        List<CardType> cardTypes;
         try {
-            productType = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
+            cardTypes = utilsEJB.getCardTypes(request1);
+            loadGenericCombobox(cardTypes, cmbCardType, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -550,8 +525,9 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 nameProgramOwner.append(" ");
                 nameProgramOwner.append(c.getLastNames());
                 item.setLabel(nameProgramOwner.toString());
-                item.setDescription(nameProgramOwner.toString());
+                item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbProgramOwner);
+                //if (programParam != null && c.getId().equals(programParam.getProgramOwnerId().getNaturalPerson().getId())) {
                 if (programParam != null && c.getId().equals(programParam.getProgramOwnerId().getId())) {
                     cmbProgramOwner.setSelectedItem(item);
                 }
@@ -559,44 +535,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbProgramOwner.setDisabled(true);
             }
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-
-    private void loadCmbCardType(Integer evenInteger) {
-        //cmbCurrency
-        EJBRequest request1 = new EJBRequest();
-        List<CardType> cardTypes;
-
-        try {
-            cardTypes = utilsEJB.getCardTypes(request1);
-            cmbCardType.getItems().clear();
-            for (CardType c : cardTypes) {
-
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-                item.setLabel(c.getDescription());
-                // item.setDescription(c.);
-                item.setParent(cmbCardType);
-                if (programParam != null && c.getId().equals(programParam.getCardIssuanceTypeId().getId())) {
-                    cmbCardType.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbCardType.setSelectedIndex(1);
-            }
-            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbCardType.setDisabled(true);
-            }
-
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -622,9 +560,9 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 nameCardProgramManager.append(" ");
                 nameCardProgramManager.append(c.getTradeName());
                 item.setLabel(nameCardProgramManager.toString());
-                item.setDescription(nameCardProgramManager.toString());
+                item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbCardProgramManager);
-                if (programParam != null && c.getId().equals(programParam.getCardProgramManagerId().getId())) {
+                if (programParam != null && c.getId().equals(programParam.getCardProgramManagerId().getLegalPerson().getId())) {
                     cmbCardProgramManager.setSelectedItem(item);
                 }
             }
