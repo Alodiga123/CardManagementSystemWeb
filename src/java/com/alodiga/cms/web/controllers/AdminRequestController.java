@@ -52,7 +52,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Combobox cmbRequestType;
     private Button btnSave;
     private Tab tabMain;
-    private Integer eventType;
+    public Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
 
@@ -60,8 +60,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
     }
 

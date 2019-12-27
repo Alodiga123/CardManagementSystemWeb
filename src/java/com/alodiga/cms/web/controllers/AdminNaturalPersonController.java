@@ -69,15 +69,15 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Integer eventType;
     public static Person applicant = null;
     public static ApplicantNaturalPerson applicantNaturalPersonParent = null;
+    private AdminRequestController adminRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        applicantNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        AdminRequestController adminRequest = new AdminRequestController();
+        applicantNaturalPersonParam = (adminRequest.getRequest().getPersonId().getApplicantNaturalPerson() != null) ? (ApplicantNaturalPerson) adminRequest.getRequest().getPersonId().getApplicantNaturalPerson() : null;
+        eventType = adminRequest.eventType;
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -123,6 +123,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
         try {
+            applicantNaturalPerson = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
             txtIdentificationNumber.setText(applicantNaturalPerson.getIdentificationNumber());
             txtDueDateDocumentIdentification.setText(applicantNaturalPerson.getDueDateDocumentIdentification().toString());
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
@@ -197,9 +198,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             } else {
                 indGender = "M";
             }
-
-            //Instanciar controlador Request
-            AdminRequestController adminRequest = new AdminRequestController();
 
             //PersonClassification
             EJBRequest request1 = new EJBRequest();
