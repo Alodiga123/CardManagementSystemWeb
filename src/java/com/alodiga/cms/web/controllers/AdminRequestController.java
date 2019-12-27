@@ -52,7 +52,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Combobox cmbRequestType;
     private Button btnSave;
     private Tab tabMain;
-    public Integer eventType;
+    public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
 
@@ -80,6 +80,10 @@ public class AdminRequestController extends GenericAbstractAdminController {
     
     public Request getRequest() {
         return this.requestCard;
+    }
+    
+    public Integer getEventType() {
+        return this.eventType;
     }
     
     public void onChange$cmbCountry() {
@@ -165,6 +169,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbProgram(eventType);
@@ -172,6 +177,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
+                requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbProgram(eventType);

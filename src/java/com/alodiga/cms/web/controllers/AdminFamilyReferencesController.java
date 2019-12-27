@@ -39,7 +39,6 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
         familyReferencesParam = (Sessions.getCurrent().getAttribute("object") != null) ? (FamilyReferences) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
+import com.alodiga.cms.web.controllers.AdminRequestController;
 
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
@@ -63,20 +64,23 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
-    private ApplicantNaturalPerson applicantNaturalPersonParam;
     private Person person;
     private Button btnSave;
     private Integer eventType;
     public static Person applicant = null;
     public static ApplicantNaturalPerson applicantNaturalPersonParent = null;
     private AdminRequestController adminRequest = null;
+    public Person applicantPersonParam;
+    public ApplicantNaturalPerson applicantNaturalPersonParam;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         AdminRequestController adminRequest = new AdminRequestController();
-        applicantNaturalPersonParam = (adminRequest.getRequest().getPersonId().getApplicantNaturalPerson() != null) ? (ApplicantNaturalPerson) adminRequest.getRequest().getPersonId().getApplicantNaturalPerson() : null;
-        eventType = adminRequest.eventType;
+        if (adminRequest.getRequest().getPersonId().getId() != null) {
+           applicantNaturalPersonParam = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
+           eventType = adminRequest.getEventType();
+        }
         initialize();
     }
 
@@ -123,18 +127,22 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
         try {
-            applicantNaturalPerson = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
             txtIdentificationNumber.setText(applicantNaturalPerson.getIdentificationNumber());
-            txtDueDateDocumentIdentification.setText(applicantNaturalPerson.getDueDateDocumentIdentification().toString());
+            txtDueDateDocumentIdentification.setValue(applicantNaturalPerson.getDueDateDocumentIdentification());
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
             txtFullName.setText(applicantNaturalPerson.getFirstNames());
             txtFullLastName.setText(applicantNaturalPerson.getLastNames());
             txtMarriedLastName.setText(applicantNaturalPerson.getMarriedLastName());
             txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
-            txtBirthDay.setText(applicantNaturalPerson.getDateBirth().toString());
+            txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
             txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
             txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
             txtPhoneNumber.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+            if (applicantNaturalPerson.getGender() == "M") {
+                genderMale.setChecked(true);
+            } else {
+                genderFemale.setChecked(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -231,7 +239,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
-            applicantNaturalPersonParam = applicantNaturalPerson;
             applicantNaturalPersonParent = applicantNaturalPerson;
             
             //Actualizar Solicitante en la Solicitud de Tarjeta
@@ -358,7 +365,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getNaturalPerson().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getApplicantNaturalPerson().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

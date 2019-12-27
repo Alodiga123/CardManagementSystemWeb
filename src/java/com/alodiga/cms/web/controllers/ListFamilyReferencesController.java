@@ -51,7 +51,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         startListener();
     }
 
-    
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
