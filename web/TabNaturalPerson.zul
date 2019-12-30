@@ -27,7 +27,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.tab.naturalPerson')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}"/>
+                                                |
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.request.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -44,7 +46,7 @@
                                                 </div>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
                                                     <tabs>
-                                                        <tab id="tabRequest" label="${c:l('cms.crud.request.add')}" />
+                                                        <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}" />
                                                         <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}" />
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}" />

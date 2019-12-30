@@ -37,6 +37,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 import com.alodiga.cms.web.controllers.AdminRequestController;
+import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
@@ -77,9 +78,19 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         AdminRequestController adminRequest = new AdminRequestController();
-        if (adminRequest.getRequest().getPersonId().getId() != null) {
-           applicantNaturalPersonParam = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
+        if (adminRequest.getEventType()!= null) {
            eventType = adminRequest.getEventType();
+           switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    applicantNaturalPersonParam = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
+                break;
+                case WebConstants.EVENT_VIEW:
+                    applicantNaturalPersonParam = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
+                break;
+                case WebConstants.EVENT_ADD:
+                    applicantNaturalPersonParam = null;
+                break;
+           }
         }
         initialize();
     }
@@ -189,6 +200,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
         tabAddress.setSelected(true);
         ApplicantNaturalPerson applicantNaturalPerson = null;
+        AdminRequestController adminRequest = new AdminRequestController();
         try {
             Person person = null;
             PhonePerson phonePerson = null;
@@ -278,6 +290,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                applicantNaturalPersonParent = applicantNaturalPersonParam;
                 loadFields(applicantNaturalPersonParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -286,18 +299,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                applicantNaturalPersonParent = applicantNaturalPersonParam;
                 loadFields(applicantNaturalPersonParam);
-                txtIdentificationNumber.setDisabled(true);
-                txtDueDateDocumentIdentification.setDisabled(true);
-                txtIdentificationNumberOld.setDisabled(true);
-                txtFullName.setDisabled(true);
-                txtFullLastName.setDisabled(true);
-                txtMarriedLastName.setDisabled(true);
-                txtBirthPlace.setDisabled(true);
-                txtBirthDay.setDisabled(true);
-                txtFamilyResponsibilities.setDisabled(true);
-                txtEmail.setDisabled(true);
-                txtPhoneNumber.setDisabled(true);
+                blockFields();
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
@@ -305,6 +309,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                applicantNaturalPersonParent = null;
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
