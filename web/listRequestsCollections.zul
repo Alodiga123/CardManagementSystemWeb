@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCollectionsRequestsController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRequestsCollectionsController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.bread.crumb.collectionsRequest.list')}" />
+                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -51,12 +51,14 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.country')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.transaction.customerType')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.product.type')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description')}" width="205px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestNumber')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestDate')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestType')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.applicant')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.product.status')}" width="150px" sort="auto"/>
+                                                    <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
