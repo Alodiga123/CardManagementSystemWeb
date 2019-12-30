@@ -72,6 +72,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private Button btnSave;
     private Integer eventType;
     public Tabbox tb;
+    public static Person personCardComplementary = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -80,7 +81,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         //eventType = 1;
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -93,6 +93,10 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public Person getPersonCardComplementary() {
+        return personCardComplementary;
     }
 
     public void onChange$cmbCountry() {
@@ -220,6 +224,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
+            personCardComplementary = person;
                         
             //naturalPerson            
             applicantNaturalPerson.setPersonId(person);
@@ -275,6 +280,10 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     break;
             }
         }
+    }
+    
+    public void onClick$btnBack() {
+        winAdminCardComplementaries.detach();
     }
 
     public void loadData() {

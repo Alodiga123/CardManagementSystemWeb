@@ -52,14 +52,27 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
+    private AdminRequestController adminRequest = null;
     Map params = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        addressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Address) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        AdminRequestController adminRequest = new AdminRequestController();
+        if (adminRequest.getEventType() != null) {
+           eventType = adminRequest.getEventType();
+           switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    addressParam = adminRequest.getRequest().getPersonId().getPersonHasAddress().getAddressId();
+                break;
+                case WebConstants.EVENT_VIEW:
+                    addressParam = adminRequest.getRequest().getPersonId().getPersonHasAddress().getAddressId();
+                break;
+                case WebConstants.EVENT_ADD:
+                    addressParam = null;
+                break;
+            }
+        }
         initialize();
     }
 
@@ -122,10 +135,10 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
         txtTower.setReadonly(true);
         txtFloor.setReadonly(true);
         txtEmail.setReadonly(true);
-        cmbCountry.setDisabled(true);
-        cmbState.setDisabled(true);
-        cmbCity.setDisabled(true);
-        cmbEdificationType.setDisabled(true);
+        cmbCountry.setReadonly(true);
+        cmbState.setReadonly(true);
+        cmbCity.setReadonly(true);
+        cmbEdificationType.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -224,18 +237,13 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(addressParam);
-                txtUbanization.setDisabled(true);
-                txtNameStreet.setDisabled(true);
-                txtNameEdification.setDisabled(true);
-                txtTower.setDisabled(true);
-                txtFloor.setDisabled(true);
-                txtEmail.setDisabled(true);
                 loadCmbCountry(eventType);
-                LoadCmbStreetType(eventType);
-                loadCmbEdificationType(eventType);
                 onChange$cmbCountry();
                 onChange$cmbState();
+                LoadCmbStreetType(eventType);
+                loadCmbEdificationType(eventType);
                 onChange$cmbCity();
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);

@@ -43,7 +43,6 @@
                                                     <listheader label="${c:l('cms.common.identificationsTypes')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.identificationNumber')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.naturalperson.familyReferences.cellPhone')}" width="140px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
