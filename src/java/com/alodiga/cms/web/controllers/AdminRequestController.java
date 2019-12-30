@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
@@ -67,6 +68,19 @@ public class AdminRequestController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
