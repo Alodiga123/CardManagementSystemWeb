@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -13,6 +14,7 @@ import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.PhoneType;
+import com.cms.commons.models.Product;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -28,12 +30,12 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListDocumentsPersonTypeController extends GenericAbstractListController<DocumentsPersonType> {
+public class ListProductController extends GenericAbstractListController<Product> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private PersonEJB personEJB = null;
-    private List<DocumentsPersonType> documentsPersonTypeList = null;
+    private ProductEJB productEJB = null;
+    private List<Product> productList = null;
     private User currentUser;
 
     @Override
@@ -47,21 +49,21 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
         super.initialize();
         try {
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminDocumentsPersonType.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            adminPage = "adminProduct.zul";
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            loadDataList(documentsPersonTypeList);
+            loadDataList(productList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    documentsPersonTypeList = new ArrayList<DocumentsPersonType>();
+    productList = new ArrayList<Product>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            documentsPersonTypeList = personEJB.getDocumentsPersonType(request);
+            productList = productEJB.getProduct(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -91,21 +93,21 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<DocumentsPersonType> list) {
+    public void loadDataList(List<Product> list) {
           try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (DocumentsPersonType documentsPersonType : list) {
+                for (Product product : list) {
                     item = new Listitem();
-                    item.setValue(documentsPersonType);
-                    item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getCountryId().getName()));
-                    item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(documentsPersonType.getDescription()));
-                    item.appendChild(new Listcell(documentsPersonType.getCodeIdentificationNumber()));
-                    item.appendChild( new ListcellEditButton(adminPage, documentsPersonType));
-                    item.appendChild(new ListcellViewButton(adminPage, documentsPersonType,true));
+                    item.setValue(product);
+                    item.appendChild(new Listcell(product.getName()));
+                    item.appendChild(new Listcell(product.getCountryId().getName()));
+                    item.appendChild(new Listcell(product.getCardTypeId().getDescription()));
+                    item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
+                    item.appendChild( new ListcellEditButton(adminPage, product));
+                    item.appendChild(new ListcellViewButton(adminPage, product,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -123,7 +125,7 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
         }
     }
 
-    public List<DocumentsPersonType> getFilterList(String filter) {
+    public List<Product> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
