@@ -7,7 +7,10 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramHasNetwork;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -172,10 +175,20 @@ public class ListNetworkController extends GenericAbstractListController<Program
 
     public void getData() {
         programHasNetwork = new ArrayList<ProgramHasNetwork>();
+        Program program = null;
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            programHasNetwork = utilsEJB.getProgramHasNetwork(request);
+             //Programa principal
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
+            }
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.NETWORK_BY_PROGRAM, program.getId());
+            request.setParams(params);
+//            request.setFirst(0);
+//            request.setLimit(null);
+            programHasNetwork = utilsEJB.getProgramHasNetworkByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

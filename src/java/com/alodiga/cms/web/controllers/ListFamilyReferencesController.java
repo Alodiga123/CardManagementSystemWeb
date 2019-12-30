@@ -11,6 +11,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
+import com.cms.commons.models.Person;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -51,7 +52,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         startListener();
     }
 
-    
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
@@ -215,8 +215,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             Map params = new HashMap();
             params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
             request1.setParams(params);
-//            request.setFirst(0);
-//            request.setLimit(null);
             familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
         } catch (NullParameterException ex) {
             showError(ex);

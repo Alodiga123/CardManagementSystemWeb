@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -29,7 +30,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtDescription;
-    private UtilsEJB utilsEJB = null;
+    private RequestEJB requestEJB = null;
     private List<CollectionsRequest> collectionsRequest = null;
 
     @Override
@@ -52,9 +53,9 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
             permissionAdd = true; 
             permissionRead = true;
             adminPage = "adminCollectionsRequest.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
-            loadList(collectionsRequest);
+            loadDataList(collectionsRequest);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -86,19 +87,18 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<CollectionsRequest> list) {
+    public void loadDataList(List<CollectionsRequest> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 for (CollectionsRequest collectionsRequest : list) {
-                    
-                   
                     item = new Listitem();
                     item.setValue(collectionsRequest);
                     item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
+                    item.appendChild(new Listcell(collectionsRequest.getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, collectionsRequest) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, collectionsRequest) : new Listcell());
                     item.setParent(lbxRecords);
@@ -123,7 +123,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
         try {
             request.setFirst(0);
             request.setLimit(null);
-            collectionsRequest = utilsEJB.getCollectionsRequests(request);
+            collectionsRequest = requestEJB.getCollectionsRequests(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -166,10 +166,4 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     public List<CollectionsRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    public void loadDataList(List<CollectionsRequest> list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
 }
