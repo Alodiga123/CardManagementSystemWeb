@@ -6,7 +6,7 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
-import com.alodiga.cms.web.controllers.AdminProgramController;
+//import com.alodiga.cms.web.controllers.AdminProgramController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
@@ -80,6 +80,8 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     }
 
     private void saveProgramHasNetwork(ProgramHasNetwork _programHasNetwork) {
+        Program program = null;
+        
         try {
             ProgramHasNetwork programHasNetwork = null;
 
@@ -88,15 +90,12 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
             } else {//New address
                 programHasNetwork = new ProgramHasNetwork();
             }
-
-            //Person
-            AdminProgramController adminProgram = new AdminProgramController();
-            //adminProgram.
             
-            EJBRequest request1 = new EJBRequest();
-            request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_NATURAL_ID_KEY);
-            Program program = programEJB.loadProgram(request1);
+            //Program
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
+            }
 
             //ProgramHasNetwork
             programHasNetwork.setProgramId(program);
@@ -104,7 +103,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
             programHasNetwork = utilsEJB.saveProgramHasNetwork(programHasNetwork);
             programHasNetworksParam = programHasNetwork;
             this.showMessage("sp.common.save.success", false, null);
-            
+
             EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
@@ -127,7 +126,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     public void onClick$btnBack() {
         winAddNetwork.detach();
     }
-    
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:

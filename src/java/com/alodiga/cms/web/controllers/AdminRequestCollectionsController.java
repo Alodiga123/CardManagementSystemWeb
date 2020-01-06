@@ -16,6 +16,7 @@ import com.cms.commons.models.PersonType;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.models.RequestType;
 import com.cms.commons.models.Sequences;
 import com.cms.commons.models.StatusRequest;
@@ -23,39 +24,38 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Textbox;
 
 import org.zkoss.zul.Toolbarbutton;
 
-public class AdminRequestController extends GenericAbstractAdminController {
+public class AdminRequestCollectionsController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Request requestParam;
-    public static Request requestCard = null;
+    private RequestHasCollectionsRequest requestHasCollectionsRequestParam;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
+    private short txtIndApproved;
+    private Textbox txtObservations;
+    private Textbox txtUrlImageFile;
     private Combobox cmbCountry;
     private Combobox cmbPrograms;
     private Combobox cmbPersonType;
     private Combobox cmbProductType;
     private Combobox cmbRequestType;
+    
     private Button btnSave;
-    private Tab tabMain;
-    public static Integer eventType;
+    private Integer eventType;
     private Toolbarbutton tbbTitle;
-    public Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -68,19 +68,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
-                break;
-            case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
-                break;
-            default:
-                break;
-        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
@@ -92,14 +79,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
         }
     }
     
-    public Request getRequest() {
-        return this.requestCard;
-    }
-    
-    public Integer getEventType() {
-        return this.eventType;
-    }
-    
     public void onChange$cmbCountry() {
         cmbPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
@@ -107,7 +86,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
     }
 
     public void clearFields() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void loadFields(Request request) {
@@ -121,14 +99,14 @@ public class AdminRequestController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
-    private void saveRequest(Request _request) {
+    private void saveRequest(RequestHasCollectionsRequest _requestHasCollectionsRequest) {
         try {
-            Request request = null;
+            RequestHasCollectionsRequest requestHasCollectionsRequest = null;
 
-            if (_request != null) {
-                request = _request;
+            if (_requestHasCollectionsRequest != null) {
+                requestHasCollectionsRequest = _requestHasCollectionsRequest;
             } else {//New Request
-                request = new Request();
+                requestHasCollectionsRequest = new RequestHasCollectionsRequest();
             }
             //Obtiene el numero de secuencia para documento Request
             EJBRequest request1 = new EJBRequest();
@@ -146,21 +124,11 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request1.setParam(Constants.PERSON_NOT_REGISTER);
             Person personNotRegister = personEJB.loadPerson(request1);
             //Guarda la solicitud en la BD
-            request.setRequestNumber(numberRequest);
-            Date dateRequest = new Date();
-            request.setRequestDate(dateRequest);
-            request.setPersonId(personNotRegister);
-            request.setStatusRequestId(statusRequest);
-            request.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            request.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
-            request.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
-            request.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
-            request.setRequestTypeId((RequestType) cmbRequestType.getSelectedItem().getValue());
-            request = requestEJB.saveRequest(request);
-            requestParam = request;
+            requestHasCollectionsRequest.setIndApproved(txtIndApproved);
+            requestHasCollectionsRequest.setObservations(txtObservations.getText());
+            requestHasCollectionsRequest.setUrlImageFile(txtUrlImageFile.getText());
+            requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
             this.showMessage("sp.common.save.success", false, null);
-            tabMain.setSelected(true);
-            requestCard = request;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -173,7 +141,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 saveRequest(null);
                 break;
             case WebConstants.EVENT_EDIT:
-                saveRequest(requestParam);
+                saveRequest(requestHasCollectionsRequestParam);
                 break;
             default:
                 break;
@@ -183,15 +151,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                requestCard = requestParam;
-                loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
-                loadCmbProgram(eventType);
-                loadCmbRequestType(eventType);
+                loadCmbCountry(4);
+                loadCmbProductType(4);
+                loadCmbProgram(4);
+                loadCmbRequestType(4);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
-                requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbProgram(eventType);

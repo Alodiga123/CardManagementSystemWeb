@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.impl.conn.Wire;
-import org.codehaus.groovy.tools.shell.Command;
-import org.jboss.weld.metadata.Selectors;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
