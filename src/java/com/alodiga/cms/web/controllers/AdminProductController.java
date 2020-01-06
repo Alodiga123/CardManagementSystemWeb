@@ -12,12 +12,18 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.BinSponsor;
 import com.cms.commons.models.CardType;
+import com.cms.commons.models.CommerceCategory;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.KindCard;
+import com.cms.commons.models.LevelProduct;
 import com.cms.commons.models.Product;
+import com.cms.commons.models.ProductUse;
 import com.cms.commons.models.ProgramType;
+import com.cms.commons.models.SegmentCommerce;
+import com.cms.commons.models.SegmentMarketing;
+import com.cms.commons.models.StorageMedio;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -175,6 +181,11 @@ public class AdminProductController extends GenericAbstractAdminController {
         }
     }
 
+    public void onChange$cmbSegmentCommerce() {
+        SegmentCommerce SegmentCommerce = (SegmentCommerce) cmbSegmentCommerce.getSelectedItem().getValue();
+        loadCmbCommerceCategory(eventType, SegmentCommerce.getId());
+    }
+    
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -184,6 +195,15 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbCardType(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
+                loadCmbBinSponsor(eventType);
+                loadCmbLevelProduct(eventType);
+                loadCmbProductUse(eventType);
+                loadCmbDomesticCurrency(eventType);
+                loadCmbInternationalCurrency(eventType);
+                loadCmbStorageMedio(eventType);
+                loadCmbSegmentMarketing(eventType);
+                loadCmbSegmentCommerce(eventType);
+                onChange$cmbSegmentCommerce();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(productParam);
@@ -194,6 +214,15 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbCardType(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
+                loadCmbBinSponsor(eventType);
+                loadCmbLevelProduct(eventType);
+                loadCmbProductUse(eventType);
+                loadCmbDomesticCurrency(eventType);
+                loadCmbInternationalCurrency(eventType);
+                loadCmbStorageMedio(eventType);
+                loadCmbSegmentMarketing(eventType);
+                loadCmbSegmentCommerce(eventType);
+                onChange$cmbSegmentCommerce();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
@@ -201,6 +230,14 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbCardType(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
+                loadCmbBinSponsor(eventType);
+                loadCmbLevelProduct(eventType);
+                loadCmbProductUse(eventType);
+                loadCmbDomesticCurrency(eventType);
+                loadCmbInternationalCurrency(eventType);
+                loadCmbStorageMedio(eventType);
+                loadCmbSegmentMarketing(eventType);
+                loadCmbSegmentCommerce(eventType);
                 break;
             default:
                 break;
@@ -297,4 +334,169 @@ public class AdminProductController extends GenericAbstractAdminController {
         }    
     }
     
+    private void loadCmbBinSponsor(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<BinSponsor> binSponsorList;
+        try {
+            binSponsorList = utilsEJB.getBinSponsor(request1);
+            loadGenericCombobox(binSponsorList,cmbBinSponsor,"description",eventType,Long.valueOf(productParam != null? productParam.getBinSponsorId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
     }
+    
+    private void loadCmbLevelProduct(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<LevelProduct> levelProductList;
+        try {
+            levelProductList = productEJB.getLevelProduct(request1);
+            loadGenericCombobox(levelProductList,cmbLevelProduct,"description",eventType,Long.valueOf(productParam != null? productParam.getLevelProductId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbProductUse(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<ProductUse> productUseList;
+        try {
+            productUseList = productEJB.getProductUse(request1);
+            loadGenericCombobox(productUseList,cmbProductUse,"description",eventType,Long.valueOf(productParam != null? productParam.getProductUseId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbDomesticCurrency(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<Currency> domesticCurrencyList;
+        try {
+            domesticCurrencyList = utilsEJB.getCurrency(request1);
+            loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getDomesticCurrencyId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbInternationalCurrency(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<Currency> internationalCurrencyList;
+        try {
+            internationalCurrencyList = utilsEJB.getCurrency(request1);
+            loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getInternationalCurrencyId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbStorageMedio(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<StorageMedio> storageMedioList;
+        try {
+            storageMedioList = productEJB.getStorageMedio(request1);
+            loadGenericCombobox(storageMedioList,cmbStorageMedio,"description",eventType,Long.valueOf(productParam != null? productParam.getStorageMedioid().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbSegmentMarketing(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<SegmentMarketing> segmentMarketingList;
+        try {
+            segmentMarketingList = productEJB.getSegmentMarketing(request1);
+            loadGenericCombobox(segmentMarketingList,cmbSegmentMarketing,"name",eventType,Long.valueOf(productParam != null? productParam.getsegmentMarketingId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbSegmentCommerce(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<SegmentCommerce> segmentCommerceList;
+        try {
+            segmentCommerceList = productEJB.getSegmentCommerce(request1);
+            loadGenericCombobox(segmentCommerceList,cmbSegmentCommerce,"name",eventType,Long.valueOf(productParam != null? productParam.getProductHasCommerceCategory().getCommerceCategoryId().getsegmentCommerceId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }    
+    }
+    
+    private void loadCmbCommerceCategory(Integer evenInteger, int segmentCommerceId) {
+        EJBRequest request1 = new EJBRequest();
+        cmbCommerceCategory.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_SEGMENT_COMMERCE_ID, segmentCommerceId);
+        request1.setParams(params);
+        List<CommerceCategory> commerceCategoryList;
+        try {
+            commerceCategoryList = productEJB.getCommerceCategoryBySegmentCommerce(request1);
+            loadGenericCombobox(commerceCategoryList,cmbCommerceCategory, "economicActivity",evenInteger,Long.valueOf(productParam != null? productParam.getProductHasCommerceCategory().getCommerceCategoryId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+}
