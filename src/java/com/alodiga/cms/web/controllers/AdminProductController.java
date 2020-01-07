@@ -19,7 +19,9 @@ import com.cms.commons.models.Issuer;
 import com.cms.commons.models.KindCard;
 import com.cms.commons.models.LevelProduct;
 import com.cms.commons.models.Product;
+import com.cms.commons.models.ProductHasCommerceCategory;
 import com.cms.commons.models.ProductUse;
+import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramType;
 import com.cms.commons.models.SegmentCommerce;
 import com.cms.commons.models.SegmentMarketing;
@@ -42,12 +44,14 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Datebox;
 
 public class AdminProductController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private UtilsEJB utilsEJB = null;
     private ProductEJB productEJB = null;
+    private ProgramEJB programEJB = null;
     private Product productParam;
     private Textbox txtName;
     private Textbox txtBinNumber;
@@ -57,12 +61,13 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Textbox txtDaysToActivate;
     private Textbox txtDaysToUse;
     private Textbox txtDaysToWithdrawCard;
-    private Textbox txtBeginDateValidity;
-    private Textbox txtEndDateValidity;
+    private Datebox txtBeginDateValidity;
+    private Datebox txtEndDateValidity;
     private Combobox cmbCountry;
     private Combobox cmbCardType;
     private Combobox cmbIssuer;
     private Combobox cmbKindCard;
+    private Combobox cmbProgram;
     private Combobox cmbProgramType;
     private Combobox cmbBinSponsor;
     private Combobox cmbLevelProduct;
@@ -92,6 +97,7 @@ public class AdminProductController extends GenericAbstractAdminController {
         try {
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -154,12 +160,39 @@ public class AdminProductController extends GenericAbstractAdminController {
             } else {//New Product
                 product = new Product();
             }
+            //Guardar Producto
             product.setName(txtName.getText());
             product.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             product.setCardTypeId((CardType) cmbCardType.getSelectedItem().getValue());
             product.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
+            product.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
+            product.setKindCardId((KindCard) cmbKindCard.getSelectedItem().getValue());
+            product.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
+            product.setLevelProductId((LevelProduct) cmbLevelProduct.getSelectedItem().getValue());
+            product.setBinNumber(txtBinNumber.getText());
+            product.setProductUseId((ProductUse) cmbProductUse.getSelectedItem().getValue());
+            product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
+            product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            product.setValidityYears((Integer.parseInt(txtValidityYears.getText())));
+            product.setStorageMedioid((StorageMedio) cmbStorageMedio.getSelectedItem().getValue());
+            product.setDaysBeforeExpiration((Integer.parseInt(txtDaysBeforeExpiration.getText())));
+            product.setDaysToInactivate((Integer.parseInt(txtDaysToInactivate.getText())));
+            product.setDaysToActivate((Integer.parseInt(txtDaysToActivate.getText())));
+            product.setDaysToUse((Integer.parseInt(txtDaysToUse.getText())));
+            product.setDaysToWithdrawCard((Integer.parseInt(txtDaysToWithdrawCard.getText())));
+            product.setBeginDateValidity((txtBeginDateValidity.getValue()));
+            product.setEndDateValidity((txtEndDateValidity.getValue())); 
+            product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
+            product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
             product = productEJB.saveProduct(product);
             productParam = product;
+            
+            //Guardar ProductHasCommerceCategory
+            ProductHasCommerceCategory productHasCommerceCategory = new ProductHasCommerceCategory();
+            productHasCommerceCategory.setProductId(product);
+            productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
+            
+            
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -182,8 +215,13 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public void onChange$cmbSegmentCommerce() {
-        SegmentCommerce SegmentCommerce = (SegmentCommerce) cmbSegmentCommerce.getSelectedItem().getValue();
-        loadCmbCommerceCategory(eventType, SegmentCommerce.getId());
+        SegmentCommerce segmentCommerce = (SegmentCommerce) cmbSegmentCommerce.getSelectedItem().getValue();
+        loadCmbCommerceCategory(eventType, segmentCommerce.getId());
+    }
+    
+    public void onChange$cmbProgramType() {
+        ProgramType programType = (ProgramType) cmbProgramType.getSelectedItem().getValue();
+        loadCmbProgram(eventType, programType.getId());
     }
     
     public void loadData() {
@@ -204,6 +242,7 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbSegmentMarketing(eventType);
                 loadCmbSegmentCommerce(eventType);
                 onChange$cmbSegmentCommerce();
+                onChange$cmbProgramType();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(productParam);
@@ -223,6 +262,7 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbSegmentMarketing(eventType);
                 loadCmbSegmentCommerce(eventType);
                 onChange$cmbSegmentCommerce();
+                onChange$cmbProgramType();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
@@ -487,7 +527,7 @@ public class AdminProductController extends GenericAbstractAdminController {
         List<CommerceCategory> commerceCategoryList;
         try {
             commerceCategoryList = productEJB.getCommerceCategoryBySegmentCommerce(request1);
-            loadGenericCombobox(commerceCategoryList,cmbCommerceCategory, "economicActivity",evenInteger,Long.valueOf(productParam != null? productParam.getProductHasCommerceCategory().getCommerceCategoryId().getId(): 0) );            
+            loadGenericCombobox(commerceCategoryList,cmbCommerceCategory,"economicActivity",evenInteger,Long.valueOf(productParam != null? productParam.getProductHasCommerceCategory().getCommerceCategoryId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -499,4 +539,27 @@ public class AdminProductController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
+    
+     private void loadCmbProgram(Integer evenInteger, int programTypeId) {
+        EJBRequest request1 = new EJBRequest();
+        cmbProgram.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_PROGRAM_TYPE_ID, programTypeId);
+        request1.setParams(params);
+        List<Program> programList;
+        try {
+            programList = programEJB.getProgramByProgramType(request1);
+            loadGenericCombobox(programList,cmbProgram,"name",evenInteger,Long.valueOf(productParam != null? productParam.getProgramId().getId(): 0) );            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+
 }
