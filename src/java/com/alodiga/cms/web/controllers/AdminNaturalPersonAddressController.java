@@ -59,14 +59,23 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         AdminRequestController adminRequest = new AdminRequestController();
+        AdminNaturalPersonController adminPerson = new AdminNaturalPersonController();
         if (adminRequest.getEventType() != null) {
            eventType = adminRequest.getEventType();
            switch (eventType) {
                 case WebConstants.EVENT_EDIT:
-                    addressParam = adminRequest.getRequest().getPersonId().getPersonHasAddress().getAddressId();
+                    if (adminPerson.getApplicant().getPersonHasAddress() != null) {
+                        addressParam = adminPerson.getApplicant().getPersonHasAddress().getAddressId();
+                    } else {
+                        addressParam = null;
+                    }
                 break;
                 case WebConstants.EVENT_VIEW:
-                    addressParam = adminRequest.getRequest().getPersonId().getPersonHasAddress().getAddressId();
+                    if (adminPerson.getApplicant().getPersonHasAddress() != null) {
+                        addressParam = adminPerson.getApplicant().getPersonHasAddress().getAddressId();
+                    } else {
+                        addressParam = null;
+                    }
                 break;
                 case WebConstants.EVENT_ADD:
                     addressParam = null;
@@ -166,7 +175,6 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
 
     private void saveAddress(Address _address) {
         Person applicantCard = null;
-        tabFamilyReferencesMain.setSelected(true);
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
@@ -227,31 +235,33 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(addressParam);
                 loadCmbCountry(eventType);
+                if (addressParam != null) {
+                    loadFields(addressParam);
+                    onChange$cmbCountry();
+                    onChange$cmbState();
+                    onChange$cmbCity();
+                }
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                onChange$cmbCountry();
-                onChange$cmbState();
-                onChange$cmbCity();
-                break;
+            break;
             case WebConstants.EVENT_VIEW:
-                loadFields(addressParam);
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
-                onChange$cmbState();
+                if (addressParam != null) {
+                    loadFields(addressParam);
+                    onChange$cmbCountry();
+                    onChange$cmbState();
+                    onChange$cmbCity();
+                    blockFields();
+                }
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                onChange$cmbCity();
-                blockFields();
-                break;
+            break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                break;
-            default:
-                break;
+            break;
         }
     }
 
@@ -370,7 +380,6 @@ public class AdminNaturalPersonAddressController extends GenericAbstractAdminCon
             zipZones = utilsEJB.getZipZoneByCities(request1);
             cmbZipZone.getItems().clear();
             for (ZipZone c : zipZones) {
-
                 Comboitem item = new Comboitem();
                 item.setValue(c);
                 item.setLabel(c.getCode());
