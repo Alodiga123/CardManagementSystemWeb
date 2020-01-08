@@ -9,26 +9,35 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
-import com.cms.commons.models.Request;
+import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
-public class ListRequestsCollectionsController extends GenericAbstractListController<Request> {
+public class ListRequestsCollectionsController extends GenericAbstractListController<CollectionsRequest> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
     private RequestEJB requestEJB = null;
-    private List<Request> requestsByCollections = null;
+    private List<CollectionsRequest> collectionsRequestByCollections = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -50,7 +59,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             adminPage = "adminRequestCollections.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
-            loadDataList(requestsByCollections);
+            loadDataList(collectionsRequestByCollections);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -61,35 +70,22 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
 //        Executions.getCurrent().sendRedirect(adminPage);
     }
 
-    public void loadDataList(List<Request> list) {
+    public void loadDataList(List<CollectionsRequest> list) {
         String applicantName = "";
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (Request request : list) {
+                for (CollectionsRequest collectionsRequest : list) {
                     item = new Listitem();
-                    item.setValue(request);
-                    if (request.getPersonId() != null) {
-                        if (request.getPersonId().getApplicantNaturalPerson() != null) {
-                            applicantName = request.getPersonId().getApplicantNaturalPerson().getFirstNames();
-                            applicantName.concat(" ");
-                            applicantName.concat(request.getPersonId().getApplicantNaturalPerson().getLastNames());
-                        } else {
-                            applicantName = request.getPersonId().getLegalPerson().getEnterpriseName();
-                        }
-                    }
-                    String pattern = "yyyy-MM-dd";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(request.getRequestNumber()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
-                    item.appendChild(new Listcell(request.getRequestTypeId().getDescription()));
-                    if (request.getPersonId() != null) {
-                        item.appendChild(new Listcell(applicantName));
-                    }
-                    item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                    item.setValue(collectionsRequest);
+                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
+                    item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
+                    item.appendChild(new Listcell(collectionsRequest.getProgramId().getName()));
+                    item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
+                    item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
+                    item.appendChild(createButtonEditModal(collectionsRequest));
+                    item.appendChild(createButtonViewModal(collectionsRequest));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -105,13 +101,63 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             showError(ex);
         }
     }
+    
+    public Listcell createButtonEditModal(final Object obg) {
+       Listcell listcellEditModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-edit.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+
+            });
+            button.setParent(listcellEditModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellEditModal;
+    }
+    
+    public Listcell createButtonViewModal(final Object obg) {
+       Listcell listcellViewModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-invoice.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+
+            });
+            button.setParent(listcellViewModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellViewModal;
+    }
 
     public void getData() {  
-        requestsByCollections = new ArrayList<Request>();
+        collectionsRequestByCollections = new ArrayList<CollectionsRequest>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            requestsByCollections = requestEJB.getRequestsByCollections(request);
+            collectionsRequestByCollections = requestEJB.getRequestsByCollections(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -143,7 +189,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     }
 
     @Override
-    public List<Request> getFilterList(String filter) {
+    public List<CollectionsRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
