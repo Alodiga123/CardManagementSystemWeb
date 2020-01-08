@@ -13,7 +13,6 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
-                        <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
                                 <div>
@@ -121,7 +120,7 @@
                                                         <row>
                                                             <textbox id="txtDaysToUse" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <textbox id="txtDaysToWithdrawCard" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <textbox id="txtBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                            <datebox id="txtBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
@@ -129,7 +128,7 @@
                                                             <label value="${c:l('cms.common.commerceCategory')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <datebox id="txtEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                             <combobox id="cmbSegmentCommerce" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbCommerceCategory" width="270px" mold="rounded" readonly="true" />
                                                             
@@ -152,10 +151,8 @@
                                         </div>
                                     </vlayout>
                                 </div>
-                                <div></div>
                             </hlayout>
                         </div>
-                        <div></div>
                     </hlayout>
                 </div>
             </center>
