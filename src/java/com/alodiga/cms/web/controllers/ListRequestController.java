@@ -56,7 +56,7 @@ public class ListRequestController extends GenericAbstractListController<Request
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            adminPage = "adminRequest.zul";
+            adminPage = "TabNaturalPerson.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadList(requests);

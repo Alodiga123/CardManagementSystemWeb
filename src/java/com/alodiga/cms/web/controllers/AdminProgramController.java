@@ -38,8 +38,10 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.LegalPerson;
 import java.sql.Timestamp;
 import java.util.Date;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminProgramController extends GenericAbstractAdminController {
 
@@ -80,6 +82,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Button btnSave;
     private Button btnAddNetWork;
     private Integer eventType;
+    private Toolbarbutton tbbTitle;
     public static Program programParent = null;
 
     @Override
@@ -93,6 +96,19 @@ public class AdminProgramController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.program.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.program.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.program.add"));
+                break;
+            default:
+                break;
+        }
         try {
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
@@ -205,10 +221,10 @@ public class AdminProgramController extends GenericAbstractAdminController {
             txtOtheResponsibleNetwoork.setDisabled(true);
         }
     }
-    
+
     private void saveProgram(Program _program) {
         tabNetwork.setSelected(true);
-        
+
         short indBranded = 0;
         short indReloadable = 0;
         short indCashAcces = 0;
@@ -275,9 +291,9 @@ public class AdminProgramController extends GenericAbstractAdminController {
             }
             program = programEJB.saveProgram(program);
             programParent = program;
-            
+
             this.showMessage("sp.common.save.success", false, null);
-            
+
         } catch (WrongValueException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -316,7 +332,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
 //            this.showMessage("sp.error.general", true, ex);
 //        }
 //    }
-
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:

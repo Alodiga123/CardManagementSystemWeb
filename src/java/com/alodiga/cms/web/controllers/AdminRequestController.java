@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
@@ -52,7 +53,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Combobox cmbRequestType;
     private Button btnSave;
     private Tab tabMain;
-    private Integer eventType;
+    public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
 
@@ -60,14 +61,26 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
@@ -81,6 +94,10 @@ public class AdminRequestController extends GenericAbstractAdminController {
     
     public Request getRequest() {
         return this.requestCard;
+    }
+    
+    public Integer getEventType() {
+        return this.eventType;
     }
     
     public void onChange$cmbCountry() {
@@ -166,6 +183,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbProgram(eventType);
@@ -173,6 +191,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
+                requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbProgram(eventType);

@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.requestType.list')}" onClick='Executions.sendRedirect(&quot;listCardRequestType.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.cardRequestType.list')}" onClick='Executions.sendRedirect(&quot;listCardRequestType.zul&quot;)'/>
                                                  |
                                                  <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.requestType.add')}"/>
                                             </hlayout>
@@ -53,14 +53,14 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.code')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.code')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtCode" width="60px" constraint="no empty: ${c:l('error.field.required')}" maxlength="10"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('sp.common.description')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />

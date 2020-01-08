@@ -4,45 +4,20 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminRequestCollections" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRequestCollectionsController" class="general-window">
+    <window id="winAdminRequestCollections" title="${c:l('cms.tab.requestByCollections')}" width="950px" height="450px" apply="com.alodiga.cms.web.controllers.AdminRequestCollectionsController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
-            <north border="none" size="52px" class="content-transparent">
-                <include src="adminHeader.zul"/>
-            </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
-                                <div>
-                                    <include src="adminMainMenu.zul"/>
-                                </div>
                                 <div width="900px">
                                     <vlayout>
-                                        <div height="20px" width="100%" align="left">
-                                            <!--Bread crumb-->
-                                            <hlayout>
-                                                <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.request.add')}"/>
-                                            </hlayout>
-                                        </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -52,32 +27,82 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <textbox id="txtNumber" width="200px"/>
+                                                        </row>
+                                                        <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
-                                                            <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbPersonType" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbProductType" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionRequestType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.requestCollection.collectionTypes')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbRequestType" width="200px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbPrograms" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbRequestType" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCollectionType" width="270px" mold="rounded" readonly="true"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.requestCollection.approved')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hbox>
+                                                                <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rApprovedYes" label="${c:l('cms.commom.Yes')}" radiogroup="indApproved" />
+                                                                            <radio id="rApprovedNo" label="${c:l('cms.commom.No')} " radiogroup="indApproved" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hlayout>
+                                                                <textbox id="txtObservations" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>
+                                                    </rows>
+                                                </grid>
+                                                <label value="${c:l('cms.upload.title')}" sclass="lblbold"/>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="800px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <row>
+                                                            <vbox>
+                                                                <button id="btnUpload" label="${c:l('sp.automatic.commission.loadCSV')}" onUpload="processMedia(event.getMedias());" onClick="Fileupload.get(-1);" />
+                                                                <image id="image" />
+                                                            </vbox>
+                                                        </row>
+                                                        <row>
+                                                            <vlayout id="pics" height="50px" style="overflow:auto" />
                                                         </row>
                                                     </rows>
                                                 </grid>
                                             </vlayout>
+                                            <separator/>
+                                            <label id="lblInfo" value=" " width="795px" style="font-weight:bold;" />
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequestsCollections.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray"/>
                                         </div>
                                     </vlayout>
                                 </div>
@@ -88,9 +113,6 @@
                     </hlayout>
                 </div>
             </center>
-            <south border="none" size="40px">
-                <include src="adminFooter.zul"/>
-            </south>
         </borderlayout>
     </window>
 </zk>
