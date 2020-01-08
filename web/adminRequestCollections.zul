@@ -80,17 +80,35 @@
                                                 <label value="${c:l('cms.upload.title')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="800px"/>
+                                                        <column label="" width="700px"/>
+                                                        <column label="" width="100px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <vbox>
-                                                                <button id="btnUpload" label="${c:l('sp.automatic.commission.loadCSV')}" onUpload="processMedia(event.getMedias());" onClick="Fileupload.get(-1);" />
-                                                                <image id="image" />
-                                                            </vbox>
-                                                        </row>
-                                                        <row>
-                                                            <vlayout id="pics" height="50px" style="overflow:auto" />
+                                                            <zscript deferred="true"><![CDATA[
+                                                                import org.zkoss.util.media.Media;
+
+                                                                Executions.getCurrent().getDesktop().setAttribute(
+                                                                        "org.zkoss.zul.Fileupload.target", uploadBtn);
+
+                                                                public void processMedia(Media[] media) {
+                                                                    if (media != null) {
+                                                                        for (int i = 0; i < media.length; i++) {
+                                                                            if (media[i] instanceof org.zkoss.image.Image) {
+                                                                                image.setContent(media[i]);
+                                                                            } else {
+                                                                                Messagebox.show("Not an image: " + media[i], "Error",
+                                                                                        Messagebox.OK, Messagebox.ERROR);
+                                                                                break; //not to show too many errors
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]]></zscript>
+                                                                <vbox>
+                                                                    <button id="uploadBtn" label="Upload" onUpload="processMedia(event.getMedias());" onClick="Fileupload.get(-1);" />
+                                                                    <image id="image" />
+                                                                </vbox>
                                                         </row>
                                                     </rows>
                                                 </grid>
