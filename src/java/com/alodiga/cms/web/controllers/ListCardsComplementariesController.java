@@ -70,7 +70,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            //adminPage = "adminCardComplementaries.zul";
             adminPage = "TabCardsComplementaries.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();

@@ -95,7 +95,7 @@ public class ListRequestController extends GenericAbstractListController<Request
                         } else {
                            applicantName = request.getPersonId().getLegalPerson().getEnterpriseName(); 
                         }   
-                    }
+                    } 
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(request.getRequestNumber()));
@@ -103,6 +103,8 @@ public class ListRequestController extends GenericAbstractListController<Request
                     item.appendChild(new Listcell(request.getRequestTypeId().getDescription()));
                     if (request.getPersonId() != null) {
                         item.appendChild(new Listcell(applicantName));
+                    } else {
+                        item.appendChild(new Listcell("SIN REGISTRAR"));
                     }
                     item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());

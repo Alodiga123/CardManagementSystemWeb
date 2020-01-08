@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('sp.common.listCurrency')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.listCurrency')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -55,8 +55,8 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.name')}" width="400px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.symbol')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameMoney')}" width="400px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.symbolMoney')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
