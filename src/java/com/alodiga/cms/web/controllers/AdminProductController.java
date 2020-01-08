@@ -61,8 +61,8 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Textbox txtDaysToActivate;
     private Textbox txtDaysToUse;
     private Textbox txtDaysToWithdrawCard;
-    private Datebox txtBeginDateValidity;
-    private Datebox txtEndDateValidity;
+    private Datebox dtbBeginDateValidity;
+    private Datebox dtbEndDateValidity;
     private Combobox cmbCountry;
     private Combobox cmbCardType;
     private Combobox cmbIssuer;
@@ -78,7 +78,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Combobox cmbSegmentCommerce;
     private Combobox cmbCommerceCategory;
     private Combobox cmbSegmentMarketing;
-    private Tab tabNetwork;
+    private Tab tabNetworkProduct;
     private Button btnSave;
     private Integer eventType;
 
@@ -88,7 +88,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         productParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Product) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -113,13 +112,63 @@ public class AdminProductController extends GenericAbstractAdminController {
         txtDaysToActivate.setRawValue(null);
         txtDaysToUse.setRawValue(null);
         txtDaysToWithdrawCard.setRawValue(null);
-        txtBeginDateValidity.setRawValue(null);
-        txtEndDateValidity.setRawValue(null);
+        dtbBeginDateValidity.setRawValue(null);
+        dtbEndDateValidity.setRawValue(null);
     }
     
     private void loadFields(Product product) {
         try {
             txtName.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtBinNumber.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtValidityYears.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtDaysBeforeExpiration.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtDaysToInactivate.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtDaysToActivate.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtDaysToUse.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtDaysToWithdrawCard.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            txtDaysToWithdrawCard.setText(product.getName());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            dtbBeginDateValidity.setValue(product.getBeginDateValidity());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        try {
+            dtbEndDateValidity.setValue(product.getEndDateValidity());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -131,7 +180,7 @@ public class AdminProductController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
-    public Boolean validateEmpty() {
+    public Boolean validatesetValueEmpty() {
 //        if (txtDocumentPerson.getText().isEmpty()) {
 //            txtDocumentPerson.setFocus(true);
 //            this.showMessage("sp.error.field.cannotNull", true, null);
@@ -180,8 +229,8 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setDaysToActivate((Integer.parseInt(txtDaysToActivate.getText())));
             product.setDaysToUse((Integer.parseInt(txtDaysToUse.getText())));
             product.setDaysToWithdrawCard((Integer.parseInt(txtDaysToWithdrawCard.getText())));
-            product.setBeginDateValidity((txtBeginDateValidity.getValue()));
-            product.setEndDateValidity((txtEndDateValidity.getValue())); 
+            product.setBeginDateValidity((dtbBeginDateValidity.getValue()));
+            product.setEndDateValidity((dtbEndDateValidity.getValue())); 
             product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
             product = productEJB.saveProduct(product);
@@ -191,7 +240,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             ProductHasCommerceCategory productHasCommerceCategory = new ProductHasCommerceCategory();
             productHasCommerceCategory.setProductId(product);
             productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
-            
+            productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
             
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
@@ -200,7 +249,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() {
-        if (validateEmpty()) {
+        //if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveProduct(null);
@@ -211,7 +260,7 @@ public class AdminProductController extends GenericAbstractAdminController {
                 default:
                     break;
             }
-        }
+        //}
     }
 
     public void onChange$cmbSegmentCommerce() {
