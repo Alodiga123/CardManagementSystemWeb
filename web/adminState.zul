@@ -25,11 +25,11 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('sp.crud.country.state.list')}" onClick='Executions.sendRedirect(&quot;listState.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('sp.common.state')}"/>
-                                                 |
+                                                |
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
@@ -38,7 +38,7 @@
                                             <vlayout>
                                                 <div align="right">
                                                     <hlayout>
-                                                       <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
+                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
                                                         <separator/>
                                                         <label value="*" sclass="lblreq" />
                                                         <separator/>
@@ -54,18 +54,14 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.product.status')}" sclass="lblbold"/>
-                                               
+                                                            <label value="${c:l('sp.product.status')}" sclass="lblbold"/>                                               
                                                         </row>
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                
-                                                            </hlayout>
-                                                
+                                                            </hlayout>                                                
                                                         </row>
-                                                         <row>
-                                                           
+                                                        <row>                                                           
                                                             <label value="${c:l('sp.common.Country')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
