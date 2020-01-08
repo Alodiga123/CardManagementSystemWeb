@@ -67,7 +67,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
-    
     private Person person;
     private Button btnSave;
     private Integer eventType;
@@ -77,9 +76,18 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        applicantNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        //eventType = 1;
+        switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    applicantNaturalPersonParam = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_VIEW:
+                    applicantNaturalPersonParam = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_ADD:
+                    applicantNaturalPersonParam = null;
+                break;
+           }
         initialize();
     }
 
