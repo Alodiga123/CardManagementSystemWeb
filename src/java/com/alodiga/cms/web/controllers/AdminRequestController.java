@@ -53,6 +53,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Combobox cmbRequestType;
     private Button btnSave;
     private Tab tabMain;
+    private Tab tabAddress;
+    private Tab tabFamilyReferencesMain;
+    private Tab tabAdditionalCards;
     public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
@@ -70,12 +73,38 @@ public class AdminRequestController extends GenericAbstractAdminController {
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                if (requestParam.getPersonId() != null) {
+                    tabMain.setDisabled(false);
+                    tabAddress.setDisabled(false);
+                    tabFamilyReferencesMain.setDisabled(false);
+                    tabAdditionalCards.setDisabled(false);
+                } else {
+                    tabMain.setDisabled(true);
+                    tabAddress.setDisabled(true);
+                    tabFamilyReferencesMain.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
+                }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
+                if (requestParam.getPersonId() != null) {
+                    tabMain.setDisabled(false);
+                    tabAddress.setDisabled(false);
+                    tabFamilyReferencesMain.setDisabled(false);
+                    tabAdditionalCards.setDisabled(false);
+                } else {
+                    tabMain.setDisabled(true);
+                    tabAddress.setDisabled(true);
+                    tabFamilyReferencesMain.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
+                }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
                 break;
             case WebConstants.EVENT_ADD:
+                tabMain.setDisabled(true);
+                tabAddress.setDisabled(true);
+                tabFamilyReferencesMain.setDisabled(true);
+                tabAdditionalCards.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
                 break;
             default:
@@ -149,7 +178,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request.setRequestNumber(numberRequest);
             Date dateRequest = new Date();
             request.setRequestDate(dateRequest);
-            request.setPersonId(personNotRegister);
+            //request.setPersonId(personNotRegister);
             request.setStatusRequestId(statusRequest);
             request.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             request.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
@@ -159,7 +188,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
-            tabMain.setSelected(true);
+            tabMain.setDisabled(false);
             requestCard = request;
         } catch (Exception ex) {
             showError(ex);
