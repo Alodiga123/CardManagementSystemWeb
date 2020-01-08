@@ -60,11 +60,19 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        addressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Address)(((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")).getPersonId().getPersonHasAddress().getAddressId()) : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        //eventType = 1;
+        switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    addressParam = (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")).getPersonId().getPersonHasAddress().getAddressId());
+                break;
+                case WebConstants.EVENT_VIEW:
+                    addressParam = (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")).getPersonId().getPersonHasAddress().getAddressId());
+                break;
+                case WebConstants.EVENT_ADD:
+                    addressParam = null;
+                break;
+           }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override

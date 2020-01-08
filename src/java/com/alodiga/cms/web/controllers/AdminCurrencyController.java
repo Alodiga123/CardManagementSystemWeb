@@ -6,10 +6,12 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Currency;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminCurrencyController extends GenericAbstractAdminController {
 
@@ -19,28 +21,34 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
     private Currency currencyParam;
     private Button btnSave;
     private Integer evenType2 = -1;
+    private Toolbarbutton tbbTitle;        
             
-            
-
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        
+        super.doAfterCompose(comp);       
         currencyParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Currency) Sessions.getCurrent().getAttribute("object") : null;
         evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         initialize();
         loadData();
-//      initView(eventType, "sp.crud.requestType");
+
     }
 
-//    @Override
-//    public void initView(int eventType, String adminView) {
-//        super.initView(eventType, "sp.crud.requestType");
-//    }
     @Override
     public void initialize() {
         super.initialize();
+        switch (evenType2) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.currency.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.currency.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.currency.add"));
+                break;
+            default:
+                break;
+        }
         try {
 
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
