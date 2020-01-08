@@ -4,16 +4,15 @@ import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CollectionsRequest;
+import com.cms.commons.models.Request;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private Listbox lbxRecords;
     private Textbox txtName;
     private RequestEJB requestEJB = null;
-    private List<CollectionsRequest> collectionsRequestByCollections = null;
+    private List<CollectionsRequest> collectionsByRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -59,15 +58,10 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             adminPage = "adminRequestCollections.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
-            loadDataList(collectionsRequestByCollections);
+            loadDataList(collectionsByRequest);
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-
-    public void onClick$btnAdd() throws InterruptedException {
-//        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-//        Executions.getCurrent().sendRedirect(adminPage);
     }
 
     public void loadDataList(List<CollectionsRequest> list) {
@@ -101,22 +95,22 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             showError(ex);
         }
     }
-    
+
     public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
+        Listcell listcellEditModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
@@ -126,22 +120,22 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         }
         return listcellEditModal;
     }
-    
+
     public Listcell createButtonViewModal(final Object obg) {
-       Listcell listcellViewModal = new Listcell();
-        try {    
+        Listcell listcellViewModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
@@ -152,12 +146,23 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         return listcellViewModal;
     }
 
-    public void getData() {  
-        collectionsRequestByCollections = new ArrayList<CollectionsRequest>();
+    public void getData() {
+        collectionsByRequest = new ArrayList<CollectionsRequest>();
+        Request requestCard = null;
+        
+        AdminRequestController adminRequestController = new AdminRequestController();
+        if (adminRequestController.getRequest().getId() != null) {
+            requestCard = adminRequestController.getRequest();
+        }
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            collectionsRequestByCollections = requestEJB.getRequestsByCollections(request);
+            Map params = new HashMap();
+            EJBRequest request1 = new EJBRequest();
+            params.put(Constants.COUNTRY_KEY, requestCard.getCountryId().getId());
+            params.put(Constants.PRODUCT_TYPE_KEY, requestCard.getProductTypeId().getId());
+            params.put(Constants.PROGRAM_KEY, requestCard.getProgramId().getId());
+            params.put(Constants.PERSON_TYPE_KEY, requestCard.getPersonTypeId().getId());
+            request1.setParams(params);
+            collectionsByRequest = requestEJB.getCollectionsByRequest(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
