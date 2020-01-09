@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
-<!--zk xmlns:n="native">
+<zk xmlns:n="native">
     <window id="winTabProduct" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProductController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
@@ -23,11 +23,13 @@
                                 <div width="900px">
                                     <vlayout>
                                         <div height="20px" width="100%" align="left">
-                                            <!-Bread crumb>
+                                            <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.product.list')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.Product')}"/>
+                                                |
+                                                <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -35,8 +37,8 @@
                                             <vlayout>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabProductMain" label="${c:l('cms.tab.productMain')}" />
-                                                        <tab id="tabNetworkProduct" label="${c:l('cms.common.networkProduct')}"/>
+                                                        <tab id="tabMain" label="${c:l('cms.tab.productMain')}" />
+                                                        <tab id="tabCommerceCategory" label="${c:l('cms.tab.commerceCategory')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -64,4 +66,5 @@
             </south>
         </borderlayout>
     </window>
-</zk-->
+</zk>
+ 2 
