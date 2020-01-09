@@ -180,27 +180,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
-    public Boolean validateEmpty() {
-        /*
-        txtValidityYears.setRawValue(null);
-        txtDaysBeforeExpiration.setRawValue(null);
-        txtDaysToInactivate.setRawValue(null);
-        txtDaysToActivate.setRawValue(null);
-        txtDaysToUse.setRawValue(null);
-        txtDaysToWithdrawCard.setRawValue(null);
-        */
-        if (txtName.getText().isEmpty()) {
-            txtName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtBinNumber.getText().isEmpty()) {
-            txtBinNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else {
-            return true;
-        }
-        return false;
-    }
-
     private void saveProduct(Product _product) {
         try {
             Product product = null;
@@ -248,6 +227,27 @@ public class AdminProductController extends GenericAbstractAdminController {
         }
     }
 
+    public Boolean validateEmpty() {
+        /*
+        txtValidityYears.setRawValue(null);
+        txtDaysBeforeExpiration.setRawValue(null);
+        txtDaysToInactivate.setRawValue(null);
+        txtDaysToActivate.setRawValue(null);
+        txtDaysToUse.setRawValue(null);
+        txtDaysToWithdrawCard.setRawValue(null);
+        */
+        if (txtName.getText().isEmpty()) {
+            txtName.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtBinNumber.getText().isEmpty()) {
+            txtBinNumber.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
+    
     public void onClick$btnSave() {
         if (validateEmpty()) {
             switch (eventType) {
