@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.RequestEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -98,7 +97,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getDescription()));
+                    item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, collectionsRequest) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, collectionsRequest) : new Listcell());
                     item.setParent(lbxRecords);
