@@ -51,14 +51,13 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.code')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.country.name')}" width="220px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country.name')}" width="245px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.codeIso2')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.codeIso2')}" width="130px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.currency')}" width="160px" sort="auto"/>
-                                                    <listheader label="-" width="45px"/>
+                                                    <listheader label="${c:l('cms.common.currency')}" width="180px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
