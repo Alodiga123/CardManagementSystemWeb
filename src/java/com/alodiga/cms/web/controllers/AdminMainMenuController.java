@@ -53,7 +53,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
 
     private void loadAccountData() {
         User user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-        ltcFullName.setLabel(user.getFirstName() + " " + user.getLastName());
+        ltcFullName.setLabel(user.getFirstNames() + " " + user.getLastNames());
         //TODO:
         ltcProfile.setLabel("Administrador");
         ltcLogin.setLabel(user.getLogin());
