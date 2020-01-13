@@ -42,18 +42,12 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.requestType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.requestCollection.collectionTypes')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <combobox id="cmbPrograms" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbRequestType" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbCollectionType" width="270px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                        <row>
                                                             <label value="${c:l('cms.requestCollection.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <combobox id="cmbPrograms" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCollectionType" width="270px" mold="rounded" readonly="true"/>
                                                             <hbox>
                                                                 <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -70,10 +64,12 @@
                                                             <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <textbox id="txtObservations" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
+                                                            <cell colspan="3">
+                                                             <hlayout>
+                                                                <textbox id="txtObservations" multiline="true" rows="2" width="830px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1490"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            </hlayout>   
+                                                            </cell>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -85,30 +81,10 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <zscript deferred="true"><![CDATA[
-                                                                import org.zkoss.util.media.Media;
-
-                                                                Executions.getCurrent().getDesktop().setAttribute(
-                                                                        "org.zkoss.zul.Fileupload.target", uploadBtn);
-
-                                                                public void processMedia(Media[] media) {
-                                                                    if (media != null) {
-                                                                        for (int i = 0; i < media.length; i++) {
-                                                                            if (media[i] instanceof org.zkoss.image.Image) {
-                                                                                image.setContent(media[i]);
-                                                                            } else {
-                                                                                Messagebox.show("Not an image: " + media[i], "Error",
-                                                                                        Messagebox.OK, Messagebox.ERROR);
-                                                                                break; //not to show too many errors
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]]></zscript>
-                                                                <vbox>
-                                                                    <button id="uploadBtn" label="Upload" onUpload="processMedia(event.getMedias());" onClick="Fileupload.get(-1);" />
-                                                                    <image id="image" />
-                                                                </vbox>
+                                                            <vbox>
+                                                                <button label="${c:l('sp.common.attacht.file')}" upload="true" id="btnUpload" visible="true" ></button>
+                                                                <vbox id="divPreview" width="890px"/>
+                                                            </vbox>
                                                         </row>
                                                     </rows>
                                                 </grid>
