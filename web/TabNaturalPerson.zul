@@ -46,12 +46,13 @@
                                                 </div>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
                                                     <tabs>
-                                                        <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}" />
-                                                        <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}" />
+                                                        <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}"/>
+                                                        <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}"/>
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
-                                                        <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}" />
-                                                        <tab id="tabAdditionalCards" label="${c:l('cms.tab.cardComplementaries')}" />
-                                                        <tab id="tabRequestbyCollection" label="${c:l('cms.tab.requestByCollections')}" />
+                                                        <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}"/>
+                                                        <tab id="tabAdditionalCards" label="${c:l('cms.tab.cardComplementaries')}"/>
+                                                        <tab id="tabRequestbyCollection" label="${c:l('cms.tab.requestByCollections')}"/>
+                                                        <tab id="tabApplicationReview" label="${c:l('cms.tab.applicationReview')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -71,6 +72,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listRequestsCollections.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="adminApplicationReview.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

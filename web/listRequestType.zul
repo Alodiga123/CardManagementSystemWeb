@@ -53,11 +53,10 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.code')}" width="60px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description')}" width="255px" sort="auto"/>
-                                                    <listheader label="-" width="45px"/>
+                                                    <listheader label="${c:l('cms.common.code')}" width="400px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.description')}" width="405px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
