@@ -42,7 +42,7 @@
                                                             <label value="${c:l('cms.crud.applicantionRiview.commercialAssessorUserCode')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="dtbReview" width="250px"/>
+                                                            <datebox id="txtReviewDate" width="250px"/>
                                                             <textbox id="txtAgency" constraint="no empty" maxlength="40" width="250px"/>
                                                             <textbox id="txtCommercialAssessorUserCode" constraint="no empty" maxlength="40" width="250px"/>
                                                         </row>
@@ -53,8 +53,16 @@
                                                         </row>
                                                         <row>
                                                             <textbox id="txtAssessorName" value="" width="250px" maxlength="50"/>
-                                                            <combobox id="cmbProductType" width="250px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbProduct" width="250px" mold="rounded" readonly="true"/>
                                                             <textbox id="txtmaximumRechargeAmount" value="" width="250px" maxlength="40"/>
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="3">
+                                                             <hlayout>
+                                                                <textbox id="txtObservations" multiline="true" rows="2" width="830px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1490"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>   
+                                                            </cell>
                                                         </row>
                                                     </rows>
                                                 </grid>
