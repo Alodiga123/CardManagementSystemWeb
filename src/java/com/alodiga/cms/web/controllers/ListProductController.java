@@ -49,7 +49,7 @@ public class ListProductController extends GenericAbstractListController<Product
         super.initialize();
         try {
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminProduct.zul";
+            adminPage = "TabProduct.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
             loadDataList(productList);
@@ -75,9 +75,8 @@ public class ListProductController extends GenericAbstractListController<Product
 
 
     public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
-        Sessions.getCurrent().removeAttribute("object");
-        Executions.getCurrent().sendRedirect(adminPage);
+        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+        Executions.getCurrent().sendRedirect("TabProduct.zul");
     }
     
        

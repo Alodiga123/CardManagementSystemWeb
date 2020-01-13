@@ -36,9 +36,9 @@ public class IndexAdminController_ extends GenericAbstractController {
 
     @Override
     public void initialize() {
-            super.initialize();
-//            txtLogin.setText("lg");
-//            txtPassword.setText("963");
+        super.initialize();
+        txtLogin.setText("kgomez");
+        txtPassword.setText("123456");
     }
 
     public void clearFields() {
