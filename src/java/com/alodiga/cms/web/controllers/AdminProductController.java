@@ -7,23 +7,21 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.BinSponsor;
 import com.cms.commons.models.CardType;
-import com.cms.commons.models.CommerceCategory;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.KindCard;
 import com.cms.commons.models.LevelProduct;
 import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasCommerceCategory;
 import com.cms.commons.models.ProductUse;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramType;
-import com.cms.commons.models.SegmentCommerce;
 import com.cms.commons.models.SegmentMarketing;
 import com.cms.commons.models.StorageMedio;
 import com.cms.commons.util.Constants;
@@ -41,7 +39,6 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Datebox;
@@ -75,12 +72,11 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Combobox cmbDomesticCurrency;
     private Combobox cmbInternationalCurrency;
     private Combobox cmbStorageMedio;
-    private Combobox cmbSegmentCommerce;
-    private Combobox cmbCommerceCategory;
     private Combobox cmbSegmentMarketing;
-    private Tab tabNetworkProduct;
+    private Tab tabProduct;
     private Button btnSave;
     private Integer eventType;
+    public static Product productParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -114,6 +110,10 @@ public class AdminProductController extends GenericAbstractAdminController {
         txtDaysToWithdrawCard.setRawValue(null);
         dtbBeginDateValidity.setRawValue(null);
         dtbEndDateValidity.setRawValue(null);
+    }
+
+    public Product getProductParent() {
+        return productParent;
     }
     
     private void loadFields(Product product) {
@@ -180,35 +180,16 @@ public class AdminProductController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
-    public Boolean validatesetValueEmpty() {
-//        if (txtDocumentPerson.getText().isEmpty()) {
-//            txtDocumentPerson.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else if (txtIdentityCode.getText().isEmpty()) {
-//            txtIdentityCode.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else {
-//            return true;
-//        }
-        return false;
-    }
-
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
-    private void saveProduct(Product _product) {
+    private void saveProduct(Product _product) throws RegisterNotFoundException, NullParameterException, GeneralException {
         try {
             Product product = null;
+            
             if (_product != null) {
                 product = _product;
             } else {//New Product
                 product = new Product();
             }
+    
             //Guardar Producto
             product.setName(txtName.getText());
             product.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
@@ -235,21 +216,35 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
             product = productEJB.saveProduct(product);
             productParam = product;
-            
-            //Guardar ProductHasCommerceCategory
-            ProductHasCommerceCategory productHasCommerceCategory = new ProductHasCommerceCategory();
-            productHasCommerceCategory.setProductId(product);
-            productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
-            productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
-            
-            this.showMessage("sp.common.save.success", false, null);
+            productParent = product;
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-    public void onClick$btnSave() {
-        //if (validateEmpty()) {
+            
+        public Boolean validateEmpty() {
+        /*
+        txtValidityYears.setRawValue(null);
+        txtDaysBeforeExpiration.setRawValue(null);
+        txtDaysToInactivate.setRawValue(null);
+        txtDaysToActivate.setRawValue(null);
+        txtDaysToUse.setRawValue(null);
+        txtDaysToWithdrawCard.setRawValue(null);
+        */
+        if (txtName.getText().isEmpty()) {
+            txtName.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtBinNumber.getText().isEmpty()) {
+            txtBinNumber.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
+    
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
+        if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveProduct(null);
@@ -260,15 +255,11 @@ public class AdminProductController extends GenericAbstractAdminController {
                 default:
                     break;
             }
-        //}
-    }
-
-    public void onChange$cmbSegmentCommerce() {
-        SegmentCommerce segmentCommerce = (SegmentCommerce) cmbSegmentCommerce.getSelectedItem().getValue();
-        loadCmbCommerceCategory(eventType, segmentCommerce.getId());
+        }
     }
     
     public void onChange$cmbProgramType() {
+        cmbProgram.setVisible(true);
         ProgramType programType = (ProgramType) cmbProgramType.getSelectedItem().getValue();
         loadCmbProgram(eventType, programType.getId());
     }
@@ -276,6 +267,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                productParent = productParam;
                 loadFields(productParam);
                 loadCmbCountry(eventType);
                 loadCmbIssuer(eventType);
@@ -289,11 +281,10 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbInternationalCurrency(eventType);
                 loadCmbStorageMedio(eventType);
                 loadCmbSegmentMarketing(eventType);
-                loadCmbSegmentCommerce(eventType);
-                onChange$cmbSegmentCommerce();
                 onChange$cmbProgramType();
                 break;
             case WebConstants.EVENT_VIEW:
+                productParent = productParam;
                 loadFields(productParam);
                 txtName.setDisabled(true);
                 blockFields();
@@ -309,8 +300,6 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbInternationalCurrency(eventType);
                 loadCmbStorageMedio(eventType);
                 loadCmbSegmentMarketing(eventType);
-                loadCmbSegmentCommerce(eventType);
-                onChange$cmbSegmentCommerce();
                 onChange$cmbProgramType();
                 break;
             case WebConstants.EVENT_ADD:
@@ -326,7 +315,6 @@ public class AdminProductController extends GenericAbstractAdminController {
                 loadCmbInternationalCurrency(eventType);
                 loadCmbStorageMedio(eventType);
                 loadCmbSegmentMarketing(eventType);
-                loadCmbSegmentCommerce(eventType);
                 break;
             default:
                 break;
@@ -548,48 +536,8 @@ public class AdminProductController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }    
     }
-    
-    private void loadCmbSegmentCommerce(Integer eventType) {
-        EJBRequest request1 = new EJBRequest();
-        List<SegmentCommerce> segmentCommerceList;
-        try {
-            segmentCommerceList = productEJB.getSegmentCommerce(request1);
-            loadGenericCombobox(segmentCommerceList,cmbSegmentCommerce,"name",eventType,Long.valueOf(productParam != null? productParam.getProductHasCommerceCategory().getCommerceCategoryId().getsegmentCommerceId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }    
-    }
-    
-    private void loadCmbCommerceCategory(Integer evenInteger, int segmentCommerceId) {
-        EJBRequest request1 = new EJBRequest();
-        cmbCommerceCategory.getItems().clear();
-        Map params = new HashMap();
-        params.put(QueryConstants.PARAM_SEGMENT_COMMERCE_ID, segmentCommerceId);
-        request1.setParams(params);
-        List<CommerceCategory> commerceCategoryList;
-        try {
-            commerceCategoryList = productEJB.getCommerceCategoryBySegmentCommerce(request1);
-            loadGenericCombobox(commerceCategoryList,cmbCommerceCategory,"economicActivity",evenInteger,Long.valueOf(productParam != null? productParam.getProductHasCommerceCategory().getCommerceCategoryId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-    
-     private void loadCmbProgram(Integer evenInteger, int programTypeId) {
+
+    private void loadCmbProgram(Integer evenInteger, int programTypeId) {
         EJBRequest request1 = new EJBRequest();
         cmbProgram.getItems().clear();
         Map params = new HashMap();
@@ -610,5 +558,5 @@ public class AdminProductController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-
+    
 }

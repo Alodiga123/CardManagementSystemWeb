@@ -1,6 +1,10 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.RequestEJB;
+
+
+import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.web.controllers.*;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -8,8 +12,9 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.CollectionsRequest;
-import com.cms.commons.models.Request;
+import com.cms.commons.models.Product;
+import com.cms.commons.models.ProductHasCommerceCategory;
+import com.cms.commons.models.ProgramHasNetwork;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -18,33 +23,46 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListRequestsCollectionsController extends GenericAbstractListController<CollectionsRequest> {
+public class ListCommerceCategoryController extends GenericAbstractListController<ProductHasCommerceCategory> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Tab tabAddress;
     private Textbox txtName;
-    private RequestEJB requestEJB = null;
-    private List<CollectionsRequest> collectionsByRequest = null;
+    private ProductEJB productEJB = null;
+    private List<ProductHasCommerceCategory> productHasCommerceCategory = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
     }
 
     public void startListener() {
+        EventQueue que = EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(productHasCommerceCategory);
+            }
+        });
     }
 
     @Override
@@ -55,31 +73,45 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "adminRequestCollections.zul";
-            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
+            adminPage = "/adminAddCommerceCategory.zul";
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            loadDataList(collectionsByRequest);
+            loadDataList(productHasCommerceCategory);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void loadDataList(List<CollectionsRequest> list) {
-        String applicantName = "";
+
+    public void onClick$btnAdd() throws InterruptedException {
+        try {
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", productHasCommerceCategory);
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+            window.doModal();
+        } catch (Exception ex) {
+            this.showMessage("sp.error.general", true, ex);
+        }
+    }
+
+    public void onClick$btnDelete() {
+    }
+
+    public void loadDataList(List<ProductHasCommerceCategory> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (CollectionsRequest collectionsRequest : list) {
+                //btnDownload.setVisible(true);
+                for (ProductHasCommerceCategory productHasCommerceCategory : list) {
                     item = new Listitem();
-                    item.setValue(collectionsRequest);
-                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getProgramId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
-                    item.appendChild(createButtonEditModal(collectionsRequest));
-                    item.appendChild(createButtonViewModal(collectionsRequest));
+                    item.setValue(productHasCommerceCategory);
+                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getMccCode()));
+                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
+                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getsegmentCommerceId().getName()));
+                    item.appendChild(createButtonEditModal(productHasCommerceCategory));
+                    item.appendChild(createButtonViewModal(productHasCommerceCategory));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -91,6 +123,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
             showError(ex);
         }
@@ -147,22 +180,19 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     }
 
     public void getData() {
-        collectionsByRequest = new ArrayList<CollectionsRequest>();
-        Request requestCard = null;
-        
-        AdminRequestController adminRequestController = new AdminRequestController();
-        if (adminRequestController.getRequest().getId() != null) {
-            requestCard = adminRequestController.getRequest();
-        }
+        productHasCommerceCategory = new ArrayList<ProductHasCommerceCategory>();
+        Product product = null;
         try {
+             //Producto principal
+            AdminProductController adminProduct = new AdminProductController();
+            if (adminProduct.getProductParent().getId() != null) {
+                product = adminProduct.getProductParent();
+            }
+            EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            EJBRequest request1 = new EJBRequest();
-            params.put(Constants.COUNTRY_KEY, requestCard.getCountryId().getId());
-            params.put(Constants.PRODUCT_TYPE_KEY, requestCard.getProductTypeId().getId());
-            params.put(Constants.PROGRAM_KEY, requestCard.getProgramId().getId());
-            params.put(Constants.PERSON_TYPE_KEY, requestCard.getPersonTypeId().getId());
-            request1.setParams(params);
-            collectionsByRequest = requestEJB.getCollectionsByRequest(request1);
+            params.put(Constants.PRODUCT_KEY, product.getId());
+            request.setParams(params);
+            productHasCommerceCategory = productEJB.getCommerceCategoryByProduct(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -175,7 +205,6 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private void showEmptyList() {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-        item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.setParent(lbxRecords);
@@ -194,7 +223,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     }
 
     @Override
-    public List<CollectionsRequest> getFilterList(String filter) {
+    public List<ProductHasCommerceCategory> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

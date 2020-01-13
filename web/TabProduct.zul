@@ -5,7 +5,7 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabProgramNetwork" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProgramController" class="general-window">
+    <window id="winTabProduct" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProductController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -27,7 +27,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.Program')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.Product')}"/>
                                                 |
                                                 <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
@@ -37,15 +37,15 @@
                                             <vlayout>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabMain" label="${c:l('cms.tab.programMain')}" />
-                                                        <tab id="tabNetwork" label="${c:l('cms.common.netWork')}"/>
+                                                        <tab id="tabMain" label="${c:l('cms.tab.productMain')}" />
+                                                        <tab id="tabCommerceCategory" label="${c:l('cms.tab.commerceCategory')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminProgram.zul"/>
+                                                            <include src="adminProduct.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listNetwork.zul"/>
+                                                            <include src="listCommerceCategory.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

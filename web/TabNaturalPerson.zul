@@ -51,6 +51,7 @@
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}" />
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.cardComplementaries')}" />
+                                                        <tab id="tabRequestbyCollection" label="${c:l('cms.tab.requestByCollections')}" />
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -67,6 +68,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listCardsComplementaries.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listRequestsCollections.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

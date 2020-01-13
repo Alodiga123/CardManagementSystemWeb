@@ -67,10 +67,7 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <hlayout>
-                                                                <textbox id="txtDescription" width="200px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <combobox id="cmbCollectionType" width="200px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

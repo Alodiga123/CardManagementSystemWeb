@@ -36,8 +36,18 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        familyReferencesParam = (Sessions.getCurrent().getAttribute("object") != null) ? (FamilyReferences) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_VIEW:
+                    familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_ADD:
+                    familyReferencesParam = null;
+                break;
+           }
         initialize();
     }
 
