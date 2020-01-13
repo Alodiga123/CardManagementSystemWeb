@@ -180,27 +180,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
-    public Boolean validatesetValueEmpty() {
-//        if (txtDocumentPerson.getText().isEmpty()) {
-//            txtDocumentPerson.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else if (txtIdentityCode.getText().isEmpty()) {
-//            txtIdentityCode.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else {
-//            return true;
-//        }
-        return false;
-    }
-
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
     private void saveProduct(Product _product) {
         try {
             Product product = null;
@@ -248,8 +227,29 @@ public class AdminProductController extends GenericAbstractAdminController {
         }
     }
 
+    public Boolean validateEmpty() {
+        /*
+        txtValidityYears.setRawValue(null);
+        txtDaysBeforeExpiration.setRawValue(null);
+        txtDaysToInactivate.setRawValue(null);
+        txtDaysToActivate.setRawValue(null);
+        txtDaysToUse.setRawValue(null);
+        txtDaysToWithdrawCard.setRawValue(null);
+        */
+        if (txtName.getText().isEmpty()) {
+            txtName.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtBinNumber.getText().isEmpty()) {
+            txtBinNumber.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
+    
     public void onClick$btnSave() {
-        //if (validateEmpty()) {
+        if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveProduct(null);
@@ -260,15 +260,17 @@ public class AdminProductController extends GenericAbstractAdminController {
                 default:
                     break;
             }
-        //}
+        }
     }
 
     public void onChange$cmbSegmentCommerce() {
+        cmbCommerceCategory.setVisible(true);
         SegmentCommerce segmentCommerce = (SegmentCommerce) cmbSegmentCommerce.getSelectedItem().getValue();
         loadCmbCommerceCategory(eventType, segmentCommerce.getId());
     }
     
     public void onChange$cmbProgramType() {
+        cmbProgram.setVisible(true);
         ProgramType programType = (ProgramType) cmbProgramType.getSelectedItem().getValue();
         loadCmbProgram(eventType, programType.getId());
     }

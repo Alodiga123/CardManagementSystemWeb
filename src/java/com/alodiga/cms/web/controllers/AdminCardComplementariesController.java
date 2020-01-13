@@ -381,7 +381,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getNaturalPerson().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getApplicantNaturalPerson().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
