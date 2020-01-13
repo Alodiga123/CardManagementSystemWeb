@@ -53,7 +53,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.descriptionStatus')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionStatus')}" width="805px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

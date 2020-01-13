@@ -6,13 +6,11 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listgroup;
 import org.zkoss.zul.Listitem;
 
 public class AdminMainMenuController extends GenericForwardComposer {
@@ -53,7 +51,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
 
     private void loadAccountData() {
         User user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-        ltcFullName.setLabel(user.getFirstName() + " " + user.getLastName());
+        ltcFullName.setLabel(user.getFirstNames() + " " + user.getLastNames());
         //TODO:
         ltcProfile.setLabel("Administrador");
         ltcLogin.setLabel(user.getLogin());
@@ -120,12 +118,12 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell8.addEventListener("onClick", new RedirectListener("listState.zul"));
         listCell8.setParent(item8);
         item8.setParent(lbxPermissions);
-
-        // Option RequestByCollectionRequest
+        
+        // Option State
         Listitem item9 = new Listitem();
         Listcell listCell9 = new Listcell();
-        listCell9.setLabel(Labels.getLabel("cms.menu.requestByCollections.list"));
-        listCell9.addEventListener("onClick", new RedirectListener("listRequestsCollections.zul"));
+        listCell9.setLabel(Labels.getLabel("cms.requestCollection.collectionTypes"));
+        listCell9.addEventListener("onClick", new RedirectListener("listCollectionTypes.zul"));
         listCell9.setParent(item9);
         item9.setParent(lbxPermissions);
 
