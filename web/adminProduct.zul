@@ -106,22 +106,13 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.segmentCommerce')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.commerceCategory')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <datebox id="txtEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
-                                                            <combobox id="cmbSegmentCommerce" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbCommerceCategory" width="270px" mold="rounded" readonly="true" />
-                                                            
-                                                        </row>
-                                                        <row>
                                                             <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
+                                                            <datebox id="txtEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                             <combobox id="cmbSegmentMarketing" width="270px" mold="rounded" readonly="true" />
-                                                        </row>                                                        
-                                                    </rows>
+                                                        </row>
+                                                  </rows>
                                                 </grid>
                                             </vlayout>
                                         </div>
