@@ -119,7 +119,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell8.setParent(item8);
         item8.setParent(lbxPermissions);
         
-        // Option State
+        // Option collectionTypes
         Listitem item9 = new Listitem();
         Listcell listCell9 = new Listcell();
         listCell9.setLabel(Labels.getLabel("cms.requestCollection.collectionTypes"));
