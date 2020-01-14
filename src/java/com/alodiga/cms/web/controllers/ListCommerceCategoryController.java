@@ -42,7 +42,6 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Tab tabAddress;
     private Textbox txtName;
     private ProductEJB productEJB = null;
     private List<ProductHasCommerceCategory> productHasCommerceCategory = null;
