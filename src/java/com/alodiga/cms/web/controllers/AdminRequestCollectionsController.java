@@ -17,29 +17,25 @@ import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
-import com.cms.commons.models.RequestType;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.zkoss.io.Files;
-import org.zkoss.util.media.Media;
-import org.zkoss.util.resource.Labels;
+import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
 public class AdminRequestCollectionsController extends GenericAbstractAdminController {
@@ -61,12 +57,18 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     private Combobox cmbPrograms;
     private Combobox cmbPersonType;
     private Combobox cmbProductType;
-    private Combobox cmbRequestType;
     private Combobox cmbCollectionType;
     private Button btnSave;
     private Button btnUpload;
+    private Button uploadBtn;
     private Image image;
     public Window winAdminRequestCollections;
+
+    private Vbox divPreview;
+    String UrlFile = "";
+    String format = "";
+    Request RequestNumber = null;
+    private boolean uploaded = false;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -101,12 +103,12 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     }
 
     private void loadField(Request request) {
-        Request RequestNumber = null;
+        //Request RequestNumber = null;
         AdminRequestController adminRequestController = new AdminRequestController();
         if (adminRequestController.getRequest().getId() != null) {
             RequestNumber = adminRequestController.getRequest();
         }
-        
+
         try {
             txtNumber.setText(RequestNumber.getRequestNumber());
         } catch (Exception ex) {
@@ -115,58 +117,90 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     }
 
     private void loadFields(RequestHasCollectionsRequest requestHasCollectionsRequest) {
-        try {
-            if (requestHasCollectionsRequest.getIndApproved() == 1) {
-                rApprovedYes.setChecked(true);
-            } else {
-                rApprovedNo.setChecked(true);
+        if (requestHasCollectionsRequest != null) {
+            try {
+                AImage image;
+                image = new org.zkoss.image.AImage(requestHasCollectionsRequest.getUrlImageFile());
+                org.zkoss.zul.Image imageFile = new org.zkoss.zul.Image();
+                imageFile.setContent(image);
+                imageFile.setParent(divPreview);
+
+                if (requestHasCollectionsRequest.getIndApproved() == 1) {
+                    rApprovedYes.setChecked(true);
+                } else {
+                    rApprovedNo.setChecked(true);
+                }
+            } catch (Exception ex) {
+                showError(ex);
             }
-        } catch (Exception ex) {
-            showError(ex);
         }
     }
 
-    /*public void onUpload$btnUploads(org.zkoss.zk.ui.event.UploadEvent event) throws Throwable {
-     org.zkoss.util.media.Media media = event.getMedia();
-     if (media != null) {
-     if (validateFormatFile(media)) {
-     File csv = new File("/tmp/" + media.getName());
-     File csvTemp = csv;
-     csvTemp.delete();
-     btnUpload.setDisabled(true);
-     if (media.isBinary()) {
-     Files.copy(csv, media.getStreamData());
-     } else {
-     BufferedWriter writer = new BufferedWriter(new FileWriter(csv));
-     Files.copy(writer, media.getReaderData());
-     }
-     }
-     } else {
-     lblInfo.setValue("Error");
-     }
-     }
+    public Boolean validateEmpty() {
+        if (txtObservations.getText().isEmpty()) {
+            txtObservations.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
 
-     public void onUpload$btnUploa(Media[] media) {
-     if (media != null) {
-     for (int i = 0; i < media.length; i++) {
-     if (media[i] instanceof org.zkoss.image.Image) {
-     image.setContent((org.zkoss.image.Image) media[i]);
-     } else {
-     //Messagebox.show("Not an image: " + media[i], "Error", Messagebox.OK, Messagebox.ERROR);
-     break; //not to show too many errors
-     }
-     }
-     }
-     }
-    
-     private boolean validateFormatFile(org.zkoss.util.media.Media media) throws InterruptedException {
-     if (!(media.getName().equalsIgnoreCase("pricelist_open_range_alodigaor.csv"))) {
-     Messagebox.show(Labels.getLabel("sp.error.fileupload.invalid.file"), "Advertencia", 0, Messagebox.EXCLAMATION);
-     return false;
-     }
+    public void onUpload$btnUpload(org.zkoss.zk.ui.event.UploadEvent event) throws Throwable {
+        org.zkoss.util.media.Media media = event.getMedia();
+        if (media != null) {
+            //if(media.getFormat()==""){   
+            divPreview.getChildren().clear();
+            media = event.getMedia();
 
-     return true;
-     }*/
+            //File file = new File("/opt/proyecto/cms/imagenes/"+RequestNumber.getRequestNumber()+"/"+media.getName());
+            File file = new File("/opt/proyecto/cms/imagenes/" + media.getName());
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(media.getByteData());
+            fos.flush();
+            fos.close();
+            alert(file.getAbsolutePath());
+            UrlFile = file.getAbsolutePath();
+            format = media.getFormat();
+            org.zkoss.zul.Image image = new org.zkoss.zul.Image();
+            image.setContent((org.zkoss.image.Image) media);
+            image.setWidth("250px");
+            image.setParent(divPreview);
+            uploaded = true;
+            //}
+        } else {
+            lblInfo.setValue("Error");
+        }
+    }
+
+//    public void onUpload$btnUpload(org.zkoss.zk.ui.event.UploadEvent event) throws Throwable {
+//        org.zkoss.util.media.Media media = event.getMedia();
+//        
+//        if (media != null) {
+////            if (validateFormatFile(media)) {
+//                File csv = new File("/tmp/" + media.getName());
+//                File csvTemp = csv;
+//                csvTemp.delete();
+//                btnUpload.setDisabled(true);
+//                if (media.isBinary()) {
+//                    Files.copy(csv, media.getStreamData());
+//                } else {
+//                    BufferedWriter writer = new BufferedWriter(new FileWriter(csv));
+//                    Files.copy(writer, media.getReaderData());
+//                }
+////            }
+//        } else {
+//            lblInfo.setValue("Error");
+//        }
+//    }
+//    private boolean validateFormatFile(org.zkoss.util.media.Media media) throws InterruptedException {
+//        if (!(media.getName().equalsIgnoreCase("pricelist_open_range_alodigaor.csv"))) {
+//            Messagebox.show(Labels.getLabel("sp.error.fileupload.invalid.file"), "Advertencia", 0, Messagebox.EXCLAMATION);
+//            return false;
+//        }
+//
+//        return true;
+//    }
     public void blockFields() {
         btnSave.setVisible(false);
     }
@@ -199,30 +233,31 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 RequestId = adminRequestController.getRequest();
             }
 
-            //Guarda la solicitud en la BD
-            //numberRequest
+            //Guarda la solicitud en requestHasCollectionsRequest
+            requestHasCollectionsRequest.setCollectionsRequestid(CollectionsRequestParam);
             requestHasCollectionsRequest.setRequestId(RequestId);
             requestHasCollectionsRequest.setIndApproved(indApproved);
             requestHasCollectionsRequest.setObservations(txtObservations.getText());
-            requestHasCollectionsRequest.setUrlImageFile(txtUrlImageFile.getText());
+            requestHasCollectionsRequest.setUrlImageFile(UrlFile);
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
         }
-
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveRequest(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveRequest(requestHasCollectionsRequestParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveRequest(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveRequest(requestHasCollectionsRequestParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -235,7 +270,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 loadCmbCountry(4);
                 loadCmbProductType(4);
                 loadCmbProgram(4);
-                loadCmbRequestType(4);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
@@ -245,7 +279,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbProgram(eventType);
-                loadCmbRequestType(eventType);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
@@ -323,24 +356,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         try {
             personTypes = utilsEJB.getPersonTypesByCountry(request1);
             loadGenericCombobox(personTypes, cmbPersonType, "description", evenInteger, Long.valueOf(CollectionsRequestParam != null ? CollectionsRequestParam.getPersonTypeId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-    
-    private void loadCmbRequestType(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<RequestType> requestTypeList;
-        try {
-            requestTypeList = utilsEJB.getRequestType(request1);
-            loadGenericCombobox(requestTypeList,cmbRequestType, "description",evenInteger,Long.valueOf(requestParam != null? requestParam.getRequestTypeId().getId(): 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

@@ -51,7 +51,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('sp.common.country')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('sp.transaction.customerType')}" width="200px" sort="auto"/>

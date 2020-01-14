@@ -51,7 +51,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('sp.common.name')}" width="330px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.typeProgram')}" width="160px" sort="auto"/>
