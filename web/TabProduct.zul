@@ -45,7 +45,7 @@
                                                             <include src="adminProduct.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listNetwork.zul"/>
+                                                            <include src="listCommerceCategory.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

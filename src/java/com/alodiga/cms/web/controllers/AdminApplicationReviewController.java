@@ -1,6 +1,8 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -8,12 +10,10 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Address;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.Person;
-import com.cms.commons.models.PersonHasAddress;
-import com.cms.commons.models.ProductType;
+import com.cms.commons.models.Product;
+import com.cms.commons.models.ReviewCollectionsRequest;
 import com.cms.commons.models.State;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -24,56 +24,33 @@ import java.util.Map;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 
 public class AdminApplicationReviewController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtUbanization;
-    private Textbox txtNameStreet;
-    private Textbox txtNameEdification;
-    private Textbox txtTower;
-    private Textbox txtFloor;
-    private Textbox txtEmail;
+    private Datebox txtReviewDate;
+    private Textbox txtMaximumRechargeAmount;
+    private Textbox txtObservations;
     private Combobox cmbCountry;
     private Combobox cmbState;
     private Combobox cmbCity;
-    private Combobox cmbProductType;
-    private PersonEJB personEJB = null;
+    private Combobox cmbProduct;
     private UtilsEJB utilsEJB = null;
-    private Address addressParam;
+    private ProductEJB productEJB = null;
+    private RequestEJB requestEJB = null;
+    private ReviewCollectionsRequest reviewCollectionsRequestParam;
     private Button btnSave;
     private Integer eventType;
     private AdminRequestController adminRequest = null;
     Map params = null;
-    
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         AdminRequestController adminRequest = new AdminRequestController();
         AdminNaturalPersonController adminPerson = new AdminNaturalPersonController();
-        if (adminRequest.getEventType() != null) {
-           eventType = adminRequest.getEventType();
-           switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    if (adminPerson.getApplicant().getPersonHasAddress() != null) {
-                        addressParam = adminPerson.getApplicant().getPersonHasAddress().getAddressId();
-                    } else {
-                        addressParam = null;
-                    }
-                break;
-                case WebConstants.EVENT_VIEW:
-                    if (adminPerson.getApplicant().getPersonHasAddress() != null) {
-                        addressParam = adminPerson.getApplicant().getPersonHasAddress().getAddressId();
-                    } else {
-                        addressParam = null;
-                    }
-                break;
-                case WebConstants.EVENT_ADD:
-                    addressParam = null;
-                break;
-            }
-        }
         initialize();
     }
 
@@ -82,7 +59,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -102,51 +80,40 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     }
 
     public void clearFields() {
-        txtUbanization.setRawValue(null);
-        txtNameStreet.setRawValue(null);
-        txtNameEdification.setRawValue(null);
-        txtTower.setRawValue(null);
-        txtFloor.setRawValue(null);
-        txtEmail.setRawValue(null);
+        txtReviewDate.setRawValue(null);
+        txtMaximumRechargeAmount.setRawValue(null);
+        txtObservations.setRawValue(null);
     }
 
-    private void loadFields(Address address) {
+    private void loadFields(ReviewCollectionsRequest reviewCollectionsRequest) {
         try {
-            txtUbanization.setValue(address.getUrbanization());
-            txtNameStreet.setValue(address.getNameStreet());
-            txtNameEdification.setValue(address.getNameEdification());
-            txtTower.setValue(address.getTower());
-            txtFloor.setValue(address.getFloor().toString());
-
+            txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
+            //txtMaximumRechargeAmount.setValue(reviewCollectionsRequest.getMaximumRechargeAmount());
+            //txtObservations.setValue(reviewCollectionsRequest.get);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtUbanization.setReadonly(true);
-        txtNameStreet.setReadonly(true);
+        txtReviewDate.setReadonly(true);
+        txtMaximumRechargeAmount.setReadonly(true);
         cmbCountry.setReadonly(true);
         cmbState.setReadonly(true);
         cmbCity.setReadonly(true);
+        cmbProduct.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtUbanization.getText().isEmpty()) {
-            txtUbanization.setFocus(true);
+        if (txtReviewDate.getText().isEmpty()) {
+            txtReviewDate.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtNameStreet.getText().isEmpty()) {
-            txtNameStreet.setFocus(true);
+        } else if (txtMaximumRechargeAmount.getText().isEmpty()) {
+            txtMaximumRechargeAmount.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtNameEdification.getText().isEmpty()) {
-            txtNameEdification.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtTower.getText().isEmpty()) {
-            txtTower.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtFloor.getText().isEmpty()) {
-            txtFloor.setFocus(true);
+        } else if (txtObservations.getText().isEmpty()) {
+            txtObservations.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -154,41 +121,32 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         return false;
     }
 
-    private void saveAddress(Address _address) {
-        Person applicantCard = null;
+    private void saveAddress(ReviewCollectionsRequest _reviewCollectionsRequest) {
+        AdminRequestController adminRequest = new AdminRequestController();
         try {
-            Address address = null;
-            PersonHasAddress personHasAddress = null;
+            ReviewCollectionsRequest reviewCollectionsRequest = null;
 
-            if (_address != null) {
-                address = _address;
+            if (_reviewCollectionsRequest != null) {
+                reviewCollectionsRequest = _reviewCollectionsRequest;
             } else {//New address
-                address = new Address();
-                personHasAddress = new PersonHasAddress();
+                reviewCollectionsRequest = new ReviewCollectionsRequest();
             }
-            
-            //Se obtiene la persona asociada al solicitante de tarjeta
-            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicant().getId() != null) {
-                applicantCard = adminNaturalPerson.getApplicant();
-            }
-            
+
+//            //Se obtiene la persona asociada al solicitante de tarjeta
+//            AdminRequestController adminRequest = new AdminRequestController();
+//            if (adminRequest.getRequest().getId() != null) {
+//                requestNumber = adminRequest.getRequest();
+//            }
+
             //Guarda la dirección del solicitante
-            address.setNameEdification(txtNameEdification.getText());
-            address.setTower(txtTower.getText());
-            address.setFloor(Integer.parseInt(txtFloor.getText()));
-            address.setNameStreet(txtNameStreet.getText());
-            address.setUrbanization(txtUbanization.getText());
-            address.setCityId((City) cmbCity.getSelectedItem().getValue());
-            address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            address = utilsEJB.saveAddress(address);
-            addressParam = address;
-            
-            //Asocia la dirección al solicitante y la guarda en BD
-            personHasAddress.setAddressId(address);
-            personHasAddress.setPersonId(applicantCard);
-            personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
-            
+            reviewCollectionsRequest.setRequestId(adminRequest.getRequest());
+            reviewCollectionsRequest.setReviewDate(txtReviewDate.getValue());
+            reviewCollectionsRequest.setMaximumRechargeAmount(Float.parseFloat(txtMaximumRechargeAmount.getText()));
+            //reviewCollectionsRequest.setUserId(User);
+            reviewCollectionsRequest.setProductId((Product) cmbProduct.getSelectedItem().getValue());
+            //reviewCollectionsRequest.setObservations(txtObservations.getText());
+            reviewCollectionsRequest = requestEJB.saveReviewCollectionsRequest(reviewCollectionsRequest);
+
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -202,7 +160,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     saveAddress(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveAddress(addressParam);
+                    saveAddress(reviewCollectionsRequestParam);
                     break;
                 default:
                     break;
@@ -214,27 +172,23 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadCmbCountry(eventType);
-                if (addressParam != null) {
-                    loadFields(addressParam);
-                    onChange$cmbCountry();
-                    onChange$cmbState();
-                }
-                loadCmbProductType(eventType);
-            break;
+                loadFields(reviewCollectionsRequestParam);
+                onChange$cmbCountry();
+                onChange$cmbState();
+                loadCmbProduct(eventType);
+                break;
             case WebConstants.EVENT_VIEW:
                 loadCmbCountry(eventType);
-                if (addressParam != null) {
-                    loadFields(addressParam);
-                    onChange$cmbCountry();
-                    onChange$cmbState();
-                    blockFields();
-                }
-                loadCmbProductType(eventType);
-            break;
+                loadFields(reviewCollectionsRequestParam);
+                onChange$cmbCountry();
+                onChange$cmbState();
+                blockFields();
+                loadCmbProduct(eventType);
+                break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
-            break;
+                loadCmbProduct(eventType);
+                break;
         }
     }
 
@@ -244,7 +198,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         List<Country> countries;
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(reviewCollectionsRequestParam != null ? reviewCollectionsRequestParam.getUserId().getComercialAgencyId().getCityId().getStateId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -267,7 +221,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         List<State> states;
         try {
             states = utilsEJB.getStatesByCountry(request1);
-            loadGenericCombobox(states, cmbState, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getStateId().getId() : 0));
+            loadGenericCombobox(states, cmbState, "name", evenInteger, Long.valueOf(reviewCollectionsRequestParam != null ? reviewCollectionsRequestParam.getUserId().getComercialAgencyId().getCityId().getStateId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -290,7 +244,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         List<City> citys;
         try {
             citys = utilsEJB.getCitiesByState(request1);
-            loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
+            loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(reviewCollectionsRequestParam != null ? reviewCollectionsRequestParam.getUserId().getComercialAgencyId().getCityId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -303,12 +257,12 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         }
     }
 
-    private void loadCmbProductType(Integer evenInteger) {
+    private void loadCmbProduct(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<ProductType> productTypes;
+        List<Product> product;
         try {
-            productTypes = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productTypes,cmbProductType, "name",evenInteger,Long.valueOf(addressParam != null? addressParam.getId(): 0) );            
+            product = productEJB.getProduct(request1);
+            loadGenericCombobox(product, cmbProduct, "name", evenInteger, Long.valueOf(reviewCollectionsRequestParam != null ? reviewCollectionsRequestParam.getProductId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
