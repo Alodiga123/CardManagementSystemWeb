@@ -102,14 +102,14 @@
                                                         <row>
                                                             <textbox id="txtDaysToUse" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <textbox id="txtDaysToWithdrawCard" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <datebox id="txtBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
+                                                            <datebox id="dtbBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
-                                                            <datebox id="txtEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                            <datebox id="dtbEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                             <combobox id="cmbSegmentMarketing" width="270px" mold="rounded" readonly="true" />
                                                         </row>
                                                   </rows>

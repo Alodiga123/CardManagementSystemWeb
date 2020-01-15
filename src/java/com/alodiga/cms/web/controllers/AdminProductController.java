@@ -123,42 +123,37 @@ public class AdminProductController extends GenericAbstractAdminController {
             showError(ex);
         }
         try {
-            txtBinNumber.setText(product.getName());
+            txtBinNumber.setText(product.getBinNumber());
         } catch (Exception ex) {
             showError(ex);
         }
         try {
-            txtValidityYears.setText(product.getName());
+            txtValidityYears.setValue(product.getValidityYears().toString());
         } catch (Exception ex) {
             showError(ex);
         }
         try {
-            txtDaysBeforeExpiration.setText(product.getName());
+            txtDaysBeforeExpiration.setValue(product.getDaysBeforeExpiration().toString());
         } catch (Exception ex) {
             showError(ex);
         }
         try {
-            txtDaysToInactivate.setText(product.getName());
+            txtDaysToInactivate.setValue(product.getDaysToInactivate().toString());
         } catch (Exception ex) {
             showError(ex);
         }
         try {
-            txtDaysToActivate.setText(product.getName());
+            txtDaysToActivate.setValue(product.getDaysToActivate().toString());
         } catch (Exception ex) {
             showError(ex);
         }
         try {
-            txtDaysToUse.setText(product.getName());
+            txtDaysToUse.setValue(product.getDaysToUse().toString());
         } catch (Exception ex) {
             showError(ex);
         }
         try {
-            txtDaysToWithdrawCard.setText(product.getName());
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        try {
-            txtDaysToWithdrawCard.setText(product.getName());
+            txtDaysToWithdrawCard.setValue(product.getDaysToWithdrawCard().toString());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -217,20 +212,13 @@ public class AdminProductController extends GenericAbstractAdminController {
             product = productEJB.saveProduct(product);
             productParam = product;
             productParent = product;
+            this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
         }
     }
             
         public Boolean validateEmpty() {
-        /*
-        txtValidityYears.setRawValue(null);
-        txtDaysBeforeExpiration.setRawValue(null);
-        txtDaysToInactivate.setRawValue(null);
-        txtDaysToActivate.setRawValue(null);
-        txtDaysToUse.setRawValue(null);
-        txtDaysToWithdrawCard.setRawValue(null);
-        */
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
