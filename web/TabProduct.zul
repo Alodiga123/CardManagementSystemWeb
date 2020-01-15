@@ -41,6 +41,7 @@
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.productMain')}" />
                                                         <tab id="tabCommerceCategory" label="${c:l('cms.tab.commerceCategory')}"/>
+                                                        <tab id="tabRestrictions" label="${c:l('cms.tab.limitAndRestrictions')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -48,6 +49,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listCommerceCategory.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="adminRestrictions.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
