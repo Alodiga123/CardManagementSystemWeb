@@ -51,7 +51,7 @@
                                                             <include src="listCommerceCategory.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminRestrictions.zul"/>
+                                                            <include src="listLimitAndRestrictions.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
