@@ -9,19 +9,26 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Product;
+import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewCollectionsRequest;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.cms.commons.util.QueryConstants;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Textbox;
+
+
 
 public class AdminApplicationReviewController extends GenericAbstractAdminController {
 
@@ -40,16 +47,21 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private User user = null;
     private RequestEJB requestEJB = null;
     private ReviewCollectionsRequest reviewCollectionsRequestParam;
+    private List<ReviewCollectionsRequest> reviewCollectionsRequest;
     private Button btnSave;
-    private Integer eventType;
     private AdminRequestController adminRequest = null;
     Map params = null;
+    private Request requestCard;
+    Request requestNumber = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         AdminRequestController adminRequest = new AdminRequestController();
-        AdminNaturalPersonController adminPerson = new AdminNaturalPersonController();
+        if (adminRequest.getRequest() != null) {
+           requestCard = adminRequest.getRequest();
+        }
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
     }
 
@@ -60,6 +72,14 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(QueryConstants.PARAM_REQUEST_ID, requestCard.getId());
+            request1.setParams(params);
+            reviewCollectionsRequest = requestEJB.getReviewCollectionsRequestByRequest(request1);
+            for (ReviewCollectionsRequest r : reviewCollectionsRequest) {
+                reviewCollectionsRequestParam = r;
+            }
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -77,15 +97,16 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtObservations.setRawValue(null);
     }
 
-    private void loadFields(ReviewCollectionsRequest reviewCollectionsRequest) {
+    private void loadFields(ReviewCollectionsRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
             txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
             txtAgency.setValue(user.getComercialAgencyId().getName());
             txtCommercialAssessorUserCode.setValue(user.getCode());
             txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
-            txtMaximumRechargeAmount.setValue(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
+            txtIdentification.setValue(user.getIdentificationNumber());
+            txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
             txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
-            txtObservations.setValue(reviewCollectionsRequest.getObservations());
+            txtObservations.setText(reviewCollectionsRequest.getObservations());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -94,6 +115,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     public void blockFields() {
         txtReviewDate.setReadonly(true);
         txtMaximumRechargeAmount.setReadonly(true);
+        txtObservations.setReadonly(true);
         cmbProduct.setReadonly(true);
         btnSave.setVisible(false);
     }
@@ -115,21 +137,25 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     }
 
     private void saveReviewCollectionsRequest(ReviewCollectionsRequest _reviewCollectionsRequest) {
-        AdminRequestController adminRequest = new AdminRequestController();
         try {
             ReviewCollectionsRequest reviewCollectionsRequest = null;
 
             if (_reviewCollectionsRequest != null) {
                 reviewCollectionsRequest = _reviewCollectionsRequest;
-            } else {//New address
+            } else {//New reviewCollectionsRequest
                 reviewCollectionsRequest = new ReviewCollectionsRequest();
             }
 
-            //Guarda la dirección del solicitante
-            reviewCollectionsRequest.setRequestId(adminRequest.getRequest());
+            AdminRequestController adminRequest = new AdminRequestController();
+            if (adminRequest.getRequest().getId() != null) {
+                requestNumber = adminRequest.getRequest();
+            }
+
+            //Guarda la revision
+            reviewCollectionsRequest.setRequestId(requestNumber);
             reviewCollectionsRequest.setReviewDate(txtReviewDate.getValue());
             reviewCollectionsRequest.setMaximumRechargeAmount(Float.parseFloat(txtMaximumRechargeAmount.getText()));
-            //reviewCollectionsRequest.setUserId(User);
+            reviewCollectionsRequest.setUserId(user);
             reviewCollectionsRequest.setProductId((Product) cmbProduct.getSelectedItem().getValue());
             reviewCollectionsRequest.setObservations(txtObservations.getText());
             reviewCollectionsRequest = requestEJB.saveReviewCollectionsRequest(reviewCollectionsRequest);
@@ -156,22 +182,28 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     }
 
     public void loadData() {
-        loadFields(reviewCollectionsRequestParam);
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-//                txtAssessorName.setDisabled(true);
-                loadCmbProduct(eventType);
-                break;
-            case WebConstants.EVENT_VIEW:
-//                txtAssessorName.setDisabled(true);
-                blockFields();
-                loadCmbProduct(eventType);
-                break;
-            case WebConstants.EVENT_ADD:
-//                txtAssessorName.setDisabled(true);
-                loadCmbProduct(eventType);
-                break;
+        try {
+            loadFields(reviewCollectionsRequestParam);
+            switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    loadCmbProduct(eventType);
+                    break;
+                case WebConstants.EVENT_VIEW:
+                    blockFields();
+                    loadCmbProduct(eventType);
+                    break;
+                case WebConstants.EVENT_ADD:
+                    loadCmbProduct(eventType);
+                    break;
+            }
+        } catch (EmptyListException ex) {
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     private void loadCmbProduct(Integer evenInteger) {
