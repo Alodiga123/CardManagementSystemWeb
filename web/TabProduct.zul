@@ -27,7 +27,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.Product')}"/>
+                                                <toolbarbutton label="${c:l('cms.menu.product')}"/>
+                                                |
+                                                <toolbarbutton label="${c:l('cms.crud.product.add')}"/>
                                                 |
                                                 <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
@@ -39,6 +41,7 @@
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.productMain')}" />
                                                         <tab id="tabCommerceCategory" label="${c:l('cms.tab.commerceCategory')}"/>
+                                                        <tab id="tabRestrictions" label="${c:l('cms.tab.limitAndRestrictions')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -46,6 +49,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listCommerceCategory.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listLimitAndRestrictions.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
