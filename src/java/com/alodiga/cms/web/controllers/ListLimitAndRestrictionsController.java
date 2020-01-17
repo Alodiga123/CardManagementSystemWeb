@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,9 +8,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasChannel;
+import com.cms.commons.models.ProductHasChannelHasTransaction;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -35,15 +33,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListLimitAndRestrictionsController extends GenericAbstractListController<ProductHasChannel> {
+public class ListLimitAndRestrictionsController extends GenericAbstractListController<ProductHasChannelHasTransaction> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Tab tabAddress;
     private Textbox txtName;
-    private UtilsEJB utilsEJB = null;
-    private PersonEJB personEJB = null;
-    private List<ProductHasChannel> productHasChannel = null;
+    private ProductEJB productEJB = null;
+    private List<ProductHasChannelHasTransaction> productHasChannelHasTransaction = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -53,12 +49,12 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateProductHasChannel", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateLimitAndRestrictions", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(productHasChannel);
+                loadDataList(productHasChannelHasTransaction);
             }
         });
     }
@@ -71,11 +67,10 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminProductHasChannel.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            adminPage = "/adminLimitAndRestrictions.zul";
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            loadDataList(productHasChannel);
+            loadDataList(productHasChannelHasTransaction);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -85,7 +80,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", productHasChannel);
+            paramsPass.put("object", productHasChannelHasTransaction);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -93,25 +88,21 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         }
     }
 
-    public void onClick$btnDelete() {
-    }
-
-    
-    public void loadDataList(List<ProductHasChannel> list) {
+    public void loadDataList(List<ProductHasChannelHasTransaction> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
-                for (ProductHasChannel productHasChannel : list) {
+                for (ProductHasChannelHasTransaction productHasChannelHasTransaction : list) {
                     item = new Listitem();
-                    item.setValue(productHasChannel);
-                    item.appendChild(new Listcell(productHasChannel.getChannelId().getName()));
-                    item.appendChild(new Listcell(productHasChannel.getProductId().getName()));
-                    item.appendChild(new Listcell(productHasChannel.getTransactionId().getDescription()));
-                    item.appendChild(createButtonEditModal(productHasChannel));
-                    item.appendChild(createButtonViewModal(productHasChannel));
-                    //item.appendChild(permissionRead ? new ListcellViewButton(adminPage, familyReferences) : new Listcell());
+                    item.setValue(productHasChannelHasTransaction);
+                    item.appendChild(new Listcell(productHasChannelHasTransaction.getChannelId().getName()));
+                    item.appendChild(new Listcell(productHasChannelHasTransaction.getProductId().getName()));
+                    item.appendChild(new Listcell(productHasChannelHasTransaction.getTransactionId().getDescription()));
+                    item.appendChild(new Listcell(productHasChannelHasTransaction.getProductUseId().getDescription()));
+                    item.appendChild(createButtonEditModal(productHasChannelHasTransaction));
+                    item.appendChild(createButtonViewModal(productHasChannelHasTransaction));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -123,29 +114,27 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
+        Listcell listcellEditModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
-
             });
             button.setParent(listcellEditModal);
         } catch (Exception ex) {
@@ -153,24 +142,23 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         }
         return listcellEditModal;
     }
-    
+
     public Listcell createButtonViewModal(final Object obg) {
-       Listcell listcellViewModal = new Listcell();
-        try {    
+        Listcell listcellViewModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
-
             });
             button.setParent(listcellViewModal);
         } catch (Exception ex) {
@@ -178,30 +166,27 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         }
         return listcellViewModal;
     }
-    
-    
+
     public void getData() {
-        productHasChannel = new ArrayList<ProductHasChannel>();
+        productHasChannelHasTransaction = new ArrayList<ProductHasChannelHasTransaction>();
         Product product = null;
-        
-//        try {
-//            AdminProductController adminProduct = new AdminProductController();
-//            if (adminProduct.getProductParent().getId() != null) {
-//                product = adminProduct.getProductParent();
-//            }
-//            
-//            EJBRequest request1 = new EJBRequest();
-//            Map params = new HashMap();
-//            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, product.getId());
-//            request1.setParams(params);
-//            productHasChannel = personEJB.getFamilyReferencesByApplicant(request1);
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//        } catch (EmptyListException ex) {
-//            showEmptyList();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//        }
+        try {
+            AdminProductController adminProduct = new AdminProductController();
+            if (adminProduct.getProductParent().getId() != null) {
+                product = adminProduct.getProductParent();
+            }
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PRODUCT_KEY, product.getId());
+            request1.setParams(params);
+            productHasChannelHasTransaction = productEJB.getProductHasChannelHasTransactionByProduct(request1);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {
+            showEmptyList();
+        } catch (GeneralException ex) {
+            showError(ex);
+        }
     }
 
     private void showEmptyList() {
@@ -225,7 +210,8 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         txtName.setText("");
     }
 
-    public List<ProductHasChannel> getFilterList(String filter) {
+    @Override
+    public List<ProductHasChannelHasTransaction> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
