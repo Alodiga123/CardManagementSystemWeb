@@ -130,4 +130,10 @@ public class WebConstants {
     
     public static final String LEGALREPRESENTATIVE_GENDER_FEMALE = "F";
     public static final String LEGALREPRESENTATIVE_GENDER_MALE = "M";
+    
+    //CRUD Transaction
+    public static final String PROGRAM_MONETARY_TYPE_YES = "Yes";
+    public static final String PPROGRAM_MONETARY_TYPE_NO = "No";
+    public static final String PROGRAM_MONETARY_TYPE_SI= "Si";
+    
 }

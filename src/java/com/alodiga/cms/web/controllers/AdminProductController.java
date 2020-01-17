@@ -176,6 +176,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     private void saveProduct(Product _product) throws RegisterNotFoundException, NullParameterException, GeneralException {
+        tabProduct.setSelected(true);
         try {
             Product product = null;
             

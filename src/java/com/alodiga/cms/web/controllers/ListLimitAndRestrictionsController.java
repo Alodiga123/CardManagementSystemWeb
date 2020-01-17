@@ -11,7 +11,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasChannel;
+import com.cms.commons.models.ProductHasChannelHasTransaction;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -35,7 +35,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListLimitAndRestrictionsController extends GenericAbstractListController<ProductHasChannel> {
+public class ListLimitAndRestrictionsController extends GenericAbstractListController<ProductHasChannelHasTransaction> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
@@ -43,7 +43,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
-    private List<ProductHasChannel> productHasChannel = null;
+    private List<ProductHasChannelHasTransaction> ProductHasChannelHasTransaction = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -58,7 +58,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(productHasChannel);
+                loadDataList(ProductHasChannelHasTransaction);
             }
         });
     }
@@ -75,7 +75,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
-            loadDataList(productHasChannel);
+            loadDataList(ProductHasChannelHasTransaction);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -85,7 +85,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", productHasChannel);
+            paramsPass.put("object", ProductHasChannelHasTransaction);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -97,20 +97,20 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     }
 
     
-    public void loadDataList(List<ProductHasChannel> list) {
+    public void loadDataList(List<ProductHasChannelHasTransaction> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
-                for (ProductHasChannel productHasChannel : list) {
+                for (ProductHasChannelHasTransaction ProductHasChannelHasTransaction : list) {
                     item = new Listitem();
-                    item.setValue(productHasChannel);
-                    item.appendChild(new Listcell(productHasChannel.getChannelId().getName()));
-                    item.appendChild(new Listcell(productHasChannel.getProductId().getName()));
-                    item.appendChild(new Listcell(productHasChannel.getTransactionId().getDescription()));
-                    item.appendChild(createButtonEditModal(productHasChannel));
-                    item.appendChild(createButtonViewModal(productHasChannel));
+                    item.setValue(ProductHasChannelHasTransaction);
+                    item.appendChild(new Listcell(ProductHasChannelHasTransaction.getChannelId().getName()));
+                    item.appendChild(new Listcell(ProductHasChannelHasTransaction.getProductId().getName()));
+                    item.appendChild(new Listcell(ProductHasChannelHasTransaction.getTransactionId().getDescription()));
+                    item.appendChild(createButtonEditModal(ProductHasChannelHasTransaction));
+                    item.appendChild(createButtonViewModal(ProductHasChannelHasTransaction));
                     //item.appendChild(permissionRead ? new ListcellViewButton(adminPage, familyReferences) : new Listcell());
                     item.setParent(lbxRecords);
                 }
@@ -181,7 +181,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     
     
     public void getData() {
-        productHasChannel = new ArrayList<ProductHasChannel>();
+        ProductHasChannelHasTransaction = new ArrayList<ProductHasChannelHasTransaction>();
         Product product = null;
         
 //        try {
@@ -225,7 +225,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         txtName.setText("");
     }
 
-    public List<ProductHasChannel> getFilterList(String filter) {
+    public List<ProductHasChannelHasTransaction> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
