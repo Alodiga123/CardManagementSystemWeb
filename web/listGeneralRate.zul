@@ -33,7 +33,7 @@
                                             <hlayout>
                                                     <!--Add button-->
                                                     <div align="left" width="160px">
-                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                        <button id="btnAddGeneralRate" label="${c:l('sp.common.actions.add')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
                                             </hlayout>
                                             <separator/>
@@ -44,7 +44,7 @@
                                                     <listheader label="${c:l('cms.common.productType')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.channel')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.transaction')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.product.fixedRate')}" width="165px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.fixedRate')}" width="165px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

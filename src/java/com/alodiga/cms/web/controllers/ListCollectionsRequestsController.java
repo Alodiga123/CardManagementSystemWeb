@@ -60,24 +60,6 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
         }
     }
 
-//    public List<CollectionsRequest> getFilteredList(String filter) {
-//        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
-//        CollectionsRequest collectionsRequest;
-//        try {
-//            if (filter != null && !filter.equals("")) {
-//                collectionsRequest = utilsEJB.searchCollectionsRequest(filter);
-//                collectionsRequest.add(collectionsRequest);
-//            } else {
-//                return collectionsRequest;
-//            }
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCollectionsRequest.class.getDescription()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//        return collectionsRequest;
-//   }
-
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect(adminPage);

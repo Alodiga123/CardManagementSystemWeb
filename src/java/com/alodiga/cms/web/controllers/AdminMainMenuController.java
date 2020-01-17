@@ -118,15 +118,15 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell8.setLabel(Labels.getLabel("sp.common.state"));
         listCell8.addEventListener("onClick", new RedirectListener("listState.zul"));
         listCell8.setParent(item8);
-        item8.setParent(lbxPermissions);
+        item8.setParent(lbxPermissions);*/
         
-        // Option collectionTypes
+        //Option collectionTypes
         Listitem item9 = new Listitem();
         Listcell listCell9 = new Listcell();
         listCell9.setLabel(Labels.getLabel("cms.requestCollection.collectionTypes"));
         listCell9.addEventListener("onClick", new RedirectListener("listCollectionTypes.zul"));
         listCell9.setParent(item9);
-        item9.setParent(lbxPermissions);*/
+        item9.setParent(lbxPermissions);
 
         // Option Program
         Listitem item10 = new Listitem();
