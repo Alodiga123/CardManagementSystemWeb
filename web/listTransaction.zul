@@ -27,9 +27,6 @@
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton label="${c:l('cms.common.transaction.list')}" />
-                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.transactions.add')}"/>
-                                                 |
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
