@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?taglib uri="/WEB-INF/tld/core.dsp.tld" prefix="c" ?>
+<?page title="${c:l('sp.crud.profile.admin')}"?>
+<?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
+
+<zk xmlns:n="native">
+    <window id="winAdminIssuer" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminIssuerController" class="general-window">
+        <style src="/css/general.css"/>
+        <borderlayout width="100%" height="100%" class="content-transparent">
+            <center border="none" flex="true" class="content-transparent" autoscroll="true">
+                <div align="center" >
+                    <hlayout >
+                        <div width="1200px" align="left" height="780px">
+                            <hlayout>
+                                <div width="900px">
+                                    <vlayout>
+                                        <div height="5px" width="100%" style="background:#333;" align="left"></div>
+                                        <div>
+                                            <vlayout>
+                                                <div align="right">
+                                                    <hlayout>
+                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
+                                                        <separator/>
+                                                        <label value="*" sclass="lblreq" />
+                                                        <separator/>
+                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
+                                                    </hlayout>
+                                                </div>
+                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.programType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbProgramType" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbProgram" width="270px" mold="rounded" readonly="true" />
+                                                       </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.issuer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.kindCard')}" sclass="lblbold"/>
+                                                       </row>
+                                                        <row>
+                                                            <combobox id="cmbIssuer" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbCardType" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbKindCard" width="270px" mold="rounded" readonly="true" />
+                                                       </row>
+                                                         <row>
+                                                            <label value="${c:l('cms.common.binSponsor')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.levelProduct')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbBinSponsor" width="270px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <combobox id="cmbLevelProduct" width="270px" mold="rounded" readonly="true" />                                                            
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.bin.Number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productUse')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.domesticCurrency')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtBinNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <combobox id="cmbProductUse" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbDomesticCurrency" width="270px" mold="rounded" readonly="true" />
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.internationalCurrency')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.validityYears')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.storageMedio')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbInternationalCurrency" width="270px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtValidityYears" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <combobox id="cmbStorageMedio" width="270px" mold="rounded" readonly="true" />                                                            
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.daysBeforeExpiration')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.daysToInactivate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.daysToActivate')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtDaysBeforeExpiration" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtDaysToInactivate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <textbox id="txtDaysToActivate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.daysToUse')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.daysToWithdrawCard')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtDaysToUse" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtDaysToWithdrawCard" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <datebox id="dtbBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/> 
+                                                        </row>
+                                                        <row>
+                                                            <datebox id="dtbEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                            <combobox id="cmbSegmentMarketing" width="270px" mold="rounded" readonly="true" />
+                                                        </row>
+                                                  </rows>
+                                                </grid>
+                                            </vlayout>
+                                        </div>
+                                        <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
+                                        <!--Buttons-->
+                                        <div align="right">
+                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProduct.zul&quot;)"/>
+                                        </div>
+                                    </vlayout>
+                                </div>
+                            </hlayout>
+                        </div>
+                    </hlayout>
+                </div>
+            </center>
+        </borderlayout>
+    </window>
+</zk>
