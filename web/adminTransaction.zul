@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCountry" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCountryController" class="general-window">
+    <window id="winAdminTransaction" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminTransactionController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,9 +26,12 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.country.list')}" onClick='Executions.sendRedirect(&quot;listCountry.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton id="tbbTitle" label=""/>
+                                                <toolbarbutton label="${c:l('cms.common.transactions')}" onClick='Executions.sendRedirect(&quot;listTransaction.zul&quot;)'/> 
+                                                 |                        
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.transactions.add')}"/>
+                                                 |  
+                                                <toolbarbutton id="tbbCurrentAction" />                     
+                                                 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -49,39 +52,33 @@
                                                         <column label="" width="290px"/>
                                                         <column label="" width="290px"/>
                                                         <column label="" width="290px"/>
-                                                    </columns>
+                                                    </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.country.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.codeIso2')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.transaction.code')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indMonetaryType')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row>
+                                                        <row>    
                                                             <hlayout>
-                                                                <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                                <textbox id="txtCodeTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                              <textbox id="txtCode" value="" width="230px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="4" />
-                                                              <label value="*" sclass="lblreq" />
-                                                              <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
-                                                            </hlayout>
+                                                            </hlayout>    
+                                                            <hlayout>    
+                                                                <textbox id="txtDescriptionTransaction" width="290px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>    
                                                             <hbox>
-                                                               <textbox id="txtShortName" value="" width="230px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="2"/>
-                                                               <label value="*" sclass="lblreq" />
-                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
-                                                            </hbox>
-                                                        </row>
-                                                         <row>
-                                                            <label value="${c:l('cms.common.codeIso3')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.currency')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <hbox>
-                                                              <textbox id="txtAlternativeName1" value="" width="250px" maxlength="3" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            </hbox>
-                                                            <combobox id="cmbCurrency" width="250px" mold="rounded" readonly="true" />
-                                                        </row>
+                                                                <radiogroup id="monetaryType" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rMonetaryTypeYes" label="${c:l('cms.commom.Yes')}" radiogroup="monetaryType" />
+                                                                            <radio id="rMonetaryTypeNo" label="${c:l('cms.commom.No')} " radiogroup="monetaryType" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>                                                       </row>
                                                     </rows>
                                                 </grid>
                                             </vlayout>
@@ -90,7 +87,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCountry.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listTransaction.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

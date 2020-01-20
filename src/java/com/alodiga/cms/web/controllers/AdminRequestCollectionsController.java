@@ -178,6 +178,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
 
     public void blockFields() {
         btnSave.setVisible(false);
+        btnUpload.setDisabled(true);
     }
 
     public void onClick$btnBack() {
