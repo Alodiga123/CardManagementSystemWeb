@@ -11,17 +11,15 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.Currency;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminCountryController extends GenericAbstractAdminController {
 
@@ -35,6 +33,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
     private Country countryParam;
     private Button btnSave;
     private Integer eventType;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -48,6 +47,19 @@ public class AdminCountryController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.country.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.country.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.country.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
