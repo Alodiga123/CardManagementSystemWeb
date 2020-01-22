@@ -153,6 +153,8 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
         try {
             segmentCommerceList = productEJB.getSegmentCommerce(request1);
             loadGenericCombobox(segmentCommerceList,cmbSegmentCommerce,"name",eventType,Long.valueOf(productHasCommerceCategoryParam != null? productHasCommerceCategoryParam.getCommerceCategoryId().getsegmentCommerceId().getId(): 0) );            
+            segmentCommerceList = null;
+            System.gc();
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
