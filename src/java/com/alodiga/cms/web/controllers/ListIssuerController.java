@@ -99,7 +99,7 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
                     item.setValue(issuer);
                     item.appendChild(new Listcell(issuer.getCountryId().getName()));
                     item.appendChild(new Listcell(issuer.getName().toString()));
-                    item.appendChild(new Listcell(issuer.getIssuerTypeId().getId().toString()));
+                    item.appendChild(new Listcell(issuer.getIssuerTypeId().getDescription()));
                     item.appendChild(new Listcell(issuer.getBinNumber().toString()));
                     item.appendChild(new Listcell(issuer.getSwiftCode().toString()));
                     item.appendChild(new ListcellEditButton(adminPage, issuer));
