@@ -58,7 +58,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            adminPage = "AdminGeneralRate.zul";
+            adminPage = "adminGeneralRate.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
             loadList(generalRateList);
@@ -69,7 +69,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
  
     public void onClick$btnAddGeneralRate() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect(adminPage);
+        Executions.getCurrent().sendRedirect("adminGeneralRate.zul");
     }
 
     public void onClick$btnDelete() {

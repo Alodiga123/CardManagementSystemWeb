@@ -27,9 +27,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('sp.crud.country.list')}" onClick='Executions.sendRedirect(&quot;listCountry.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.country.add')}"/>
-                                                 |
-                                                <toolbarbutton id="tbbCurrentAction" />
+                                                <toolbarbutton id="tbbTitle" label=""/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -54,24 +52,24 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.codeIso2')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeIso2')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <hbox>
-                                                               <textbox id="txtShortName" value="" width="200px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
-                                                               <label value="*" sclass="lblreq" />
-                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
-                                                            </hbox>
                                                             <hlayout>
-                                                              <textbox id="txtCode" value="" width="230px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60" />
+                                                              <textbox id="txtCode" value="" width="230px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="4" />
                                                               <label value="*" sclass="lblreq" />
                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hlayout>
+                                                            <hbox>
+                                                               <textbox id="txtShortName" value="" width="230px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="2"/>
+                                                               <label value="*" sclass="lblreq" />
+                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
+                                                            </hbox>
                                                         </row>
                                                          <row>
                                                             <label value="${c:l('cms.common.codeIso3')}" sclass="lblbold"/>
@@ -79,7 +77,7 @@
                                                         </row>
                                                         <row>
                                                             <hbox>
-                                                              <textbox id="txtAlternativeName1" value="" width="250px" maxlength="200" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                              <textbox id="txtAlternativeName1" value="" width="250px" maxlength="3" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hbox>
                                                             <combobox id="cmbCurrency" width="250px" mold="rounded" readonly="true" />
                                                         </row>
