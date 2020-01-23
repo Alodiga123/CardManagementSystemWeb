@@ -28,8 +28,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.crud.issuer.list')}" />
                                                  |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.issuer.add')}"/>
-                                                 |
+                                                <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
