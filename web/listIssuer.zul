@@ -25,8 +25,11 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
+                                                 |
                                                 <toolbarbutton label="${c:l('cms.crud.issuer.list')}" />
+                                                 |
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.issuer.add')}"/>
+                                                 |
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
