@@ -136,4 +136,6 @@ public class WebConstants {
     public static final String PPROGRAM_MONETARY_TYPE_NO = "No";
     public static final String PROGRAM_MONETARY_TYPE_SI= "Si";
     
+    //CRUD ProgramLoyalty
+    public static final int STATUS_PROGRAM_LOYALTY_PENDING = 1;
 }

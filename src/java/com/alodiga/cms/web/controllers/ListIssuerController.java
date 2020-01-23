@@ -10,8 +10,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.CardStatus;
-import com.cms.commons.models.PersonType;
-import com.cms.commons.models.PhoneType;
+import com.cms.commons.models.Issuer;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -27,12 +26,12 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListPersonTypeController extends GenericAbstractListController<PersonType> {
+public class ListIssuerController extends GenericAbstractListController<Issuer> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private PersonEJB personEJB = null;
-    private List<PersonType> personTypeList = null;
+    private List<Issuer> issuerList = null;
     private User currentUser;
 
     @Override
@@ -46,21 +45,21 @@ public class ListPersonTypeController extends GenericAbstractListController<Pers
         super.initialize();
         try {
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminPersonType.zul";
+            adminPage = "adminIssuer.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
-            loadDataList(personTypeList);
+            loadDataList(issuerList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    personTypeList = new ArrayList<PersonType>();
+    issuerList = new ArrayList<Issuer>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            personTypeList = personEJB.getPersonType(request);
+            issuerList = personEJB.getIssuer(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -90,24 +89,23 @@ public class ListPersonTypeController extends GenericAbstractListController<Pers
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
-    public void loadDataList(List<PersonType> list) {
+    public void loadDataList(List<Issuer> list) {
           try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (PersonType personType : list) {
+                for (Issuer issuer : list) {
                     item = new Listitem();
-                    item.setValue(personType);
-                    item.appendChild(new Listcell(personType.getDescription()));
-                    item.appendChild(new Listcell(personType.getCountryId().getName()));
-                    item.appendChild(new Listcell(personType.getOriginApplicationId().getName()));
-                    item.appendChild(new ListcellEditButton(adminPage, personType));
-                    item.appendChild(new ListcellViewButton(adminPage, personType,true));
+                    item.setValue(issuer);
+                    item.appendChild(new Listcell(issuer.getCountryId().getName()));
+                    item.appendChild(new Listcell(issuer.getName().toString()));
+                    item.appendChild(new Listcell(issuer.getIssuerTypeId().getId().toString()));
+                    item.appendChild(new Listcell(issuer.getBinNumber().toString()));
+                    item.appendChild(new Listcell(issuer.getSwiftCode().toString()));
+                    item.appendChild(new Listcell(issuer.getAbaCode().toString()));
+                    item.appendChild(new ListcellEditButton(adminPage, issuer));
+                    item.appendChild(new ListcellViewButton(adminPage, issuer,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -126,7 +124,7 @@ public class ListPersonTypeController extends GenericAbstractListController<Pers
     }
 
     @Override
-    public List<PersonType> getFilterList(String filter) {
+    public List<Issuer> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
