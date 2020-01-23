@@ -26,19 +26,18 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
-
-
 
 public class AdminApplicationReviewController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
 
-    private Textbox txtCity;
-    private Textbox txtAgency;
-    private Textbox txtCommercialAssessorUserCode;
-    private Textbox txtAssessorName;
-    private Textbox txtIdentification;
+    private Label txtCity;
+    private Label txtAgency;
+    private Label txtCommercialAssessorUserCode;
+    private Label txtAssessorName;
+    private Label txtIdentification;
     private Textbox txtMaximumRechargeAmount;
     private Textbox txtObservations;
     private Datebox txtReviewDate;
@@ -87,11 +86,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     }
 
     public void clearFields() {
-        txtCity.setRawValue(null);
-        txtAgency.setRawValue(null);
-        txtCommercialAssessorUserCode.setRawValue(null);
-        txtAssessorName.setRawValue(null);
-        txtIdentification.setRawValue(null);
         txtMaximumRechargeAmount.setRawValue(null);
         txtReviewDate.setRawValue(null);
         txtObservations.setRawValue(null);

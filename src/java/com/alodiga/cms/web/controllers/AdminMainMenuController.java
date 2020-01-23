@@ -118,15 +118,15 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell8.setLabel(Labels.getLabel("sp.common.state"));
         listCell8.addEventListener("onClick", new RedirectListener("listState.zul"));
         listCell8.setParent(item8);
-        item8.setParent(lbxPermissions);
+        item8.setParent(lbxPermissions);*/
         
-        // Option collectionTypes
+        //Option CollectionTypes
         Listitem item9 = new Listitem();
         Listcell listCell9 = new Listcell();
         listCell9.setLabel(Labels.getLabel("cms.requestCollection.collectionTypes"));
         listCell9.addEventListener("onClick", new RedirectListener("listCollectionTypes.zul"));
         listCell9.setParent(item9);
-        item9.setParent(lbxPermissions);*/
+        item9.setParent(lbxPermissions);
 
         // Option Program
         Listitem item10 = new Listitem();
@@ -159,6 +159,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell13.addEventListener("onClick", new RedirectListener("listIssuer.zul"));
         listCell13.setParent(item13);
         item13.setParent(lbxPermissions);
+        
+        // Option Loyalty
+        Listitem item14 = new Listitem();
+        Listcell listCell14 = new Listcell();
+        listCell14.setLabel(Labels.getLabel("cms.menu.loyalty"));
+        listCell14.addEventListener("onClick", new RedirectListener("listLoyalty.zul"));
+        listCell14.setParent(item14);
+        item14.setParent(lbxPermissions);
         
         /*// Option PhoneType
         Listitem item15 = new Listitem();
@@ -199,6 +207,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell19.addEventListener("onClick", new RedirectListener("listGeneralRate.zul"));
         listCell19.setParent(item19);
         item19.setParent(lbxPermissions);
+        
+        //Opción Rates By Program
+        Listitem item30 = new Listitem();
+        Listcell listCell30 = new Listcell();
+        listCell30.setLabel(Labels.getLabel("cms.menu.rateByProgram.list"));
+        listCell30.addEventListener("onClick", new RedirectListener("listRateByProgram.zul"));
+        listCell30.setParent(item30);
+        item30.setParent(lbxPermissions);
     }
 }
 

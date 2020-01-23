@@ -28,7 +28,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
-                                                            <textbox id="txtNumber" width="200px"/>
+                                                            <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
@@ -38,7 +38,7 @@
                                                         <row> 
                                                             <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
                                                             <combobox id="cmbPersonType" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProductType" width="270px" mold="rounded" readonly="true"/>
+                                                            <label id="txtProductType" value="" width="200px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
@@ -46,8 +46,8 @@
                                                             <label value="${c:l('cms.requestCollection.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbPrograms" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbCollectionType" width="270px" mold="rounded" readonly="true"/>
+                                                            <label id="txtPrograms" value="" width="200px" style="color:#837E76;"/>
+                                                            <label id="txtCollectionType" value="" width="200px" style="color:#837E76;"/>
                                                             <hbox>
                                                                 <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>

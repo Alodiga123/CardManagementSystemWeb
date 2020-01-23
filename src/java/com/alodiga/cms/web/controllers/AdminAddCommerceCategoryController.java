@@ -37,9 +37,8 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     private ProgramEJB programEJB = null;
     private ProductHasCommerceCategory productHasCommerceCategoryParam;
     private Button btnSave;
-    public Window winAddCommerceCategory;
+    public Window winAdminAddCommerceCategory;
     private Integer eventType;
-    Map params = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -124,7 +123,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     }
 
     public void onClick$btnBack() {
-        winAddCommerceCategory.detach();
+        winAdminAddCommerceCategory.detach();
     }
 
     public void loadData() {
@@ -154,6 +153,8 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
         try {
             segmentCommerceList = productEJB.getSegmentCommerce(request1);
             loadGenericCombobox(segmentCommerceList,cmbSegmentCommerce,"name",eventType,Long.valueOf(productHasCommerceCategoryParam != null? productHasCommerceCategoryParam.getCommerceCategoryId().getsegmentCommerceId().getId(): 0) );            
+            segmentCommerceList = null;
+            System.gc();
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
