@@ -82,9 +82,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.issuer.view"));
                 break;
-            case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.issuer.add"));
-                break;
             default:
                 break;
         }
