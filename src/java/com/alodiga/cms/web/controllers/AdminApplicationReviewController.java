@@ -29,8 +29,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 
-
-
 public class AdminApplicationReviewController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
@@ -88,11 +86,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     }
 
     public void clearFields() {
-        //txtCity.setRawValue(null);
-        //txtAgency.setRawValue(null);
-        //txtCommercialAssessorUserCode.setRawValue(null);
-        //txtAssessorName.setRawValue(null);
-        //txtIdentification.setRawValue(null);
         txtMaximumRechargeAmount.setRawValue(null);
         txtReviewDate.setRawValue(null);
         txtObservations.setRawValue(null);

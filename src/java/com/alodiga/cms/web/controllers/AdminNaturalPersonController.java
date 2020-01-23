@@ -29,15 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
-import com.alodiga.cms.web.controllers.AdminRequestController;
-import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
