@@ -68,7 +68,7 @@
                                                         </row>
                                                         <row>
                                                             <label id="lblTransaction" width="250px"/>
-                                                            <label id="lblApplicationRate" width="250px"/>
+                                                            <label id="lblRateApplicationType" width="250px"/>
                                                             <textbox id="txtFixedRate" width="250px"/>
                                                         </row>
                                                         <row>
@@ -105,7 +105,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('cms.common.actions.saveAndContinue')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listGeneralRate.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRateByProgram.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

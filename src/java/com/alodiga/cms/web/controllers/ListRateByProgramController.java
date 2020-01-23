@@ -74,6 +74,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             adminPage = "adminRateByProgram.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
         } catch (Exception ex) {
             showError(ex);
@@ -132,7 +133,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             rateByProgram.setPercentageRate(g.getPercentageRate());
                             rateByProgram.setIndCardHolderModification(g.getIndCardHolderModification());
                             rateByProgram.setProgramId(program);
-                            rateByProgram.setRateApplicationTypId(g.getRateApplicationTypeId());
+                            rateByProgram.setRateApplicationTypeId(g.getRateApplicationTypeId());
                             rateByProgram.setTotalInitialTransactionsExempt(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonth(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setTransactionId(g.getTransactionId());
@@ -188,7 +189,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             rateByProgram.setPercentageRate(g.getPercentageRate());
                             rateByProgram.setIndCardHolderModification(g.getIndCardHolderModification());
                             rateByProgram.setProgramId(program);
-                            rateByProgram.setRateApplicationTypId(g.getRateApplicationTypeId());
+                            rateByProgram.setRateApplicationTypeId(g.getRateApplicationTypeId());
                             rateByProgram.setTotalInitialTransactionsExempt(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonth(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setTransactionId(g.getTransactionId());

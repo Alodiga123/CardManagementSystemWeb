@@ -2,8 +2,6 @@ package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
-import com.alodiga.cms.commons.exception.EmptyListException;
-import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
@@ -21,6 +19,7 @@ import com.cms.commons.util.EjbConstants;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -35,6 +34,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
 
     private static final long serialVersionUID = -9145887024839938515L;
     private RateByProgram rateByProgramParam;
+    public static RateByProgram rateProgram = null;
     private UtilsEJB utilsEJB = null;
     private ProductEJB productEJB = null;
     private Label lblProgram;
@@ -85,6 +85,10 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
         }
     }
     
+    public RateByProgram getRateByProgram() {
+        return rateProgram;
+    }
+    
     public void clearFields() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -92,7 +96,10 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     private void loadFields(RateByProgram rateByProgram) {
         try {
             lblProgram.setValue(rateByProgram.getProgramId().getName());
-            
+            lblProductType.setValue(rateByProgram.getProgramId().getProductTypeId().getName());
+            lblChannel.setValue(rateByProgram.getChannelId().getName());
+            lblTransaction.setValue(rateByProgram.getTransactionId().getDescription());
+            lblRateApplicationType.setValue(rateByProgram.getRateApplicationTypeId().getDescription());
             txtFixedRate.setText(rateByProgram.getFixedRate().toString());
             txtPercentageRate.setText(rateByProgram.getPercentageRate().toString());
             txtTotalTransactionInitialExempt.setText(rateByProgram.getTotalInitialTransactionsExempt().toString());
@@ -112,15 +119,15 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
         btnSave.setVisible(false);
     }
 
-    private void saveGeneralRate(GeneralRate _generalRate) {
+    private void saveRateByProgram(RateByProgram _rateByProgram) {
         try {
             boolean indModificationCardHolder = true;
-            GeneralRate generalRate = null;
+            RateByProgram rateByProgram = null;
 
-            if (_generalRate != null) {
-                generalRate = _generalRate;
+            if (_rateByProgram != null) {
+                rateByProgram = _rateByProgram;
             } else {//New Request
-                generalRate = new GeneralRate();
+                rateByProgram = new RateByProgram();
             }
             
             if (rModificationCardHolderYes.isChecked()) {
@@ -129,19 +136,18 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
                 indModificationCardHolder = true;
             }
             
-            //Guarda las tarifas generales en la BD
-            generalRate.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            generalRate.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
-            generalRate.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-            generalRate.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
-            generalRate.setFixedRate(Float.parseFloat(txtFixedRate.getText()));
-            generalRate.setPercentageRate(Float.parseFloat(txtPercentageRate.getText()));
-            generalRate.setTotalInitialTransactionsExempt(Integer.parseInt(txtTotalTransactionInitialExempt.getText()));
-            generalRate.setTotalTransactionsExemptPerMonth(Integer.parseInt(txtTotalTransactionExemptPerMonth.getText()));
-            generalRate.setRateApplicationTypeId((RateApplicationType) cmbRateApplicationType.getSelectedItem().getValue());
-            generalRate.setIndCardHolderModification(indModificationCardHolder);
-            generalRate = productEJB.saveGeneralRate(generalRate);
-            generalRateParam = generalRate;
+            //Guarda las tarifas del programa en la BD
+            rateByProgram.setProgramId(rateByProgram.getProgramId());
+            rateByProgram.setChannelId(rateByProgram.getChannelId());
+            rateByProgram.setTransactionId(rateByProgram.getTransactionId());
+            rateByProgram.setFixedRate(Float.parseFloat(txtFixedRate.getText()));
+            rateByProgram.setPercentageRate(Float.parseFloat(txtPercentageRate.getText()));
+            rateByProgram.setTotalInitialTransactionsExempt(Integer.parseInt(txtTotalTransactionInitialExempt.getText()));
+            rateByProgram.setTotalTransactionsExemptPerMonth(Integer.parseInt(txtTotalTransactionExemptPerMonth.getText()));
+            rateByProgram.setRateApplicationTypeId(rateByProgram.getRateApplicationTypeId());
+            rateByProgram.setIndCardHolderModification(indModificationCardHolder);
+            rateByProgram = productEJB.saveRateByProgram(rateByProgram);
+            rateByProgramParam = rateByProgram;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -152,134 +158,33 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     public void onClick$btnSave() {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
-                saveGeneralRate(null);
+                saveRateByProgram(null);
                 break;
             case WebConstants.EVENT_EDIT:
-                saveGeneralRate(generalRateParam);
+                saveRateByProgram(rateByProgramParam);
                 break;
             default:
                 break;
         }
+    }
+    
+    public void onclick$btnBack() {
+        Executions.getCurrent().sendRedirect("listRateByProgram.zul");
     }
 
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(generalRateParam);
-                loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
-                loadCmbChannel(eventType);
-                loadCmbTransaction(eventType);
-                loadCmbRateApplicationType(eventType);
+                loadFields(rateByProgramParam);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(generalRateParam);
-                loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
-                loadCmbChannel(eventType);
-                loadCmbTransaction(eventType);
-                loadCmbRateApplicationType(eventType);
+                loadFields(rateByProgramParam);
                 break;
             case WebConstants.EVENT_ADD:
-                loadCmbTransaction(eventType);
-                loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
-                loadCmbChannel(eventType);
-                loadCmbRateApplicationType(eventType);
                 break;
             default:
                 break;
         }
     }
-    
-    private void loadCmbCountry(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<Country> countries;
-        try {
-            countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(generalRateParam != null? generalRateParam.getCountryId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-    
-    private void loadCmbProductType(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<ProductType> productTypes;
-        try {
-            productTypes = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productTypes,cmbProductType, "name",evenInteger,Long.valueOf(generalRateParam != null? generalRateParam.getProductTypeId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-     
-    private void loadCmbChannel(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<Channel> channelList;
-        try {
-            channelList = productEJB.getChannel(request1);
-            loadGenericCombobox(channelList,cmbChannel,"name",evenInteger,Long.valueOf(generalRateParam != null? generalRateParam.getChannelId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-    
-     private void loadCmbTransaction(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<Transaction> transactionList;
-        try {
-            transactionList = productEJB.getTransaction(request1);
-            loadGenericCombobox(transactionList,cmbTransaction,"description",evenInteger,Long.valueOf(generalRateParam != null? generalRateParam.getTransactionId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }  
-     
-     private void loadCmbRateApplicationType(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<RateApplicationType> rateApplicationTypeList;
-        try {
-            rateApplicationTypeList = productEJB.getRateApplicationType(request1);
-            loadGenericCombobox(rateApplicationTypeList,cmbRateApplicationType,"description",evenInteger,Long.valueOf(generalRateParam != null? generalRateParam.getRateApplicationTypeId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }  
     
 }
