@@ -27,8 +27,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.crud.issuer.card')}" onClick='Executions.sendRedirect(&quot;listIssuer.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.issuer.add=')}"/>
-                                                <!--toolbarbutton id="tbbCurrentAction" /-->
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.issuer.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -53,22 +52,22 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.issuer.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identification.type')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.document.identification')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbIssuerType" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentIdentification" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbPersonType" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbDocumentsPersonType" width="270px" mold="rounded" readonly="true" />
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.identification.number')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuer.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.issuer.type')}" sclass="lblbold"/>
                                                        </row>
                                                         <row>
                                                             <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="cmbName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <combobox id="cmbIssuerType" width="270px" mold="rounded" readonly="true" />
                                                        </row>
                                                          <row>
@@ -90,12 +89,12 @@
                                                             <textbox id="txtAbaCode" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <textbox id="txtContractNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <hbox>
-                                                            <radiogroup id="StatusActive" onCheck="value = self.selectedItem.label"/>
+                                                            <radiogroup id="IssuerActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="rStatusYes" label="${c:l('cms.commom.Yes')}" radiogroup="branded" />
-                                                                            <radio id="rStatusNo" label="${c:l('cms.commom.No')} " radiogroup="branded" />
+                                                                            <radio id="rActiveYes" label="${c:l('cms.commom.Yes')}" radiogroup="IssuerActive" />
+                                                                            <radio id="rActiveNo" label="${c:l('cms.commom.No')} " radiogroup="IssuerActive" />
                                                                         </row>
                                                                     </rows>
                                                                  </grid>
@@ -109,13 +108,13 @@
                                                         <row>
                                                             <textbox id="txtWebSite" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <textbox id="txtFaxNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <textbox id="txtPersonContact" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                            <textbox id="txtPersonContactName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.contact.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEmailContact" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtEmailPersonContact" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
