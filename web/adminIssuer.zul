@@ -27,8 +27,9 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.crud.issuer.card')}" onClick='Executions.sendRedirect(&quot;listIssuer.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id="tbbTitle" />
-                                                 |
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.issuer.add')}"/>
+                                                |  
+                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
