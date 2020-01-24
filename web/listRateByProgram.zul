@@ -49,13 +49,6 @@
                                                     </rows>   
                                             </grid>  
                                             <separator/>       
-                                            <hlayout>
-                                                    <!--Add button-->
-                                                    <div align="left" width="160px">
-                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
-                                                    </div>
-                                            </hlayout>
-                                            <separator/>
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
