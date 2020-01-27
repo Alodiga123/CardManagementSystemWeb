@@ -9,7 +9,6 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -100,10 +99,9 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
                     item.setValue(issuer);
                     item.appendChild(new Listcell(issuer.getCountryId().getName()));
                     item.appendChild(new Listcell(issuer.getName().toString()));
-                    item.appendChild(new Listcell(issuer.getIssuerTypeId().getId().toString()));
+                    item.appendChild(new Listcell(issuer.getIssuerTypeId().getDescription()));
                     item.appendChild(new Listcell(issuer.getBinNumber().toString()));
                     item.appendChild(new Listcell(issuer.getSwiftCode().toString()));
-                    item.appendChild(new Listcell(issuer.getAbaCode().toString()));
                     item.appendChild(new ListcellEditButton(adminPage, issuer));
                     item.appendChild(new ListcellViewButton(adminPage, issuer,true));
                     item.setParent(lbxRecords);
@@ -127,5 +125,5 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
     public List<Issuer> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
 }

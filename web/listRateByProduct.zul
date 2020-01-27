@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRateByProgramController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRateByProductController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -25,30 +25,40 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.rateByProgram.list')}" />
+                                                <toolbarbutton label="${c:l('cms.common.rate.by.product.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="200px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="180x"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProgram" width="270px" mold="rounded" readonly="true" />
-                                                            <label id="lblProductType" width="270px"/>
+                                                            <combobox id="cmbProgram" width="200px" mold="rounded" readonly="true" />
+                                                            <label id="lblProductType" width="190px"/>
+                                                            <combobox id="cmbProduct" width="200px" mold="rounded" readonly="true" />
                                                              <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                        </row>
                                                     </rows>   
                                             </grid>  
                                             <separator/>       
+                                            <hlayout>
+                                                    <!--Add button-->
+                                                    <div align="left" width="160px">
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                    </div>
+                                            </hlayout>
+                                            <separator/>
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>

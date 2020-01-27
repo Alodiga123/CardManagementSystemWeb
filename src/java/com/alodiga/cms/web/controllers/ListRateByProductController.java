@@ -16,7 +16,9 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.GeneralRate;
+import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestType;
@@ -42,17 +44,20 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListRateByProgramController extends GenericAbstractListController<Request> {
+public class ListRateByProductController extends GenericAbstractListController<Request> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Combobox cmbProgram;
+    private Combobox cmbProduct;
     private Label lblProductType;
     private ProductEJB productEJB = null;
     private ProgramEJB programEJB = null;
     private List<GeneralRate> generalRateList = null;
     private List<RateByProgram> rateByProgramByProgramList = new ArrayList<RateByProgram>();
+    private List<RateByProduct> rateByProductByRateByProgramList = new ArrayList<RateByProduct>();
     private Program program = null;
+    private Product product = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -71,10 +76,9 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
-            adminPage = "adminRateByProgram.zul";
+            adminPage = "adminRateByProduct.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
-            eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
         } catch (Exception ex) {
             showError(ex);
@@ -87,7 +91,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         lblProductType.setValue(program.getProductTypeId().getName());
         getData(program.getProductTypeId().getId());
     }
- 
+    
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("adminRateByProgram.zul");
@@ -242,6 +246,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         } catch (GeneralException ex) {
             showError(ex);
         }
+              
     }
     
     private void showEmptyList(){
@@ -259,6 +264,24 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         try {
             programs = programEJB.getProgram(request1);
             loadGenericCombobox(programs,cmbProgram,"name",evenInteger,Long.valueOf(0));            
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadCmbProduct(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<Product> product;
+        try {
+            product = productEJB.getProduct(request1);
+            loadGenericCombobox(product,cmbProduct,"name",evenInteger,Long.valueOf(0));            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
