@@ -103,7 +103,7 @@ public class ListTransactionController extends GenericAbstractListController<Tra
                     item.setValue(transaction);
                     item.appendChild(new Listcell(transaction.getCode()));
                     item.appendChild(new Listcell(transaction.getDescription()));
-                    if (transaction.getIndMonetaryType() == 1) {
+                    if (transaction.getIndMonetaryType() == true) {
                         indMonetaryType = "Yes";
                     } else {
                         indMonetaryType = "No";
