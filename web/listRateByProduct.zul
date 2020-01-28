@@ -47,17 +47,10 @@
                                                             <combobox id="cmbProgram" width="200px" mold="rounded" readonly="true" />
                                                             <label id="lblProductType" width="190px"/>
                                                             <combobox id="cmbProduct" width="200px" mold="rounded" readonly="true" />
-                                                             <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                            <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                        </row>
                                                     </rows>   
                                             </grid>  
-                                            <separator/>       
-                                            <hlayout>
-                                                    <!--Add button-->
-                                                    <div align="left" width="160px">
-                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
-                                                    </div>
-                                            </hlayout>
                                             <separator/>
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
