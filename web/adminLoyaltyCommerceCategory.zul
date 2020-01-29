@@ -4,16 +4,16 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminParameters" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminParametersController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminLoyaltyCommerceCategory" title="${c:l('cms.tab.commerceCategory')}" width="700px" height="300px" apply="com.alodiga.cms.web.controllers.AdminLoyaltyCommerceCategoryController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout>
                         <div></div>
-                        <div width="1000px" align="left" height="380px">
+                        <div width="800px" align="left" height="300px">
                             <hlayout>
-                                <div width="890px">
+                                <div width="650px">
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
@@ -23,36 +23,23 @@
                                                     <columns>
                                                         <column label="" width="280px"/>
                                                         <column label="" width="280px"/>
-                                                        <column label="" width="280px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.menu.loyalty')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.cannel')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblLoyalty" value="" width="250px" style="color:#837E76;"/>
-                                                            <combobox id="cmbChannel" width="250px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbTransaction" width="250px" mold="rounded" readonly="true"/>
+                                                            <label id="lblChannel" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.total')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalMaximumTransactions')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalAmountDaily')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.tab.commerceCategory')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtTotal" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtTotalMaximumTransactions" value="" width="250px" maxlength="10"/>
-                                                            <textbox id="txtTotalAmountDaily" value="" width="250px" maxlength="10"/> 
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalAmountMonthly')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.ActivationCard')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.renovationCard')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <textbox id="txtTotalAmountMonthly" value="" width="250px" maxlength="10"/>
+                                                            <label id="lblTransaction" value="" width="250px" style="color:#837E76;"/>
+                                                            <combobox id="cmbCommerce" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -62,6 +49,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray"/>
                                         </div>
                                     </vlayout>
                                 </div>

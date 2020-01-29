@@ -2,8 +2,6 @@ package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
-import com.alodiga.cms.commons.ejb.RequestEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -11,26 +9,19 @@ import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.GeneralRate;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.Request;
-import com.cms.commons.models.RequestType;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
@@ -42,7 +33,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
 
 public class ListRateByProductController extends GenericAbstractListController<Request> {
 
@@ -61,7 +51,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        initialize(); 
+        initialize();
     }
 
     public void startListener() {
@@ -73,7 +63,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         try {
             //Evaluar Permisos
             permissionEdit = true;
-            permissionAdd = true; 
+            permissionAdd = true;
             permissionRead = true;
             adminPage = "adminRateByProduct.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
@@ -84,32 +74,30 @@ public class ListRateByProductController extends GenericAbstractListController<R
             showError(ex);
         }
     }
-    
+
     public void onChange$cmbProgram() {
         cmbProduct.setVisible(true);
         lblProductType.setVisible(true);
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
-        loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
+        //loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
         getData(program.getId());
     }
-    
-    
-    
+
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("adminRateByProduct.zul");
     }
-    
+
     public void onClick$btnViewRates() throws InterruptedException {
-        product = (Product) cmbProduct.getSelectedItem().getValue(); 
-        loadList(rateByProgramList,product);
+        product = (Product) cmbProduct.getSelectedItem().getValue();
+        loadList(rateByProgramList, product);
     }
 
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<RateByProgram> list, Product productId ) {
+    public void loadList(List<RateByProgram> list, Product productId) {
         List<RateByProduct> rateByProductList = new ArrayList<RateByProduct>();
         RateByProduct rateByProduct = null;
         EJBRequest request1 = new EJBRequest();
@@ -126,35 +114,23 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 indLoadList = 1;
                 for (RateByProduct r : rateByProductByProductList) {
                     rateByProductList.add(r);
-                }    
+                }
                 if (list != null && !list.isEmpty()) {
                     for (RateByProgram rp : list) {
-                        rbp1 = rp.getChannelId().getId().toString()+rp.getTransactionId().getId().toString()+productId.getProgramId().getId().toString();
-                        for (RateByProduct r : rateByProductByProductList) {
-                            rbp2 = r.getChannelId().getId().toString()+r.getTransactionId().getId().toString()+r.getProductId().getProgramId().getId().toString();
-                            if (rbp1.equals(rbp2)) {
-                                if (r.getProductId().getId().toString().equals(product.getId().toString()) ) {
-                                    indExist = 1;
-                                }
-                            }
-                        }
-                        if (indExist != 1) {
-                            rateByProduct = new RateByProduct();
-                            rateByProduct.setChannelId(rp.getChannelId());
-                            rateByProduct.setFixedRate(rp.getFixedRate());
-                            rateByProduct.setPercentageRate(rp.getPercentageRate());
-                            rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
-                            rateByProduct.setProductId(productId);
-                            rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
-                            rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
-                            rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
-                            rateByProduct.setTransactionId(rp.getTransactionId());
-                            rateByProduct = productEJB.saveRateByProduct(rateByProduct);
-                            rateByProductList.add(rateByProduct);
-                        }
-                        indExist = 0;
+                        rbp1 = rp.getChannelId().getId().toString() + rp.getTransactionId().getId().toString() + productId.getProgramId().getId().toString();
+                        rateByProduct = new RateByProduct();
+                        rateByProduct.setChannelId(rp.getChannelId());
+                        rateByProduct.setFixedRate(rp.getFixedRate());
+                        rateByProduct.setPercentageRate(rp.getPercentageRate());
+                        rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
+                        rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
+                        rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
+                        rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
+                        rateByProduct.setTransactionId(rp.getTransactionId());
+                        rateByProduct = productEJB.saveRateByProduct(rateByProduct);
+                        rateByProductList.add(rateByProduct);
                     }
-                } 
+                }
             }
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -162,7 +138,6 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 for (RateByProduct r : rateByProductList) {
                     item = new Listitem();
                     item.setValue(r);
-                    item.appendChild(new Listcell(r.getProductId().getCountryId().getName()));
                     item.appendChild(new Listcell(r.getChannelId().getName()));
                     item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                     item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -183,13 +158,12 @@ public class ListRateByProductController extends GenericAbstractListController<R
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showError(ex); 
+            showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         } catch (RegisterNotFoundException ex) {
-                showError(ex); 
-        }        
-        finally {
+            showError(ex);
+        } finally {
             try {
                 if (indLoadList == 0) {
                     lbxRecords.getItems().clear();
@@ -205,14 +179,12 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
-                            rateByProduct.setProductId(productId);
                             rateByProduct = productEJB.saveRateByProduct(rateByProduct);
                             rateByProductList.add(rateByProduct);
                         }
                         for (RateByProduct r : rateByProductList) {
                             item = new Listitem();
                             item.setValue(r);
-                            item.appendChild(new Listcell(r.getProductId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -232,12 +204,12 @@ public class ListRateByProductController extends GenericAbstractListController<R
                     }
                 }
             } catch (RegisterNotFoundException ex) {
-                showError(ex); 
+                showError(ex);
             } catch (NullParameterException ex) {
                 showError(ex);
             } catch (GeneralException ex) {
                 showError(ex);
-            }   
+            }
         }
     }
 
@@ -247,24 +219,24 @@ public class ListRateByProductController extends GenericAbstractListController<R
             Map params = new HashMap();
             params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
             request1.setParams(params);
-            rateByProgramList = productEJB.getRateByProgramByProgram(request1);   
+            rateByProgramList = productEJB.getRateByProgramByProgram(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showEmptyList();
+            showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
         }
-              
+
     }
-    
-    private void showEmptyList(){
-                Listitem item = new Listitem();
-                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.setParent(lbxRecords);  
+
+    private void showEmptyList() {
+        Listitem item = new Listitem();
+        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);
     }
 
     private void loadCmbProgram(Integer evenInteger) {
@@ -272,7 +244,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         List<Program> programs;
         try {
             programs = programEJB.getProgram(request1);
-            loadGenericCombobox(programs,cmbProgram,"name",evenInteger,Long.valueOf(0));            
+            loadGenericCombobox(programs, cmbProgram, "name", evenInteger, Long.valueOf(0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -284,30 +256,30 @@ public class ListRateByProductController extends GenericAbstractListController<R
             ex.printStackTrace();
         }
     }
-        
-    private void loadCmbProduct(Integer evenInteger, long programId) {
-        
-        EJBRequest request1 = new EJBRequest();
-        cmbProduct.getItems().clear();
-        Map params = new HashMap();
-        params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
-        request1.setParams(params);
-        List<Product> product;
-        try {
-            product = productEJB.getProductByProgram(request1);
-            loadGenericCombobox(product, cmbProduct, "name", evenInteger, Long.valueOf(RateByProductParam != null ? RateByProductParam.getProductId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-    
+
+//    private void loadCmbProduct(Integer evenInteger, long programId) {
+//
+//        EJBRequest request1 = new EJBRequest();
+//        cmbProduct.getItems().clear();
+//        Map params = new HashMap();
+//        params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
+//        request1.setParams(params);
+//        List<Product> product;
+//        try {
+//            product = productEJB.getProductByProgram(request1);
+//            loadGenericCombobox(product, cmbProduct, "name", evenInteger, Long.valueOf(RateByProductParam != null ? RateByProductParam.getProductId().getId() : 0));
+//        } catch (EmptyListException ex) {
+//            showError(ex);
+//            ex.printStackTrace();
+//        } catch (GeneralException ex) {
+//            showError(ex);
+//            ex.printStackTrace();
+//        } catch (NullParameterException ex) {
+//            showError(ex);
+//            ex.printStackTrace();
+//        }
+//    }
+
     public void onClick$btnDownload() throws InterruptedException {
         try {
             Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
