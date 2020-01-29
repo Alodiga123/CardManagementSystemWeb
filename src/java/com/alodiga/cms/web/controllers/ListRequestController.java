@@ -37,6 +37,7 @@ public class ListRequestController extends GenericAbstractListController<Request
     private Textbox txtRequestNumber;
     private RequestEJB requestEJB = null;
     private List<Request> requests = null;
+    public static int indAddRequestPerson;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -64,15 +65,21 @@ public class ListRequestController extends GenericAbstractListController<Request
             showError(ex);
         }
     }
+    
+    public int getAddRequestPerson() {
+        return indAddRequestPerson;
+    }
  
     public void onClick$btnAddNaturalPersonRequest() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("TabNaturalPerson.zul");
+        indAddRequestPerson = 1;
     }
     
     public void onClick$btnAddLegalPersonRequest() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("TabLegalPerson.zul");
+        indAddRequestPerson = 1;
     }
 
     public void onClick$btnDelete() {
