@@ -36,13 +36,12 @@ public class AdminParametersController extends GenericAbstractAdminController {
     private Textbox txtTotalMaximumTransactions;
     private Textbox txtTotalAmountDaily;
     private Textbox txtTotalAmountMonthly;
-    private Textbox txtActivationCard;
-    private Textbox txtRenovationCard;
     private ProductEJB productEJB = null;
     private ProgramEJB programEJB = null;
     private ProgramLoyaltyTransaction programLoyaltyTransactionParam;
     private Button btnSave;
     private Integer eventType;
+    public static ProgramLoyaltyTransaction programLoyaltyTransactionParent = null;
     public Window winAdminParameters;
 
     @Override
@@ -80,8 +79,10 @@ public class AdminParametersController extends GenericAbstractAdminController {
         txtTotalMaximumTransactions.setRawValue(null);
         txtTotalAmountDaily.setRawValue(null);
         txtTotalAmountMonthly.setRawValue(null);
-        txtActivationCard.setRawValue(null);
-        txtRenovationCard.setRawValue(null);
+    }
+
+    public ProgramLoyaltyTransaction getProgramLoyaltyTransactionParent() {
+        return programLoyaltyTransactionParent;
     }
 
     private void loadField(ProgramLoyaltyTransaction programLoyaltyTransaction) {
@@ -92,7 +93,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
             programLoyalty = adminLoyalty.getProgramLoyaltyParent();
         }
         lblLoyalty.setValue(programLoyalty.getDescription());
-        
+
         if (programLoyaltyTransactionParam != null) {
             if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
                 txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
@@ -113,8 +114,6 @@ public class AdminParametersController extends GenericAbstractAdminController {
         txtTotalMaximumTransactions.setReadonly(true);
         txtTotalAmountDaily.setReadonly(true);
         txtTotalAmountMonthly.setReadonly(true);
-        txtActivationCard.setReadonly(true);
-        txtRenovationCard.setReadonly(true);
 
         btnSave.setVisible(false);
     }
@@ -165,7 +164,9 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
             }
             programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
+            
             programLoyaltyTransactionParam = programLoyaltyTransaction;
+            programLoyaltyTransactionParent = programLoyaltyTransaction;
             this.showMessage("sp.common.save.success", false, null);
 
             EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
