@@ -68,7 +68,7 @@ public class ListParametersController extends GenericAbstractListController<Prog
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminParameters.zul";
+            adminPage = "/TabParametersAndComerce.zul";
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
             loadDataList(programLoyaltyTransaction);
@@ -105,12 +105,7 @@ public class ListParametersController extends GenericAbstractListController<Prog
                     item.appendChild(new Listcell(programLoyaltyTransaction.getChannelId().getName()));
                     item.appendChild(new Listcell(programLoyaltyTransaction.getTransactionId().getDescription()));
                     item.appendChild(new Listcell(programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getName()));
-                    if (programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                        item.appendChild(new Listcell(programLoyaltyTransaction.getTotalPointsValue().toString()));
-                    } else {
-                        item.appendChild(new Listcell(programLoyaltyTransaction.getTotalBonificationFixedValue().toString()));
-                    }
-
+                    item.appendChild(new Listcell(programLoyaltyTransaction.getTotalPointsValue().toString()));
                     item.appendChild(createButtonEditModal(programLoyaltyTransaction));
                     item.appendChild(createButtonViewModal(programLoyaltyTransaction));
                     item.setParent(lbxRecords);
