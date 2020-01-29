@@ -36,13 +36,12 @@ public class AdminParametersController extends GenericAbstractAdminController {
     private Textbox txtTotalMaximumTransactions;
     private Textbox txtTotalAmountDaily;
     private Textbox txtTotalAmountMonthly;
-    private Textbox txtActivationCard;
-    private Textbox txtRenovationCard;
     private ProductEJB productEJB = null;
     private ProgramEJB programEJB = null;
     private ProgramLoyaltyTransaction programLoyaltyTransactionParam;
     private Button btnSave;
     private Integer eventType;
+    public static ProgramLoyaltyTransaction programLoyaltyTransactionParent = null;
     public Window winAdminParameters;
 
     @Override
@@ -80,8 +79,10 @@ public class AdminParametersController extends GenericAbstractAdminController {
         txtTotalMaximumTransactions.setRawValue(null);
         txtTotalAmountDaily.setRawValue(null);
         txtTotalAmountMonthly.setRawValue(null);
-        txtActivationCard.setRawValue(null);
-        txtRenovationCard.setRawValue(null);
+    }
+
+    public ProgramLoyaltyTransaction getProgramLoyaltyTransactionParent() {
+        return programLoyaltyTransactionParent;
     }
 
     private void loadField(ProgramLoyaltyTransaction programLoyaltyTransaction) {
@@ -92,23 +93,13 @@ public class AdminParametersController extends GenericAbstractAdminController {
             programLoyalty = adminLoyalty.getProgramLoyaltyParent();
         }
         lblLoyalty.setValue(programLoyalty.getDescription());
-        
+
         if (programLoyaltyTransactionParam != null) {
-            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
-                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactionsPoints().toString());
-                txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDailyPoints().toString());
-                txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthlyPoints().toString());
-                txtActivationCard.setText(programLoyaltyTransaction.getActivationCardPoints().toString());
-                txtRenovationCard.setText(programLoyaltyTransaction.getRenovationCardPoints());
-            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
-                txtTotal.setText(programLoyaltyTransaction.getTotalBonificationFixedValue().toString());
-                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactionsBonification().toString());
-                txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDailyBonification().toString());
-                txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthlyBonification().toString());
-                txtActivationCard.setText(programLoyaltyTransaction.getActivationCardBonification().toString());
-                txtRenovationCard.setText(programLoyaltyTransaction.getRenovationCardBonification().toString());
-            }
+            txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
+            txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
+            txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
+            txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
+            programLoyaltyTransactionParent = programLoyaltyTransaction;
         }
     }
 
@@ -117,8 +108,6 @@ public class AdminParametersController extends GenericAbstractAdminController {
         txtTotalMaximumTransactions.setReadonly(true);
         txtTotalAmountDaily.setReadonly(true);
         txtTotalAmountMonthly.setReadonly(true);
-        txtActivationCard.setReadonly(true);
-        txtRenovationCard.setReadonly(true);
 
         btnSave.setVisible(false);
     }
@@ -151,30 +140,18 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 programLoyalty = adminLoyalty.getProgramLoyaltyParent();
             }
 
-            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-                programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
-                programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
-                programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
-                programLoyaltyTransaction.setTotalMaximumTransactionsPoints(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-                programLoyaltyTransaction.setTotalAmountDailyPoints(Float.parseFloat(txtTotalAmountDaily.getText()));
-                programLoyaltyTransaction.setTotalAmountMonthlyPoints(Float.parseFloat(txtTotalAmountMonthly.getText()));
-                programLoyaltyTransaction.setActivationCardPoints(Float.parseFloat(txtActivationCard.getText()));
-                programLoyaltyTransaction.setRenovationCardPoints(txtRenovationCard.getText());
+            programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
+            programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
+            programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
+            programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
+            programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
+            programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
+            programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
 
-            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
-                programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-                programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
-                programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
-                programLoyaltyTransaction.setTotalBonificationFixedValue(Float.parseFloat(txtTotal.getText()));
-                programLoyaltyTransaction.setTotalMaximumTransactionsBonification(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-                programLoyaltyTransaction.setTotalAmountDailyBonification(Float.parseFloat(txtTotalAmountDaily.getText()));
-                programLoyaltyTransaction.setTotalAmountMonthlyBonification(Float.parseFloat(txtTotalAmountMonthly.getText()));
-                programLoyaltyTransaction.setActivationCardBonification(Float.parseFloat(txtActivationCard.getText()));
-                programLoyaltyTransaction.setRenovationCardBonification(Float.parseFloat(txtRenovationCard.getText()));
-            }
             programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
+            
             programLoyaltyTransactionParam = programLoyaltyTransaction;
+            programLoyaltyTransactionParent = programLoyaltyTransaction;
             this.showMessage("sp.common.save.success", false, null);
 
             EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
