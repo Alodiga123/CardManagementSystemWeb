@@ -1,30 +1,17 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.ProgramEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
-import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Channel;
-import com.cms.commons.models.Country;
-import com.cms.commons.models.GeneralRate;
-import com.cms.commons.models.ProductType;
-import com.cms.commons.models.RateApplicationType;
 import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.RateByProgram;
-import com.cms.commons.models.Transaction;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Tabbox;
@@ -94,9 +81,9 @@ public class AdminRateByProductController extends GenericAbstractAdminController
 
     private void loadFields(RateByProduct rateByProduct) {
         try {
-            lblProgram.setValue(rateByProduct.getProductId().getProgramId().getName());
-            lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
-            lblProduct.setValue(rateByProduct.getProductId().getName());
+//            lblProgram.setValue(rateByProduct.getProductId().getProgramId().getName());
+//            lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
+//            lblProduct.setValue(rateByProduct.getProductId().getName());
             lblChannel.setValue(rateByProduct.getChannelId().getName());
             lblTransaction.setValue(rateByProduct.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProduct.getRateApplicationTypeId().getDescription());
