@@ -86,7 +86,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             showError(ex);
         }
         try {
-            if (transaction.getIndMonetaryType() == 1) {
+            if (transaction.getIndMonetaryType() == true) {
                 rMonetaryTypeYes.setChecked(true);
             } else {
                 rMonetaryTypeNo.setChecked(true);
@@ -114,7 +114,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     }
 
     private void saveTransaction(Transaction _transaction) {
-        short indMonetaryType = 0;
+        Boolean indMonetaryType = true;
         try {
             Transaction transaction = null;
             if (_transaction != null) {
@@ -124,9 +124,9 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             }
             
             if (rMonetaryTypeYes.isChecked()) {
-                indMonetaryType = 1;
+                indMonetaryType = true;
             } else {
-                indMonetaryType = 0;
+                indMonetaryType = false;
             }
             transaction.setCode(txtCodeTransaction.getText());
             transaction.setDescription(txtDescriptionTransaction.getText());
