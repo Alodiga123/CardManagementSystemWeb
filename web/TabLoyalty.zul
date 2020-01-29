@@ -37,7 +37,7 @@
                                                     <tabs>
                                                         <tab id="tabLoyalty" label="${c:l('cms.tab.loyaltyMain')}" />
                                                         <tab id="tabParameters" label="${c:l('cms.tab.pointsAndBonifications')}"/>
-                                                        <tab id="tabCommerce" label="${c:l('cms.tab.commerceCategory')}"/>
+                                                        <!--<tab id="tabCommerce" label="${c:l('cms.tab.commerceCategory')}"/>-->
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -46,6 +46,9 @@
                                                         <tabpanel>
                                                             <include src="listParameters.zul"/>
                                                         </tabpanel>
+                                                        <!--<tabpanel>
+                                                            <include src="listLoyaltyCommerceCategory.zul"/>
+                                                        </tabpanel>-->
                                                     </tabpanels>
                                                 </tabbox>
                                             </vlayout>
