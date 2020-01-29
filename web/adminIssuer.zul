@@ -7,13 +7,31 @@
     <window id="winAdminIssuer" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminIssuerController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
+            <north border="none" size="52px" class="content-transparent">
+                <include src="adminHeader.zul"/>
+            </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
+                                <div>
+                                    <include src="adminMainMenu.zul"/>
+                                </div>
                                 <div width="900px">
                                     <vlayout>
+                                        <div height="20px" width="100%" align="left">
+                                            <!--Bread crumb-->
+                                            <hlayout>
+                                                <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
+                                                 |
+                                                <toolbarbutton label="${c:l('cms.crud.issuer.card')}" onClick='Executions.sendRedirect(&quot;listIssuer.zul&quot;)'/>
+                                                 |
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.issuer.add')}"/>
+                                                |  
+                                                <toolbarbutton id="tbbCurrentAction" /> 
+                                            </hlayout>
+                                        </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
@@ -36,83 +54,71 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.programType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identification.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.document.identification')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbProgramType" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbProgram" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbPersonType" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbDocumentsPersonType" width="270px" mold="rounded" readonly="true" />
                                                        </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.issuer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.kindCard')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identification.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuer.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuer.type')}" sclass="lblbold"/>
                                                        </row>
                                                         <row>
-                                                            <combobox id="cmbIssuer" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbCardType" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbKindCard" width="270px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <combobox id="cmbIssuerType" width="270px" mold="rounded" readonly="true" />
                                                        </row>
                                                          <row>
-                                                            <label value="${c:l('cms.common.binSponsor')}" sclass="lblbold"/> 
-                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.levelProduct')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuer.email')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.bin.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.swift.code')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbBinSponsor" width="270px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <combobox id="cmbLevelProduct" width="270px" mold="rounded" readonly="true" />                                                            
+                                                            <textbox id="txtIssuerEmail" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtBinNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <textbox id="txtSwiftCode" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.bin.Number')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.productUse')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.domesticCurrency')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.aba.code')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.contract.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtBinNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <combobox id="cmbProductUse" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDomesticCurrency" width="270px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtAbaCode" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtContractNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hbox>
+                                                            <radiogroup id="IssuerActive" onCheck="value = self.selectedItem.label"/>
+                                                                 <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rActiveYes" label="${c:l('cms.commom.Yes')}" radiogroup="IssuerActive" />
+                                                                            <radio id="rActiveNo" label="${c:l('cms.commom.No')} " radiogroup="IssuerActive" />
+                                                                        </row>
+                                                                    </rows>
+                                                                 </grid>
+                                                            </hbox>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.internationalCurrency')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.validityYears')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.storageMedio')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.web.site')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.fax.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.person.contact.name')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbInternationalCurrency" width="270px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtValidityYears" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <combobox id="cmbStorageMedio" width="270px" mold="rounded" readonly="true" />                                                            
+                                                            <textbox id="txtWebSite" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtFaxNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <textbox id="txtPersonContactName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.daysBeforeExpiration')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.daysToInactivate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.daysToActivate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.contact.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtDaysBeforeExpiration" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtDaysToInactivate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <textbox id="txtDaysToActivate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                            <textbox id="txtEmailPersonContact" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                         </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.daysToUse')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.daysToWithdrawCard')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <textbox id="txtDaysToUse" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtDaysToWithdrawCard" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <datebox id="dtbBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/> 
-                                                        </row>
-                                                        <row>
-                                                            <datebox id="dtbEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
-                                                            <combobox id="cmbSegmentMarketing" width="270px" mold="rounded" readonly="true" />
-                                                        </row>
-                                                  </rows>
+                                                    </rows>
                                                 </grid>
                                             </vlayout>
                                         </div>
@@ -120,7 +126,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProduct.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listIssuer.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

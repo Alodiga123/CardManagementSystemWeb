@@ -25,8 +25,10 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
+                                                 |
                                                 <toolbarbutton label="${c:l('cms.crud.issuer.list')}" />
+                                                 |
+                                                <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -44,11 +46,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.country')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.issuer.name')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.bin.number')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.swift.code')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.aba.code')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.issuer.type')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.bin.number')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.swift.code')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
