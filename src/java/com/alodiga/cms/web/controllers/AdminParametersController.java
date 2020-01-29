@@ -95,11 +95,17 @@ public class AdminParametersController extends GenericAbstractAdminController {
         lblLoyalty.setValue(programLoyalty.getDescription());
 
         if (programLoyaltyTransactionParam != null) {
-            txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
-            txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
-            txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
-            txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
-            programLoyaltyTransactionParent = programLoyaltyTransaction;
+            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
+                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
+                txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
+                txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
+            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+                txtTotal.setText(programLoyaltyTransaction.getTotalBonificationValue().toString());
+                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
+                txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
+                txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
+            }
         }
     }
 
@@ -140,14 +146,23 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 programLoyalty = adminLoyalty.getProgramLoyaltyParent();
             }
 
-            programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-            programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
-            programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
-            programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
-            programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-            programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
-            programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
-
+            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
+                programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
+                programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
+                programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
+                programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
+                programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
+                programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
+            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+                programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
+                programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
+                programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
+                programLoyaltyTransaction.setTotalBonificationValue(Float.parseFloat(txtTotal.getText()));
+                programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
+                programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
+                programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
+            }
             programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
             
             programLoyaltyTransactionParam = programLoyaltyTransaction;
