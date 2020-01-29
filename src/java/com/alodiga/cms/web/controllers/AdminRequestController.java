@@ -56,9 +56,11 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Tab tabAddress;
     private Tab tabFamilyReferencesMain;
     private Tab tabAdditionalCards;
+    private Tab tabLegalRepresentatives;
     public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
+    private ListRequestController listRequest;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -70,6 +72,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
 
     @Override
     public void initialize() {
+        listRequest = new ListRequestController();
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -101,9 +104,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
                 break;
             case WebConstants.EVENT_ADD:
+                if (listRequest.getAddRequestPerson() == 1) {
+                    tabFamilyReferencesMain.setDisabled(true);
+                } else {
+                    tabLegalRepresentatives.setDisabled(true);
+                }
                 tabMain.setDisabled(true);
                 tabAddress.setDisabled(true);
-                tabFamilyReferencesMain.setDisabled(true);
                 tabAdditionalCards.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
                 break;

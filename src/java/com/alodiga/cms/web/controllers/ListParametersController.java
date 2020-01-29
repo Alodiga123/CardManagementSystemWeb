@@ -108,7 +108,7 @@ public class ListParametersController extends GenericAbstractListController<Prog
                     if (programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
                         item.appendChild(new Listcell(programLoyaltyTransaction.getTotalPointsValue().toString()));
                     } else {
-                        item.appendChild(new Listcell(programLoyaltyTransaction.getTotalBonificationFixedValue().toString()));
+                        item.appendChild(new Listcell(programLoyaltyTransaction.getTotalBonificationValue().toString()));
                     }
 
                     item.appendChild(createButtonEditModal(programLoyaltyTransaction));
