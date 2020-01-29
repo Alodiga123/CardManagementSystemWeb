@@ -149,7 +149,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
             programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
 
             programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
-            
+
             programLoyaltyTransactionParam = programLoyaltyTransaction;
             programLoyaltyTransactionParent = programLoyaltyTransaction;
             this.showMessage("sp.common.save.success", false, null);
