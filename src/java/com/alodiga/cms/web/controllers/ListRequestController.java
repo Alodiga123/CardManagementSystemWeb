@@ -79,7 +79,7 @@ public class ListRequestController extends GenericAbstractListController<Request
     public void onClick$btnAddLegalPersonRequest() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("TabLegalPerson.zul");
-        indAddRequestPerson = 1;
+        indAddRequestPerson = 2;
     }
 
     public void onClick$btnDelete() {
