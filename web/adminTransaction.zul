@@ -59,6 +59,15 @@
                                                             <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.indMonetaryType')}" sclass="lblbold"/>
                                                         </row>
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.indTransactionPurchase')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indVariationRateChannel')}" sclass="lblbold"/>
+                                                        </row>    
                                                         <row>    
                                                             <hlayout>
                                                                 <textbox id="txtCodeTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
@@ -71,16 +80,29 @@
                                                             <hbox>
                                                                 <radiogroup id="monetaryType" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
+                                                            <hbox>
+                                                                <radiogroup id="transactionPurchase" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                            <hbox>
+                                                                <radiogroup id="variationRateChannel" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>                
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rMonetaryTypeYes" label="${c:l('cms.commom.Yes')}" radiogroup="monetaryType" />
                                                                             <radio id="rMonetaryTypeNo" label="${c:l('cms.commom.No')} " radiogroup="monetaryType" />
                                                                         </row>
+                                                                        <row>
+                                                                            <radio id="rTransactionPurchaseYes" label="${c:l('cms.commom.Yes')}" radiogroup="transactionPurchase" />
+                                                                            <radio id="rTransactionPurchaseNo" label="${c:l('cms.commom.No')} " radiogroup="transactionPurchase" />
+                                                                        </row>
+                                                                        <row>
+                                                                            <radio id="rVariationRateChannelYes" label="${c:l('cms.commom.Yes')}" radiogroup="variationRateChannel" />
+                                                                            <radio id="rMonetaryTyrVariationRateChannelNopeNo" label="${c:l('cms.commom.No')} " radiogroup="variationRateChannel" />
+                                                                        </row>
                                                                     </rows>
                                                                 </grid>
-                                                            </hbox>                                                       </row>
-                                                    </rows>
-                                                </grid>
+                                                            </hbox>                                                       
+                                                        </grid>
                                             </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>

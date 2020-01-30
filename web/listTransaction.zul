@@ -45,9 +45,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.transaction.code')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description')}" width="320px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.indMonetaryType')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.transaction.code')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.description')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.indMonetaryType')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.indTransactionPurchase')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.indVariationRateChannel')}" width="140px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
