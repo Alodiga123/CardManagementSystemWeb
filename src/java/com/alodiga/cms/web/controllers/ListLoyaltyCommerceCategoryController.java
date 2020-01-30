@@ -176,37 +176,35 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     }
 
     public void getData() {
-        loyaltyTransactionHasCommerceCategorys = new ArrayList<LoyaltyTransactionHasCommerceCategory>();
-        ProgramLoyalty programLoyalty = null;
-        ProgramLoyaltyTransaction programLoyaltyTransaction = null;
-        try {
-            //Programa principal Loyalty
-            AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
-            if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
-                programLoyalty = adminLoyalty.getProgramLoyaltyParent();
-            }
-//            
-            //Programa Parameters
-            adminParameter = new AdminParametersController();
-            if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
-                programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
-            }
-//            
-            EJBRequest request = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId());
-            request.setParams(params);
-            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategoryByTransaction(request);
-//             request.setFirst(0);
-//            request.setLimit(null);
-//            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategory(request);
-        } catch (NullParameterException ex) {
-            showError(ex);
-        } catch (EmptyListException ex) {
-            showEmptyList();
-        } catch (GeneralException ex) {
-            showError(ex);
-        }
+//        loyaltyTransactionHasCommerceCategorys = new ArrayList<LoyaltyTransactionHasCommerceCategory>();
+//        ProgramLoyalty programLoyalty = null;
+//        ProgramLoyaltyTransaction programLoyaltyTransaction = null;
+//        try {
+//            //Programa principal Loyalty
+//            AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
+//            if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
+//                programLoyalty = adminLoyalty.getProgramLoyaltyParent();
+//            }
+////            
+//            //Programa Parameters
+//            adminParameter = new AdminParametersController();
+//            if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
+//                programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
+//            }
+////            
+//            EJBRequest request = new EJBRequest();
+//            Map params = new HashMap();
+//            params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId());
+//            request.setParams(params);
+//            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategoryByTransaction(request);
+////            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategory(request);
+//        } catch (NullParameterException ex) {
+//            showError(ex);
+//        } catch (EmptyListException ex) {
+//            showEmptyList();
+//        } catch (GeneralException ex) {
+//            showError(ex);
+//        }
     }
 
     private void showEmptyList() {
