@@ -80,7 +80,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         lblProductType.setVisible(true);
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
-        //loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
+        loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
         getData(program.getId());
     }
 
@@ -257,28 +257,28 @@ public class ListRateByProductController extends GenericAbstractListController<R
         }
     }
 
-//    private void loadCmbProduct(Integer evenInteger, long programId) {
-//
-//        EJBRequest request1 = new EJBRequest();
-//        cmbProduct.getItems().clear();
-//        Map params = new HashMap();
-//        params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
-//        request1.setParams(params);
-//        List<Product> product;
-//        try {
-//            product = productEJB.getProductByProgram(request1);
-//            loadGenericCombobox(product, cmbProduct, "name", evenInteger, Long.valueOf(RateByProductParam != null ? RateByProductParam.getProductId().getId() : 0));
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        }
-//    }
+    private void loadCmbProduct(Integer evenInteger, long programId) {
+
+        EJBRequest request1 = new EJBRequest();
+        cmbProduct.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
+        request1.setParams(params);
+        List<Product> product;
+        try {
+            product = productEJB.getProductByProgram(request1);
+            loadGenericCombobox(product, cmbProduct, "name", evenInteger, Long.valueOf(RateByProductParam != null ? RateByProductParam.getProductId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
