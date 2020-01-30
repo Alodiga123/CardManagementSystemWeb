@@ -46,9 +46,6 @@
                                                         <tabpanel>
                                                             <include src="listParameters.zul"/>
                                                         </tabpanel>
-                                                        <!--<tabpanel>
-                                                            <include src="listLoyaltyCommerceCategory.zul"/>
-                                                        </tabpanel>-->
                                                     </tabpanels>
                                                 </tabbox>
                                             </vlayout>
