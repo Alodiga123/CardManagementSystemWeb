@@ -34,6 +34,10 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     private Textbox txtDescriptionTransaction;
     private Radio rMonetaryTypeYes;
     private Radio rMonetaryTypeNo;
+    private Radio rTransactionPurchaseYes;
+    private Radio rTransactionPurchaseNo;
+    private Radio rVariationRateChannelYes;
+    private Radio rVariationRateChannelNo;
     private Transaction transactionParam;
     private Button btnSave;
     private Integer eventType;
@@ -77,24 +81,26 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     private void loadFields(Transaction transaction) {
         try {
             txtCodeTransaction.setText(transaction.getCode().toString());
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        try {
             txtDescriptionTransaction.setText(transaction.getDescription().toString());
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        try {
             if (transaction.getIndMonetaryType() == true) {
                 rMonetaryTypeYes.setChecked(true);
             } else {
-                rMonetaryTypeNo.setChecked(true);
+                rMonetaryTypeNo.setChecked(false);
             }
-            
-        } catch (Exception ex) {
+            if (transaction.getIndTransactionPurchase() == true) {
+                rTransactionPurchaseYes.setChecked(true);
+            } else {
+                rTransactionPurchaseNo.setChecked(false);
+            }
+            if (transaction.getIndVariationRateChannel() == true) {
+                rVariationRateChannelYes.setChecked(true);
+            } else {
+                rVariationRateChannelNo.setChecked(false);
+            }
+             } catch (Exception ex) {
             showError(ex);
-        }
+        }    
+       
     }
 
     public void blockFields() {
@@ -115,11 +121,13 @@ public class AdminTransactionController extends GenericAbstractAdminController {
 
     private void saveTransaction(Transaction _transaction) {
         Boolean indMonetaryType = true;
+        Boolean indTransactionPurchase = true;
+        Boolean indVariationRateChannel = true;
         try {
             Transaction transaction = null;
             if (_transaction != null) {
                 transaction = _transaction;
-            } else {//New personType
+            } else {
                 transaction = new Transaction();
             }
             
@@ -128,9 +136,21 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             } else {
                 indMonetaryType = false;
             }
+            if (rTransactionPurchaseYes.isChecked()) {
+                indTransactionPurchase = true;
+            } else {
+                indTransactionPurchase = false;
+            }
+            if (rVariationRateChannelYes.isChecked()) {
+                indVariationRateChannel = true;
+            } else {
+                indVariationRateChannel = false;
+            }
             transaction.setCode(txtCodeTransaction.getText());
             transaction.setDescription(txtDescriptionTransaction.getText());
             transaction.setIndMonetaryType(indMonetaryType);
+            transaction.setIndTransactionPurchase(indTransactionPurchase);
+            transaction.setIndVariationRateChannel(indVariationRateChannel);
             transaction = productEJB.saveTransaction(transaction);
             transactionParam = transaction;
             this.showMessage("sp.common.save.success", false, null);

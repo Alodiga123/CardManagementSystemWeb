@@ -86,19 +86,16 @@ public class ListTransactionController extends GenericAbstractListController<Tra
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
     public void loadDataList(List<Transaction> list) {
           try {
             String indMonetaryType = null;
+            String indTransactionPurchase = null;
+            String indVariationRateChannel = null;
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
                 for (Transaction transaction : list) {
-
                     item = new Listitem();
                     item.setValue(transaction);
                     item.appendChild(new Listcell(transaction.getCode()));
@@ -108,7 +105,19 @@ public class ListTransactionController extends GenericAbstractListController<Tra
                     } else {
                         indMonetaryType = "No";
                     }
+                    if (transaction.getIndTransactionPurchase() == true) {
+                        indTransactionPurchase = "Yes";
+                    } else {
+                        indTransactionPurchase = "No";
+                    }
+                    if (transaction.getIndVariationRateChannel() == true) {
+                        indVariationRateChannel = "Yes";
+                    } else {
+                        indVariationRateChannel = "No";
+                    }
                     item.appendChild(new Listcell(indMonetaryType));
+                    item.appendChild(new Listcell(indTransactionPurchase));
+                    item.appendChild(new Listcell(indVariationRateChannel));
                     item.appendChild( new ListcellEditButton(adminPage, transaction));
                     item.appendChild(new ListcellViewButton(adminPage, transaction,true));
                     item.setParent(lbxRecords);
@@ -120,13 +129,17 @@ public class ListTransactionController extends GenericAbstractListController<Tra
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
 
         } catch (Exception ex) {
-           showError(ex);
+            showError(ex);
         }
-    }
+}
+    
+    
 
     @Override
     public List<Transaction> getFilterList(String filter) {
