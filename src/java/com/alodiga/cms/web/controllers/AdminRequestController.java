@@ -200,7 +200,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
         } catch (Exception ex) {
             showError(ex);
         }
-
     }
 
     public void onClick$btnSave() {
