@@ -180,7 +180,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
         try {
             
             //Programa Parameters
-            adminParameter = new AdminParametersController();
+            AdminParametersController adminParameter = new AdminParametersController();
             if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
                 programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
             }
