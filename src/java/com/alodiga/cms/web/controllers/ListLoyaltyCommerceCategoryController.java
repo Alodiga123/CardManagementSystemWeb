@@ -184,13 +184,13 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
             if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
                 programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
             }
-//            
+           
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId());
             request.setParams(params);
             loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategoryByTransaction(request);
-//             request.setFirst(0);
+//            request.setFirst(0);
 //            request.setLimit(null);
 //            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategory(request);
         } catch (NullParameterException ex) {
