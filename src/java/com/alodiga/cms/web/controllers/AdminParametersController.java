@@ -106,6 +106,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
                 txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
             }
+            programLoyaltyTransactionParent = programLoyaltyTransaction;
         }
     }
 
