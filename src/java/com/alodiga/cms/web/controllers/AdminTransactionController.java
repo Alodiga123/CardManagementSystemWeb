@@ -105,6 +105,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
 
     public void blockFields() {
         txtCodeTransaction.setReadonly(true);
+        
         btnSave.setVisible(false);
     }
 
@@ -178,11 +179,24 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(transactionParam);
+                rMonetaryTypeYes.setDisabled(true);
+                rMonetaryTypeNo.setDisabled(true);
+                rTransactionPurchaseYes.setDisabled(true);
+                rTransactionPurchaseNo.setDisabled(true);
+                rVariationRateChannelYes.setDisabled(true);
+                rVariationRateChannelNo.setDisabled(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(transactionParam);
                 txtCodeTransaction.setDisabled(true);
                 txtDescriptionTransaction.setDisabled(true);
+                blockFields();
+                rMonetaryTypeYes.setDisabled(true);
+                rMonetaryTypeNo.setDisabled(true);
+                rTransactionPurchaseYes.setDisabled(true);
+                rTransactionPurchaseNo.setDisabled(true);
+                rVariationRateChannelYes.setDisabled(true);
+                rVariationRateChannelNo.setDisabled(true);
                 break;
             case WebConstants.EVENT_ADD:
                 loadFields(transactionParam);
