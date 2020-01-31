@@ -105,7 +105,12 @@ public class ListParametersController extends GenericAbstractListController<Prog
                     item.appendChild(new Listcell(programLoyaltyTransaction.getChannelId().getName()));
                     item.appendChild(new Listcell(programLoyaltyTransaction.getTransactionId().getDescription()));
                     item.appendChild(new Listcell(programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getName()));
-                    item.appendChild(new Listcell(programLoyaltyTransaction.getTotalPointsValue().toString()));
+                    if (programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                        item.appendChild(new Listcell(programLoyaltyTransaction.getTotalPointsValue().toString()));
+                    } else {
+                        item.appendChild(new Listcell(programLoyaltyTransaction.getTotalBonificationValue().toString()));
+                    }
+
                     item.appendChild(createButtonEditModal(programLoyaltyTransaction));
                     item.appendChild(createButtonViewModal(programLoyaltyTransaction));
                     item.setParent(lbxRecords);
