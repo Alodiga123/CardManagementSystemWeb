@@ -61,7 +61,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
     public void initialize() {
         super.initialize();
         try {
-            //Evaluar Permisos
+              
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
