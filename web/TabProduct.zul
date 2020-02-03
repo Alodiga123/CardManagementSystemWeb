@@ -29,9 +29,9 @@
                                                 |
                                                 <toolbarbutton label="${c:l('cms.menu.product')}"/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.product.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.product.add')}"/>
                                                 |
-                                                <toolbarbutton id= "tbbTitle" label=""/>
+                                                <toolbarbutton id="tbbCurrentAction" />  
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>

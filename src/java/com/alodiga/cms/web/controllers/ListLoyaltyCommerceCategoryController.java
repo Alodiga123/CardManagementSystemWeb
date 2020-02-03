@@ -10,7 +10,6 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LoyaltyTransactionHasCommerceCategory;
-import com.cms.commons.models.ProgramLoyalty;
 import com.cms.commons.models.ProgramLoyaltyTransaction;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -53,7 +52,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateLoyaltyCommerce", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
@@ -176,35 +175,28 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     }
 
     public void getData() {
-//        loyaltyTransactionHasCommerceCategorys = new ArrayList<LoyaltyTransactionHasCommerceCategory>();
-//        ProgramLoyalty programLoyalty = null;
-//        ProgramLoyaltyTransaction programLoyaltyTransaction = null;
-//        try {
-//            //Programa principal Loyalty
-//            AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
-//            if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
-//                programLoyalty = adminLoyalty.getProgramLoyaltyParent();
-//            }
-////            
-//            //Programa Parameters
-//            adminParameter = new AdminParametersController();
-//            if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
-//                programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
-//            }
-////            
-//            EJBRequest request = new EJBRequest();
-//            Map params = new HashMap();
-//            params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId());
-//            request.setParams(params);
-//            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategoryByTransaction(request);
-////            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategory(request);
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//        } catch (EmptyListException ex) {
-//            showEmptyList();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//        }
+        loyaltyTransactionHasCommerceCategorys = new ArrayList<LoyaltyTransactionHasCommerceCategory>();
+        ProgramLoyaltyTransaction programLoyaltyTransaction = null;
+        try {
+            
+            //Programa Parameters
+            AdminParametersController adminParameter = new AdminParametersController();
+            if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
+                programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
+            }
+           
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId());
+            request.setParams(params);
+            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategoryByTransaction(request);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {
+            showEmptyList();
+        } catch (GeneralException ex) {
+            showError(ex);
+        }
     }
 
     private void showEmptyList() {
