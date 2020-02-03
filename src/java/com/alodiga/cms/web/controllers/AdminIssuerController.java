@@ -282,6 +282,8 @@ public class AdminIssuerController extends GenericAbstractAdminController {
                 blockFields();            
                 loadCmbCountry(eventType);
                 loadCmbIssuerType(eventType);
+                rActiveYes.setDisabled(true);
+                rActiveNo.setDisabled(true);
                 onChange$cmbCountry();
                 onChange$cmbPersonType();
                 break;
