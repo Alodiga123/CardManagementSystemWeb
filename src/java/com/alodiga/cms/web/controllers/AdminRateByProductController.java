@@ -81,9 +81,9 @@ public class AdminRateByProductController extends GenericAbstractAdminController
 
     private void loadFields(RateByProduct rateByProduct) {
         try {
-//            lblProgram.setValue(rateByProduct.getProductId().getProgramId().getName());
-//            lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
-//            lblProduct.setValue(rateByProduct.getProductId().getName());
+            lblProgram.setValue(rateByProduct.getProductId().getProgramId().getName());
+            lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
+            lblProduct.setValue(rateByProduct.getProductId().getName());
             lblChannel.setValue(rateByProduct.getChannelId().getName());
             lblTransaction.setValue(rateByProduct.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProduct.getRateApplicationTypeId().getDescription());
