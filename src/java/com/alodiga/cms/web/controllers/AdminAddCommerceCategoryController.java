@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -87,7 +88,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             showError(ex);
             }              
     }
-    
+//    
 //    private void loadField(ProductHasCommerceCategory productHasCommerceCategory) {
 //        Product product = null;
 //        AdminProductController adminProduct = new AdminProductController();
@@ -135,7 +136,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveProductHasCommerceCategory(null);
@@ -145,6 +146,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
                 break;
             default:
                 break;
+                    
         }
     }
 
