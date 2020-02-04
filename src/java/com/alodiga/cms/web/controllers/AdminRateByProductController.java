@@ -165,6 +165,13 @@ public class AdminRateByProductController extends GenericAbstractAdminController
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(rateByProductParam);
+                txtFixedRate.setDisabled(true);
+                txtPercentageRate.setDisabled(true);
+                txtTotalTransactionInitialExempt.setDisabled(true);
+                txtTotalTransactionExemptPerMonth.setDisabled(true);
+                blockFields();
+                rModificationCardHolderYes.setDisabled(true);
+                rModificationCardHolderNo.setDisabled(true);
                 break;
             default:
                 break;
