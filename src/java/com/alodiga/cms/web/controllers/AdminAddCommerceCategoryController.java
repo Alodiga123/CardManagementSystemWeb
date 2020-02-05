@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -24,6 +25,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
@@ -33,8 +35,8 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     private Listbox lbxRecords;
     private Combobox cmbSegmentCommerce;
     private Combobox cmbCommerceCategory;
+    private Label txtProduct;
     private ProductEJB productEJB = null;
-    private ProgramEJB programEJB = null;
     private ProductHasCommerceCategory productHasCommerceCategoryParam;
     private Button btnSave;
     public Window winAdminAddCommerceCategory;
@@ -43,8 +45,18 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        productHasCommerceCategoryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                productHasCommerceCategoryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object") : null;
+                break;
+            case WebConstants.EVENT_VIEW:
+                productHasCommerceCategoryParam = (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object");
+                break;
+            case WebConstants.EVENT_ADD:
+                productHasCommerceCategoryParam = null;
+                break;
+        }
         initialize();
     }
 
@@ -69,7 +81,22 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     }
 
     private void loadFields(ProductHasCommerceCategory ProductHasCommerceCategory) {
+         try {
+             cmbSegmentCommerce.setText(ProductHasCommerceCategory.toString());
+           
+            } catch (Exception ex) {
+            showError(ex);
+            }              
     }
+//    
+//    private void loadField(ProductHasCommerceCategory productHasCommerceCategory) {
+//        Product product = null;
+//        AdminProductController adminProduct = new AdminProductController();
+//        if (adminProduct.getProductParent().getId() != null) {
+//            product = adminProduct.getProductParent();
+//        }
+//        txtProduct.setValue(product.getName());
+//    }
 
     public void blockFields() {
         cmbSegmentCommerce.setDisabled(true);
@@ -84,7 +111,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
 
             if (_productHasCommerceCategory != null) {
                 productHasCommerceCategory = _productHasCommerceCategory;
-            } else {//New address
+            } else {
                 productHasCommerceCategory = new ProductHasCommerceCategory();
             }
             
@@ -109,7 +136,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveProductHasCommerceCategory(null);
@@ -119,6 +146,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
                 break;
             default:
                 break;
+                    
         }
     }
 

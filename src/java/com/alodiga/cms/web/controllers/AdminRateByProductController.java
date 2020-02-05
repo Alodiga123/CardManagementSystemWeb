@@ -81,9 +81,9 @@ public class AdminRateByProductController extends GenericAbstractAdminController
 
     private void loadFields(RateByProduct rateByProduct) {
         try {
-//            lblProgram.setValue(rateByProduct.getProductId().getProgramId().getName());
-//            lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
-//            lblProduct.setValue(rateByProduct.getProductId().getName());
+            lblProgram.setValue(rateByProduct.getProductId().getProgramId().getName());
+            lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
+            lblProduct.setValue(rateByProduct.getProductId().getName());
             lblChannel.setValue(rateByProduct.getChannelId().getName());
             lblTransaction.setValue(rateByProduct.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProduct.getRateApplicationTypeId().getDescription());
@@ -165,6 +165,13 @@ public class AdminRateByProductController extends GenericAbstractAdminController
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(rateByProductParam);
+                txtFixedRate.setDisabled(true);
+                txtPercentageRate.setDisabled(true);
+                txtTotalTransactionInitialExempt.setDisabled(true);
+                txtTotalTransactionExemptPerMonth.setDisabled(true);
+                blockFields();
+                rModificationCardHolderYes.setDisabled(true);
+                rModificationCardHolderNo.setDisabled(true);
                 break;
             default:
                 break;
