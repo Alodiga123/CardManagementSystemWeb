@@ -30,11 +30,14 @@ import com.cms.commons.models.ProgramLoyalty;
 import com.cms.commons.models.ProgramLoyaltyType;
 import com.cms.commons.models.StatusProgramLoyalty;
 import com.cms.commons.util.Constants;
+import com.cms.commons.util.QueryConstants;
 import java.util.HashMap;
 import java.util.Map;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminLoyaltyController extends GenericAbstractAdminController {
 
@@ -64,6 +67,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     private Tab tabParameters;
+    private Toolbarbutton tbbTitle;
     private StatusProgramLoyalty statusPending;
     public static ProgramLoyalty programLoyaltyParent = null;
 
@@ -78,6 +82,19 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.loyalty.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.loyalty.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.loyalty.add"));
+                break;
+            default:
+                break;
+        }
         try {
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
@@ -106,6 +123,12 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         dtbEndDate.setRawValue(null);
         txtObservations.setRawValue(null);
         txtConversionRatePoints.setRawValue(null);
+    }
+    
+    public void onChange$cmbProgram() {
+        cmbProduct.setVisible(true);
+        Program program = (Program) cmbProgram.getSelectedItem().getValue();
+        loadCmbProduct(eventType, program.getId());
     }
 
     public ProgramLoyalty getProgramLoyaltyParent() {
@@ -164,6 +187,14 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         dtbEndDate.setReadonly(true);
         txtObservations.setReadonly(true);
         txtConversionRatePoints.setReadonly(true);
+        cbxMonday.setDisabled(true);
+        cbxTuesday.setDisabled(true);
+        cbxWednesday.setDisabled(true);
+        cbxThursday.setDisabled(true);
+        cbxFriday.setDisabled(true);
+        cbxSaturday.setDisabled(true);
+        cbxSunday.setDisabled(true);
+        
         btnSave.setVisible(false);
     }
 
@@ -304,15 +335,15 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             } else {
                 daysWeekHasProgramLoyalty = new DaysWeekHasProgramLoyalty();
             }
-            
+
             EJBRequest request1 = new EJBRequest();
             request1.setParam(indDay);
-            DaysWeek daysWeek = programEJB.loadDaysWeek(request1);   
-            
+            DaysWeek daysWeek = programEJB.loadDaysWeek(request1);
+
             daysWeekHasProgramLoyalty.setProgramLoyaltyId(programLoyaltyParent);
             daysWeekHasProgramLoyalty.setDaysWeekId(daysWeek);
             daysWeekHasProgramLoyalty = programEJB.saveDaysWeekHasProgramLoyalty(daysWeekHasProgramLoyalty);
-            
+
         } catch (WrongValueException ex) {
             showError(ex);
         } catch (RegisterNotFoundException ex) {
@@ -348,9 +379,9 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
                 loadFields(programLoyaltyParam);
                 loadFieldDays(daysWeekHasProgramLoyaltyParam);
                 loadCmbProgram(eventType);
-                loadCmbProduct(eventType);
                 loadCmbProgramLoyaltyType(eventType);
                 loadCmbStatusProgramLoyalty(eventType);
+                onChange$cmbProgram();
                 break;
             case WebConstants.EVENT_VIEW:
                 txtStatus.setVisible(false);
@@ -359,16 +390,16 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
                 loadFieldDays(daysWeekHasProgramLoyaltyParam);
                 blockFields();
                 loadCmbProgram(eventType);
-                loadCmbProduct(eventType);
                 loadCmbProgramLoyaltyType(eventType);
                 loadCmbStatusProgramLoyalty(eventType);
+                onChange$cmbProgram();
                 break;
             case WebConstants.EVENT_ADD:
                 txtStatus.setVisible(true);
                 cmbStatusProgramLoyalty.setVisible(false);
                 loadCmbProgram(eventType);
-                loadCmbProduct(eventType);
                 loadCmbProgramLoyaltyType(eventType);
+                onChange$cmbProgram();
             default:
                 break;
         }
@@ -389,12 +420,16 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-
-    private void loadCmbProduct(Integer evenInteger) {
+    
+    private void loadCmbProduct(Integer evenInteger, long programId) {
         EJBRequest request1 = new EJBRequest();
+        cmbProduct.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
+        request1.setParams(params);
         List<Product> products;
         try {
-            products = productEJB.getProduct(request1);
+            products = productEJB.getProductByProgram(request1);
             loadGenericCombobox(products, cmbProduct, "name", evenInteger, Long.valueOf(programLoyaltyParam != null ? programLoyaltyParam.getProductId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
