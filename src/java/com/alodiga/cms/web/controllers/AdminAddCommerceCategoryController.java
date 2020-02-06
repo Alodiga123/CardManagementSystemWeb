@@ -13,6 +13,7 @@ import com.cms.commons.models.CommerceCategory;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductHasCommerceCategory;
 import com.cms.commons.models.SegmentCommerce;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -88,15 +89,6 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             showError(ex);
             }              
     }
-//    
-//    private void loadField(ProductHasCommerceCategory productHasCommerceCategory) {
-//        Product product = null;
-//        AdminProductController adminProduct = new AdminProductController();
-//        if (adminProduct.getProductParent().getId() != null) {
-//            product = adminProduct.getProductParent();
-//        }
-//        txtProduct.setValue(product.getName());
-//    }
 
     public void blockFields() {
         cmbSegmentCommerce.setDisabled(true);
@@ -120,16 +112,27 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             if (adminProduct.getProductParent().getId() != null) {
                 product = adminProduct.getProductParent();
             }
-
-            //Guardar ProductHasCommerceCategory
-            productHasCommerceCategory = new ProductHasCommerceCategory();
-            productHasCommerceCategory.setProductId(product);
-            productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
-            productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
-            productHasCommerceCategoryParam = productHasCommerceCategory;
             
-            this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.COMMERCE_CATEGORY_KEY, ((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue()).getId());
+            params.put(Constants.PRODUCT_KEY, product.getId() );
+            request1.setParams(params);
+            ProductHasCommerceCategory productHasCommerceCategoryBD = productEJB.getProductHasCommerceCategoryBD(request1);
+
+            if (productHasCommerceCategoryBD != null) {
+                this.showMessage("sp.common.registerExist", false, null);
+            } else {
+                //Guardar ProductHasCommerceCategory
+                productHasCommerceCategory = new ProductHasCommerceCategory();
+                productHasCommerceCategory.setProductId(product);
+                productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
+                productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
+                productHasCommerceCategoryParam = productHasCommerceCategory;
+                this.showMessage("sp.common.save.success", false, null);
+                EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+            }
+            
         } catch (Exception ex) {
             showError(ex);
         }
