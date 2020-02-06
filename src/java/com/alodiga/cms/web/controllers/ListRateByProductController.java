@@ -47,7 +47,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
     private List<RateByProduct> rateByProductByProductList = new ArrayList<RateByProduct>();
     private RateByProduct RateByProductParam;
     private Product product = null;
-
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -61,7 +61,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
     public void initialize() {
         super.initialize();
         try {
-            //Evaluar Permisos
+            //Evaluar Permisos  
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
@@ -81,7 +81,6 @@ public class ListRateByProductController extends GenericAbstractListController<R
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
         loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
-        getData(program.getId());
     }
 
     public void onClick$btnAdd() throws InterruptedException {
@@ -104,7 +103,6 @@ public class ListRateByProductController extends GenericAbstractListController<R
         Map params = new HashMap();
         int indLoadList = 0;
         String rbp1;
-        String rbp2;
         int indExist = 0;
         try {
             params.put(QueryConstants.PARAM_PRODUCT_ID, product.getId());
@@ -138,6 +136,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 for (RateByProduct r : rateByProductList) {
                     item = new Listitem();
                     item.setValue(r);
+                    item.appendChild(new Listcell (r.getProductId().getCountryId().getName()));
                     item.appendChild(new Listcell(r.getChannelId().getName()));
                     item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                     item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -185,6 +184,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                         for (RateByProduct r : rateByProductList) {
                             item = new Listitem();
                             item.setValue(r);
+                            item.appendChild(new Listcell(r.getProductId().getProgramId().getCardProgramManagerId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -233,6 +233,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
     private void showEmptyList() {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());

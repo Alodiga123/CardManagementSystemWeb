@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -12,6 +13,7 @@ import com.cms.commons.models.CommerceCategory;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductHasCommerceCategory;
 import com.cms.commons.models.SegmentCommerce;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -24,6 +26,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
@@ -33,8 +36,8 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     private Listbox lbxRecords;
     private Combobox cmbSegmentCommerce;
     private Combobox cmbCommerceCategory;
+    private Label txtProduct;
     private ProductEJB productEJB = null;
-    private ProgramEJB programEJB = null;
     private ProductHasCommerceCategory productHasCommerceCategoryParam;
     private Button btnSave;
     public Window winAdminAddCommerceCategory;
@@ -43,8 +46,18 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        productHasCommerceCategoryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                productHasCommerceCategoryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object") : null;
+                break;
+            case WebConstants.EVENT_VIEW:
+                productHasCommerceCategoryParam = (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object");
+                break;
+            case WebConstants.EVENT_ADD:
+                productHasCommerceCategoryParam = null;
+                break;
+        }
         initialize();
     }
 
@@ -69,6 +82,12 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     }
 
     private void loadFields(ProductHasCommerceCategory ProductHasCommerceCategory) {
+         try {
+             cmbSegmentCommerce.setText(ProductHasCommerceCategory.toString());
+           
+            } catch (Exception ex) {
+            showError(ex);
+            }              
     }
 
     public void blockFields() {
@@ -84,7 +103,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
 
             if (_productHasCommerceCategory != null) {
                 productHasCommerceCategory = _productHasCommerceCategory;
-            } else {//New address
+            } else {
                 productHasCommerceCategory = new ProductHasCommerceCategory();
             }
             
@@ -93,23 +112,34 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             if (adminProduct.getProductParent().getId() != null) {
                 product = adminProduct.getProductParent();
             }
-
-            //Guardar ProductHasCommerceCategory
-            productHasCommerceCategory = new ProductHasCommerceCategory();
-            productHasCommerceCategory.setProductId(product);
-            productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
-            productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
-            productHasCommerceCategoryParam = productHasCommerceCategory;
             
-            this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.COMMERCE_CATEGORY_KEY, ((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue()).getId());
+            params.put(Constants.PRODUCT_KEY, product.getId() );
+            request1.setParams(params);
+            ProductHasCommerceCategory productHasCommerceCategoryBD = productEJB.getProductHasCommerceCategoryBD(request1);
+
+            if (productHasCommerceCategoryBD != null) {
+                this.showMessage("sp.common.registerExist", false, null);
+            } else {
+                //Guardar ProductHasCommerceCategory
+                productHasCommerceCategory = new ProductHasCommerceCategory();
+                productHasCommerceCategory.setProductId(product);
+                productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
+                productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
+                productHasCommerceCategoryParam = productHasCommerceCategory;
+                this.showMessage("sp.common.save.success", false, null);
+                EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+            }
+            
         } catch (Exception ex) {
             showError(ex);
         }
     
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveProductHasCommerceCategory(null);
@@ -119,6 +149,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
                 break;
             default:
                 break;
+                    
         }
     }
 

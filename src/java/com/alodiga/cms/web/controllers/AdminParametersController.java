@@ -15,6 +15,7 @@ import com.cms.commons.models.Transaction;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -22,6 +23,8 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -30,12 +33,16 @@ public class AdminParametersController extends GenericAbstractAdminController {
     private static final long serialVersionUID = -9145887024839938515L;
 
     private Label lblLoyalty;
+    private Label lblTitle;
     private Combobox cmbChannel;
     private Combobox cmbTransaction;
     private Textbox txtTotal;
     private Textbox txtTotalMaximumTransactions;
     private Textbox txtTotalAmountDaily;
     private Textbox txtTotalAmountMonthly;
+    private Radio rBonificationYes;
+    private Radio rBonificationNo;
+    private Tab tabCommerce;
     private ProductEJB productEJB = null;
     private ProgramEJB programEJB = null;
     private ProgramLoyaltyTransaction programLoyaltyTransactionParam;
@@ -43,6 +50,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
     private Integer eventType;
     public static ProgramLoyaltyTransaction programLoyaltyTransactionParent = null;
     public Window winAdminParameters;
+    public Window winTabParametersAndComerce;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -51,12 +59,23 @@ public class AdminParametersController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 programLoyaltyTransactionParam = (ProgramLoyaltyTransaction) Sessions.getCurrent().getAttribute("object");
+                if (programLoyaltyTransactionParam.getTransactionId().getIndTransactionPurchase() != null) {
+                    tabCommerce.setDisabled(false);
+                } else {
+                    tabCommerce.setDisabled(true);
+                }
                 break;
             case WebConstants.EVENT_VIEW:
                 programLoyaltyTransactionParam = (ProgramLoyaltyTransaction) Sessions.getCurrent().getAttribute("object");
+                if (programLoyaltyTransactionParam.getTransactionId().getIndTransactionPurchase() != null) {
+                    tabCommerce.setDisabled(false);
+                } else {
+                    tabCommerce.setDisabled(true);
+                }
                 break;
             case WebConstants.EVENT_ADD:
                 programLoyaltyTransactionParam = null;
+                tabCommerce.setDisabled(true);
                 break;
         }
         initialize();
@@ -65,6 +84,19 @@ public class AdminParametersController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                winTabParametersAndComerce.setTitle(Labels.getLabel("cms.crud.loyalty.commerceCategory.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                winTabParametersAndComerce.setTitle(Labels.getLabel("cms.crud.loyalty.commerceCategory.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                winTabParametersAndComerce.setTitle(Labels.getLabel("cms.crud.loyalty.commerceCategory.add"));
+                break;
+            default:
+                break;
+        }
         try {
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
@@ -81,6 +113,50 @@ public class AdminParametersController extends GenericAbstractAdminController {
         txtTotalAmountMonthly.setRawValue(null);
     }
 
+    public void onClick$rBonificationYes() {
+        txtTotalMaximumTransactions.setDisabled(false);
+        txtTotalAmountDaily.setDisabled(false);
+        txtTotalAmountMonthly.setDisabled(false);
+    }
+
+    public void onClick$rBonificationNo() {
+        txtTotalMaximumTransactions.setDisabled(true);
+        txtTotalAmountDaily.setDisabled(false);
+        txtTotalAmountMonthly.setDisabled(false);
+    }
+
+    public void onChange$cmbTransaction() {
+        String indMonetaryTypeTrue = WebConstants.ID_MONETARY_TYPE_TRUE;
+        String indMonetaryTypeFalse = WebConstants.ID_MONETARY_TYPE_FALSE;
+        String cadena1 = (((Transaction) cmbTransaction.getSelectedItem().getValue()).getIndMonetaryType().toString());
+        String cadena2 = (((Transaction) cmbTransaction.getSelectedItem().getValue()).getIndTransactionPurchase().toString());
+        String cadena3 = (((Transaction) cmbTransaction.getSelectedItem().getValue()).getIndVariationRateChannel().toString());
+
+        ProgramLoyalty programLoyalty = null;
+        AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
+        if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
+            programLoyalty = adminLoyalty.getProgramLoyaltyParent();
+        }
+
+        if (cadena1.equals(indMonetaryTypeTrue)) {
+
+        } else if (cadena1.equals(indMonetaryTypeFalse)) {
+            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));
+                txtTotal.setDisabled(false);
+                txtTotalAmountDaily.setDisabled(true);
+                txtTotalAmountMonthly.setDisabled(true);
+                txtTotalMaximumTransactions.setDisabled(true);
+            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalBonification"));
+                txtTotal.setDisabled(false);
+                txtTotalAmountDaily.setDisabled(true);
+                txtTotalAmountMonthly.setDisabled(true);
+                txtTotalMaximumTransactions.setDisabled(true);
+            }
+        }
+    }
+
     public ProgramLoyaltyTransaction getProgramLoyaltyTransactionParent() {
         return programLoyaltyTransactionParent;
     }
@@ -95,18 +171,41 @@ public class AdminParametersController extends GenericAbstractAdminController {
         lblLoyalty.setValue(programLoyalty.getDescription());
 
         if (programLoyaltyTransactionParam != null) {
+            txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
+            txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
+            txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
+
+            if (programLoyaltyTransaction.getTransactionId().getIndTransactionPurchase() == true) {
+                tabCommerce.setDisabled(false);
+            } else {
+                tabCommerce.setDisabled(true);
+            }
+
             if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));
                 txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
-                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
-                txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
-                txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
+                rBonificationYes.setDisabled(true);
+                rBonificationNo.setDisabled(true);
             } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalBonification"));
                 txtTotal.setText(programLoyaltyTransaction.getTotalBonificationValue().toString());
-                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
-                txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
-                txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
+                if (programLoyaltyTransaction.getIndBonificationFixed() == true) {
+                    rBonificationYes.setChecked(true);
+                } else {
+                    rBonificationNo.setChecked(true);
+                }
             }
             programLoyaltyTransactionParent = programLoyaltyTransaction;
+        } else {
+            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));
+                rBonificationYes.setDisabled(true);
+                rBonificationNo.setDisabled(true);
+            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalBonification"));
+                rBonificationYes.setDisabled(false);
+                rBonificationNo.setDisabled(false);
+            }
         }
     }
 
@@ -130,6 +229,9 @@ public class AdminParametersController extends GenericAbstractAdminController {
 //
 //    }
     private void saveProgramLoyaltyTransactionParam(ProgramLoyaltyTransaction _programLoyaltyTransaction) {
+        String indMonetaryTypeTrue = WebConstants.ID_MONETARY_TYPE_TRUE;
+        String indMonetaryTypeFalse = WebConstants.ID_MONETARY_TYPE_FALSE;
+        boolean IndBonificationFixed = true;
         ProgramLoyalty programLoyalty = null;
 
         try {
@@ -141,34 +243,41 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 programLoyaltyTransaction = new ProgramLoyaltyTransaction();
             }
 
+            if (rBonificationYes.isChecked()) {
+                IndBonificationFixed = true;
+            } else {
+                IndBonificationFixed = false;
+            }
+
             //Loyalty
             AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
             if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
                 programLoyalty = adminLoyalty.getProgramLoyaltyParent();
             }
 
+            programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
+            programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
+            programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
             if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-                programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
-                programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
                 programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
-                programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-                programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
-                programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
             } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
-                programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-                programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
-                programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
                 programLoyaltyTransaction.setTotalBonificationValue(Float.parseFloat(txtTotal.getText()));
-                programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-                programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
-                programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
             }
+            programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
+            programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
+            programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
+            programLoyaltyTransaction.setIndBonificationFixed(IndBonificationFixed);
             programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
 
             programLoyaltyTransactionParam = programLoyaltyTransaction;
             programLoyaltyTransactionParent = programLoyaltyTransaction;
             this.showMessage("sp.common.save.success", false, null);
+
+            if (programLoyaltyTransactionParam.getTransactionId().getIndTransactionPurchase() == true) {
+                tabCommerce.setDisabled(false);
+            } else {
+                tabCommerce.setDisabled(true);
+            }
 
             EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
@@ -199,8 +308,8 @@ public class AdminParametersController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadField(programLoyaltyTransactionParam);
-                loadCmbTransaction(eventType);
-                loadCmbChannel(eventType);
+                loadCmbTransaction(WebConstants.EVENT_VIEW);
+                loadCmbChannel(WebConstants.EVENT_VIEW);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadField(programLoyaltyTransactionParam);

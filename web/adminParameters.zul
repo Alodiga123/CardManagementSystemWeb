@@ -18,7 +18,6 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('cms.tab.pointsAndBonifications')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="280px"/>
@@ -27,7 +26,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.loyalty')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.tab.loyaltyMain')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.cannel')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
                                                         </row>
@@ -37,21 +36,31 @@
                                                             <combobox id="cmbTransaction" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.total')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.loyalty.indBonificationFixed')}" sclass="lblbold"/>
+                                                            <label id="lblTitle" value="" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.loyalty.parameters.totalMaximumTransactions')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalAmountDaily')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <hbox>
+                                                                <radiogroup id="bonificationFixed" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rBonificationYes" label="${c:l('cms.commom.Yes')}" radiogroup="bonificationFixed" />
+                                                                            <radio id="rBonificationNo" label="${c:l('cms.commom.No')} " radiogroup="bonificationFixed" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
                                                             <textbox id="txtTotal" value="" width="250px" maxlength="20"/>
                                                             <textbox id="txtTotalMaximumTransactions" value="" width="250px" maxlength="10"/>
-                                                            <textbox id="txtTotalAmountDaily" value="" width="250px" maxlength="10"/> 
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalAmountDaily')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.loyalty.parameters.totalAmountMonthly')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.ActivationCard')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.renovationCard')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <textbox id="txtTotalAmountDaily" value="" width="250px" maxlength="10"/> 
                                                             <textbox id="txtTotalAmountMonthly" value="" width="250px" maxlength="10"/>
                                                         </row>
                                                     </rows>

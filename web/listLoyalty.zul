@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.Program.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.loyaltyMain')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -53,9 +53,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.program')}" width="330px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.product')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description')}" width="235px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.loyaltyProgram')}" width="330px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.LoyaltyProduct')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.LoyaltyDescription')}" width="235px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.loyalty.starDate.status')}" width="80px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
