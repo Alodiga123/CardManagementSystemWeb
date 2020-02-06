@@ -105,13 +105,16 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_ADD:
                 if (listRequest.getAddRequestPerson() == 1) {
+                    tabMain.setDisabled(true);
+                    tabAddress.setDisabled(true);
                     tabFamilyReferencesMain.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
                 } else {
+                    tabMain.setDisabled(true);
+                    tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
                 }
-                tabMain.setDisabled(true);
-                tabAddress.setDisabled(true);
-                tabAdditionalCards.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
                 break;
             default:

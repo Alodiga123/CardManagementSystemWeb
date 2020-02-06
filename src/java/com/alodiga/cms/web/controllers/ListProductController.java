@@ -103,7 +103,7 @@ public class ListProductController extends GenericAbstractListController<Product
                     item.setValue(product);
                     item.appendChild(new Listcell(product.getName()));
                     item.appendChild(new Listcell(product.getCountryId().getName()));
-                    item.appendChild(new Listcell(product.getCardTypeId().getDescription()));
+                    item.appendChild(new Listcell(product.getProductTypeId().getName()));
                     item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, product));
                     item.appendChild(new ListcellViewButton(adminPage, product,true));

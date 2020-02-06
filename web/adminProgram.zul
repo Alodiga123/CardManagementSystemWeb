@@ -57,7 +57,7 @@
                                                             <combobox id="cmbCardProgramManager" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.Card.Type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardIssuanceType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.co.branded')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.reloadable')}" sclass="lblbold"/>
                                                         </row>
