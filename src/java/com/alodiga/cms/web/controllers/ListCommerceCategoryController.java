@@ -69,7 +69,9 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             adminPage = "/adminAddCommerceCategory.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            loadDataList(productHasCommerceCategory);
+            if (productHasCommerceCategory != null) {
+               loadDataList(productHasCommerceCategory);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -93,7 +95,6 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (ProductHasCommerceCategory productHasCommerceCategory : list) {
                     item = new Listitem();
                     item.setValue(productHasCommerceCategory);

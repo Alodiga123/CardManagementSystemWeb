@@ -79,26 +79,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-
-    /*public List<LegalRepresentatives> getFilteredList(String filter) {
-     List<LegalRepresentatives> legalRepresentativesaux = new ArrayList<LegalRepresentatives>();
-     LegalRepresentatives legalRepresentatives;
-     try {
-     if (filter != null && !filter.equals("")) {
-     legalRepresentatives = utilsEJB.searchRequest(filter);
-     legalRepresentativesaux.add(legalRepresentatives);
-     } else {
-     return legalRepresentatives;
-     }
-     } catch (RegisterNotFoundException ex) {
-     Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
-     } catch (Exception ex) {
-     showError(ex);
-     }
-     return legalRepresentativesaux;
-     }*/
-    
+    }    
     
     public void onClick$btnAdd() throws InterruptedException {
         try {
