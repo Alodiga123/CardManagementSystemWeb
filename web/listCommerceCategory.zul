@@ -37,7 +37,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="250px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.mccCode')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.economicActivity')}" width="250px" sort="auto"/>
