@@ -46,12 +46,12 @@
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.issuer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.kindCard')}" sclass="lblbold"/>
                                                        </row>
                                                         <row>
                                                             <combobox id="cmbIssuer" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbCardType" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbProductType" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbKindCard" width="270px" mold="rounded" readonly="true" />
                                                        </row>
                                                          <row>

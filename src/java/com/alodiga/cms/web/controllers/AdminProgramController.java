@@ -14,7 +14,6 @@ import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.BinSponsor;
 import com.cms.commons.models.CardIssuanceType;
-import com.cms.commons.models.CardType;
 import com.cms.commons.models.NaturalPerson;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
