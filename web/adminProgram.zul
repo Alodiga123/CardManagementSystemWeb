@@ -57,12 +57,12 @@
                                                             <combobox id="cmbCardProgramManager" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.Card.Type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.card.Issuance.Type')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.co.branded')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.reloadable')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCardType" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbCardIssuanceType" width="270px" mold="rounded" readonly="true"/>
                                                             <hbox>
                                                                 <radiogroup id="branded" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -134,19 +134,17 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.responsibleNetwoork')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Other')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.card.Issuance.Type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.expectedLaunchDate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbResponsibleNetwoork" width="270px" mold="rounded" readonly="true"/>
                                                             <textbox id="txtOtheResponsibleNetwoork" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <combobox id="cmbCardIssuanceType" width="270px" mold="rounded" readonly="true"/>
+                                                            <datebox id="dtbExpectedLaunchDate"  width="265px"/>
                                                         </row>  
                                                         <row>
-                                                            <label value="${c:l('cms.common.expectedLaunchDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.website')}" sclass="lblbold"/>    
                                                         </row>     
                                                         <row> 
-                                                            <datebox id="dtbExpectedLaunchDate"  width="265px"/>
                                                             <textbox id="website" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                         </row>                                                                                                                                                                                                     
                                                     </rows>

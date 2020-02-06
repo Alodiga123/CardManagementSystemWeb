@@ -60,7 +60,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Combobox cmbIssuer;
     private Combobox cmbProgramOwner;
     private Combobox cmbCardProgramManager;
-    private Combobox cmbCardType;
     private Combobox cmbSourceOfFound;
     private Combobox cmbCurrency;
     private Combobox cmbResponsibleNetwoork;
@@ -333,7 +332,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramOwner(eventType);
                 loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
-                loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
@@ -348,7 +346,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramOwner(eventType);
                 loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
-                loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
@@ -363,7 +360,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramOwner(eventType);
                 loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
-                loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
@@ -490,22 +486,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             productType = utilsEJB.getProductTypes(request1);
             loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-        } catch (GeneralException ex) {
-            showError(ex);
-        } catch (NullParameterException ex) {
-            showError(ex);
-        }
-    }
-
-    private void loadCmbCardType(Integer evenInteger) {
-        //cmbCardType
-        EJBRequest request1 = new EJBRequest();
-        List<CardType> cardTypes;
-        try {
-            cardTypes = utilsEJB.getCardTypes(request1);
-            loadGenericCombobox(cardTypes, cmbCardType, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {

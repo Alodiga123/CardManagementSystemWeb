@@ -14,6 +14,7 @@ import com.cms.commons.models.ProgramLoyaltyTransaction;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -59,6 +60,19 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                winAdminLoyaltyCommerceCategory.setTitle(Labels.getLabel("cms.crud.loyalty.commerceCategory.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                winAdminLoyaltyCommerceCategory.setTitle(Labels.getLabel("cms.crud.loyalty.commerceCategory.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                winAdminLoyaltyCommerceCategory.setTitle(Labels.getLabel("cms.crud.loyalty.commerceCategory.add"));
+                break;
+            default:
+                break;
+        }
         try {
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
@@ -77,15 +91,15 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
         lblChannel.setValue(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getChannelId().getName());
         lblTransaction.setValue(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getTransactionId().getDescription());
     }
-    
+
     private void loadFields(LoyaltyTransactionHasCommerceCategory loyaltyTransactionHasCommerceCategory) {
         ProgramLoyaltyTransaction programLoyaltyTransaction = null;
-        
+
         AdminParametersController adminParameter = new AdminParametersController();
-            if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
-                programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
-            }
-        
+        if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
+            programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
+        }
+
         lblLoyalty.setValue(programLoyaltyTransaction.getProgramLoyaltyId().getDescription());
         lblChannel.setValue(programLoyaltyTransaction.getChannelId().getName());
         lblTransaction.setValue(programLoyaltyTransaction.getTransactionId().getDescription());
@@ -122,7 +136,6 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
                 programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
             }
 
-            
             loyaltyTransactionHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerce.getSelectedItem().getValue());
             loyaltyTransactionHasCommerceCategory.setProgramLoyaltyTransactionId(programLoyaltyTransaction);
             loyaltyTransactionHasCommerceCategory = programEJB.saveLoyaltyTransactionHasCommerceCategory(loyaltyTransactionHasCommerceCategory);

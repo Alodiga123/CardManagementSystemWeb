@@ -5,7 +5,7 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabParametersAndComerce" title="${c:l('cms.tab.pointsAndBonifications')}" width="980px" height="400px" apply="com.alodiga.cms.web.controllers.AdminParametersController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">        
+    <window id="winTabParametersAndComerce" title="" width="980px" height="400px" apply="com.alodiga.cms.web.controllers.AdminParametersController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">        
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
