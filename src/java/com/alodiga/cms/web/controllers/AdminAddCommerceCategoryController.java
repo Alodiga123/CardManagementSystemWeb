@@ -81,15 +81,6 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     public void clearFields() {
     }
 
-    private void loadFields(ProductHasCommerceCategory ProductHasCommerceCategory) {
-         try {
-             cmbSegmentCommerce.setText(ProductHasCommerceCategory.toString());
-           
-            } catch (Exception ex) {
-            showError(ex);
-            }              
-    }
-
     public void blockFields() {
         cmbSegmentCommerce.setDisabled(true);
         btnSave.setVisible(false);
@@ -160,12 +151,10 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(productHasCommerceCategoryParam);
                 loadCmbSegmentCommerce(eventType);
                 onChange$cmbSegmentCommerce();
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(productHasCommerceCategoryParam);
                 blockFields();
                 loadCmbSegmentCommerce(eventType);
                 onChange$cmbSegmentCommerce();
