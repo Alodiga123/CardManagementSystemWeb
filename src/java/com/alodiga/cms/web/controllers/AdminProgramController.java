@@ -14,7 +14,6 @@ import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.BinSponsor;
 import com.cms.commons.models.CardIssuanceType;
-import com.cms.commons.models.CardType;
 import com.cms.commons.models.NaturalPerson;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
@@ -319,18 +318,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         }
     }
 
-//    public void onClick$btnAddNetWork() {
-//        try {
-//            String view = "/adminAddNetwork.zul";
-//            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-//            Map<String, Object> paramsPass = new HashMap<String, Object>();
-//            paramsPass.put("object", programParam);
-//            final Window window = (Window) Executions.createComponents(view, null, paramsPass);
-//            window.doModal();
-//        } catch (Exception ex) {
-//            this.showMessage("sp.error.general", true, ex);
-//        }
-//    }
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
