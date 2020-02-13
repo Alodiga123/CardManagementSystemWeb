@@ -60,7 +60,8 @@
                                                             <include src="adminLegalPerson.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminLegalPersonAddress.zul"/>
+                                                            <!--<include src="adminLegalPersonAddress.zul"/>-->
+                                                            <include src="listAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listLegalRepresentative.zul"/>
