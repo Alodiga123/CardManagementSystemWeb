@@ -78,7 +78,36 @@
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
-                                                            </hbox>                                                       </row>
+                                                            </hbox>                                                       
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.indTransactionPurchase')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indVariationRateChannel')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hbox>
+                                                                <radiogroup id="transactionPurchase" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rTransactionPurchaseYes" label="${c:l('cms.commom.Yes')}" radiogroup="transactionPurchase" />
+                                                                            <radio id="rTransactionPurchaseNo" label="${c:l('cms.commom.No')} " radiogroup="transactionPurchase" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox> 
+                                                            <hbox>
+                                                                 <radiogroup id="variationRateChannel" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rVariationRateChannelYes" label="${c:l('cms.commom.Yes')}" radiogroup="variationRateChannel" />
+                                                                            <radio id="rVariationRateChannelNo" label="${c:l('cms.commom.No')} " radiogroup="variationRateChannel" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox> 
+                                                        </row>
                                                     </rows>
                                                 </grid>
                                             </vlayout>

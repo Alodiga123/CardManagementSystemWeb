@@ -46,7 +46,7 @@
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.name')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.country')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.cardType')}" width="170px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.productType')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.binSponsor')}" width="190px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

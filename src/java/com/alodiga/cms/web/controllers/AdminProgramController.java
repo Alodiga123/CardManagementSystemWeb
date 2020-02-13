@@ -14,7 +14,6 @@ import com.cms.commons.models.Currency;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.BinSponsor;
 import com.cms.commons.models.CardIssuanceType;
-import com.cms.commons.models.CardType;
 import com.cms.commons.models.NaturalPerson;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
@@ -60,7 +59,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Combobox cmbIssuer;
     private Combobox cmbProgramOwner;
     private Combobox cmbCardProgramManager;
-    private Combobox cmbCardType;
     private Combobox cmbSourceOfFound;
     private Combobox cmbCurrency;
     private Combobox cmbResponsibleNetwoork;
@@ -320,18 +318,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         }
     }
 
-//    public void onClick$btnAddNetWork() {
-//        try {
-//            String view = "/adminAddNetwork.zul";
-//            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-//            Map<String, Object> paramsPass = new HashMap<String, Object>();
-//            paramsPass.put("object", programParam);
-//            final Window window = (Window) Executions.createComponents(view, null, paramsPass);
-//            window.doModal();
-//        } catch (Exception ex) {
-//            this.showMessage("sp.error.general", true, ex);
-//        }
-//    }
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -345,7 +331,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramOwner(eventType);
                 loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
-                loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
@@ -360,7 +345,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramOwner(eventType);
                 loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
-                loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
@@ -375,7 +359,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbProgramOwner(eventType);
                 loadCmbCardProgramManager(eventType);
                 loadCmbBinSponsor(eventType);
-                loadCmbCardType(eventType);
                 loadCmbSourceOfFound(eventType);
                 loadCmbresponsibleNetwoork(eventType);
                 loadCmbcardIssuanceType(eventType);
@@ -502,22 +485,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             productType = utilsEJB.getProductTypes(request1);
             loadGenericCombobox(productType, cmbProductType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-        } catch (GeneralException ex) {
-            showError(ex);
-        } catch (NullParameterException ex) {
-            showError(ex);
-        }
-    }
-
-    private void loadCmbCardType(Integer evenInteger) {
-        //cmbCardType
-        EJBRequest request1 = new EJBRequest();
-        List<CardType> cardTypes;
-        try {
-            cardTypes = utilsEJB.getCardTypes(request1);
-            loadGenericCombobox(cardTypes, cmbCardType, "description", evenInteger, Long.valueOf(programParam != null ? programParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {

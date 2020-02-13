@@ -60,11 +60,12 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
-    private ListRequestController listRequest;
+    private ListRequestController listRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        ListRequestController listRequest = new ListRequestController();
         requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
@@ -72,20 +73,34 @@ public class AdminRequestController extends GenericAbstractAdminController {
 
     @Override
     public void initialize() {
-        listRequest = new ListRequestController();
         super.initialize();
+        ListRequestController listRequest = new ListRequestController();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 if (requestParam.getPersonId() != null) {
-                    tabMain.setDisabled(false);
-                    tabAddress.setDisabled(false);
-                    tabFamilyReferencesMain.setDisabled(false);
-                    tabAdditionalCards.setDisabled(false);
+                    if (requestParam.getIndPersonNaturalRequest() == true) {
+                        tabMain.setDisabled(false);
+                        tabAddress.setDisabled(false);
+                        tabFamilyReferencesMain.setDisabled(false);
+                        tabAdditionalCards.setDisabled(false);
+                    } else {
+                        tabMain.setDisabled(false);
+                        tabAddress.setDisabled(false);
+                        tabLegalRepresentatives.setDisabled(false);
+                        tabAdditionalCards.setDisabled(false);
+                    }
                 } else {
-                    tabMain.setDisabled(true);
-                    tabAddress.setDisabled(true);
-                    tabFamilyReferencesMain.setDisabled(true);
-                    tabAdditionalCards.setDisabled(true);
+                    if (requestParam.getIndPersonNaturalRequest() == true) {
+                        tabMain.setDisabled(false);
+                        tabAddress.setDisabled(true);
+                        tabFamilyReferencesMain.setDisabled(true);
+                        tabAdditionalCards.setDisabled(true);
+                    } else {
+                        tabMain.setDisabled(false);
+                        tabAddress.setDisabled(true);
+                        tabLegalRepresentatives.setDisabled(true);
+                        tabAdditionalCards.setDisabled(true);
+                    }
                 }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
                 break;
@@ -105,13 +120,16 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_ADD:
                 if (listRequest.getAddRequestPerson() == 1) {
+                    tabMain.setDisabled(true);
+                    tabAddress.setDisabled(true);
                     tabFamilyReferencesMain.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
                 } else {
+                    tabMain.setDisabled(true);
+                    tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
                 }
-                tabMain.setDisabled(true);
-                tabAddress.setDisabled(true);
-                tabAdditionalCards.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
                 break;
             default:
@@ -127,15 +145,15 @@ public class AdminRequestController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     public Request getRequest() {
         return this.requestCard;
     }
-    
+
     public Integer getEventType() {
         return this.eventType;
     }
-    
+
     public void onChange$cmbCountry() {
         cmbPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
@@ -143,14 +161,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     }
 
     public void clearFields() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void loadFields(Request request) {
-        try {
-        } catch (Exception ex) {
-            showError(ex);
-        }
+        
     }
 
     public void blockFields() {
@@ -158,21 +169,36 @@ public class AdminRequestController extends GenericAbstractAdminController {
     }
 
     private void saveRequest(Request _request) {
+        boolean indPersonNaturalRequest = true;
+        EJBRequest request1 = new EJBRequest();
+        String numberRequest = "";
+        Date dateRequest = null;
         try {
             Request request = null;
 
             if (_request != null) {
                 request = _request;
+                numberRequest = request.getRequestNumber();
+                dateRequest = request.getRequestDate();
+                indPersonNaturalRequest = request.getIndPersonNaturalRequest();
             } else {//New Request
                 request = new Request();
-            }
-            //Obtiene el numero de secuencia para documento Request
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_REQUEST);
-            request1.setParams(params);
-            List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
-            String numberRequest = utilsEJB.generateNumberSequence(sequence,Constants.ORIGIN_APPLICATION_CMS_ID);
+                ListRequestController listRequest = new ListRequestController();
+                if (listRequest.getAddRequestPerson() == 1) {
+                    indPersonNaturalRequest = true;
+                } else {
+                    indPersonNaturalRequest = false;
+                }
+                //Obtiene el numero de secuencia para documento Request
+                Map params = new HashMap();
+                params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_REQUEST);
+                request1.setParams(params);
+                List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
+                numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
+                dateRequest = new Date();
+            }          
+
+            
             //colocar estatus de solicitud "EN PROCESO"
             request1 = new EJBRequest();
             request1.setParam(Constants.STATUS_REQUEST_IN_PROCESS);
@@ -183,15 +209,14 @@ public class AdminRequestController extends GenericAbstractAdminController {
             Person personNotRegister = personEJB.loadPerson(request1);
             //Guarda la solicitud en la BD
             request.setRequestNumber(numberRequest);
-            Date dateRequest = new Date();
             request.setRequestDate(dateRequest);
-            //request.setPersonId(personNotRegister);
             request.setStatusRequestId(statusRequest);
             request.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             request.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
             request.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
             request.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
             request.setRequestTypeId((RequestType) cmbRequestType.getSelectedItem().getValue());
+            request.setIndPersonNaturalRequest(indPersonNaturalRequest);
             request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
@@ -200,7 +225,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
         } catch (Exception ex) {
             showError(ex);
         }
-
     }
 
     public void onClick$btnSave() {
@@ -244,13 +268,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 break;
         }
     }
-    
+
     private void loadCmbCountry(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(requestParam != null? requestParam.getCountryId().getId(): 0) );            
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(requestParam != null ? requestParam.getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -262,13 +286,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
+
     private void loadCmbProductType(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<ProductType> productTypes;
         try {
             productTypes = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productTypes,cmbProductType, "name",evenInteger,Long.valueOf(requestParam != null? requestParam.getProductTypeId().getId(): 0) );            
+            loadGenericCombobox(productTypes, cmbProductType, "name", evenInteger, Long.valueOf(requestParam != null ? requestParam.getProductTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -280,13 +304,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-     
+
     private void loadCmbProgram(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Program> programs;
         try {
             programs = programEJB.getProgram(request1);
-            loadGenericCombobox(programs,cmbPrograms, "name",evenInteger,Long.valueOf(requestParam != null? requestParam.getProgramId().getId(): 0) );            
+            loadGenericCombobox(programs, cmbPrograms, "name", evenInteger, Long.valueOf(requestParam != null ? requestParam.getProgramId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -298,7 +322,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
+
     private void loadCmbPersonType(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
         cmbPersonType.getItems().clear();
@@ -309,7 +333,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
         List<PersonType> personTypes;
         try {
             personTypes = utilsEJB.getPersonTypesByCountry(request1);
-            loadGenericCombobox(personTypes,cmbPersonType, "description",evenInteger,Long.valueOf(requestParam != null? requestParam.getPersonTypeId().getId(): 0) );            
+            loadGenericCombobox(personTypes, cmbPersonType, "description", evenInteger, Long.valueOf(requestParam != null ? requestParam.getPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -321,13 +345,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
+
     private void loadCmbRequestType(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<RequestType> requestTypeList;
         try {
             requestTypeList = utilsEJB.getRequestType(request1);
-            loadGenericCombobox(requestTypeList,cmbRequestType, "description",evenInteger,Long.valueOf(requestParam != null? requestParam.getRequestTypeId().getId(): 0));
+            loadGenericCombobox(requestTypeList, cmbRequestType, "description", evenInteger, Long.valueOf(requestParam != null ? requestParam.getRequestTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -339,5 +363,5 @@ public class AdminRequestController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
+
 }

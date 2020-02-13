@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.RequestEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -12,14 +11,10 @@ import static com.alodiga.cms.web.generic.controllers.GenericDistributionControl
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Request;
-import com.cms.commons.models.RequestType;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -42,12 +37,11 @@ public class ListRequestController extends GenericAbstractListController<Request
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        initialize(); 
+        initialize();
     }
 
     public void startListener() {
     }
-
 
     @Override
     public void initialize() {
@@ -55,9 +49,8 @@ public class ListRequestController extends GenericAbstractListController<Request
         try {
             //Evaluar Permisos
             permissionEdit = true;
-            permissionAdd = true; 
+            permissionAdd = true;
             permissionRead = true;
-            adminPage = "TabNaturalPerson.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadList(requests);
@@ -65,21 +58,21 @@ public class ListRequestController extends GenericAbstractListController<Request
             showError(ex);
         }
     }
-    
+
     public int getAddRequestPerson() {
         return indAddRequestPerson;
     }
- 
+
     public void onClick$btnAddNaturalPersonRequest() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("TabNaturalPerson.zul");
         indAddRequestPerson = 1;
     }
-    
+
     public void onClick$btnAddLegalPersonRequest() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect("TabLegalPerson.zul");
-        indAddRequestPerson = 1;
+        indAddRequestPerson = 2;
     }
 
     public void onClick$btnDelete() {
@@ -94,28 +87,43 @@ public class ListRequestController extends GenericAbstractListController<Request
                 for (Request request : list) {
                     item = new Listitem();
                     item.setValue(request);
-                    if (request.getPersonId() != null) {
-                        if (request.getPersonId().getApplicantNaturalPerson() != null) {
-                            applicantName = request.getPersonId().getApplicantNaturalPerson().getFirstNames();
-                            applicantName.concat(" ");
-                            applicantName.concat(request.getPersonId().getApplicantNaturalPerson().getLastNames());
-                        } else {
-                           applicantName = request.getPersonId().getLegalPerson().getEnterpriseName(); 
-                        }   
-                    } 
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(request.getRequestNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
-                    item.appendChild(new Listcell(request.getRequestTypeId().getDescription()));
+                    item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                     if (request.getPersonId() != null) {
-                        item.appendChild(new Listcell(applicantName));
+                        if (request.getIndPersonNaturalRequest() == true) {
+                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.tab.naturalPerson")));
+                            applicantName = request.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                            applicantName.concat(" ");
+                            applicantName.concat(request.getPersonId().getApplicantNaturalPerson().getLastNames());
+                            item.appendChild(new Listcell(applicantName));
+                            adminPage = "TabNaturalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                        } else {
+                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.legalPerson.list")));
+                            applicantName = request.getPersonId().getLegalPerson().getEnterpriseName();
+                            item.appendChild(new Listcell(applicantName));
+                            adminPage = "TabLegalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                        }
                     } else {
                         item.appendChild(new Listcell("SIN REGISTRAR"));
+                        if (request.getIndPersonNaturalRequest() == true) {
+                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.tab.naturalPerson")));
+                            adminPage = "TabNaturalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                        } else {
+                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.legalPerson.list")));
+                            adminPage = "TabLegalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                        }
                     }
-                    item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -141,20 +149,19 @@ public class ListRequestController extends GenericAbstractListController<Request
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showEmptyList();
+            showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
         }
     }
-    
-    
-    private void showEmptyList(){
-                Listitem item = new Listitem();
-                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.setParent(lbxRecords);  
+
+    private void showEmptyList() {
+        Listitem item = new Listitem();
+        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {

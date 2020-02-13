@@ -39,7 +39,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.menu.loyalty')}" width="225px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.tab.loyaltyMain')}" width="225px" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.cannel')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.trasaction')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.loyalty.programType')}" width="150px" sort="auto"/>

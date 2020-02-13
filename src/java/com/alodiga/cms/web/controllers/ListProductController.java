@@ -48,8 +48,12 @@ public class ListProductController extends GenericAbstractListController<Product
     public void initialize() {
         super.initialize();
         try {
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
+             //Evaluar Permisos
+            permissionEdit = true;
+            permissionAdd = true; 
+            permissionRead = true;
             adminPage = "TabProduct.zul";
+            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
             loadDataList(productList);
@@ -57,9 +61,22 @@ public class ListProductController extends GenericAbstractListController<Product
             showError(ex);
         }
     }
+   
+    public void onClick$btnAdd() throws InterruptedException {
+        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+        Executions.getCurrent().sendRedirect("TabProduct.zul");
+    }
     
-   public void getData() {
-    productList = new ArrayList<Product>();
+    public void onClick$btnDownload() throws InterruptedException {
+        try {
+            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void getData() {
+      productList = new ArrayList<Product>();
         try {
             request.setFirst(0);
             request.setLimit(null);
@@ -68,22 +85,6 @@ public class ListProductController extends GenericAbstractListController<Product
             showError(ex);
         } catch (EmptyListException ex) {
         } catch (GeneralException ex) {
-            showError(ex);
-        }
-    }
-
-
-
-    public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect("TabProduct.zul");
-    }
-    
-       
-   public void onClick$btnDownload() throws InterruptedException {
-        try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
-        } catch (Exception ex) {
             showError(ex);
         }
     }
@@ -103,7 +104,7 @@ public class ListProductController extends GenericAbstractListController<Product
                     item.setValue(product);
                     item.appendChild(new Listcell(product.getName()));
                     item.appendChild(new Listcell(product.getCountryId().getName()));
-                    item.appendChild(new Listcell(product.getCardTypeId().getDescription()));
+                    item.appendChild(new Listcell(product.getProductTypeId().getName()));
                     item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, product));
                     item.appendChild(new ListcellViewButton(adminPage, product,true));

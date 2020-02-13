@@ -1,16 +1,15 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProgramEJB;
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import com.alodiga.cms.web.controllers.AdminParametersController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.LoyaltyTransactionHasCommerceCategory;
-import com.cms.commons.models.ProgramLoyaltyTransaction;
+import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -23,7 +22,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -34,15 +32,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListLoyaltyCommerceCategoryController extends GenericAbstractListController<LoyaltyTransactionHasCommerceCategory> {
+public class ListAddressController extends GenericAbstractListController<PersonHasAddress> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Tab tabCommerce;
     private Textbox txtName;
-    private ProgramEJB programEJB = null;
-    private AdminParametersController adminParameter;
-    private List<LoyaltyTransactionHasCommerceCategory> loyaltyTransactionHasCommerceCategorys = null;
+    private PersonEJB personEJB = null;
+    private List<PersonHasAddress> personHasAddress = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -52,12 +48,12 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateLoyaltyCommerce", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(loyaltyTransactionHasCommerceCategorys);
+                loadDataList(personHasAddress);
             }
         });
     }
@@ -70,10 +66,10 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminLoyaltyCommerceCategory.zul";
-            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            adminPage = "/adminPersonAddress.zul";
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
-            loadDataList(loyaltyTransactionHasCommerceCategorys);
+            loadDataList(personHasAddress);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -83,7 +79,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", loyaltyTransactionHasCommerceCategorys);
+            paramsPass.put("object", personHasAddress);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -94,21 +90,21 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     public void onClick$btnDelete() {
     }
 
-    public void loadDataList(List<LoyaltyTransactionHasCommerceCategory> list) {
+    public void loadDataList(List<PersonHasAddress> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
-                for (LoyaltyTransactionHasCommerceCategory loyaltyTransactionHasCommerceCategory : list) {
+                for (PersonHasAddress personHasAddress : list) {
                     item = new Listitem();
-                    item.setValue(loyaltyTransactionHasCommerceCategory);
-                    item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getProgramLoyaltyId().getDescription()));
-                    item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getChannelId().getName()));
-                    item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
-                    item.appendChild(createButtonEditModal(loyaltyTransactionHasCommerceCategory));
-                    item.appendChild(createButtonViewModal(loyaltyTransactionHasCommerceCategory));
+                    item.setValue(personHasAddress);
+                    item.appendChild(new Listcell(personHasAddress.getAddressId().getCountryId().getName()));
+                    item.appendChild(new Listcell(personHasAddress.getAddressId().getCityId().getName()));
+                    item.appendChild(new Listcell(personHasAddress.getAddressId().getNameEdification()));
+                    item.appendChild(new Listcell(personHasAddress.getAddressId().getAddressTypeId().getDescription()));
+                    item.appendChild(createButtonEditModal(personHasAddress));
+                    item.appendChild(createButtonViewModal(personHasAddress));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -142,6 +138,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
                     final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                     window.doModal();
                 }
+
             });
             button.setParent(listcellEditModal);
         } catch (Exception ex) {
@@ -166,6 +163,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
                     final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                     window.doModal();
                 }
+
             });
             button.setParent(listcellViewModal);
         } catch (Exception ex) {
@@ -175,21 +173,22 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     }
 
     public void getData() {
-        loyaltyTransactionHasCommerceCategorys = new ArrayList<LoyaltyTransactionHasCommerceCategory>();
-        ProgramLoyaltyTransaction programLoyaltyTransaction = null;
+        personHasAddress = new ArrayList<PersonHasAddress>();
+        Person applicantPerson = null;
+        
         try {
             
-            //Programa Parameters
-            AdminParametersController adminParameter = new AdminParametersController();
-            if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
-                programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
+            AdminRequestController adminRequest = new AdminRequestController();
+            if (adminRequest.getRequest().getPersonId() != null) {
+                applicantPerson = adminRequest.getRequest().getPersonId();
             }
-           
-            EJBRequest request = new EJBRequest();
+
+            EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId());
-            request.setParams(params);
-            loyaltyTransactionHasCommerceCategorys = programEJB.getLoyaltyTransactionHasCommerceCategoryByTransaction(request);
+            params.put(Constants.PERSON_KEY, applicantPerson.getId());
+            request1.setParams(params);
+
+            personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -204,12 +203,13 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
         item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.loyalty.parameters.download"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -220,7 +220,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
     }
 
     @Override
-    public List<LoyaltyTransactionHasCommerceCategory> getFilterList(String filter) {
+    public List<PersonHasAddress> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
