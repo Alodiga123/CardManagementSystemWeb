@@ -208,6 +208,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell19.setParent(item19);
         item19.setParent(lbxPermissions);
         
+        //Opción Account Manager
+        Listitem item20 = new Listitem();
+        Listcell listCell20 = new Listcell();
+        listCell20.setLabel(Labels.getLabel("cms.menu.accountManager.list"));
+        listCell20.addEventListener("onClick", new RedirectListener("listAccountProperties.zul"));
+        listCell20.setParent(item20);
+        item20.setParent(lbxPermissions);
+        
         //Opción Rates By Program
         Listitem item30 = new Listitem();
         Listcell listCell30 = new Listcell();
