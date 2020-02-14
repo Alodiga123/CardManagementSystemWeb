@@ -141,6 +141,9 @@ public class WebConstants {
     //CRUD ProgramLoyalty
     public static final int STATUS_PROGRAM_LOYALTY_PENDING = 1;
     
+    //CRUD AccountProperties
+//    public static final String ACCOUNT_PROPERTIES_ALLOWS_YES = "Yes";
+//    public static final String ACCOUNT_PROPERTIES_ALLOWS_NO = "No";
     
     //
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
