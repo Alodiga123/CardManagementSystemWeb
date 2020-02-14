@@ -103,7 +103,7 @@ public class ListAccountPropertiesController extends GenericAbstractListControll
                 for (AccountProperties accountProperties : list) {
                     item = new Listitem();
                     item.setValue(accountProperties);
-                    item.appendChild(new Listcell(accountProperties.getCountryId().toString()));
+                    item.appendChild(new Listcell(accountProperties.getCountryId().getName().toString()));
                     item.appendChild(new Listcell(accountProperties.getIdentifier().toString()));
                     item.appendChild(new Listcell(accountProperties.getLenghtAccount().toString()));
                     item.appendChild(new Listcell(accountProperties.getAccountTypeId().getDescription()));
