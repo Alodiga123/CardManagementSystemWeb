@@ -4,14 +4,14 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminNaturalPersonAddress" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminNaturalPersonAddressController" class="general-window">
+    <window id="winAdminNaturalPersonAddress" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="450px" apply="com.alodiga.cms.web.controllers.AdminPersonAddressController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="900px" align="left" height="450px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -59,10 +59,28 @@
                                                         <row> 
                                                             <label value="${c:l('cms.common.floor')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.commmon.zipZone')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.address.addressDelivery')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtFloor" value="" width="250px" maxlength="3" constraint="/^[0-9]{1,9}(?:\\.[0-9]{1,3})?$/"/>
                                                             <combobox id="cmbZipZone" width="250px" mold="rounded" readonly="true"/>
+                                                            <hbox>
+                                                                <radiogroup id="addressDelivery" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rAddressDeliveryYes" label="${c:l('cms.commom.Yes')}" radiogroup="addressDelivery" />
+                                                                            <radio id="rAddressDeliveryNo" label="${c:l('cms.commom.No')} " radiogroup="addressDelivery" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
+                                                        </row>
+                                                        <row> 
+                                                            <label value="${c:l('cms.crud.address.addressTypes')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row> 
+                                                            <combobox id="cmbAddressTypes" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -72,7 +90,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray"/>
                                         </div>
                                     </vlayout>
                                 </div>

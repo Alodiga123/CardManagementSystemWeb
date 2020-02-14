@@ -39,10 +39,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="215px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="170px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="130px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="255px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="200px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
