@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
-import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.ProductEJB;
+
+import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,32 +11,32 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardStatus;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.PersonType;
-import com.cms.commons.models.PhoneType;
-import com.cms.commons.models.Product;
+import com.cms.commons.models.AccountProperties;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListProductController extends GenericAbstractListController<Product> {
+public class ListAccountPropertiesController extends GenericAbstractListController<AccountProperties> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private ProductEJB productEJB = null;
-    private List<Product> productList = null;
+    private List<AccountProperties> accountPropertiesList = null;
+    private CardEJB cardEJB= null;
     private User currentUser;
 
     @Override
@@ -48,23 +49,23 @@ public class ListProductController extends GenericAbstractListController<Product
     public void initialize() {
         super.initialize();
         try {
-             //Evaluar Permisos
+            //Evaluar Permisos
             permissionEdit = true;
-            permissionAdd = true; 
+            permissionAdd = true;
             permissionRead = true;
-            adminPage = "TabProduct.zul";
+            adminPage = "TabAccountManager.zul";
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             getData();
-            loadDataList(productList);
+            loadDataList(accountPropertiesList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-   
+
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect("TabProduct.zul");
+        Executions.getCurrent().sendRedirect(adminPage);
     }
     
     public void onClick$btnDownload() throws InterruptedException {
@@ -76,11 +77,11 @@ public class ListProductController extends GenericAbstractListController<Product
     }
     
     public void getData() {
-      productList = new ArrayList<Product>();
+    accountPropertiesList = new ArrayList<AccountProperties>();     
         try {
             request.setFirst(0);
             request.setLimit(null);
-            productList = productEJB.getProduct(request);
+            accountPropertiesList = cardEJB.getAccountProperties(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -88,26 +89,26 @@ public class ListProductController extends GenericAbstractListController<Product
             showError(ex);
         }
     }
-
+    
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    public void loadDataList(List<Product> list) {
-          try {
+    
+    public void loadDataList(List<AccountProperties> list) {
+        try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                btnDownload.setVisible(true);
-                for (Product product : list) {
+
+                for (AccountProperties accountProperties : list) {
                     item = new Listitem();
-                    item.setValue(product);
-                    item.appendChild(new Listcell(product.getName()));
-                    item.appendChild(new Listcell(product.getCountryId().getName()));
-                    item.appendChild(new Listcell(product.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
-                    item.appendChild(new ListcellEditButton(adminPage, product));
-                    item.appendChild(new ListcellViewButton(adminPage, product,true));
+                    item.setValue(accountProperties);
+                    item.appendChild(new Listcell(accountProperties.getCountryId().toString()));
+                    item.appendChild(new Listcell(accountProperties.getIdentifier().toString()));
+                    item.appendChild(new Listcell(accountProperties.getLenghtAccount().toString()));
+                    item.appendChild(new Listcell(accountProperties.getAccountTypeId().getDescription()));
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, accountProperties) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, accountProperties) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -117,16 +118,33 @@ public class ListProductController extends GenericAbstractListController<Product
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
 
         } catch (Exception ex) {
-           showError(ex);
+            showError(ex);
         }
     }
+    
+    
+//    private void showEmptyList() {
+//        Listitem item = new Listitem();
+//        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+//        item.appendChild(new Listcell());
+//        item.appendChild(new Listcell());
+//        item.appendChild(new Listcell());
+//        item.appendChild(new Listcell());
+//        item.appendChild(new Listcell());
+//        item.appendChild(new Listcell());
+//        item.setParent(lbxRecords);
+//    }
 
-    public List<Product> getFilterList(String filter) {
+    @Override
+    
+    public List<AccountProperties> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+   
 
 }

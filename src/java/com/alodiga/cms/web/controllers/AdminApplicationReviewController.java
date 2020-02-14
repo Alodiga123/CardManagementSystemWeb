@@ -10,7 +10,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Request;
-import com.cms.commons.models.ReviewCollectionsRequest;
+import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -45,8 +45,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private ProductEJB productEJB = null;
     private User user = null;
     private RequestEJB requestEJB = null;
-    private ReviewCollectionsRequest reviewCollectionsRequestParam;
-    private List<ReviewCollectionsRequest> reviewCollectionsRequest;
+    private ReviewRequest reviewCollectionsRequestParam;
+    private List<ReviewRequest> reviewCollectionsRequest;
     private Button btnSave;
     private AdminRequestController adminRequest = null;
     Map params = null;
@@ -75,8 +75,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             Map params = new HashMap();
             params.put(QueryConstants.PARAM_REQUEST_ID, requestCard.getId());
             request1.setParams(params);
-            reviewCollectionsRequest = requestEJB.getReviewCollectionsRequestByRequest(request1);
-            for (ReviewCollectionsRequest r : reviewCollectionsRequest) {
+            reviewCollectionsRequest = requestEJB.getReviewRequestByRequest(request1);
+            for (ReviewRequest r : reviewCollectionsRequest) {
                 reviewCollectionsRequestParam = r;
             }
             loadData();
@@ -91,7 +91,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtObservations.setRawValue(null);
     }
 
-    private void loadFields(ReviewCollectionsRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
+    private void loadFields(ReviewRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
             txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
             txtAgency.setValue(user.getComercialAgencyId().getName());
@@ -130,14 +130,14 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         return false;
     }
 
-    private void saveReviewCollectionsRequest(ReviewCollectionsRequest _reviewCollectionsRequest) {
+    private void saveReviewCollectionsRequest(ReviewRequest _reviewCollectionsRequest) {
         try {
-            ReviewCollectionsRequest reviewCollectionsRequest = null;
+            ReviewRequest reviewCollectionsRequest = null;
 
             if (_reviewCollectionsRequest != null) {
                 reviewCollectionsRequest = _reviewCollectionsRequest;
             } else {//New reviewCollectionsRequest
-                reviewCollectionsRequest = new ReviewCollectionsRequest();
+                reviewCollectionsRequest = new ReviewRequest();
             }
 
             AdminRequestController adminRequest = new AdminRequestController();
@@ -152,7 +152,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setUserId(user);
             reviewCollectionsRequest.setProductId((Product) cmbProduct.getSelectedItem().getValue());
             reviewCollectionsRequest.setObservations(txtObservations.getText());
-            reviewCollectionsRequest = requestEJB.saveReviewCollectionsRequest(reviewCollectionsRequest);
+            reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
 
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {

@@ -81,15 +81,6 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     public void clearFields() {
     }
 
-    private void loadFields(ProductHasCommerceCategory ProductHasCommerceCategory) {
-         try {
-             cmbSegmentCommerce.setText(ProductHasCommerceCategory.toString());
-           
-            } catch (Exception ex) {
-            showError(ex);
-            }              
-    }
-
     public void blockFields() {
         cmbSegmentCommerce.setDisabled(true);
         btnSave.setVisible(false);
@@ -97,17 +88,17 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
 
     private void saveProductHasCommerceCategory(ProductHasCommerceCategory _productHasCommerceCategory) {
         Product product = null;
-        
+        ProductHasCommerceCategory productHasCommerceCategory = null;
+        List<ProductHasCommerceCategory> productHasCommerceCategoryBD = null;
+                
         try {
-            ProductHasCommerceCategory productHasCommerceCategory = null;
-
             if (_productHasCommerceCategory != null) {
                 productHasCommerceCategory = _productHasCommerceCategory;
             } else {
                 productHasCommerceCategory = new ProductHasCommerceCategory();
             }
             
-            //Product
+            //Se obtiene el producto
             AdminProductController adminProduct = new AdminProductController();
             if (adminProduct.getProductParent().getId() != null) {
                 product = adminProduct.getProductParent();
@@ -118,25 +109,38 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             params.put(Constants.COMMERCE_CATEGORY_KEY, ((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue()).getId());
             params.put(Constants.PRODUCT_KEY, product.getId() );
             request1.setParams(params);
-            ProductHasCommerceCategory productHasCommerceCategoryBD = productEJB.getProductHasCommerceCategoryBD(request1);
-
+            productHasCommerceCategoryBD = productEJB.getProductHasCommerceCategoryBD(request1);
             if (productHasCommerceCategoryBD != null) {
-                this.showMessage("sp.common.registerExist", false, null);
-            } else {
-                //Guardar ProductHasCommerceCategory
-                productHasCommerceCategory = new ProductHasCommerceCategory();
-                productHasCommerceCategory.setProductId(product);
-                productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
-                productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
-                productHasCommerceCategoryParam = productHasCommerceCategory;
-                this.showMessage("sp.common.save.success", false, null);
-                EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
-            }
-            
-        } catch (Exception ex) {
+                this.showMessage("sp.common.productHasCommerceCategoryExist", false, null);
+            }            
+        } catch (NullParameterException ex) {
             showError(ex);
+        } catch (EmptyListException ex) {
+           showError(ex); 
+        } catch (GeneralException ex) {
+            showError(ex);
+        } finally {
+            try {
+                if (productHasCommerceCategoryBD == null) {
+                    //Guardar ProductHasCommerceCategory
+                    if (eventType == 1) {
+                        productHasCommerceCategory = new ProductHasCommerceCategory();
+                    }
+                    productHasCommerceCategory.setProductId(product);
+                    productHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerceCategory.getSelectedItem().getValue());
+                    productHasCommerceCategory = productEJB.saveProductHasCommerceCategory(productHasCommerceCategory);
+                    productHasCommerceCategoryParam = productHasCommerceCategory;
+                    this.showMessage("sp.common.save.success", false, null);
+                }
+                EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+            } catch (RegisterNotFoundException ex) {
+                showError(ex); 
+            } catch (NullParameterException ex) {
+                showError(ex);
+            } catch (GeneralException ex) {
+                showError(ex);
+            }    
         }
-    
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
@@ -160,12 +164,10 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(productHasCommerceCategoryParam);
                 loadCmbSegmentCommerce(eventType);
                 onChange$cmbSegmentCommerce();
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(productHasCommerceCategoryParam);
                 blockFields();
                 loadCmbSegmentCommerce(eventType);
                 onChange$cmbSegmentCommerce();

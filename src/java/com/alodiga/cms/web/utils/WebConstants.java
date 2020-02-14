@@ -40,6 +40,8 @@ public class WebConstants {
     public static final int FLOAT = 2;
     public static final int STRING = 3;
     public static final int DATE = 4;
+    public static final String ID_MONETARY_TYPE_TRUE = "true";
+    public static final String ID_MONETARY_TYPE_FALSE = "false";
     public static final int BOOLEAN = 10;
     public static final int DISTRIBUTOR = 6;
     public static final int CUSTOMER = 7;
@@ -139,6 +141,9 @@ public class WebConstants {
     //CRUD ProgramLoyalty
     public static final int STATUS_PROGRAM_LOYALTY_PENDING = 1;
     
+    //CRUD AccountProperties
+//    public static final String ACCOUNT_PROPERTIES_ALLOWS_YES = "Yes";
+//    public static final String ACCOUNT_PROPERTIES_ALLOWS_NO = "No";
     
     //
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
