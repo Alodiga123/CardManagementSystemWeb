@@ -13,13 +13,12 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountProperties;
+import com.cms.commons.models.AccountType;
 import com.cms.commons.models.AccountTypeHasProductType;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Issuer;
 import com.cms.commons.models.IssuerType;
-import com.cms.commons.models.KindCard;
-import com.cms.commons.models.LevelProduct;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.ProductUse;
@@ -36,6 +35,8 @@ import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Tab;
@@ -72,9 +73,8 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
-    public static Product productParent = null;
-//    private ListAccountPropertiesController listAccountProperties;
-    
+    public static Product productParent = null; 
+    private AccountType accountType = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -170,27 +170,27 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 indOverDraft = false;
             }
             
-            
             //Guardar Propiedades Cuenta
             accountProperties.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             accountProperties.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
+            accountProperties.setAccountTypeId(accountType);
+            accountProperties.setSubAccountTypeId((SubAccountType) cmbSubAccountType.getSelectedItem().getValue());
             accountProperties.setIdentifier(txtIdentifier.getValue());
             accountProperties.setLenghtAccount(Integer.parseInt(txtLengthAccount.getValue()));
             accountProperties.setMinimunAmount(Float.parseFloat(txtMinimunAmount.getValue()));
             accountProperties.setMaximumAmount(Float.parseFloat(txtMaximunAmount.getValue()));
             accountProperties.setIndOverDraft(indOverDraft);
             accountProperties = cardEJB.saveAccountProperties(accountProperties);
-//            cardParam = Card;
-//            productParam = Product;
-
+            accountPropertiesParam = accountProperties;
             this.showMessage("sp.common.save.success", false, null);
             tabAccountSegment.setDisabled(false);
+            
+        EventQueues.lookup("updateAccountProperties", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
 
-
-     }
+    }
             
         public Boolean validateEmpty() {
         if (txtIdentifier.getText().isEmpty()) {
@@ -249,6 +249,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             for (AccountTypeHasProductType a: accountTypeHasProductTypeList) {
                 accountTypeId = a.getAccountTypeId().getId();
                 lblAccountType.setValue(a.getAccountTypeId().getDescription());
+                accountType = a.getAccountTypeId();
             } 
             loadCmbSubAccountType(eventType,accountTypeId);
         } catch (EmptyListException ex) {
@@ -332,6 +333,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     private void loadCmbSubAccountType(Integer eventType, int accountTypeId) {
         EJBRequest request1 = new EJBRequest();
         List<SubAccountType> subAccountTypeList;
+        cmbSubAccountType.getItems().clear();
         Map params = new HashMap();
         params.put(Constants.ACCOUNT_TYPE_KEY, accountTypeId);
         request1.setParams(params);

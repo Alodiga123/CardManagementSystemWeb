@@ -62,7 +62,8 @@
                                                             <include src="adminNaturalPerson.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminNaturalPersonAddress.zul"/>
+                                                            <!--<include src="adminNaturalPersonAddress.zul"/>-->
+                                                            <include src="listAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listFamilyReferences.zul"/>
