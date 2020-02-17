@@ -114,6 +114,10 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             loadData();
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            if (daysWeekHasProgramLoyaltyParam == null) {
+                loadData();
+            }
         }
     }
 
