@@ -5,7 +5,7 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabLegalPerson" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRequestController" class="general-window">
+    <window id="winTabAccountManager" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminAccountPropertiesController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -15,7 +15,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="1200px" align="left" height="890px">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
@@ -23,51 +23,28 @@
                                 <div width="900px">
                                     <vlayout>
                                         <div height="20px" width="100%" align="left">
-                                            <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.legalPerson.list')}"/>
+                                                <toolbarbutton label="${c:l('cms.crud.AccountManager')}"/>
                                                 |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.request.add')}"/>
+                                                <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
-                                                <tabbox id="tbxPurchaseTabs" width="970px" height="390px">
+                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabRequest" label="${c:l('cms.crud.request.add')}" />
-                                                        <tab id="tabMain" label="${c:l('cms.tab.legalPersonMain')}" />
-                                                        <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
-                                                        <tab id="tabLegalRepresentatives" label="${c:l('cms.tab.legalRepresentative')}" />
-                                                        <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />
+                                                        <tab id="tabAccountManagerMain" label="${c:l('cms.tab.accountPropertiesMain')}" />
+                                                        <tab id="tabAccountSegment" label="${c:l('cms.tab.accountSegment')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminRequestLegalP.zul"/>
+                                                            <include src="adminAccountProperties.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminLegalPerson.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <!--<include src="adminLegalPersonAddress.zul"/>-->
-                                                            <include src="listAddress.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listLegalRepresentative.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listAdditionalCards.zul"/>
+                                                            <include src="listAccountSegment.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

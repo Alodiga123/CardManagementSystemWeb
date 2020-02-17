@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCardsComplementariesController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListAddressController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -39,15 +39,20 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="255px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.countryName')}" width="240px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.city')}" width="170px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameEdification')}" width="170px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.address.addressTypes')}" width="225px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
                                         </div>
+                                        <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
+                                        <!--Download button--> 
+                                        <div align="right"> 
+                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/> 
+                                        </div> 
                                     </vlayout>
                                 </div>
                                 <div></div>

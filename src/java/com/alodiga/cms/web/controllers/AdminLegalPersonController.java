@@ -56,6 +56,8 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Textbox txtPersonId;
     private Textbox txtWebSite;
     private Tab tabAddress;
+    private Tab tabLegalRepresentatives;
+    private Tab tabAdditionalCards;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -75,11 +77,51 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        legalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalPerson) Sessions.getCurrent().getAttribute("object") : null;
-        //eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        eventType = 1;
+        AdminRequestController adminRequest = new AdminRequestController();
+        if (adminRequest.getEventType()!= null) {
+           eventType = adminRequest.getEventType();
+           switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    if (adminRequest.getRequest().getPersonId() != null) {
+                        tabAddress.setDisabled(false);
+                        tabLegalRepresentatives.setDisabled(false);
+                        tabAdditionalCards.setDisabled(false);
+                    } else {
+                        tabAddress.setDisabled(true);
+                        tabLegalRepresentatives.setDisabled(true);
+                        tabAdditionalCards.setDisabled(true);
+                    }
+                    if (adminRequest.getRequest().getPersonId() != null) {
+                        legalPersonParam = adminRequest.getRequest().getPersonId().getLegalPerson();
+                    } else {
+                        legalPersonParam = null;
+                    }
+                break;
+                case WebConstants.EVENT_VIEW:
+                    if (adminRequest.getRequest().getPersonId() != null) {
+                        tabAddress.setDisabled(false);
+                        tabLegalRepresentatives.setDisabled(false);
+                        tabAdditionalCards.setDisabled(false);
+                    } else {
+                        tabAddress.setDisabled(true);
+                        tabLegalRepresentatives.setDisabled(true);
+                        tabAdditionalCards.setDisabled(true);
+                    }
+                    if (adminRequest.getRequest().getPersonId() != null) {
+                        legalPersonParam = adminRequest.getRequest().getPersonId().getLegalPerson();
+                    } else {
+                        legalPersonParam = null;
+                    }
+                break;
+                case WebConstants.EVENT_ADD:
+                    legalPersonParam = null;
+                    tabAddress.setDisabled(true);
+                    tabLegalRepresentatives.setDisabled(true);
+                    tabAdditionalCards.setDisabled(true);
+                break;
+           }
+        }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
