@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -12,9 +13,12 @@ import com.cms.commons.models.Channel;
 import com.cms.commons.models.ProgramLoyalty;
 import com.cms.commons.models.ProgramLoyaltyTransaction;
 import com.cms.commons.models.Transaction;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -228,25 +232,16 @@ public class AdminParametersController extends GenericAbstractAdminController {
 //        return false;
 //
 //    }
-    private void saveProgramLoyaltyTransactionParam(ProgramLoyaltyTransaction _programLoyaltyTransaction) {
-        String indMonetaryTypeTrue = WebConstants.ID_MONETARY_TYPE_TRUE;
-        String indMonetaryTypeFalse = WebConstants.ID_MONETARY_TYPE_FALSE;
-        boolean IndBonificationFixed = true;
+    private void saveProgramLoyaltyTransactionParam(ProgramLoyaltyTransaction _programLoyaltyTransaction) throws RegisterNotFoundException, NullParameterException, GeneralException {
+        ProgramLoyaltyTransaction programLoyaltyTransaction = null;
+        List<ProgramLoyaltyTransaction> programLoyaltyTransactionUnique = null;
         ProgramLoyalty programLoyalty = null;
 
         try {
-            ProgramLoyaltyTransaction programLoyaltyTransaction = null;
-
             if (_programLoyaltyTransaction != null) {
                 programLoyaltyTransaction = _programLoyaltyTransaction;
-            } else {//New LegalPerson
-                programLoyaltyTransaction = new ProgramLoyaltyTransaction();
-            }
-
-            if (rBonificationYes.isChecked()) {
-                IndBonificationFixed = true;
             } else {
-                IndBonificationFixed = false;
+                programLoyaltyTransaction = new ProgramLoyaltyTransaction();
             }
 
             //Loyalty
@@ -255,37 +250,75 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 programLoyalty = adminLoyalty.getProgramLoyaltyParent();
             }
 
-            programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
-            programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
-            programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
-            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
-            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
-                programLoyaltyTransaction.setTotalBonificationValue(Float.parseFloat(txtTotal.getText()));
-            }
-            programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-            programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
-            programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
-            programLoyaltyTransaction.setIndBonificationFixed(IndBonificationFixed);
-            programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.CHANNEL_KEY, ((Channel) cmbChannel.getSelectedItem().getValue()).getId());
+            params.put(Constants.PROGRAM_LOYALTY_KEY, programLoyalty.getId());
+            params.put(Constants.TRANSACTION_KEY, ((Transaction) cmbTransaction.getSelectedItem().getValue()).getId());
+            request1.setParams(params);
 
-            programLoyaltyTransactionParam = programLoyaltyTransaction;
-            programLoyaltyTransactionParent = programLoyaltyTransaction;
-            this.showMessage("sp.common.save.success", false, null);
+            programLoyaltyTransactionUnique = programEJB.getProgramLoyaltyTransactionUnique(request1);
+            if (programLoyaltyTransactionUnique != null) {
+                switch (eventType) {
+                    case WebConstants.EVENT_ADD:
+                        this.showMessage("cms.common.programLoyaltyTransactionExist", false, null);
+                    break;
+                    case WebConstants.EVENT_EDIT:
+                        buildProgramLoyaltyTransaction(programLoyalty,programLoyaltyTransaction);
+                        programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
+                        programLoyaltyTransactionParam = programLoyaltyTransaction;
+                        programLoyaltyTransactionParent = programLoyaltyTransaction;
+                        this.showMessage("sp.common.save.success", false, null);
+                    break;
+                    default:
+                    break;
+                }
+            } 
 
-            if (programLoyaltyTransactionParam.getTransactionId().getIndTransactionPurchase() == true) {
-                tabCommerce.setDisabled(false);
-            } else {
-                tabCommerce.setDisabled(true);
-            }
-
-            EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            if (eventType == 1 && programLoyaltyTransactionUnique == null) {
+                programLoyaltyTransaction = new ProgramLoyaltyTransaction();
+                buildProgramLoyaltyTransaction(programLoyalty,programLoyaltyTransaction);
+                programLoyaltyTransaction = programEJB.saveProgramLoyaltyTransaction(programLoyaltyTransaction);
+                programLoyaltyTransactionParam = programLoyaltyTransaction;
+                programLoyaltyTransactionParent = programLoyaltyTransaction;
+                this.showMessage("sp.common.save.success", false, null);
+                if (programLoyaltyTransactionParam.getTransactionId().getIndTransactionPurchase() == true) {
+                    tabCommerce.setDisabled(false);
+                } else {
+                    tabCommerce.setDisabled(true);
+                }
+            }
+            EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
         }
     }
+    
+    public void buildProgramLoyaltyTransaction(ProgramLoyalty programLoyalty, ProgramLoyaltyTransaction programLoyaltyTransaction) {
+        boolean IndBonificationFixed = true;
+        
+        if (rBonificationYes.isChecked()) {
+                IndBonificationFixed = true;
+            } else {
+                IndBonificationFixed = false;
+            }
+        
+        programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
+        programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
+        programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
+        if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+            programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
+        } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+            programLoyaltyTransaction.setTotalBonificationValue(Float.parseFloat(txtTotal.getText()));
+        }
+        programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
+        programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
+        programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
+        programLoyaltyTransaction.setIndBonificationFixed(IndBonificationFixed);
+    }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
 //        if (validateEmpty()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:

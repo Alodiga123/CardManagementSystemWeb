@@ -5,15 +5,19 @@ import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CommerceCategory;
 import com.cms.commons.models.LoyaltyTransactionHasCommerceCategory;
 import com.cms.commons.models.ProgramLoyaltyTransaction;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -109,22 +113,12 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
         btnSave.setVisible(false);
     }
 
-//    public Boolean validateEmpty() {
-//        if (txtProduct.getText().isEmpty()) {
-//            txtProduct.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else {
-//            return true;
-//        }
-//        return false;
-//
-//    }
     private void saveLoyaltyTransactionHasCommerce(LoyaltyTransactionHasCommerceCategory _loyaltyTransactionHasCommerceCategory) {
         ProgramLoyaltyTransaction programLoyaltyTransaction = null;
+        List<LoyaltyTransactionHasCommerceCategory> loyaltyTransactionHasCommerceCategoryUnique = null;
+        LoyaltyTransactionHasCommerceCategory loyaltyTransactionHasCommerceCategory = null;
 
         try {
-            LoyaltyTransactionHasCommerceCategory loyaltyTransactionHasCommerceCategory = null;
-
             if (_loyaltyTransactionHasCommerceCategory != null) {
                 loyaltyTransactionHasCommerceCategory = _loyaltyTransactionHasCommerceCategory;
             } else {//New LegalPerson
@@ -135,16 +129,42 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
             if (adminParameter.getProgramLoyaltyTransactionParent().getId() != null) {
                 programLoyaltyTransaction = adminParameter.getProgramLoyaltyTransactionParent();
             }
-
-            loyaltyTransactionHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerce.getSelectedItem().getValue());
-            loyaltyTransactionHasCommerceCategory.setProgramLoyaltyTransactionId(programLoyaltyTransaction);
-            loyaltyTransactionHasCommerceCategory = programEJB.saveLoyaltyTransactionHasCommerceCategory(loyaltyTransactionHasCommerceCategory);
-            loyaltyTransactionHasCommerceCategoryParam = loyaltyTransactionHasCommerceCategory;
-            this.showMessage("sp.common.save.success", false, null);
+            
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.COMMERCE_CATEGORY_KEY, ((CommerceCategory) cmbCommerce.getSelectedItem().getValue()).getId());
+            params.put(Constants.PROGRAM_LOYALTY_TRANSACTION_KEY, programLoyaltyTransaction.getId() );
+            request1.setParams(params);
+            
+            loyaltyTransactionHasCommerceCategoryUnique = programEJB.getLoyaltyTransactionHasCommerceCategoryUnique(request1);
+            if (loyaltyTransactionHasCommerceCategoryUnique != null) {
+                this.showMessage("cms.common.programLoyaltyTransactionExist", false, null);
+            }      
 
             EventQueues.lookup("updateLoyaltyCommerce", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            try {
+                if ((loyaltyTransactionHasCommerceCategoryUnique == null) || (_loyaltyTransactionHasCommerceCategory != null)) {
+                    //Guardar LoyaltyTransactionHasCommerceCategory
+                    if (eventType == 1) {
+                        loyaltyTransactionHasCommerceCategory = new LoyaltyTransactionHasCommerceCategory();
+                    }
+                    loyaltyTransactionHasCommerceCategory.setCommerceCategoryId((CommerceCategory) cmbCommerce.getSelectedItem().getValue());
+                    loyaltyTransactionHasCommerceCategory.setProgramLoyaltyTransactionId(programLoyaltyTransaction);
+                    loyaltyTransactionHasCommerceCategory = programEJB.saveLoyaltyTransactionHasCommerceCategory(loyaltyTransactionHasCommerceCategory);
+                    loyaltyTransactionHasCommerceCategoryParam = loyaltyTransactionHasCommerceCategory;
+                    this.showMessage("sp.common.save.success", false, null);
+                }
+                EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+            } catch (RegisterNotFoundException ex) {
+                showError(ex);
+            } catch (NullParameterException ex) {
+                showError(ex);
+            } catch (GeneralException ex) {
+                showError(ex);
+            }
         }
     }
 
