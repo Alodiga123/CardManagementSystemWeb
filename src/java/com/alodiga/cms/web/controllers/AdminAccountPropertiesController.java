@@ -53,7 +53,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     private ProductEJB productEJB = null;
     private ProgramEJB programEJB = null;
     private CardEJB cardEJB = null;
-    private Card cardParam;
     private AccountProperties accountPropertiesParam;
     private Product productParam;
     private Program programParam;
@@ -73,13 +72,13 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
-    public static Product productParent = null; 
+    public static Program programParent = null;
     private AccountType accountType = null;
-
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        cardParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Card) Sessions.getCurrent().getAttribute("object") : null;
+        accountPropertiesParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AccountProperties) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
     }
@@ -88,7 +87,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     public void initialize() {
         super.initialize();
         switch (eventType) {
-            case WebConstants.EVENT_EDIT:   
+            case WebConstants.EVENT_EDIT:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.account.properties.edit"));
                 break;
             case WebConstants.EVENT_VIEW:  
@@ -123,8 +122,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         txtMaximunAmount.setRawValue(null);
         
     }
-
-        
+    
     private void loadFields(AccountProperties accountProperties) {
         try {
             lblProductType.setValue(accountProperties.getProgramId().getProductTypeId().getName());
@@ -153,6 +151,61 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         btnSave.setVisible(false);
     }
 
+    public Boolean validateEmpty() {
+        if (txtIdentifier.getText().isEmpty()) {
+            txtIdentifier.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtLengthAccount.getText().isEmpty()) {
+            txtLengthAccount.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+          } else if (txtMinimunAmount.getText().isEmpty()) {
+            txtMinimunAmount.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtMaximunAmount.getText().isEmpty()) {
+            txtMaximunAmount.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);    
+        } else {
+            return true;
+        }
+        return false;
+    }
+    
+    public void onChange$cmbCountry() {
+        cmbProgram.setVisible(true);
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        loadCmbProgram(eventType, country.getId());
+    }
+    
+    public void onChange$cmbProgram() {
+        int accountTypeId = 0;
+        try {
+            lblProductType.setVisible(true);
+            lblAccountType.setVisible(true);
+            lblIssuer.setVisible(true);
+            Program program = (Program) cmbProgram.getSelectedItem().getValue();
+            lblProductType.setValue(program.getProductTypeId().getName());
+            lblIssuer.setValue(program.getIssuerId().getName());
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PRODUCT_TYPE_KEY, program.getProductTypeId().getId());
+            request1.setParams(params);
+            List<AccountTypeHasProductType> accountTypeHasProductTypeList = cardEJB.getAccountTypeHasProductTypeByProductType(request1);
+            for (AccountTypeHasProductType a: accountTypeHasProductTypeList) {
+                accountTypeId = a.getAccountTypeId().getId();
+                lblAccountType.setValue(a.getAccountTypeId().getDescription());
+                accountType = a.getAccountTypeId();
+            } 
+            loadCmbSubAccountType(eventType,accountTypeId);
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();  
+        }    
+    }
     private void saveAccountProperties(AccountProperties _accountProperties) throws RegisterNotFoundException, NullParameterException, GeneralException {
         boolean indOverDraft = true;
         try {
@@ -184,7 +237,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             accountPropertiesParam = accountProperties;
             this.showMessage("sp.common.save.success", false, null);
             tabAccountSegment.setDisabled(false);
-            
         EventQueues.lookup("updateAccountProperties", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
@@ -192,25 +244,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
 
     }
             
-        public Boolean validateEmpty() {
-        if (txtIdentifier.getText().isEmpty()) {
-            txtIdentifier.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtLengthAccount.getText().isEmpty()) {
-            txtLengthAccount.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-          } else if (txtMinimunAmount.getText().isEmpty()) {
-            txtMinimunAmount.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtMaximunAmount.getText().isEmpty()) {
-            txtMaximunAmount.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);    
-        } else {
-            return true;
-        }
-        return false;
-    }
-    
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
             switch (eventType) {
@@ -226,51 +259,14 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         }
     }
     
-     public void onChange$cmbCountry() {
-        cmbProgram.setVisible(true);
-        Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbProgram(eventType, country.getId());
-    }
-    
-     public void onChange$cmbProgram() {
-        int accountTypeId = 0;
-        try {
-            lblProductType.setVisible(true);
-            lblAccountType.setVisible(true);
-            lblIssuer.setVisible(true);
-            Program program = (Program) cmbProgram.getSelectedItem().getValue();
-            lblProductType.setValue(program.getProductTypeId().getName());
-            lblIssuer.setValue(program.getIssuerId().getName());
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.PRODUCT_TYPE_KEY, program.getProductTypeId().getId());
-            request1.setParams(params);
-            List<AccountTypeHasProductType> accountTypeHasProductTypeList = cardEJB.getAccountTypeHasProductTypeByProductType(request1);
-            for (AccountTypeHasProductType a: accountTypeHasProductTypeList) {
-                accountTypeId = a.getAccountTypeId().getId();
-                lblAccountType.setValue(a.getAccountTypeId().getDescription());
-                accountType = a.getAccountTypeId();
-            } 
-            loadCmbSubAccountType(eventType,accountTypeId);
-        } catch (EmptyListException ex) {
-            showError(ex);
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();  
-        }    
-    }
-      
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                txtIdentifier.setDisabled(true);
-                txtLengthAccount.setDisabled(true);
-                txtMinimunAmount.setDisabled(true);
-                txtMaximunAmount.setDisabled(true);
                 loadFields(accountPropertiesParam);
+                txtIdentifier.setDisabled(false);
+                txtLengthAccount.setDisabled(false);
+                txtMinimunAmount.setDisabled(false);
+                txtMaximunAmount.setDisabled(false);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 onChange$cmbProgram();  
@@ -281,9 +277,12 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 txtLengthAccount.setDisabled(true);
                 txtMinimunAmount.setDisabled(true);
                 txtMaximunAmount.setDisabled(true);
+                loadCmbCountry(eventType);
                 blockFields();
                 onChange$cmbCountry();
                 onChange$cmbProgram();
+                rOverdraftYes.setDisabled(true);
+                rOverdraftNo.setDisabled(true);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
@@ -299,7 +298,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         List<Country> countries;
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(productParam != null? productParam.getCountryId().getId(): 0) );            
+            loadGenericCombobox(countries,cmbCountry, "name",evenInteger,Long.valueOf(accountPropertiesParam != null? accountPropertiesParam.getCountryId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -317,7 +316,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         List<Program> programs;
         try {
             programs = programEJB.getProgram(request1);
-            loadGenericCombobox(programs,cmbProgram,"name",evenInteger,Long.valueOf(0));            
+            loadGenericCombobox(programs,cmbProgram,"name",evenInteger,Long.valueOf(accountPropertiesParam != null? accountPropertiesParam.getProgramId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
