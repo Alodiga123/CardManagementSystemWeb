@@ -121,7 +121,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             showError(ex);
         } finally {
             try {
-                if (productHasCommerceCategoryBD == null) {
+                if ((productHasCommerceCategoryBD == null) || (_productHasCommerceCategory != null)) {
                     //Guardar ProductHasCommerceCategory
                     if (eventType == 1) {
                         productHasCommerceCategory = new ProductHasCommerceCategory();
