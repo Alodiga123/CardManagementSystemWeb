@@ -13,10 +13,12 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonClassification;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,14 +49,26 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     public Window winAdminAdditionalCards;
     private Button btnSave;
     private Integer eventType;
+    public AdminRequestController adminRequest = null;
+    public AdminLegalPersonController adminLegalPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        cardRequestNaturalPersonParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CardRequestNaturalPerson) Sessions.getCurrent().getAttribute("object") : null;
+        adminRequest = new AdminRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    cardRequestNaturalPersonParam = (CardRequestNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_VIEW:
+                    cardRequestNaturalPersonParam = (CardRequestNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_ADD:
+                    cardRequestNaturalPersonParam = null;
+                break;
+           }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -126,31 +140,46 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             return true;
         }
         return false;
-
     }
 
-
     private void saveCardRequestNaturalPerson(CardRequestNaturalPerson _cardRequestNaturalPerson) {
+        LegalPerson legalPerson = null;
+        Person personCardRequestNaturalPerson = null;
         try {
             CardRequestNaturalPerson cardRequestNaturalPerson = null;
+            Person person = null;
 
             if (_cardRequestNaturalPerson != null) {
                 cardRequestNaturalPerson = _cardRequestNaturalPerson;
+                person = cardRequestNaturalPerson.getPersonId();
             } else {//New CardRequestNaturalPerson
-                cardRequestNaturalPerson = new CardRequestNaturalPerson();
+                person = new Person();
+                cardRequestNaturalPerson = new CardRequestNaturalPerson();            
             }
 
-            //Person
+            //Solicitante Jurídico
+            adminLegalPerson = new AdminLegalPersonController();
+            if (adminLegalPerson.getLegalPerson() != null) {
+                legalPerson = adminLegalPerson.getLegalPerson();
+            }
+            
+            //Obtener la clasificacion del solicitante de tarjeta adicional
             EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_ID_KEY);
-            Person person = personEJB.loadPerson(request1);
+            request1.setParam(Constants.CLASSIFICATION_PERSON_CARD_REQUEST_NATURAL_PERSON);
+            PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
-            //LegalPerson
-            request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_ID_KEY);
-            LegalPerson legalPerson = utilsEJB.loadLegalPerson(request1);
+            //Guardar la persona
+            person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
+            if (eventType == 1) {
+                person.setCreateDate(new Timestamp(new Date().getTime()));
+                person.setPersonClassificationId(personClassification);
+            }
+            person = personEJB.savePerson(person);
+            personCardRequestNaturalPerson = person;
 
-            cardRequestNaturalPerson.setPersonId(person);
+            //Guarda el solicitante adicional de tarjeta
+            cardRequestNaturalPerson.setPersonId(personCardRequestNaturalPerson);
             cardRequestNaturalPerson.setLegalPersonid(legalPerson);
             cardRequestNaturalPerson.setFirstNames(txtFullName.getText());
             cardRequestNaturalPerson.setLastNames(txtFullLastName.getText());
@@ -173,11 +202,9 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveCardRequestNaturalPerson(null);
-                    //winAdminAdditionalCards.detach();
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveCardRequestNaturalPerson(cardRequestNaturalPersonParam);
-                    //winAdminAdditionalCards.detach();
                     break;
                 default:
                     break;
@@ -235,16 +262,15 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     }
 
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
-        //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON,WebConstants.IND_NATURAL_PERSON);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
-
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(cardRequestNaturalPersonParam != null ? cardRequestNaturalPersonParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

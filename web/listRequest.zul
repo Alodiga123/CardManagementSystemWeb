@@ -54,7 +54,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="15" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="920px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.requestNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.requestDate')}" width="150px" sort="auto"/>

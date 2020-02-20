@@ -5,21 +5,26 @@ import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import static com.alodiga.cms.web.controllers.AdminNaturalPersonController.applicant;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CivilStatus;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
+import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.LegalRepresentatives;
 import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,14 +63,26 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     private Integer eventType;
     public Window winAdminlegalRepresentative;
     public String indGender = null;
+    public AdminRequestController adminRequest = null;
+    public AdminLegalPersonController adminLegalPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        legalRepresentativesParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalRepresentatives) Sessions.getCurrent().getAttribute("object") : null;
+        adminRequest = new AdminRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_VIEW:
+                    legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
+                break;
+                case WebConstants.EVENT_ADD:
+                    legalRepresentativesParam = null;
+                break;
+           }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -151,26 +168,48 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     private void saveLegalRepresentatives(LegalRepresentatives _legalRepresentatives) {
-        //tabLegalRepresentatives.setSelected(true);
-        //String indGender = null;
+        LegalPerson legalPerson = null;
+        Person personLegalRepresentatives = null;
         try {
             LegalRepresentatives legalRepresentatives = null;
             LegalPersonHasLegalRepresentatives legalPersonHasLegalRepresentatives = null;
             PhonePerson phonePerson = null;
+            Person person = null;
 
             if (_legalRepresentatives != null) {
                 legalRepresentatives = _legalRepresentatives;
+                person = legalRepresentatives.getPersonId();
+                phonePerson = legalRepresentatives.getPersonId().getPhonePerson();
             } else {//New LegalPerson
+                person = new Person();
                 legalRepresentatives = new LegalRepresentatives();
                 legalPersonHasLegalRepresentatives = new LegalPersonHasLegalRepresentatives();
                 phonePerson = new PhonePerson();
             }
-            //Person
+            
+            //Solicitante Jurídico
+            adminLegalPerson = new AdminLegalPersonController();
+            if (adminLegalPerson.getLegalPerson() != null) {
+                legalPerson = adminLegalPerson.getLegalPerson();
+            }
+            
+            //Obtener la clasificacion del Representante Legal
             EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_ID_KEY);
-            Person person = personEJB.loadPerson(request1);
+            request1.setParam(Constants.CLASSIFICATION_PERSON_LEGAL_REPRESENTATIVES);
+            PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
-            legalRepresentatives.setPersonId(person);
+            //Guardar la persona
+            person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
+            if (eventType == 1) {
+                person.setCreateDate(new Timestamp(new Date().getTime()));
+                person.setPersonClassificationId(personClassification);
+            }
+            person = personEJB.savePerson(person);
+            personLegalRepresentatives = person;
+
+            //Guarda el Representante Legal
+            legalRepresentatives.setPersonId(personLegalRepresentatives);
             legalRepresentatives.setFirstNames(txtFullName.getText());
             legalRepresentatives.setLastNames(txtFullLastName.getText());
             legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
@@ -185,22 +224,23 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
             legalRepresentatives.setDateBirth(txtBirthDay.getValue());
             legalRepresentatives.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
-            this.showMessage("sp.common.save.success", false, null);
 
-            //phonePerson
+            //Guarda el telefono del representante legal
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
-            phonePerson.setPersonId(person);
+            phonePerson.setPersonId(personLegalRepresentatives);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
             phonePerson = personEJB.savePhonePerson(phonePerson);
-            this.showMessage("sp.common.save.success", false, null);
             
-            //LegalPersonHasLegalRepresentatives
-            legalPersonHasLegalRepresentatives.setLegalPersonId(person.getLegalPerson());
-            legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
-            legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
-
+            //Asocia el Representante Legal al Solicitante Jurídico
+            if (eventType == 1) {
+                legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
+                legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
+                legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
+            }
+            this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
@@ -212,11 +252,9 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveLegalRepresentatives(null);
-                    //winAdminlegalRepresentative.detach();
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveLegalRepresentatives(legalRepresentativesParam);
-                    //winAdminlegalRepresentative.detach();
                     break;
                 default:
                     break;
@@ -266,7 +304,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
-
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonId().getCountryId().getId() : 0));
@@ -283,15 +320,15 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
-        //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON,WebConstants.IND_NATURAL_PERSON);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -306,13 +343,12 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     private void loadCmbCivilState(Integer evenInteger) {
-        //cmbCivilState
         EJBRequest request1 = new EJBRequest();
-        List<CivilStatus> civilStatuses;
+        List<CivilStatus> civilStatusList;
 
         try {
-            civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getPersonId().getNaturalPerson().getCivilStatusId().getId() : 0));
+            civilStatusList = personEJB.getCivilStatus(request1);
+            loadGenericCombobox(civilStatusList, cmbCivilState, "description", evenInteger, Long.valueOf(legalRepresentativesParam != null ? legalRepresentativesParam.getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -326,7 +362,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     private void loadCmbPhoneType(Integer evenInteger) {
-        //cmbPhoneType
         EJBRequest request1 = new EJBRequest();
         List<PhoneType> phoneType;
 

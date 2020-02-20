@@ -127,19 +127,6 @@ public class ListAccountPropertiesController extends GenericAbstractListControll
         }
     }
     
-    
-//    private void showEmptyList() {
-//        Listitem item = new Listitem();
-//        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-//        item.appendChild(new Listcell());
-//        item.appendChild(new Listcell());
-//        item.appendChild(new Listcell());
-//        item.appendChild(new Listcell());
-//        item.appendChild(new Listcell());
-//        item.appendChild(new Listcell());
-//        item.setParent(lbxRecords);
-//    }
-
     @Override
     
     public List<AccountProperties> getFilterList(String filter) {

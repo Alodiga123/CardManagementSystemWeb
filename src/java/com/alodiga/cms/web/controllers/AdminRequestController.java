@@ -61,6 +61,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
     private ListRequestController listRequest = null;
+    private boolean indNaturalPerson;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -74,7 +75,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        ListRequestController listRequest = new ListRequestController();
+        listRequest = new ListRequestController();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 if (requestParam.getPersonId() != null) {
@@ -124,11 +125,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(true);
                     tabFamilyReferencesMain.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    indNaturalPerson = true;
                 } else {
                     tabMain.setDisabled(true);
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    indNaturalPerson = false;
                 }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));
                 break;
@@ -158,6 +161,12 @@ public class AdminRequestController extends GenericAbstractAdminController {
         cmbPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbPersonType(eventType, country.getId());
+    }
+    
+    public void onChange$cmbProductType() {
+        cmbPrograms.setVisible(true);
+        ProductType productType = (ProductType) cmbProductType.getSelectedItem().getValue();
+        loadCmbProgram(eventType, productType.getId());
     }
 
     public void clearFields() {
@@ -246,22 +255,21 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
-                loadCmbProgram(eventType);
                 loadCmbRequestType(eventType);
                 onChange$cmbCountry();
+                onChange$cmbProductType();
                 break;
             case WebConstants.EVENT_VIEW:
                 requestCard = requestParam;
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
-                loadCmbProgram(eventType);
                 loadCmbRequestType(eventType);
                 onChange$cmbCountry();
+                onChange$cmbProductType();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
-                loadCmbProgram(eventType);
                 loadCmbRequestType(eventType);
                 break;
             default:
@@ -305,11 +313,15 @@ public class AdminRequestController extends GenericAbstractAdminController {
         }
     }
 
-    private void loadCmbProgram(Integer evenInteger) {
+    private void loadCmbProgram(Integer evenInteger, Integer productTypeId) {
         EJBRequest request1 = new EJBRequest();
+        cmbPrograms.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_PRODUCT_TYPE_ID, productTypeId);
+        request1.setParams(params);
         List<Program> programs;
         try {
-            programs = programEJB.getProgram(request1);
+            programs = programEJB.getProgramByProductType(request1);
             loadGenericCombobox(programs, cmbPrograms, "name", evenInteger, Long.valueOf(requestParam != null ? requestParam.getProgramId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -329,6 +341,11 @@ public class AdminRequestController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (evenInteger == 1) {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, indNaturalPerson);
+        } else {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, requestParam.getPersonTypeId().getIndNaturalPerson());
+        }
         request1.setParams(params);
         List<PersonType> personTypes;
         try {
