@@ -1,7 +1,6 @@
-
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.CardEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,8 +8,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasCommerceCategory;
+import com.cms.commons.models.AccountProperties;
+import com.cms.commons.models.AccountSegment;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -33,13 +32,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListCommerceCategoryController extends GenericAbstractListController<ProductHasCommerceCategory> {
+public class ListAccountSegmentController extends GenericAbstractListController<AccountSegment> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtName;
-    private ProductEJB productEJB = null;
-    private List<ProductHasCommerceCategory> productHasCommerceCategory = null;
+    private CardEJB cardEJB = null;
+    private List<AccountSegment> accountSegmentList = null;
+    private Button btnSave;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -49,12 +48,12 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateAccountSegment", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(productHasCommerceCategory);
+                loadDataList(accountSegmentList);
             }
         });
     }
@@ -67,11 +66,11 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminAddCommerceCategory.zul";
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            adminPage = "/adminAccountSegment.zul";
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             getData();
-            if (productHasCommerceCategory != null) {
-               loadDataList(productHasCommerceCategory);
+            if (accountSegmentList != null) {
+               loadDataList(accountSegmentList);
             }
         } catch (Exception ex) {
             showError(ex);
@@ -83,7 +82,7 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", productHasCommerceCategory);
+            paramsPass.put("object", accountSegmentList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -91,19 +90,19 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         }
     }
 
-    public void loadDataList(List<ProductHasCommerceCategory> list) {
+    public void loadDataList(List<AccountSegment> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (ProductHasCommerceCategory productHasCommerceCategory : list) {
+                for (AccountSegment accountSegment : list) {
                     item = new Listitem();
-                    item.setValue(productHasCommerceCategory);
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getMccCode()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getsegmentCommerceId().getName()));
-                    item.appendChild(createButtonEditModal(productHasCommerceCategory));
-                    item.appendChild(createButtonViewModal(productHasCommerceCategory));
+                    item.setValue(accountSegment);
+                    item.appendChild(new Listcell(accountSegment.getAccountPropertiesId().getIdentifier().toString()));
+                    item.appendChild(new Listcell(accountSegment.getDescription()));
+                    item.appendChild(new Listcell(accountSegment.getLenghtSegment().toString()));
+                    item.appendChild(createButtonEditModal(accountSegment));
+                    item.appendChild(createButtonViewModal(accountSegment));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -172,19 +171,20 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
     }
 
     public void getData() {
-        productHasCommerceCategory = new ArrayList<ProductHasCommerceCategory>();
-        Product product = null;
+        accountSegmentList = new ArrayList<AccountSegment>();
+        AccountProperties accountProperties = null;
+        AccountSegment accountSegment = null;
+        //Propiedades Cuenta
         try {
-             //Producto principal
-            AdminProductController adminProduct = new AdminProductController();
-            if (adminProduct.getProductParent().getId() != null) {
-                product = adminProduct.getProductParent();
+            AdminAccountPropertiesController adminAccountProperties = new AdminAccountPropertiesController();
+            if (adminAccountProperties.getAccountPropertiesParent() != null) {
+                accountProperties = adminAccountProperties.getAccountPropertiesParent();
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PRODUCT_KEY, product.getId());
+            params.put(Constants.ACCOUNT_PROPERTIES_KEY, accountProperties.getId());
             request.setParams(params);
-            productHasCommerceCategory = productEJB.getCommerceCategoryByProduct(request);
+            accountSegmentList = cardEJB.getAccountSegmentByAccountProperties(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -192,7 +192,8 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         } catch (GeneralException ex) {
             showError(ex);
         }
-    }
+    
+    }    
 
     private void showEmptyList() {
         Listitem item = new Listitem();
@@ -210,13 +211,12 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         }
     }
 
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
-    }
-
-    @Override
-    public List<ProductHasCommerceCategory> getFilterList(String filter) {
+    public List<AccountSegment> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
 }
+
+    
+
+
