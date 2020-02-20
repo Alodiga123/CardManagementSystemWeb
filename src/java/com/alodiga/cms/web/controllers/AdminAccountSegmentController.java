@@ -1,3 +1,4 @@
+
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
@@ -78,9 +79,9 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
     
     public void loadFields(AccountSegment accountSegment) {
         try {
-            lblAccountIdentifier.setValue(accountSegment.toString());
+            lblAccountIdentifier.setValue(accountSegment.getAccountPropertiesId().getIdentifier());
             txtAccountDescription.setValue(accountSegment.getDescription());
-            txtLengthSegment.setValue(accountSegment.toString());
+            txtLengthSegment.setValue(accountSegment.getLenghtSegment().toString());
            
         } catch (Exception ex) {
             showError(ex);
@@ -155,7 +156,7 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
                     }
                     accountSegment.setAccountPropertiesId(accountProperties);
                     accountSegment.setDescription(txtAccountDescription.getValue());
-                    accountSegment.setLenghtSegment(txtLengthSegment.getRows());
+                    accountSegment.setLenghtSegment(txtLengthSegment.getMaxlength());
                     accountSegment = cardEJB.saveAccountSegment(accountSegment);
                     accountSegmentParam = accountSegment;
                     this.showMessage("sp.common.save.success", false, null);
