@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -9,7 +10,11 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.LegalRepresentatives;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -36,14 +41,14 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListLegalRepresentativeController extends GenericAbstractListController<LegalRepresentatives> {
+public class ListLegalRepresentativeController extends GenericAbstractListController<LegalPersonHasLegalRepresentatives> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Tab tabAddress;
     private Textbox txtName;
-    private UtilsEJB utilsEJB = null;
-    private List<LegalRepresentatives> legalRepresentatives = null;
+    private PersonEJB personEJB = null;
+    private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -52,7 +57,6 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         startListener();
     }
 
-    
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
@@ -73,32 +77,13 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             permissionAdd = true;
             permissionRead = true;
             adminPage = "/adminLegalRepresentative.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(legalRepresentatives);
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-
-    /*public List<LegalRepresentatives> getFilteredList(String filter) {
-     List<LegalRepresentatives> legalRepresentativesaux = new ArrayList<LegalRepresentatives>();
-     LegalRepresentatives legalRepresentatives;
-     try {
-     if (filter != null && !filter.equals("")) {
-     legalRepresentatives = utilsEJB.searchRequest(filter);
-     legalRepresentativesaux.add(legalRepresentatives);
-     } else {
-     return legalRepresentatives;
-     }
-     } catch (RegisterNotFoundException ex) {
-     Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
-     } catch (Exception ex) {
-     showError(ex);
-     }
-     return legalRepresentativesaux;
-     }*/
-    
+    } 
     
     public void onClick$btnAdd() throws InterruptedException {
         try {
@@ -112,31 +97,27 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         }
     }
 
-    public void onClick$btnDelete() {
-    }
-
-    public void loadDataList(List<LegalRepresentatives> list) {
+    public void loadDataList(List<LegalPersonHasLegalRepresentatives> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
-                for (LegalRepresentatives legalRepresentatives : list) {
+                for (LegalPersonHasLegalRepresentatives legalRepresentatives : list) {
                     item = new Listitem();
                     item.setValue(legalRepresentatives);
-                    StringBuilder builder = new StringBuilder(legalRepresentatives.getFirstNames());
+                    StringBuilder builder = new StringBuilder(legalRepresentatives.getLegalRepresentativesid().getFirstNames());
                     builder.append(" ");
-                    builder.append(legalRepresentatives.getLastNames());
+                    builder.append(legalRepresentatives.getLegalRepresentativesid().getLastNames());
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(builder.toString()));
-                    item.appendChild(new Listcell(legalRepresentatives.getDocumentsPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(legalRepresentatives.getIdentificationNumber()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getDueDateDocumentIdentification())));
-                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getDateBirth())));
-                    item.appendChild(createButtonEditModal(legalRepresentatives));
-                    item.appendChild(createButtonViewModal(legalRepresentatives));
-                    //item.appendChild(permissionRead ? new ListcellViewButton(adminPage, legalRepresentatives) : new Listcell());
+                    item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getDocumentsPersonTypeId().getDescription()));
+                    item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getIdentificationNumber()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDueDateDocumentIdentification())));
+                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDateBirth())));
+                    
+                    item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
+                    item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -148,7 +129,6 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
         } catch (Exception ex) {
             showError(ex);
         }
@@ -208,11 +188,19 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     
    
     public void getData() {
-        legalRepresentatives = new ArrayList<LegalRepresentatives>();
+        legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
+        LegalPerson legalPerson = null;
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            legalRepresentatives = utilsEJB.getLegalRepresentativeses(request);
+            //Solicitante de Tarjeta
+            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
+            if (adminLegalPerson.getLegalPerson() != null) {
+                legalPerson = adminLegalPerson.getLegalPerson();
+            }
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
+            request1.setParams(params);
+            legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -243,20 +231,9 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         txtName.setText("");
     }
 
-//    public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilteredList(txtAlias.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
     @Override
-    public List<LegalRepresentatives> getFilterList(String filter) {
+    public List<LegalPersonHasLegalRepresentatives> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    /*public void loadDataList(List<LegalRepresentatives> list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
 
 }

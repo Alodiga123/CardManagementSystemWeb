@@ -234,6 +234,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
             if (_applicantNaturalPerson != null) {
                 applicantNaturalPerson = _applicantNaturalPerson;
+                person = applicantNaturalPerson.getPersonId();
+                phonePerson = applicantNaturalPerson.getPersonId().getPhonePerson();
             } else {//New ApplicantNaturalPerson
                 applicantNaturalPerson = new ApplicantNaturalPerson();
                 person = new Person();
@@ -382,7 +384,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

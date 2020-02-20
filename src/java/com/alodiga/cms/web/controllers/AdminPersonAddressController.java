@@ -79,33 +79,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 personHasAddressParam = null;
                 break;
         }
-        //personHasAddressParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonHasAddress) Sessions.getCurrent().getAttribute("object") : null;
-//        if (adminRequest.getEventType() != null) {
-//           eventType = adminRequest.getEventType();
-//           switch (eventType) {
-//                case WebConstants.EVENT_EDIT:
-//                    if (adminPerson.getApplicant().getPersonHasAddress() != null) {
-//                        //addressParam = adminPerson.getApplicant().getPersonHasAddress().getAddressId();
-//                        personHasAddressParam = adminPerson.getApplicant().getPersonHasAddress();
-//                    } else {
-//                        addressParam = null;
-//                    }
-//                break;
-//                case WebConstants.EVENT_VIEW:
-//                    if (adminPerson.getApplicant().getPersonHasAddress() != null) {
-//                        //addressParam = adminPerson.getApplicant().getPersonHasAddress().getAddressId();
-//                        personHasAddressParam = adminPerson.getApplicant().getPersonHasAddress();
-//                    } else {
-//                        //addressParam = null;
-//                        personHasAddressParam = null;
-//                    }
-//                break;
-//                case WebConstants.EVENT_ADD:
-//                    //addressParam = null;
-//                    personHasAddressParam = null;
-//                break;
-//            }
-//        }
         initialize();
     }
 
@@ -221,13 +194,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             } else {
                 indAddressDelivery = false;
             }
-
-            //Se obtiene la persona asociada al solicitante de tarjeta
-//            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-//            if (adminNaturalPerson.getApplicant().getId() != null) {
-//                applicantCard = adminNaturalPerson.getApplicant();
-//            }
-            
+           
             AdminRequestController adminRequest = new AdminRequestController();
             if (adminRequest.getRequest().getPersonId() != null) {
                 applicantCard = adminRequest.getRequest().getPersonId();
