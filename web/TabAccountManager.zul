@@ -5,31 +5,46 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabCardComplementarie" title="${c:l('cms.tab.cardComplementaries')}" width="950px" height="590px" apply="com.alodiga.cms.web.controllers.AdminCardComplementariesController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winTabAccountManager" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminAccountPropertiesController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
+            <north border="none" size="52px" class="content-transparent">
+                <include src="adminHeader.zul"/>
+            </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="1200px" align="left" height="890px">
                             <hlayout>
+                                <div>
+                                    <include src="adminMainMenu.zul"/>
+                                </div>
                                 <div width="900px">
                                     <vlayout>
+                                        <div height="20px" width="100%" align="left">
+                                            <hlayout>
+                                                <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
+                                                |
+                                                <toolbarbutton label="${c:l('cms.crud.AccountManager')}"/>
+                                                |
+                                                <toolbarbutton id= "tbbTitle" label=""/>
+                                            </hlayout>
+                                        </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
+                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}" />
-                                                        <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
+                                                        <tab id="tabAccountManagerMain" label="${c:l('cms.tab.accountPropertiesMain')}" />
+                                                        <tab id="tabAccountSegment" label="${c:l('cms.tab.accountSegment')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminCardComplementaries.zul"/>
+                                                            <include src="adminAccountProperties.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminCardComplementariesAddress.zul"/>
+                                                            <include src="listAccountSegment.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
