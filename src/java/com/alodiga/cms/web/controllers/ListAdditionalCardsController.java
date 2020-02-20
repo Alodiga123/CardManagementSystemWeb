@@ -10,8 +10,11 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CardRequestNaturalPerson;
+import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.User;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private Tab tabAddress;
-    private List<CardRequestNaturalPerson> cardRequestNaturalPerson = null;
+    private List<CardRequestNaturalPerson> cardRequestNaturalPersonList = null;
     private User currentUser;
     private Button btnSave;
 
@@ -60,7 +63,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(cardRequestNaturalPerson);
+                loadDataList(cardRequestNaturalPersonList);
             }
         });
     }
@@ -77,18 +80,26 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
-            loadDataList(cardRequestNaturalPerson);
+            loadDataList(cardRequestNaturalPersonList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void getData() {
-        cardRequestNaturalPerson = new ArrayList<CardRequestNaturalPerson>();
+        cardRequestNaturalPersonList = new ArrayList<CardRequestNaturalPerson>();
+        LegalPerson legalPerson = null;
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            cardRequestNaturalPerson = personEJB.getCardRequestNaturalPersons(request);
+            //Solicitante de Tarjeta
+            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
+            if (adminLegalPerson.getLegalPerson() != null) {
+                legalPerson = adminLegalPerson.getLegalPerson();
+            }
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
+            request1.setParams(params);
+            cardRequestNaturalPersonList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -96,19 +107,12 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             showError(ex);
         }
     }
-
-   /* public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
-        Sessions.getCurrent().removeAttribute("object");
-        Executions.getCurrent().sendRedirect(adminPage);
-        
-    }*/
     
         public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", cardRequestNaturalPerson);
+            paramsPass.put("object", cardRequestNaturalPersonList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -126,20 +130,13 @@ public class ListAdditionalCardsController extends GenericAbstractListController
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
-    }
-
-
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-    
+    }  
     
     public void loadDataList(List<CardRequestNaturalPerson> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (CardRequestNaturalPerson cardRequestNaturalPerson : list) {
                     item = new Listitem();
                     item.setValue(cardRequestNaturalPerson);
@@ -153,8 +150,8 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getProposedLimit().toString()));
                     item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
                     item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
-//                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());
-//                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, cardRequestNaturalPerson) : new Listcell());
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, cardRequestNaturalPerson) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -189,7 +186,6 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                   final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                   window.doModal(); 
                 }
-
             });
             button.setParent(listcellEditModal);
         } catch (Exception ex) {
