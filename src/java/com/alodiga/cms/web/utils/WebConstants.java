@@ -40,6 +40,8 @@ public class WebConstants {
     public static final int FLOAT = 2;
     public static final int STRING = 3;
     public static final int DATE = 4;
+    public static final int PERSON_CLASIFICATION = 7;
+    public static final int PERSON_TYPES = 1;
     public static final String ID_MONETARY_TYPE_TRUE = "true";
     public static final String ID_MONETARY_TYPE_FALSE = "false";
     public static final int BOOLEAN = 10;
