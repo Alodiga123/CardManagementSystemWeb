@@ -224,7 +224,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         //Opción PlasticManufacturer
         Listitem item22 = new Listitem();
         Listcell listCell22 = new Listcell();
-        listCell22.setLabel(Labels.getLabel("cms.menu.plasticManufacturer.list"));
+        listCell22.setLabel(Labels.getLabel("cms.menu.plasticManufacturer"));
         listCell22.addEventListener("onClick", new RedirectListener("listPlasticManufacturer.zul"));
         listCell22.setParent(item22);
         item22.setParent(lbxPermissions);
