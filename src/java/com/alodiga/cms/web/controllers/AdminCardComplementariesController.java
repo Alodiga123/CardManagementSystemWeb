@@ -63,7 +63,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private Radio genderFemale;
     public String indGender = null;
     private Tab tabAddress;
-    public Window winAdminCardComplementaries;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private ApplicantNaturalPerson applicantNaturalPersonParam;
@@ -72,10 +71,12 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private Integer eventType;
     public Tabbox tb;
     public static Person personCardComplementary = null;
+    private AdminRequestController adminRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        adminRequest = new AdminRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
                 case WebConstants.EVENT_EDIT:
@@ -108,6 +109,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     }
 
     public void onChange$cmbCountry() {
+        cmbDocumentsPersonType.setValue("");
         cmbDocumentsPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
@@ -183,7 +185,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     }
 
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
-        tabAddress.setSelected(true);
         ApplicantNaturalPerson applicantNaturalPersonParent = null;
         Request requestCard = null;
         try {
@@ -192,6 +193,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
             if (_applicantNaturalPerson != null) {
                 applicantNaturalPerson = _applicantNaturalPerson;
+                person = applicantNaturalPerson.getPersonId();
             } else {//New ApplicantNaturalPerson
                 applicantNaturalPerson = new ApplicantNaturalPerson();
                 person = new Person();
@@ -213,16 +215,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
                 applicantNaturalPersonParent = adminNaturalPerson.getApplicantNaturalPerson();
             }
-            
-            //PhoneType Habitacion
-            EJBRequest request4 = new EJBRequest();
-            request4.setParam(Constants.CLASSIFICATION_PHONE_PERSON_TYPE1);
-            PhoneType phonePersonH = personEJB.loadPhoneType(request4);
-            
-            //PhoneType Celular
-            EJBRequest request5 = new EJBRequest();
-            request5.setParam(Constants.CLASSIFICATION_PHONE_PERSON_TYPE2);
-            PhoneType phonePersonC = personEJB.loadPhoneType(request5);
             
             //Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
@@ -253,14 +245,20 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
 
-            //phonePerson
+            //Phone Habitacion
+            EJBRequest request4 = new EJBRequest();
+            request4.setParam(Constants.PHONE_TYPE_ROOM);
+            PhoneType phonePersonH = personEJB.loadPhoneType(request4);
             PhonePerson phonePerson1 = new PhonePerson();
             phonePerson1.setNumberPhone(txtLocalPhone.getText());
             phonePerson1.setPersonId(person);
             phonePerson1.setPhoneTypeId(phonePersonH);
             phonePerson1 = personEJB.savePhonePerson(phonePerson1);
             
-            //phonePerson
+            //Phone Celular
+            EJBRequest request5 = new EJBRequest();
+            request5.setParam(Constants.PHONE_TYPE_MOBILE);
+            PhoneType phonePersonC = personEJB.loadPhoneType(request5);
             PhonePerson phonePerson2 = new PhonePerson();
             phonePerson2.setNumberPhone(txtCellPhone.getText());
             phonePerson2.setPersonId(person);
@@ -288,10 +286,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     break;
             }
         }
-    }
-    
-    public void onClick$btnBack() {
-        winAdminCardComplementaries.detach();
     }
 
     public void loadData() {
@@ -352,11 +346,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     }
 
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
-        //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {

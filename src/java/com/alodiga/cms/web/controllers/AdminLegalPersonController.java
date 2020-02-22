@@ -73,8 +73,6 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private AdminRequestController adminRequest = null;
     public static LegalPerson legalPersonParent = null;
 
-    public Tabbox tb;
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
