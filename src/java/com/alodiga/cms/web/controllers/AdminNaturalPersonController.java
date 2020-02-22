@@ -19,6 +19,7 @@ import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.Profession;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -76,7 +77,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequest = new AdminRequestController();
+        adminRequest = new AdminRequestController();
         if (adminRequest.getEventType()!= null) {
            eventType = adminRequest.getEventType();
            switch (eventType) {
@@ -145,6 +146,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     }
     
     public void onChange$cmbCountry() {
+        cmbDocumentsPersonType.setValue("");
         cmbDocumentsPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
@@ -278,6 +280,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
             applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
+            StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);
+            applicantNaturalPerson.setStatusApplicantId(statusApplicant);
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParent = applicantNaturalPerson;
             
@@ -381,6 +387,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
