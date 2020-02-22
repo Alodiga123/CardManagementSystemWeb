@@ -51,7 +51,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
         startListener();
     }
     
-    
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateCardComplementaries", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
@@ -70,7 +69,7 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "TabCardsComplementaries.zul";
+            adminPage = "/TabCardsComplementaries.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(cardComplementaryList);
@@ -99,16 +98,7 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
         } catch (GeneralException ex) {
             showError(ex);
         }
-    }
-
-   /* public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
-        Sessions.getCurrent().removeAttribute("object");
-        Executions.getCurrent().sendRedirect(adminPage);
-        
-    }*/
-    
-
+    }  
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
@@ -120,20 +110,13 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
-    }
-
-
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-    
+    }    
     
     public void loadDataList(List<ApplicantNaturalPerson> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (ApplicantNaturalPerson applicantNaturalPerson : list) {
                     item = new Listitem();
                     item.setValue(applicantNaturalPerson);
@@ -163,7 +146,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
         }
     }
     
-    
     public Listcell createButtonEditModal(final Object obg) {
        Listcell listcellEditModal = new Listcell();
         try {    
@@ -180,7 +162,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
                   final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                   window.doModal(); 
                 }
-
             });
             button.setParent(listcellEditModal);
         } catch (Exception ex) {
@@ -200,8 +181,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
             this.showMessage("sp.error.general", true, ex);
         }
     }
-    
-    
     
     public Listcell createButtonViewModal(final Object obg) {
        Listcell listcellViewModal = new Listcell();

@@ -101,7 +101,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (FamilyReferences familyReferences : list) {
                     item = new Listitem();
                     item.setValue(familyReferences);
@@ -114,7 +113,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
                     item.appendChild(new Listcell(familyReferences.getCity()));
                     item.appendChild(createButtonEditModal(familyReferences));
                     item.appendChild(createButtonViewModal(familyReferences));
-                    //item.appendChild(permissionRead ? new ListcellViewButton(adminPage, familyReferences) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -227,20 +225,8 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         txtName.setText("");
     }
 
-//    public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilteredList(txtAlias.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
     @Override
     public List<FamilyReferences> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    /*public void loadDataList(List<LegalRepresentatives> list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
-
 }
