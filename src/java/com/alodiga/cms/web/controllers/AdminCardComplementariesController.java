@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -72,6 +73,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     public Tabbox tb;
     public static Person personCardComplementary = null;
     private AdminRequestController adminRequest = null;
+    private List<PhonePerson> phonePersonList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -143,8 +145,21 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
             txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
             txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
-            txtLocalPhone.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
-            txtCellPhone.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY,applicantNaturalPerson.getPersonId().getId());
+            request.setParams(params);
+            phonePersonList = personEJB.getPhonePersonByperson(request);
+            if (phonePersonList != null) {
+                for (PhonePerson p: phonePersonList) {
+                    if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
+                        txtLocalPhone.setText(p.getNumberPhone());
+                    }
+                    if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) { 
+                        txtCellPhone.setText(p.getNumberPhone());
+                    }
+                }
+            }       
         } catch (Exception ex) {
             showError(ex);
         }
@@ -187,14 +202,27 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
         ApplicantNaturalPerson applicantNaturalPersonParent = null;
         Request requestCard = null;
+        PhonePerson phonePerson1 = null;
+        PhonePerson phonePerson2 = null;
+        PhoneType phonePersonH = null;
+        PhoneType phonePersonC = null;
+        ApplicantNaturalPerson applicantNaturalPerson = null;
+        Person person = null;
+        
         try {
-            ApplicantNaturalPerson applicantNaturalPerson = null;
-            Person person = null;
+            //Obtiene los tipos de telefonos
+            EJBRequest request4 = new EJBRequest();
+            request4.setParam(Constants.PHONE_TYPE_ROOM);
+            phonePersonH = personEJB.loadPhoneType(request4);
+            
+            request4 = new EJBRequest();
+            request4.setParam(Constants.PHONE_TYPE_MOBILE);
+            phonePersonC = personEJB.loadPhoneType(request4);
 
             if (_applicantNaturalPerson != null) {
                 applicantNaturalPerson = _applicantNaturalPerson;
                 person = applicantNaturalPerson.getPersonId();
-            } else {//New ApplicantNaturalPerson
+            } else {
                 applicantNaturalPerson = new ApplicantNaturalPerson();
                 person = new Person();
             }
@@ -205,7 +233,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 indGender = "M";
             }
             
-           //PersonClassification
+            //PersonClassification
             EJBRequest request2 = new EJBRequest();
             request2.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request2);
@@ -216,7 +244,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 applicantNaturalPersonParent = adminNaturalPerson.getApplicantNaturalPerson();
             }
             
-            //Person
+            //Guarda los datos basicos de la persona
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
@@ -226,7 +254,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             person = personEJB.savePerson(person);
             personCardComplementary = person;
                         
-            //naturalPerson            
+            //Guarda el Solicitante Adicional        
             applicantNaturalPerson.setPersonId(person);
             applicantNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             applicantNaturalPerson.setDueDateDocumentIdentification(txtDueDateDocumentIdentification.getValue());
@@ -245,31 +273,66 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParam = applicantNaturalPerson;
 
-            //Phone Habitacion
-            EJBRequest request4 = new EJBRequest();
-            request4.setParam(Constants.PHONE_TYPE_ROOM);
-            PhoneType phonePersonH = personEJB.loadPhoneType(request4);
-            PhonePerson phonePerson1 = new PhonePerson();
-            phonePerson1.setNumberPhone(txtLocalPhone.getText());
-            phonePerson1.setPersonId(person);
-            phonePerson1.setPhoneTypeId(phonePersonH);
-            phonePerson1 = personEJB.savePhonePerson(phonePerson1);
-            
-            //Phone Celular
-            EJBRequest request5 = new EJBRequest();
-            request5.setParam(Constants.PHONE_TYPE_MOBILE);
-            PhoneType phonePersonC = personEJB.loadPhoneType(request5);
-            PhonePerson phonePerson2 = new PhonePerson();
-            phonePerson2.setNumberPhone(txtCellPhone.getText());
-            phonePerson2.setPersonId(person);
-            phonePerson2.setPhoneTypeId(phonePersonC);
-            phonePerson2 = personEJB.savePhonePerson(phonePerson2);
+            //Obtiene los teléfonos del solicitante adicional
+            if (eventType != 1) {
+                EJBRequest request = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY,person.getId());
+                request.setParams(params);
+                phonePersonList = personEJB.getPhonePersonByperson(request);
+                if (phonePersonList != null) {
+                    for (PhonePerson p: phonePersonList) {
+                        if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
+                            phonePerson1 = p;
+                        }
+                        if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) { 
+                            phonePerson2 = p;
+                        }
+                    }
+                    //Actualiza el Telefono de Habitacion          
+                    phonePerson1.setNumberPhone(txtLocalPhone.getText());
+                    phonePerson1 = personEJB.savePhonePerson(phonePerson1);
+
+                    //Actualiza el Telefono Celular
+                    phonePerson2.setNumberPhone(txtCellPhone.getText());
+                    phonePerson2 = personEJB.savePhonePerson(phonePerson2);
+                }
+            }
             this.showMessage("sp.common.save.success", false, null);
-            
             EventQueues.lookup("updateCardComplementaries", EventQueues.APPLICATION, true).publish(new Event(""));
 
-        } catch (Exception ex) {
+        } catch (NullParameterException ex) {
             showError(ex);
+        } catch (EmptyListException ex) {
+           showError(ex); 
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (RegisterNotFoundException ex) {
+                showError(ex); 
+        } finally {
+            try {
+                if (phonePersonList == null) {
+                    //Guarda el Telefono de Habitacion
+                    phonePerson1 = new PhonePerson();
+                    phonePerson1.setPersonId(person);
+                    phonePerson1.setPhoneTypeId(phonePersonH);          
+                    phonePerson1.setNumberPhone(txtLocalPhone.getText());
+                    phonePerson1 = personEJB.savePhonePerson(phonePerson1);
+                    //Guarda el Telefono Celular
+                    phonePerson2 = new PhonePerson();
+                    phonePerson2.setPersonId(person);
+                    phonePerson2.setPhoneTypeId(phonePersonC);
+                    phonePerson2.setNumberPhone(txtCellPhone.getText());
+                    phonePerson2 = personEJB.savePhonePerson(phonePerson2);
+                    this.showMessage("sp.common.save.success", false, null);
+                }
+            } catch (RegisterNotFoundException ex) {
+                showError(ex); 
+            } catch (NullParameterException ex) {
+                showError(ex);
+            } catch (GeneralException ex) {
+                showError(ex);
+            }  
         }
     }
 
