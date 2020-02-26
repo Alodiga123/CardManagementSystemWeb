@@ -183,18 +183,19 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
-
-            if (_address != null) {
-                address = _address;
-            } else {//New address
-                address = new Address();
-                personHasAddress = new PersonHasAddress();
-            }
-
+            
             //Se obtiene la persona asociada a la tarjeta complementaria
             AdminCardComplementariesController adminCardComplementary = new AdminCardComplementariesController();
             if (adminCardComplementary.getPersonCardComplementary().getId() != null) {
                 applicantPersonCard = adminCardComplementary.getPersonCardComplementary();
+            }
+
+            if (_address != null) {
+                address = _address;
+                personHasAddress = applicantPersonCard.getPersonHasAddress();
+            } else {//New address
+                address = new Address();
+                personHasAddress = new PersonHasAddress();
             }
 
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
