@@ -25,7 +25,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.issuer.card')}" onClick='Executions.sendRedirect(&quot;listPlasticManufacturer.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.menu.plasticManufacturer')}" onClick='Executions.sendRedirect(&quot;listPlasticManufacturer.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.plastic.manufacturer.add')}"/>
                                                 |  
