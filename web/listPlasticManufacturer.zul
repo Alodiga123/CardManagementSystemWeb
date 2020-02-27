@@ -35,7 +35,7 @@
                                             <hlayout>
                                                     <!--Add button-->
                                                     <div align="left" width="160px">
-                                                        <button id="btnAddPlasticManufacturer" label="${c:l('sp.common.actions.add')}" width="100px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="100px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
                                             </hlayout>
                                             <separator/>
@@ -44,8 +44,8 @@
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.country')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.name.manufacturer')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.idnumber')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.phoneNumber')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identification.number')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.phone')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.email.manufacturer')}" width="155px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

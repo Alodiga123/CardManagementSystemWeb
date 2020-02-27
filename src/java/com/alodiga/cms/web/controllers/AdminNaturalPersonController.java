@@ -19,6 +19,7 @@ import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.Profession;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -145,6 +146,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     }
     
     public void onChange$cmbCountry() {
+        cmbDocumentsPersonType.setValue("");
         cmbDocumentsPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
@@ -278,6 +280,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
             applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
             applicantNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
+            StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);
+            applicantNaturalPerson.setStatusApplicantId(statusApplicant);
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             applicantNaturalPersonParent = applicantNaturalPerson;
             

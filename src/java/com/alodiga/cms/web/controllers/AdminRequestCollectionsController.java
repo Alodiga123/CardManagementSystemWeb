@@ -291,7 +291,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         request1.setParams(params);
         List<PersonType> personTypes;
         try {
-            personTypes = utilsEJB.getPersonTypesByCountry(request1);
+            personTypes = utilsEJB.getPersonTypeByCountryByIndNaturalPerson(request1);
             loadGenericCombobox(personTypes, cmbPersonType, "description", evenInteger, Long.valueOf(collectionsRequestParam != null ? collectionsRequestParam.getPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
