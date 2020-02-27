@@ -66,12 +66,23 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        collectionsRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionsRequest) Sessions.getCurrent().getAttribute("object") : null;
+//        collectionsRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionsRequest) Sessions.getCurrent().getAttribute("object") : null;
         AdminRequestController adminRequestController = new AdminRequestController();
         if (adminRequestController.getRequest().getId() != null) {
             requestParam = adminRequestController.getRequest();
         }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                collectionsRequestParam = (CollectionsRequest) Sessions.getCurrent().getAttribute("object");
+                break;
+            case WebConstants.EVENT_VIEW:
+                collectionsRequestParam = (CollectionsRequest) Sessions.getCurrent().getAttribute("object");
+                break;
+            case WebConstants.EVENT_ADD:
+                collectionsRequestParam = null;
+                break;
+        }
         initialize();
     }
 
