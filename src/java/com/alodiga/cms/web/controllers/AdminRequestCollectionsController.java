@@ -90,16 +90,18 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             for (RequestHasCollectionsRequest r : requestHasCollectionsRequestList) {
                 requestHasCollectionsRequestParam = r;
             }
-            loadData();
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            loadData();
         }
     }
 
     public void onChange$cmbCountry() {
+        cmbPersonType.setValue("");
         cmbPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbPersonType(4, country.getId());
+        loadCmbPersonType(eventType, country.getId());
     }
 
     public void clearFields() {
@@ -132,6 +134,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 AImage image;
                 image = new org.zkoss.image.AImage(requestHasCollectionsRequest.getUrlImageFile());
                 org.zkoss.zul.Image imageFile = new org.zkoss.zul.Image();
+                imageFile.setWidth("250px");
                 imageFile.setContent(image);
                 imageFile.setParent(divPreview);
             } catch (Exception ex) {
@@ -152,12 +155,9 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
 
     public void onUpload$btnUpload(org.zkoss.zk.ui.event.UploadEvent event) throws Throwable {
         org.zkoss.util.media.Media media = event.getMedia();
-        if (media != null) {
-            //if(media.getFormat()==""){   
+        if (media != null) { 
             divPreview.getChildren().clear();
             media = event.getMedia();
-
-            //File file = new File("/opt/proyecto/cms/imagenes/"+RequestNumber.getRequestNumber()+"/"+media.getName());
             File file = new File("/opt/proyecto/cms/imagenes/" + media.getName());
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(media.getByteData());
@@ -170,7 +170,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             image.setWidth("250px");
             image.setParent(divPreview);
             uploaded = true;
-            //}
         } else {
             lblInfo.setValue("Error");
         }
@@ -193,7 +192,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
 
             if (_requestHasCollectionsRequest != null) {
                 requestHasCollectionsRequest = _requestHasCollectionsRequest;
-            } else {//New Request
+            } else {
                 requestHasCollectionsRequest = new RequestHasCollectionsRequest();
             }
 
@@ -243,7 +242,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 loadFields(requestHasCollectionsRequestParam);
                 loadField(requestParam);
                 loadFieldC(collectionsRequestParam);
-                loadCmbCountry(4);
+                loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
@@ -287,6 +286,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         cmbPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, requestParam.getPersonTypeId().getIndNaturalPerson());
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
         List<PersonType> personTypes;
