@@ -56,13 +56,12 @@
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminRequestNaturalP.zul"/>
+                                                            <include src="adminRequest.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="adminNaturalPerson.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <!--<include src="adminNaturalPersonAddress.zul"/>-->
                                                             <include src="listAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
