@@ -319,6 +319,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, personCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
 
