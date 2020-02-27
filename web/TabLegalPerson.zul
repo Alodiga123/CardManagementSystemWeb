@@ -46,11 +46,12 @@
                                                 </div>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="390px">
                                                     <tabs>
-                                                        <tab id="tabRequest" label="${c:l('cms.crud.request.add')}" />
+                                                        <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}" />
                                                         <tab id="tabMain" label="${c:l('cms.tab.legalPersonMain')}" />
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabLegalRepresentatives" label="${c:l('cms.tab.legalRepresentative')}" />
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />
+                                                        <tab id="tabApplicationReview" label="${c:l('cms.tab.applicationReview')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -60,7 +61,6 @@
                                                             <include src="adminLegalPerson.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <!--<include src="adminLegalPersonAddress.zul"/>-->
                                                             <include src="listAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
@@ -68,6 +68,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listAdditionalCards.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="adminApplicationReview.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

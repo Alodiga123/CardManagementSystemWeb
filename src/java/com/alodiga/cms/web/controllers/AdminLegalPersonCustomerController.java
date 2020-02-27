@@ -345,7 +345,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

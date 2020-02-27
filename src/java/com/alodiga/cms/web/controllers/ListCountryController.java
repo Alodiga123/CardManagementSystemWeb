@@ -30,8 +30,6 @@ public class ListCountryController extends GenericAbstractListController<Country
     private Textbox txtAlias;
     private UtilsEJB utilsEJB = null;
     private List<Country> countries = null;
-    //private User currentUser;
-    //private Profile currentProfile;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -58,24 +56,6 @@ public class ListCountryController extends GenericAbstractListController<Country
             showError(ex);
         }
     }
-
-//    public List<Country> getFilteredList(String filter) {
-//        List<Country> countriesaux = new ArrayList<Country>();
-//        Country country;
-//        try {
-//            if (filter != null && !filter.equals("")) {
-//                country = utilsEJB.searchCountry(filter);
-//                countriesaux.add(country);
-//            } else {
-//                return countries;
-//            }
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCountryController.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//        return countriesaux;
-//    }
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);

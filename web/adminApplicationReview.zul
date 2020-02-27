@@ -49,10 +49,22 @@
                                                         <row>
                                                             <label value="${c:l('cms.crud.applicantionRiview.maximumRechargeAmount')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.applicantionRiview.proposedCard')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.requestCollection.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtMaximumRechargeAmount" value="" width="250px" maxlength="40"/>
                                                             <combobox id="cmbProduct" width="250px" mold="rounded" readonly="true"/>
+                                                            <hbox>
+                                                                <radiogroup id="approved" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rApprovedYes" label="${c:l('cms.commom.Yes')}" radiogroup="approved" />
+                                                                            <radio id="rApprovedNo" label="${c:l('cms.commom.No')} " radiogroup="approved" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>

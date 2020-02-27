@@ -63,16 +63,16 @@ public class WebConstants {
     public static final String ANY = "ninguno";
     public static final String ALL = "todos";
     /*public static final Integer NOTIFICATION_LOGIN = 1;
-    public static final Integer NOTIFICATION_PASSDWORD = 2;
-    public static final Integer NOTIFICATION_SERIAL = 3;
-    public static final Integer NOTIFICATION_ACCESS_NUMBER = 4;
-    public static final Integer NOTIFICATION_TOTAL_AMOUNT = 5;
-    public static final Integer NOTIFICATION_MAIL_ADDRESS = 6;
-    public static final Integer NOTIFICATION_NAME_CUSTOMER = 7;
-    public static final Integer NOTIFICATION_CUSTOMER_ENTERPRISE = 8;
-    public static final Integer NOTIFICATION_CURRENCY = 9;
-    public static final Integer NOTIFICATION_DNI = 10;
-    public static final Integer NOTIFICATION_SECRET_PIN = 11;*/
+     public static final Integer NOTIFICATION_PASSDWORD = 2;
+     public static final Integer NOTIFICATION_SERIAL = 3;
+     public static final Integer NOTIFICATION_ACCESS_NUMBER = 4;
+     public static final Integer NOTIFICATION_TOTAL_AMOUNT = 5;
+     public static final Integer NOTIFICATION_MAIL_ADDRESS = 6;
+     public static final Integer NOTIFICATION_NAME_CUSTOMER = 7;
+     public static final Integer NOTIFICATION_CUSTOMER_ENTERPRISE = 8;
+     public static final Integer NOTIFICATION_CURRENCY = 9;
+     public static final Integer NOTIFICATION_DNI = 10;
+     public static final Integer NOTIFICATION_SECRET_PIN = 11;*/
 
     public static final String MENU_SECURITY = "menu.security";
     public static final String MENUITEM_SECURITY_PROFILE = "menu.security.profile";
@@ -131,22 +131,24 @@ public class WebConstants {
     public static final String PROGRAM_PROGRAM_INTERNATIONAL_NO = "No";
     public static final String PROGRAM_SOURCE_OF_FOUND_OTHER = "Other";
     public static final String PROGRAM_SOURCE_OF_FOUND_OTROS = "Otros";
-    
+
     public static final String LEGALREPRESENTATIVE_GENDER_FEMALE = "F";
     public static final String LEGALREPRESENTATIVE_GENDER_MALE = "M";
-    
+    public static final Boolean IND_NATURAL_PERSON = true;
+
     //CRUD Transaction
     public static final String PROGRAM_MONETARY_TYPE_YES = "Yes";
     public static final String PPROGRAM_MONETARY_TYPE_NO = "No";
-    public static final String PROGRAM_MONETARY_TYPE_SI= "Si";
-    
+    public static final String PROGRAM_MONETARY_TYPE_SI = "Si";
+
     //CRUD ProgramLoyalty
     public static final int STATUS_PROGRAM_LOYALTY_PENDING = 1;
-    
+
+    public static final int STATUS_CUSTOMER = 1;
+
     //CRUD AccountProperties
 //    public static final String ACCOUNT_PROPERTIES_ALLOWS_YES = "Yes";
 //    public static final String ACCOUNT_PROPERTIES_ALLOWS_NO = "No";
-    
     //
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
     public static final int PROGRAM_LOYALTY_TYPE_BONIFICATION = 2;

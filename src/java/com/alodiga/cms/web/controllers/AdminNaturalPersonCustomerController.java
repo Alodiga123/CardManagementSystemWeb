@@ -320,11 +320,12 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, personCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
 
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCity(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(personCustomerParam != null ? personCustomerParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
