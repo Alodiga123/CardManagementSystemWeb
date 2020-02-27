@@ -51,11 +51,12 @@
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabLegalRepresentatives" label="${c:l('cms.tab.legalRepresentative')}" />
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />
+                                                        <tab id="tabRequestbyCollection" label="${c:l('cms.tab.requestByCollections')}"/>
                                                         <tab id="tabApplicationReview" label="${c:l('cms.tab.applicationReview')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminRequestLegalP.zul"/>
+                                                            <include src="adminRequest.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="adminLegalPerson.zul"/>
@@ -68,6 +69,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listAdditionalCards.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listRequestsCollections.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="adminApplicationReview.zul"/>

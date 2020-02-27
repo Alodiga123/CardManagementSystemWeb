@@ -315,7 +315,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     }
 
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
-        //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();

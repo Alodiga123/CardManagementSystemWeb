@@ -22,6 +22,7 @@ import com.cms.commons.models.Product;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.models.ReviewRequest;
+import com.cms.commons.models.ReviewRequestType;
 import com.cms.commons.models.StatusCustomer;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -62,7 +63,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private Combobox cmbProduct;
     private Radio rApprovedYes;
     private Radio rApprovedNo;
-    public Boolean indApproved = null;
     private ProductEJB productEJB = null;
     private User user = null;
     private RequestEJB requestEJB = null;
@@ -82,7 +82,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequest = new AdminRequestController();
+        adminRequest = new AdminRequestController();
         if (adminRequest.getRequest() != null) {
             requestCard = adminRequest.getRequest();
         }
@@ -108,9 +108,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             for (ReviewRequest r : reviewCollectionsRequest) {
                 reviewCollectionsRequestParam = r;
             }
-            loadData();
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            loadData();
         }
     }
 
@@ -131,10 +132,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
             txtObservations.setText(reviewCollectionsRequest.getObservations());
             if (reviewCollectionsRequest.getIndApproved() == true) {
-                rApprovedYes.setChecked(true);
-            } else {
-                rApprovedNo.setChecked(true);
-            }
+                    rApprovedYes.setChecked(true);
+                } else {
+                    rApprovedNo.setChecked(true);
+                }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -169,6 +170,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private void saveReviewCollectionsRequest(ReviewRequest _reviewCollectionsRequest) {
         try {
             ReviewRequest reviewCollectionsRequest = null;
+            boolean indApproved;
             int indReviewCollection = 0;
 
             if (_reviewCollectionsRequest != null) {
@@ -181,6 +183,17 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             if (adminRequest.getRequest().getId() != null) {
                 requestNumber = adminRequest.getRequest();
             }
+            
+            if (rApprovedYes.isChecked()) {
+                indApproved = true;
+            } else {
+                indApproved = false;
+            }
+            
+            //Obtiene el tipo de revision Recaudos
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.REVIEW_REQUEST_TYPE_COLLECTIONS);
+            ReviewRequestType reviewRequestType = requestEJB.loadReviewRequestType(request);
 
             if (rApprovedYes.isChecked()) {
                 indApproved = true;
@@ -207,6 +220,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setUserId(user);
             reviewCollectionsRequest.setProductId((Product) cmbProduct.getSelectedItem().getValue());
             reviewCollectionsRequest.setObservations(txtObservations.getText());
+            reviewCollectionsRequest.setReviewRequestTypeId(reviewRequestType);
             reviewCollectionsRequest.setIndApproved(indApproved);
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
             this.showMessage("sp.common.save.success", false, null);
