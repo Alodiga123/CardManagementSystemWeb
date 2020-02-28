@@ -23,6 +23,7 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -212,10 +213,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request1 = new EJBRequest();
             request1.setParam(Constants.STATUS_REQUEST_IN_PROCESS);
             StatusRequest statusRequest = utilsEJB.loadStatusRequest(request1);
-            //Solicitante sin registrar
-            request1 = new EJBRequest();
-            request1.setParam(Constants.PERSON_NOT_REGISTER);
-            Person personNotRegister = personEJB.loadPerson(request1);
+
             //Guarda la solicitud en la BD
             request.setRequestNumber(numberRequest);
             request.setRequestDate(dateRequest);
@@ -226,6 +224,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
             request.setRequestTypeId((RequestType) cmbRequestType.getSelectedItem().getValue());
             request.setIndPersonNaturalRequest(indPersonNaturalRequest);
+            if (eventType != 1) {
+                request.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
             request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
