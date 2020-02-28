@@ -102,7 +102,11 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
                     item.appendChild(new Listcell(plasticManufacturer.getPersonId().getCountryId().getName()));
                     item.appendChild(new Listcell(plasticManufacturer.getName()));
                     item.appendChild(new Listcell(plasticManufacturer.getIdentificationNumber()));
-                    item.appendChild(new Listcell(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone()));
+                    if (plasticManufacturer.getPersonId().getPhonePerson() != null) {
+                        item.appendChild(new Listcell(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone()));
+                    } else {
+                        item.appendChild(new Listcell());
+                    }
                     item.appendChild(new Listcell(plasticManufacturer.getPersonId().getEmail()));
                     item.appendChild(new ListcellEditButton(adminPage, plasticManufacturer));
                     item.appendChild(new ListcellViewButton(adminPage, plasticManufacturer,true));
