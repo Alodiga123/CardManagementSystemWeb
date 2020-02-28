@@ -12,9 +12,13 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
+import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.LegalCustomer;
+import com.cms.commons.models.LegalCustomerHasLegalRepresentatives;
+import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
@@ -78,6 +82,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private List<ApplicantNaturalPerson> cardComplementaryList = null;
     private NaturalCustomer naturalCustomerParent = null;
     public static Person customer = null;
+    private AdminRequestController adminRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -197,7 +202,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
             if (rApprovedYes.isChecked()) {
                 indApproved = true;
-
                 Map params = new HashMap();
                 EJBRequest request1 = new EJBRequest();
                 params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
@@ -223,23 +227,27 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setReviewRequestTypeId(reviewRequestType);
             reviewCollectionsRequest.setIndApproved(indApproved);
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
-            this.showMessage("sp.common.save.success", false, null);
 
-            if (adminRequest.getRequest().getIndPersonNaturalRequest() == true) {
+            if (adminRequest.getRequest().getIndPersonNaturalRequest() == true) { //La solicitud es de persona natural
                 if (reviewCollectionsRequest.getIndApproved() == true) {
                     if (indReviewCollection == 0) {
-                        //creando al titular
+                        //Se crea el cliente
                         saveNaturalCustomer(adminRequest);
                         //creando las tarjetas complementarias
-                        saveNaturalPersonCustomer(adminRequest);
+                        saveNaturalCustomerComplementaries(adminRequest);
                         //saveFamilyReferentCustomer(adminRequest);
                     } else {
-                        //updateRequest(adminRequest);
+                        this.showMessage("cms.common.requestNotApproved", false, null);
                     }
                 }
-            } else {
-                saveLegalCustomer(adminRequest);
+            } else { //la solicitud es de persona jurídica
+                if (reviewCollectionsRequest.getIndApproved() == true) {
+                    saveLegalCustomer(adminRequest);
+                } else {
+                    this.showMessage("cms.common.requestNotApproved", false, null);
+                }   
             }
+            this.showMessage("sp.common.save.success", false, null);
 
         } catch (Exception ex) {
             showError(ex);
@@ -269,51 +277,33 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 //    }
     public void saveNaturalCustomer(AdminRequestController adminRequest) {
         try {
-            Person person = null;
-            person = new Person();
-            NaturalCustomer naturalCustomer = null;
-            naturalCustomer = new NaturalCustomer();
+            Person person = new Person();
+            NaturalCustomer naturalCustomer = new NaturalCustomer();
+            ApplicantNaturalPerson applicant = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
 
-            //colocar estatus del cliente "ACTIVO"
-            EJBRequest request1 = new EJBRequest();
-            request1 = new EJBRequest();
-            request1.setParam(Constants.STATUS_CUSTOMER_ACTIVE);
-            StatusCustomer statusCustomer = personEJB.loadStatusCustomer(request1);
-
-            //colocar la clasificacion de la persona como CLIENTE
-            EJBRequest request2 = new EJBRequest();
-            request2 = new EJBRequest();
-            request2.setParam(Constants.PERSON_CLASSIFICATION_CUSTOMER);
-            PersonClassification personClassification = utilsEJB.loadPersonClassification(request2);
-
-            //Guardar la persona
+            //Guardar la persona asociada al cliente
             person.setCountryId(adminRequest.getRequest().getPersonId().getCountryId());
             person.setPersonTypeId(adminRequest.getRequest().getPersonId().getPersonTypeId());
             person.setEmail(adminRequest.getRequest().getPersonId().getEmail());
-            person.setCreateDate(new Timestamp(new Date().getTime()));
-            person.setPersonClassificationId(personClassification);
+            person.setPersonClassificationId(getClassificationCustomer());
             //person = personEJB.savePerson(person);
-            customer = person;
 
+            //Guarda el Cliente
             naturalCustomer.setPersonId(person);
-            naturalCustomer.setDocumentsPersonTypeId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId());
-            naturalCustomer.setIdentificationNumber(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getIdentificationNumber());
-            naturalCustomer.setDueDateDocumentIdentification(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getDueDateDocumentIdentification());
-            naturalCustomer.setStatusCustomerId(statusCustomer);
-            naturalCustomer.setFirstNames(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getFirstNames());
-            naturalCustomer.setLastNames(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getLastNames());
-            naturalCustomer.setMarriedLastName(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getMarriedLastName());
-            naturalCustomer.setGender(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getGender());
-            naturalCustomer.setPlaceBirth(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getPlaceBirth());
-            naturalCustomer.setDateBirth(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getDateBirth());
-            naturalCustomer.setCivilStatusId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getCivilStatusId());
-            naturalCustomer.setFamilyResponsibilities(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getFamilyResponsibilities());
-            naturalCustomer.setProfessionId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getProfessionId());
-            naturalCustomer.setKinShipApplicantId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getKinShipApplicantId());
-            naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
-            naturalCustomerParent = naturalCustomer;
-
-            this.showMessage("cms.common.save.success.customer", false, null);
+            naturalCustomer.setDocumentsPersonTypeId(applicant.getDocumentsPersonTypeId());
+            naturalCustomer.setIdentificationNumber(applicant.getIdentificationNumber());
+            naturalCustomer.setDueDateDocumentIdentification(applicant.getDueDateDocumentIdentification());
+            naturalCustomer.setStatusCustomerId(getStatusActiveCustomer());
+            naturalCustomer.setFirstNames(applicant.getFirstNames());
+            naturalCustomer.setLastNames(applicant.getLastNames());
+            naturalCustomer.setMarriedLastName(applicant.getMarriedLastName());
+            naturalCustomer.setGender(applicant.getGender());
+            naturalCustomer.setPlaceBirth(applicant.getPlaceBirth());
+            naturalCustomer.setDateBirth(applicant.getDateBirth());
+            naturalCustomer.setCivilStatusId(applicant.getCivilStatusId());
+            naturalCustomer.setFamilyResponsibilities(applicant.getFamilyResponsibilities());
+            naturalCustomer.setProfessionId(applicant.getProfessionId());
+            naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
 
         } catch (Exception ex) {
             showError(ex);
@@ -354,7 +344,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 //            showError(ex);
 //        }
 //    }
-    public void saveNaturalPersonCustomer(AdminRequestController adminRequest) {
+    public void saveNaturalCustomerComplementaries(AdminRequestController adminRequest) {
         try {
             Long countCardComplementary = 0L;
             Person person = null;
@@ -378,18 +368,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                 request1.setParams(params);
                 cardComplementaryList = personEJB.getCardComplementaryByApplicant(request1);
 
-                //colocar estatus del cliente "ACTIVO"
-                EJBRequest request2 = new EJBRequest();
-                request2 = new EJBRequest();
-                request2.setParam(Constants.STATUS_CUSTOMER_ACTIVE);
-                StatusCustomer statusCustomer = personEJB.loadStatusCustomer(request2);
-
-                //colocar la clasificacion de la persona como CLIENTE
-                EJBRequest request3 = new EJBRequest();
-                request3 = new EJBRequest();
-                request3.setParam(Constants.PERSON_CLASSIFICATION_CUSTOMER);
-                PersonClassification personClassification = utilsEJB.loadPersonClassification(request3);
-
                 for (ApplicantNaturalPerson r : cardComplementaryList) {
                     if (r.getApplicantParentId() != null) {
 
@@ -398,7 +376,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         person.setPersonTypeId(r.getPersonId().getPersonTypeId());
                         person.setEmail(r.getPersonId().getEmail());
                         person.setCreateDate(new Timestamp(new Date().getTime()));
-                        person.setPersonClassificationId(personClassification);
+                        person.setPersonClassificationId(getClassificationCustomer());
                         //person = personEJB.savePerson(person);
                         customer = person;
 
@@ -406,7 +384,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         naturalCustomer.setDocumentsPersonTypeId(r.getDocumentsPersonTypeId());
                         naturalCustomer.setIdentificationNumber(r.getIdentificationNumber());
                         naturalCustomer.setDueDateDocumentIdentification(r.getDueDateDocumentIdentification());
-                        naturalCustomer.setStatusCustomerId(statusCustomer);
+                        naturalCustomer.setStatusCustomerId(getStatusActiveCustomer());
                         naturalCustomer.setFirstNames(r.getFirstNames());
                         naturalCustomer.setLastNames(r.getLastNames());
                         naturalCustomer.setMarriedLastName(r.getMarriedLastName());
@@ -419,8 +397,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         naturalCustomer.setNaturalCustomerId(naturalCustomerParent.getNaturalCustomerId());
                         naturalCustomer.setKinShipApplicantId(r.getKinShipApplicantId());
                         naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
-
-                        this.showMessage("cms.common.save.success.customer", false, null);
                     }
                 }
             }
@@ -428,33 +404,88 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             showError(ex);
         }
     }
+    
+    public StatusCustomer getStatusActiveCustomer() {
+        StatusCustomer statusCustomer = null;
+        try {
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_CUSTOMER_ACTIVE);
+            statusCustomer = personEJB.loadStatusCustomer(request);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return statusCustomer;
+    }
+    
+    public PersonClassification getClassificationCustomer() {
+        PersonClassification personClassification = null;
+        try {
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.PERSON_CLASSIFICATION_CUSTOMER);
+            personClassification = utilsEJB.loadPersonClassification(request);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return personClassification;
+    }
 
     public void saveLegalCustomer(AdminRequestController adminRequest) {
+        List<LegalPersonHasLegalRepresentatives> legalRepresentativesByApplicantList = null;
+        List<CardRequestNaturalPerson> cardAdditionalList = null;
+        CardRequestNaturalPerson cardRequestNaturalPerson = null;
         try {
-            LegalCustomer legalCustomer = null;
-            legalCustomer = new LegalCustomer();
+            Person person = new Person();
+            LegalCustomer legalCustomer = new LegalCustomer();
+            LegalPerson applicant = adminRequest.getRequest().getPersonId().getLegalPerson();
 
-            //colocar estatus del cliente "ACTIVO"
-            EJBRequest request1 = new EJBRequest();
-            request1 = new EJBRequest();
-            request1.setParam(Constants.STATUS_CUSTOMER_ACTIVE);
-            StatusCustomer statusCustomer = personEJB.loadStatusCustomer(request1);
-
-            legalCustomer.setPersonId(adminRequest.getRequest().getPersonId());
-            legalCustomer.setDocumentsPersonTypeId(adminRequest.getRequest().getPersonId().getLegalPerson().getDocumentsPersonTypeId());
-            legalCustomer.setIdentificationNumber(adminRequest.getRequest().getPersonId().getLegalPerson().getIdentificationNumber());
-            legalCustomer.setTradeName(adminRequest.getRequest().getPersonId().getLegalPerson().getTradeName());
-            legalCustomer.setEnterpriseName(adminRequest.getRequest().getPersonId().getLegalPerson().getEnterpriseName());
-            legalCustomer.setStatusCustomerId(statusCustomer);
-            legalCustomer.setEconomicActivityId(adminRequest.getRequest().getPersonId().getLegalPerson().getEconomicActivityId());
-            legalCustomer.setDateInscriptionRegister(adminRequest.getRequest().getPersonId().getLegalPerson().getDateInscriptionRegister());
-            legalCustomer.setRegisterNumber(adminRequest.getRequest().getPersonId().getLegalPerson().getRegisterNumber());
-            legalCustomer.setPayedCapital(adminRequest.getRequest().getPersonId().getLegalPerson().getPayedCapital());
-            legalCustomer.setWebSite(adminRequest.getRequest().getPersonId().getLegalPerson().getWebSite());
-            legalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
-
-            this.showMessage("cms.common.save.success.customer", false, null);
-
+            //1. Se crea la persona asociada al cliente
+            person.setCountryId(adminRequest.getRequest().getPersonId().getCountryId());
+            person.setPersonTypeId(adminRequest.getRequest().getPersonId().getPersonTypeId());
+            person.setEmail(adminRequest.getRequest().getPersonId().getEmail());
+            person.setPersonClassificationId(getClassificationCustomer());
+            person = personEJB.savePerson(person);
+            
+            //2. Se crea el cliente        
+            legalCustomer.setPersonId(person);
+            legalCustomer.setDocumentsPersonTypeId(applicant.getDocumentsPersonTypeId());
+            legalCustomer.setIdentificationNumber(applicant.getIdentificationNumber());
+            legalCustomer.setTradeName(applicant.getTradeName());
+            legalCustomer.setEnterpriseName(applicant.getEnterpriseName());
+            legalCustomer.setStatusCustomerId(getStatusActiveCustomer());
+            legalCustomer.setEconomicActivityId(applicant.getEconomicActivityId());
+            legalCustomer.setDateInscriptionRegister(applicant.getDateInscriptionRegister());
+            legalCustomer.setRegisterNumber(applicant.getRegisterNumber());
+            legalCustomer.setPayedCapital(applicant.getPayedCapital());
+            legalCustomer.setWebSite(applicant.getWebSite());
+            legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
+            
+            //3 Agregar la dirección del cliente
+            
+            //4. Agregar los representantes legales asociados al cliente
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicant.getId());
+            request.setParams(params);
+            legalRepresentativesByApplicantList = personEJB.getLegalRepresentativesesBylegalPerson(request);
+            for (LegalPersonHasLegalRepresentatives legalRepresentatives: legalRepresentativesByApplicantList) {
+                LegalCustomerHasLegalRepresentatives legalRepresentativesByCustomer = new LegalCustomerHasLegalRepresentatives();
+                legalRepresentativesByCustomer.setLegalCustomerId(legalCustomer);
+                legalRepresentativesByCustomer.setLegalRepresentativesId(legalRepresentatives.getLegalRepresentativesid());
+                legalRepresentativesByCustomer = personEJB.saveLegalCustomerHasLegalRepresentatives(legalRepresentativesByCustomer);
+            }
+            
+            //5. Agregar las tarjetas adicionales asociadas al cliente
+            request = new EJBRequest();
+            params = new HashMap();
+            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicant.getId());
+            request.setParams(params);
+            cardAdditionalList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request);
+            for (CardRequestNaturalPerson cardAdditional : cardAdditionalList) {
+                cardRequestNaturalPerson = cardAdditional;
+                cardRequestNaturalPerson.setLegalCustomerId(legalCustomer);
+                cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
+            }
+            
         } catch (Exception ex) {
             showError(ex);
         }
