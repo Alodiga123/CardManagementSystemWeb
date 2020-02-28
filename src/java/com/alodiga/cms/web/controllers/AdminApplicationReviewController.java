@@ -25,11 +25,13 @@ import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.Product;
+import com.cms.commons.models.ReasonRejectionRequest;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.ReviewRequestType;
 import com.cms.commons.models.StatusCustomer;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -92,8 +94,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         adminRequest = new AdminRequestController();
         if (adminRequest.getRequest() != null) {
             requestCard = adminRequest.getRequest();
+            eventType = adminRequest.getEventType();
         }
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         initialize();
     }
 
@@ -106,7 +108,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(QueryConstants.PARAM_REQUEST_ID, requestCard.getId());
@@ -135,14 +136,23 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             txtCommercialAssessorUserCode.setValue(user.getCode());
             txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
             txtIdentification.setValue(user.getIdentificationNumber());
-            txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
-            txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
-            txtObservations.setText(reviewCollectionsRequest.getObservations());
-            if (reviewCollectionsRequest.getIndApproved() == true) {
+            if (reviewCollectionsRequest.getMaximumRechargeAmount() != null) {
+                txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
+            }
+            if (reviewCollectionsRequest.getReviewDate() != null) {
+                txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
+            }
+            if (reviewCollectionsRequest.getObservations() != null) {
+                txtObservations.setText(reviewCollectionsRequest.getObservations());    
+            }
+            if (reviewCollectionsRequest.getIndApproved() != null) {
+                if (reviewCollectionsRequest.getIndApproved() == true) {
                     rApprovedYes.setChecked(true);
                 } else {
                     rApprovedNo.setChecked(true);
                 }
+            }
+            
         } catch (Exception ex) {
             showError(ex);
         }
@@ -178,11 +188,12 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         try {
             ReviewRequest reviewCollectionsRequest = null;
             boolean indApproved;
-            int indReviewCollection = 0;
+            int indReviewCollectionApproved = 0;
+            int indReviewCollectionIncomplete = 0;
 
             if (_reviewCollectionsRequest != null) {
                 reviewCollectionsRequest = _reviewCollectionsRequest;
-            } else {//New reviewCollectionsRequest
+            } else {
                 reviewCollectionsRequest = new ReviewRequest();
             }
 
@@ -203,7 +214,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             ReviewRequestType reviewRequestType = requestEJB.loadReviewRequestType(request);
 
             if (rApprovedYes.isChecked()) {
-                indApproved = true;
                 Map params = new HashMap();
                 EJBRequest request1 = new EJBRequest();
                 params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
@@ -211,14 +221,14 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                 requestHasCollectionsRequestList = requestEJB.getRequestsHasCollectionsRequestByRequest(request1);
                 for (RequestHasCollectionsRequest r : requestHasCollectionsRequestList) {
                     if (r.getIndApproved() == 0) {
-                        indReviewCollection = 1;
-                        indApproved = false;
+                        indReviewCollectionApproved = 1;
+                    }
+                    if (r.getUrlImageFile() == null) {
+                        indReviewCollectionIncomplete = 1;
                     }
                 }
-            } else {
-                indApproved = false;
-            }
-
+            } 
+            
             //Guarda la revision
             reviewCollectionsRequest.setRequestId(requestNumber);
             reviewCollectionsRequest.setReviewDate(txtReviewDate.getValue());
@@ -229,10 +239,19 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setReviewRequestTypeId(reviewRequestType);
             reviewCollectionsRequest.setIndApproved(indApproved);
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
+            
+            //Si los recaudos están incompletos, se rechaza la solicitud
+            if (indReviewCollectionIncomplete == 1) {
+                updateRequestByCollectionsIncomplete(requestCard);
+            }
 
+            //Actualiza el agente comercial en la solictud de tarjeta
+            requestCard.setUserId(user);
+            requestCard = requestEJB.saveRequest(requestCard);
+            
             if (adminRequest.getRequest().getIndPersonNaturalRequest() == true) { //La solicitud es de persona natural
                 if (reviewCollectionsRequest.getIndApproved() == true) {
-                    if (indReviewCollection == 0) {
+                    if (indReviewCollectionApproved == 0) {
                         //Se crea el cliente
                         saveNaturalCustomer(adminRequest);
                         //creando las tarjetas complementarias
@@ -256,27 +275,22 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         }
     }
 
-//    public void updateRequest(AdminRequestController adminRequest) {
-//        try {
-//
-//            Request requestCollection = null;
-//            requestCollection = new Request();
-//            
-//            //colocar request "RECHAZADA"
-//            EJBRequest request1 = new EJBRequest();
-//            request1 = new EJBRequest();
-//            request1.setParam(Constants.STATUS_REQUEST_IN_REJECTED);
-//            StatusRequest statusRequest = utilsEJB.loadStatusRequest(request1);
-//            
-//            
-//            requestCollection.setStatusRequestId(statusRequest);
-//            requestCollection = requestEJB.saveRequest(requestCollection);
-//            this.showMessage("cms.crud.applicantionRiview.customer", false, null);
-//
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
+    public void updateRequestByCollectionsIncomplete(Request requestCard) {
+        try {
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_REQUEST_REJECTED);
+            StatusRequest statusRequestRejected = utilsEJB.loadStatusRequest(request);
+            requestCard.setStatusRequestId(statusRequestRejected);
+            request.setParam(Constants.REASON_REQUEST_REJECTED_BY_COLLECTIONS);
+            ReasonRejectionRequest reasonRejectionRequest = requestEJB.loadReasonRejectionRequest(request);
+            requestCard.setReasonRejectionRequestId(reasonRejectionRequest);
+            requestCard = requestEJB.saveRequest(requestCard);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    
     public void saveNaturalCustomer(AdminRequestController adminRequest) {
         try {
             Person person = new Person();
