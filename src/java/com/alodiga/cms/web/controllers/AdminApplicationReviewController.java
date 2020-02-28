@@ -11,6 +11,7 @@ import static com.alodiga.cms.web.controllers.AdminNaturalPersonController.appli
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Address;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.Country;
@@ -22,6 +23,7 @@ import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
+import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ReasonRejectionRequest;
 import com.cms.commons.models.Request;
@@ -445,6 +447,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
     public void saveLegalCustomer(AdminRequestController adminRequest) {
         List<LegalPersonHasLegalRepresentatives> legalRepresentativesByApplicantList = null;
+        List<PersonHasAddress> AddressByApplicantList = null;
+        PersonHasAddress personHasAddress = null;
         List<CardRequestNaturalPerson> cardAdditionalList = null;
         CardRequestNaturalPerson cardRequestNaturalPerson = null;
         try {
@@ -474,10 +478,21 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
             
             //3 Agregar la dirección del cliente
-            
-            //4. Agregar los representantes legales asociados al cliente
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
+            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicant.getId());
+            request.setParams(params);
+            AddressByApplicantList = personEJB.getPersonHasAddressesByPerson(request);
+            for (PersonHasAddress addressApplicant : AddressByApplicantList){
+                personHasAddress = new PersonHasAddress();
+                personHasAddress.setAddressId(addressApplicant.getAddressId());
+                personHasAddress.setPersonId(person);
+                personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
+            }
+            
+            //4. Agregar los representantes legales asociados al cliente
+            request = new EJBRequest();
+            params = new HashMap();
             params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicant.getId());
             request.setParams(params);
             legalRepresentativesByApplicantList = personEJB.getLegalRepresentativesesBylegalPerson(request);
