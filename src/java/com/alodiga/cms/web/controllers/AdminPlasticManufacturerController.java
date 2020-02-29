@@ -221,6 +221,20 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
+            
+            //Obtener el tipo de telefono celular
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.PHONE_TYPE_MOBILE);
+            PhoneType phoneType = personEJB.loadPhoneType(request);
+            
+            //Guarda el telefono del Fabricante de Plastico
+            if (phonePerson == null) {
+                phonePerson = new PhonePerson();
+            }
+            phonePerson.setPersonId(person);
+            phonePerson.setPhoneTypeId(phoneType);
+            phonePerson.setNumberPhone(txtPhoneManufacturer.getValue());
+            phonePerson = personEJB.savePhonePerson(phonePerson);
 
             //Guarda el Fabricante de Plastico
             plasticManufacturer.setPersonId(person);
@@ -234,12 +248,6 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             plasticManufacturer = personEJB.savePlasticManufacturer(plasticManufacturer);
             plasticManufacturerParam = plasticManufacturer;
             this.showMessage("sp.common.save.success", false, null);
-            plasticManufacturerParent = plasticManufacturer;
-            
-            //Obtener el telefono del fabricante de plastico
-            EJBRequest request = new EJBRequest();
-            request.setParam(Constants.PHONE_TYPE_MOBILE);
-            PhoneType phoneType = personEJB.loadPhoneType(request);
             
         EventQueues.lookup("updateAccountProperties", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
