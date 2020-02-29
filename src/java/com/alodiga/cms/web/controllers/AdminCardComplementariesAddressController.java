@@ -7,8 +7,10 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.util.Constants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
+import com.cms.commons.models.AddressType;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
@@ -34,8 +36,9 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class AdminCardComplementariesAddressController extends GenericAbstractAdminController {
 
+public class AdminCardComplementariesAddressController extends GenericAbstractAdminController {
+  
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtUbanization;
     private Textbox txtNameStreet;
@@ -54,8 +57,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     private Address addressParam;
     private Button btnSave;
     private Integer eventType;
-    Map params = null;
-    public Window winAdminCardComplementariesAddress;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -63,10 +64,24 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
                 case WebConstants.EVENT_EDIT:
-                    addressParam = (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")).getPersonId().getPersonHasAddress().getAddressId());
+                        if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
+                            ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                            if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
+                                addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
+                            } else {
+                                addressParam = null;
+                            }
+                        }
                 break;
                 case WebConstants.EVENT_VIEW:
-                    addressParam = (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")).getPersonId().getPersonHasAddress().getAddressId());
+                        if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
+                            ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                            if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
+                                addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
+                            } else {
+                                addressParam = null;
+                            }
+                        }
                 break;
                 case WebConstants.EVENT_ADD:
                     addressParam = null;
@@ -168,20 +183,21 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
-
-            if (_address != null) {
-                address = _address;
-            } else {//New address
-                address = new Address();
-                personHasAddress = new PersonHasAddress();
-            }
             
             //Se obtiene la persona asociada a la tarjeta complementaria
             AdminCardComplementariesController adminCardComplementary = new AdminCardComplementariesController();
             if (adminCardComplementary.getPersonCardComplementary().getId() != null) {
                 applicantPersonCard = adminCardComplementary.getPersonCardComplementary();
             }
-                      
+
+            if (_address != null) {
+                address = _address;
+                personHasAddress = applicantPersonCard.getPersonHasAddress();
+            } else {//New address
+                address = new Address();
+                personHasAddress = new PersonHasAddress();
+            }
+
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
@@ -192,14 +208,18 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.ADDRESS_TYPE_DELIVERY);
+            AddressType addressType = utilsEJB.loadAddressType(request);
+            address.setAddressTypeId(addressType);
             address = utilsEJB.saveAddress(address);
             addressParam = address;
-            
+
             //PersonHasAddress
             personHasAddress.setAddressId(address);
             personHasAddress.setPersonId(applicantPersonCard);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
-            
+
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -220,11 +240,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             }
         }
     }
-    
-    public void onClick$btnBack() {
-        winAdminCardComplementariesAddress.detach();
-    }
-    
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -257,7 +273,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     }
 
     private void loadCmbCountry(Integer evenInteger) {
-        //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
         try {

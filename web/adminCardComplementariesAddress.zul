@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCardComplementariesAddress" width="950px" height="590px" apply="com.alodiga.cms.web.controllers.AdminCardComplementariesAddressController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminCardComplementariesAddress" width="950px" height="590px" apply="com.alodiga.cms.web.controllers.AdminCardComplementariesAddressController" >
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">

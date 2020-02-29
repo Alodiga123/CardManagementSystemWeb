@@ -7,21 +7,21 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import static com.alodiga.cms.web.controllers.AdminNaturalPersonController.applicant;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
-import com.cms.commons.models.Country;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
+import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.models.ReviewRequest;
+import com.cms.commons.models.ReviewRequestType;
 import com.cms.commons.models.StatusCustomer;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -38,8 +38,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
@@ -62,7 +60,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private Combobox cmbProduct;
     private Radio rApprovedYes;
     private Radio rApprovedNo;
-    public Boolean indApproved = null;
     private ProductEJB productEJB = null;
     private User user = null;
     private RequestEJB requestEJB = null;
@@ -108,9 +105,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             for (ReviewRequest r : reviewCollectionsRequest) {
                 reviewCollectionsRequestParam = r;
             }
-            loadData();
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            loadData();
         }
     }
 
@@ -169,6 +167,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private void saveReviewCollectionsRequest(ReviewRequest _reviewCollectionsRequest) {
         try {
             ReviewRequest reviewCollectionsRequest = null;
+            boolean indApproved;
             int indReviewCollection = 0;
 
             if (_reviewCollectionsRequest != null) {
@@ -181,6 +180,17 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             if (adminRequest.getRequest().getId() != null) {
                 requestNumber = adminRequest.getRequest();
             }
+
+            if (rApprovedYes.isChecked()) {
+                indApproved = true;
+            } else {
+                indApproved = false;
+            }
+
+            //Obtiene el tipo de revision Recaudos
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.REVIEW_REQUEST_TYPE_COLLECTIONS);
+            ReviewRequestType reviewRequestType = requestEJB.loadReviewRequestType(request);
 
             if (rApprovedYes.isChecked()) {
                 indApproved = true;
@@ -207,6 +217,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setUserId(user);
             reviewCollectionsRequest.setProductId((Product) cmbProduct.getSelectedItem().getValue());
             reviewCollectionsRequest.setObservations(txtObservations.getText());
+            reviewCollectionsRequest.setReviewRequestTypeId(reviewRequestType);
             reviewCollectionsRequest.setIndApproved(indApproved);
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
             this.showMessage("sp.common.save.success", false, null);
@@ -214,11 +225,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             if (adminRequest.getRequest().getIndPersonNaturalRequest() == true) {
                 if (reviewCollectionsRequest.getIndApproved() == true) {
                     if (indReviewCollection == 0) {
-                        //creando al titular
+                        //creando al titular y las tarjetas complementarias
                         saveNaturalCustomer(adminRequest);
-                        //creando las tarjetas complementarias
-                        saveNaturalPersonCustomer(adminRequest);
-                        //saveFamilyReferentCustomer(adminRequest);
+                        saveCardComplementariesCustomer(adminRequest);
+                        this.showMessage("cms.common.save.success.customer", false, null);
                     } else {
                         //updateRequest(adminRequest);
                     }
@@ -278,8 +288,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             person.setEmail(adminRequest.getRequest().getPersonId().getEmail());
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
-            //person = personEJB.savePerson(person);
-            customer = person;
+            person = personEJB.savePerson(person);
 
             naturalCustomer.setPersonId(person);
             naturalCustomer.setDocumentsPersonTypeId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId());
@@ -297,54 +306,89 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setProfessionId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getProfessionId());
             naturalCustomer.setKinShipApplicantId(adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getKinShipApplicantId());
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
+            naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
 
-            this.showMessage("cms.common.save.success.customer", false, null);
+            saveFamilyReferentCustomer(naturalCustomer);
+            saveAddressCustomer(naturalCustomer);
+
 
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-//    public void saveFamilyReferentCustomer(AdminRequestController adminRequest) {
-//
-//        try {
-//            List<FamilyReferences> familyReferences = null;
-//            familyReferences = new ArrayList<FamilyReferences>();
-//            ApplicantNaturalPerson applicantNaturalPerson = null;
-//
-//            //Solicitante de Tarjeta
-//            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-//            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-//                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
-//            }
-//            EJBRequest request1 = new EJBRequest();
-//            Map params = new HashMap();
-//            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
-//            request1.setParams(params);
-//            familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
-//
-//            if (familyReferences != null) {
-//                //Guarda la referencia familiar asociada al solicitante
-//                familyReferences.setFirstNames();
-//                familyReferences.setApplicantNaturalPersonId(applicantNaturalPerson);
-//                familyReferences.setCity(txtCity.getText());
-//                familyReferences.setLocalPhone(txtLocalPhone.getText());
-//                familyReferences.setCellPhone(txtCellPhone.getText());
-//                familyReferences.setLastNames(txtFullLastName.getText());
-//            //familyReferences = personEJB.saveFamilyReferences(familyReferences);
-//                //familyReferencesParam = familyReferences;
-//                this.showMessage("sp.common.save.success", false, null);
-//            }
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
-    public void saveNaturalPersonCustomer(AdminRequestController adminRequest) {
+    public void saveFamilyReferentCustomer(NaturalCustomer naturalCustomer) {
+        try {
+            ApplicantNaturalPerson applicantNaturalPerson = null;
+            List<FamilyReferences> familyReferences;
+            FamilyReferences familyCustomer = null;
+
+            //Solicitante de Tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            }
+
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+            request1.setParams(params);
+            familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
+
+            if (familyReferences != null) {
+                for (FamilyReferences r : familyReferences) {
+                    //Actualiza la referencia familiar colocandole ID del cliente nuevo
+                    familyCustomer = r;
+                    familyCustomer.setNaturalCustomerId(naturalCustomer);
+                    familyCustomer = personEJB.saveFamilyReferences(familyCustomer);
+                }
+            } else {
+                this.showMessage("sp.common.save.success", false, null);
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    public void saveAddressCustomer(NaturalCustomer naturalCustomer) {
+        try {
+            List<PersonHasAddress> personHasAddress;
+            personHasAddress = new ArrayList<PersonHasAddress>();
+            ApplicantNaturalPerson applicantNaturalPerson = null;
+            PersonHasAddress personAddressCustomer = null;
+
+            //Solicitante de Tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            }
+
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, applicantNaturalPerson.getId());
+            request1.setParams(params);
+            personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
+
+            if (personHasAddress != null) {
+                for (PersonHasAddress r : personHasAddress) {
+                    personAddressCustomer = new PersonHasAddress();
+                    personAddressCustomer.setAddressId(r.getAddressId());
+                    personAddressCustomer.setPersonId(naturalCustomer.getPersonId());
+                    personAddressCustomer = personEJB.savePersonHasAddress(personAddressCustomer);
+                }
+            } else {
+                this.showMessage("sp.common.save.success", false, null);
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    public void saveCardComplementariesCustomer(AdminRequestController adminRequest) {
         try {
             Long countCardComplementary = 0L;
             Person person = null;
-            person = new Person();
             ApplicantNaturalPerson applicantNaturalPerson = null;
             NaturalCustomer naturalCustomer = null;
             naturalCustomer = new NaturalCustomer();
@@ -370,14 +414,15 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                 request2.setParam(Constants.STATUS_CUSTOMER_ACTIVE);
                 StatusCustomer statusCustomer = personEJB.loadStatusCustomer(request2);
 
-                //colocar la clasificacion de la persona como CLIENTE
+                //colocar la clasificacion de la persona como Tarjetas Complementarias
                 EJBRequest request3 = new EJBRequest();
                 request3 = new EJBRequest();
-                request3.setParam(Constants.PERSON_CLASSIFICATION_CUSTOMER);
+                request3.setParam(Constants.PERSON_CARD_COMPLEMENTARIES_CUSTOMER);
                 PersonClassification personClassification = utilsEJB.loadPersonClassification(request3);
 
                 for (ApplicantNaturalPerson r : cardComplementaryList) {
-                    if (r.getApplicantParentId() != null) {
+                        person = new Person();
+                        naturalCustomer = new NaturalCustomer();
 
                         //Guardar la persona
                         person.setCountryId(r.getPersonId().getCountryId());
@@ -385,10 +430,9 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         person.setEmail(r.getPersonId().getEmail());
                         person.setCreateDate(new Timestamp(new Date().getTime()));
                         person.setPersonClassificationId(personClassification);
-                        //person = personEJB.savePerson(person);
-                        customer = person;
+                        person = personEJB.savePerson(person);
 
-                        naturalCustomer.setPersonId(r.getPersonId());
+                        naturalCustomer.setPersonId(person);
                         naturalCustomer.setDocumentsPersonTypeId(r.getDocumentsPersonTypeId());
                         naturalCustomer.setIdentificationNumber(r.getIdentificationNumber());
                         naturalCustomer.setDueDateDocumentIdentification(r.getDueDateDocumentIdentification());
@@ -405,9 +449,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         naturalCustomer.setNaturalCustomerId(naturalCustomerParent.getNaturalCustomerId());
                         naturalCustomer.setKinShipApplicantId(r.getKinShipApplicantId());
                         naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
-
-                        this.showMessage("cms.common.save.success.customer", false, null);
-                    }
+                        naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
                 }
             }
         } catch (Exception ex) {
@@ -475,13 +517,17 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                 case WebConstants.EVENT_ADD:
                     loadCmbProduct(eventType);
                     break;
+
             }
         } catch (EmptyListException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         } catch (NullParameterException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
     }
