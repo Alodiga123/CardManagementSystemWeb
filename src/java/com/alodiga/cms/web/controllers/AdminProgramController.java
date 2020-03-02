@@ -150,7 +150,9 @@ public class AdminProgramController extends GenericAbstractAdminController {
             } else {
                 rBrandedNo.setChecked(true);
             }
-            website.setText(program.getWebSite());
+            if (program.getWebSite() != null) {
+                website.setText(program.getWebSite());
+            }
             if (program.getCashAccess() == 1) {
                 rCashAccesYes.setChecked(true);
             } else {
@@ -292,15 +294,9 @@ public class AdminProgramController extends GenericAbstractAdminController {
 
             this.showMessage("sp.common.save.success", false, null);
 
-        } catch (WrongValueException ex) {
+        } catch (Exception ex) {
             showError(ex);
-        } catch (GeneralException ex) {
-            Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullParameterException ex) {
-            Logger.getLogger(AdminProgramController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }   
     }
 
     public void onClick$btnSave() {
@@ -463,7 +459,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void loadCmbProgramType(Integer evenInteger) {
-        //cmbProgramType
         EJBRequest request1 = new EJBRequest();
         List<ProgramType> programType;
         try {
@@ -509,8 +504,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 item.setLabel(nameProgramOwner.toString());
                 item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbProgramOwner);
-                //if (programParam != null && c.getId().equals(programParam.getProgramOwnerId().getNaturalPerson().getId())) {
-                if (programParam != null && c.getId().equals(programParam.getProgramOwnerId().getId())) {
+                if (programParam.getProgramOwnerId().getId() != null) {
                     cmbProgramOwner.setSelectedItem(item);
                 }
             }

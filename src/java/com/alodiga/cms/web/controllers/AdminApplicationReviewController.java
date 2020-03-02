@@ -505,6 +505,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             person.setPersonTypeId(adminRequest.getRequest().getPersonId().getPersonTypeId());
             person.setEmail(adminRequest.getRequest().getPersonId().getEmail());
             person.setPersonClassificationId(getClassificationCustomer());
+            person.setCreateDate(new Timestamp(new Date().getTime()));
             person = personEJB.savePerson(person);
             
             //2. Se crea el cliente        
@@ -519,12 +520,13 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             legalCustomer.setRegisterNumber(applicant.getRegisterNumber());
             legalCustomer.setPayedCapital(applicant.getPayedCapital());
             legalCustomer.setWebSite(applicant.getWebSite());
+            legalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
             
             //3 Agregar la dirección del cliente
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicant.getId());
+            params.put(Constants.PERSON_KEY, applicant.getPersonId().getId());
             request.setParams(params);
             AddressByApplicantList = personEJB.getPersonHasAddressesByPerson(request);
             for (PersonHasAddress addressApplicant : AddressByApplicantList){
