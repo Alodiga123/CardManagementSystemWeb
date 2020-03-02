@@ -22,7 +22,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -37,10 +36,9 @@ public class ListNetworkController extends GenericAbstractListController<Program
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Tab tabAddress;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
-    private List<ProgramHasNetwork> programHasNetwork = null;
+    private List<ProgramHasNetwork> programHasNetworkList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -55,7 +53,7 @@ public class ListNetworkController extends GenericAbstractListController<Program
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(programHasNetwork);
+                loadDataList(programHasNetworkList);
             }
         });
     }
@@ -71,7 +69,9 @@ public class ListNetworkController extends GenericAbstractListController<Program
             adminPage = "/adminAddNetwork.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(programHasNetwork);
+            if (programHasNetworkList != null) {
+               loadDataList(programHasNetworkList);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -82,7 +82,7 @@ public class ListNetworkController extends GenericAbstractListController<Program
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", programHasNetwork);
+            paramsPass.put("object", programHasNetworkList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -174,7 +174,6 @@ public class ListNetworkController extends GenericAbstractListController<Program
     }
 
     public void getData() {
-        programHasNetwork = new ArrayList<ProgramHasNetwork>();
         Program program = null;
         try {
              //Programa principal
@@ -186,9 +185,7 @@ public class ListNetworkController extends GenericAbstractListController<Program
             Map params = new HashMap();
             params.put(Constants.NETWORK_BY_PROGRAM, program.getId());
             request.setParams(params);
-//            request.setFirst(0);
-//            request.setLimit(null);
-            programHasNetwork = utilsEJB.getProgramHasNetworkByProgram(request);
+            programHasNetworkList = utilsEJB.getProgramHasNetworkByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

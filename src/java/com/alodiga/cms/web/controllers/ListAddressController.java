@@ -173,9 +173,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     }
 
     public void getData() {
-        personHasAddress = new ArrayList<PersonHasAddress>();
-        Person applicantPerson = null;
-        
+        Person applicantPerson = null;      
         try {
             
             AdminRequestController adminRequest = new AdminRequestController();
@@ -187,7 +185,6 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicantPerson.getId());
             request1.setParams(params);
-
             personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
         } catch (NullParameterException ex) {
             showError(ex);
@@ -195,6 +192,8 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
+        } finally {
+            showEmptyList();
         }
     }
 
