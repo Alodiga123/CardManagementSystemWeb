@@ -11,7 +11,6 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CivilStatus;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.KinShipApplicant;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.Profession;
@@ -46,7 +45,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
     private Combobox cmbProfession;
-    private Combobox cmbKinShipApplicant;
     private Datebox txtBirthDay;
     private Datebox txtDueDateDocumentIdentification;
     private Radio genderMale;
@@ -62,14 +60,14 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private PersonEJB personEJB = null;
     private Button btnSave;
     private Integer eventType;
-    public static NaturalCustomer naturalCustomerParent = null;
-    public NaturalCustomer personCustomerParam;
+    public static NaturalCustomer naturalCustomerParam = null;
+//    public NaturalCustomer personCustomerParam;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        personCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (NaturalCustomer) Sessions.getCurrent().getAttribute("object") : null;
+        naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
         initialize();
     }
 
@@ -90,9 +88,13 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
     }
+    
+    public Integer getEventType() {
+        return this.eventType;
+    }
 
-    public NaturalCustomer getNaturalCustomerParent() {
-        return naturalCustomerParent;
+    public NaturalCustomer getNaturalCustomer() {
+        return naturalCustomerParam;
     }
 
     public void onClick$naturalizedYes() {
@@ -127,25 +129,33 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private void loadFields(NaturalCustomer naturalCustomer) {
         try {
             txtIdentificationNumber.setText(naturalCustomer.getIdentificationNumber());
-            txtDueDateDocumentIdentification.setValue(naturalCustomer.getDueDateDocumentIdentification());
-            if (naturalCustomer.getIndNaturalized() == true) {
-                naturalizedYes.setChecked(true);
-                txtIdentificationNumberOld.setDisabled(false);
-            } else {
-                naturalizedNo.setChecked(true);
-                txtIdentificationNumberOld.setDisabled(true);
+            if (txtDueDateDocumentIdentification != null) {
+                txtDueDateDocumentIdentification.setValue(naturalCustomer.getDueDateDocumentIdentification());
             }
-            txtIdentificationNumberOld.setText(naturalCustomer.getIdentificationNumberOld());
-            if (naturalCustomer.getIndForeign() == true) {
-                foreignYes.setChecked(true);
-                txtCountryStayTime.setDisabled(false);
-            } else {
-                foreignNo.setChecked(true);
-                txtCountryStayTime.setDisabled(true);
+            if (naturalCustomer.getIndNaturalized() != null) {
+                if (naturalCustomer.getIndNaturalized() == true) {
+                    naturalizedYes.setChecked(true);
+                    txtIdentificationNumberOld.setDisabled(false);
+                } else {
+                    naturalizedNo.setChecked(true);
+                    txtIdentificationNumberOld.setDisabled(true);
+                }
+            }
+            if (naturalCustomer.getIdentificationNumberOld() != null) {
+                txtIdentificationNumberOld.setText(naturalCustomer.getIdentificationNumberOld());
+            }
+            if (naturalCustomer.getIndForeign() != null) {
+                if (naturalCustomer.getIndForeign() == true) {
+                    foreignYes.setChecked(true);
+                    txtCountryStayTime.setDisabled(false);
+                    txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
+                } else {
+                    foreignNo.setChecked(true);
+                    txtCountryStayTime.setDisabled(true);
+                }
             }
             txtFullName.setText(naturalCustomer.getFirstNames());
             txtFullLastName.setText(naturalCustomer.getLastNames());
-
             if (naturalCustomer.getGender() == "M") {
                 genderMale.setChecked(true);
             } else {
@@ -154,9 +164,8 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             txtBirthPlace.setText(naturalCustomer.getPlaceBirth());
             txtBirthDay.setValue(naturalCustomer.getDateBirth());
             txtFamilyResponsibilities.setText(naturalCustomer.getFamilyResponsibilities().toString());
-            txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
+//            txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
             txtMarriedLastName.setText(naturalCustomer.getMarriedLastName());
-            naturalCustomerParent = naturalCustomer;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -240,10 +249,9 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             naturalCustomer.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             naturalCustomer.setFamilyResponsibilities(Integer.parseInt(txtFamilyResponsibilities.getText()));
             naturalCustomer.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
-            naturalCustomer.setKinShipApplicantId((KinShipApplicant) cmbKinShipApplicant.getSelectedItem().getValue());
             naturalCustomer.setUpdatedate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
-            naturalCustomerParent = naturalCustomer;
+            naturalCustomerParam = naturalCustomer;
             this.showMessage("sp.common.save.success", false, null);
 
         } catch (Exception ex) {
@@ -257,7 +265,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
                 saveNaturalPersonCustomer(null);
                 break;
             case WebConstants.EVENT_EDIT:
-                saveNaturalPersonCustomer(personCustomerParam);
+                saveNaturalPersonCustomer(naturalCustomerParam);
                 break;
             default:
                 break;
@@ -267,27 +275,24 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(personCustomerParam);
+                loadFields(naturalCustomerParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
-                loadCmbKinShipApplicant(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 blockFields();
-                loadFields(personCustomerParam);
+                loadFields(naturalCustomerParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
-                loadCmbKinShipApplicant(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
-                loadCmbKinShipApplicant(eventType);
                 break;
             default:
                 break;
@@ -301,7 +306,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(personCustomerParam != null ? personCustomerParam.getPersonId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getPersonId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -319,13 +324,13 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, personCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, naturalCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
 
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(personCustomerParam != null ? personCustomerParam.getDocumentsPersonTypeId().getId() : 0));
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -345,7 +350,8 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(personCustomerParam != null ? personCustomerParam.getPersonId().getApplicantNaturalPerson().getCivilStatusId().getId() : 0));
+            //loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getPersonId().getApplicantNaturalPerson().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getPersonId().getNaturalCustomer().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -365,7 +371,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
         try {
             profession = personEJB.getProfession(request1);
-            loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(personCustomerParam != null ? personCustomerParam.getProfessionId().getId() : 0));
+            loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getProfessionId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -378,23 +384,23 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         }
     }
 
-    private void loadCmbKinShipApplicant(Integer evenInteger) {
-        //cmbKinShipApplicant
-        EJBRequest request1 = new EJBRequest();
-        List<KinShipApplicant> kinShipApplicants;
-
-        try {
-            kinShipApplicants = personEJB.getKinShipApplicant(request1);
-            loadGenericCombobox(kinShipApplicants, cmbKinShipApplicant, "description", evenInteger, Long.valueOf(personCustomerParam != null ? personCustomerParam.getKinShipApplicantId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
+//    private void loadCmbKinShipApplicant(Integer evenInteger) {
+//        //cmbKinShipApplicant
+//        EJBRequest request1 = new EJBRequest();
+//        List<KinShipApplicant> kinShipApplicants;
+//
+//        try {
+//            kinShipApplicants = personEJB.getKinShipApplicant(request1);
+//            loadGenericCombobox(kinShipApplicants, cmbKinShipApplicant, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getKinShipApplicantId().getId() : 0));
+//        } catch (EmptyListException ex) {
+//            showError(ex);
+//            ex.printStackTrace();
+//        } catch (GeneralException ex) {
+//            showError(ex);
+//            ex.printStackTrace();
+//        } catch (NullParameterException ex) {
+//            showError(ex);
+//            ex.printStackTrace();
+//        }
+//    }
 }

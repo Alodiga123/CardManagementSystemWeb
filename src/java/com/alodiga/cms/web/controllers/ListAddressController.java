@@ -39,6 +39,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private List<PersonHasAddress> personHasAddress = null;
+    private int optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -67,6 +68,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             permissionAdd = true;
             permissionRead = true;
             adminPage = "/adminPersonAddress.zul";
+            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(personHasAddress);
@@ -174,18 +176,21 @@ public class ListAddressController extends GenericAbstractListController<PersonH
 
     public void getData() {
         personHasAddress = new ArrayList<PersonHasAddress>();
-        Person applicantPerson = null;
-        
+        Person person = null;
         try {
-            
             AdminRequestController adminRequest = new AdminRequestController();
-            if (adminRequest.getRequest().getPersonId() != null) {
-                applicantPerson = adminRequest.getRequest().getPersonId();
+            
+            if (optionMenu == 1) {
+                person = adminRequest.getRequest().getPersonId();
+            }else if (optionMenu == 2) {
+                person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
+            }else{
+                person = adminRequest.getRequest().getPersonId();
             }
 
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, applicantPerson.getId());
+            params.put(Constants.PERSON_KEY, person.getId());
             request1.setParams(params);
 
             personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);

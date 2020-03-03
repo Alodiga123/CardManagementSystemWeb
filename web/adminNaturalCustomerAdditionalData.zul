@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminNaturalCustomerAdditionalData" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminNaturalPersonCustomerController" class="general-window">
+    <window id="winAdminNaturalCustomerAdditionalData" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminNaturalCustomerAdditionalDataController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -26,7 +26,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                         <row>
+                                                        <row>
                                                             <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
@@ -37,103 +37,96 @@
                                                             <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.customer.additionalData.identificationNumberOld')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtIdentificationNumberOld" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
-                                                        </row>
-                                                        
-                                                        
-                                                        
-                                                        
-                                                       
-                                                        <row>
-                                                            <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.customer.indNaturalized')}" sclass="lblbold"/>
-                                                            
+                                                            <textbox id="txtFirstNames" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtLastNames" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtPhone" value="" width="250px" maxlength="30"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="txtDueDateDocumentIdentification" width="250px"/>
-                                                            <hbox>
-                                                                <radiogroup id="naturalized" onCheck="choice1.value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="naturalizedYes" label="${c:l('cms.commom.Yes')}" radiogroup="naturalized" />
-                                                                            <radio id="naturalizedNo" label="${c:l('cms.commom.No')}" radiogroup="naturalized" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
-                                                            
+                                                            <label value="${c:l('cms.common.email')}" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.customer.indForeign')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.customer.countryStayTime')}" sclass="lblbold"/>
-                                                            
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60"/>
+                                                        </row>
+                                                    </rows>
+                                                </grid>
+                                                <label value="${c:l('cms.crud.customer.additionalData.carData')}" sclass="lblbold"/>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.carData.carBrand')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.carData.carModel')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.carData.carYear')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hbox>
-                                                                <radiogroup id="foreign" onCheck="choice1.value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="foreignYes" label="${c:l('cms.commom.Yes')}" radiogroup="foreign" />
-                                                                            <radio id="foreignNo" label="${c:l('cms.commom.No')}" radiogroup="foreign" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
-                                                            <textbox id="txtCountryStayTime" value="" width="250px" maxlength="40"/>
-                                                            
+                                                            <textbox id="txtCarBrand" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtCarModel" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtCarYear" value="" width="250px" maxlength="4"/>
                                                         </row>
                                                         <row>
-                                                            
-                                                            <label value="${c:l('cms.common.naturalperson.MarriedLastName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.carData.carPlate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            
-                                                            <textbox id="txtMarriedLastName" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
+                                                            <textbox id="txtCarPlate" value="" width="250px" maxlength="20"/>
+                                                        </row>
+                                                    </rows>
+                                                </grid>
+                                                <label value="${c:l('cms.crud.customer.additionalData.financialInformation')}" sclass="lblbold"/>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.salary')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.profession')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.bonuses')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtSalary" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtProfession" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtBonuses" value="" width="250px" maxlength="20"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.rentsIncome')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.otherIncome')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.totalIncome')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtRentIncome" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtOtherIncome" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtTotalIncome" value="" width="250px" maxlength="20"/>
                                                         </row>
                                                         <row> 
-                                                            <label value="${c:l('cms.common.birthday')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.gender')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.civilState')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.housingExpenses')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.monthlyRentMortgage')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.monthlyPaymentCreditCard')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <datebox id="txtBirthDay" width="250px"/>
-                                                            </hlayout>
-                                                            <hbox>
-                                                                <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="genderFemale" label="${c:l('cms.gender.female')}" radiogroup="gender" />
-                                                                            <radio id="genderMale" label="${c:l('cms.gender.male')}" radiogroup="gender" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>  
-                                                            <hlayout>
-                                                                <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
-                                                            </hlayout>
+                                                            <textbox id="txtHousingExpenses" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtMonthlyRentMortgage" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtMonthlyPaymentCreditCard" value="" width="250px" maxlength="20"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.naturalperson.profession')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.naturalperson.familyResponsibilities')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.monthlyPaymentOtherCredit')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.educationExpenses')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.totalExpenses')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbKinShipApplicant" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbProfession" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtFamilyResponsibilities" value="" width="250px" maxlength="2"/>
+                                                            <textbox id="txtMonthlyPaymentOtherCredit" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtEducationExpenses" value="" width="250px" maxlength="20"/>
+                                                            <textbox id="txtTotalExpenses" value="" width="250px" maxlength="20"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -111,12 +111,10 @@
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.naturalperson.profession')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.naturalperson.familyResponsibilities')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbKinShipApplicant" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbProfession" width="250px" mold="rounded" readonly="true" />
                                                             <textbox id="txtFamilyResponsibilities" value="" width="250px" maxlength="2"/>
                                                         </row>

@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
-import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
+
+import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,10 +10,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.PersonType;
-import com.cms.commons.models.PhoneType;
-import com.cms.commons.models.PlasticManufacturer;
+import com.cms.commons.models.AccountType;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -28,15 +26,15 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListPlasticManufacturerController extends GenericAbstractListController<PlasticManufacturer> {
+public class ListAccountTypesControllers extends GenericAbstractListController<AccountType> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private PersonEJB personEJB = null;
-    private List<PlasticManufacturer> plasticManufacturerList = null;
-    private User currentUser;
+    private CardEJB cardEJB = null;
+    private List<AccountType> accountTypes = null;
 
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -47,22 +45,21 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
     public void initialize() {
         super.initialize();
         try {
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminPlasticManufacturer.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            adminPage = "adminAccountTypes.zul";
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             getData();
-            loadDataList(plasticManufacturerList);
+            loadDataList(accountTypes);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    plasticManufacturerList = new ArrayList<PlasticManufacturer>();
+    accountTypes = new ArrayList<AccountType>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            plasticManufacturerList = personEJB.getPlasticManufacturer(request);
+            accountTypes = cardEJB.getAccountType(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -70,6 +67,7 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
             showError(ex);
         }
     }
+
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
@@ -86,37 +84,32 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
         }
     }
 
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<PlasticManufacturer> list) {
+    public void loadDataList(List<AccountType> list) {
           try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (PlasticManufacturer plasticManufacturer : list) {
+                for (AccountType accountType : list) {
                     item = new Listitem();
-                    item.setValue(plasticManufacturer);
-                    item.appendChild(new Listcell(plasticManufacturer.getPersonId().getCountryId().getName()));
-                    item.appendChild(new Listcell(plasticManufacturer.getName()));
-                    item.appendChild(new Listcell(plasticManufacturer.getIdentificationNumber()));
-                    if (plasticManufacturer.getPersonId().getPhonePerson() != null) {
-                        item.appendChild(new Listcell(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone()));
-                    } else {
-                        item.appendChild(new Listcell());
-                    }
-                    item.appendChild(new Listcell(plasticManufacturer.getPersonId().getEmail()));
-                    item.appendChild(new ListcellEditButton(adminPage, plasticManufacturer));
-                    item.appendChild(new ListcellViewButton(adminPage, plasticManufacturer,true));
+                    item.setValue(accountType);
+                    item.appendChild(new Listcell(accountType.getDescription()));
+                    item.appendChild( new ListcellEditButton(adminPage, accountType));
+                    item.appendChild(new ListcellViewButton(adminPage, accountType,true));
                     item.setParent(lbxRecords);
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
@@ -126,13 +119,9 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
            showError(ex);
         }
     }
-    
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
-    }
-    
-    public List<PlasticManufacturer> getFilterList(String filter) {
+
+    @Override
+    public List<AccountType> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }
