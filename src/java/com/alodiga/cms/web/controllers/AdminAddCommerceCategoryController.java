@@ -49,7 +49,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                productHasCommerceCategoryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object") : null;
+                productHasCommerceCategoryParam = (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object");
                 break;
             case WebConstants.EVENT_VIEW:
                 productHasCommerceCategoryParam = (ProductHasCommerceCategory) Sessions.getCurrent().getAttribute("object");
