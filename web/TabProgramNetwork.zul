@@ -39,6 +39,7 @@
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.programMain')}" />
                                                         <tab id="tabNetwork" label="${c:l('cms.common.netWork')}"/>
+                                                        <tab id="tabProjectedAnnualVolume" label="${c:l('cms.common.projected.annual.volume')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -46,6 +47,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listNetwork.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listProjectedAnnualVolume.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
