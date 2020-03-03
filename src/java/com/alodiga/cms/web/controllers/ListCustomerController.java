@@ -7,8 +7,8 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
+import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.NaturalCustomer;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -37,7 +38,7 @@ public class ListCustomerController extends GenericAbstractListController<Person
     private List<Person> persons = null;
     private List<LegalCustomer> legalCustomerList = null;
     private List<NaturalCustomer> naturalCustomerList = null;
-    public static int indAddRequestPerson;
+    public static int indCustomerOption = 2;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -56,6 +57,7 @@ public class ListCustomerController extends GenericAbstractListController<Person
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
+            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, indCustomerOption);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(persons);
@@ -63,16 +65,16 @@ public class ListCustomerController extends GenericAbstractListController<Person
             showError(ex);
         }
     }
-
-    public int getAddRequestPerson() {
-        return indAddRequestPerson;
+    
+        public int getIndCustomerOption() {
+        return indCustomerOption;
     }
 
     public void onClick$btnDelete() {
     }
 
     public void loadDataList(List<Person> list) {
-        String applicantName = "";
+        String customerName = "";
         NaturalCustomer naturalCustomer = null;
         LegalCustomer legalCustomer = null;
         try {
@@ -88,10 +90,10 @@ public class ListCustomerController extends GenericAbstractListController<Person
                     item.appendChild(new Listcell(person.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(simpleDateFormat.format(person.getCreateDate())));
                     if (person.getPersonTypeId().getIndNaturalPerson() == true) {
-                        applicantName = person.getApplicantNaturalPerson().getFirstNames();
-                        applicantName.concat(" ");
-                        applicantName.concat(person.getApplicantNaturalPerson().getLastNames());
-                        item.appendChild(new Listcell(applicantName));
+                        customerName = person.getNaturalCustomer().getFirstNames();
+                        customerName.concat(" ");
+                        customerName.concat(person.getNaturalCustomer().getLastNames());
+                        item.appendChild(new Listcell(customerName));
                         adminPage = "TabNaturalPersonCustommer.zul";
 
                         EJBRequest request1 = new EJBRequest();
@@ -106,8 +108,8 @@ public class ListCustomerController extends GenericAbstractListController<Person
                         item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, naturalCustomer) : new Listcell());
                         item.appendChild(permissionRead ? new ListcellViewButton(adminPage, naturalCustomer) : new Listcell());
                     } else {
-                        applicantName = person.getLegalPerson().getEnterpriseName();
-                        item.appendChild(new Listcell(applicantName));
+                        customerName = person.getLegalCustomer().getEnterpriseName();
+                        item.appendChild(new Listcell(customerName));
                         adminPage = "TabLegalPersonCustommer.zul";
 
                         EJBRequest request1 = new EJBRequest();
