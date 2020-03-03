@@ -12,6 +12,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.EconomicActivity;
+import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
@@ -67,7 +68,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
-    private LegalPerson legalPersonParam;
+    private LegalCustomer legalCustomerParam;
     private Person person;
     private Button btnSave;
     private Integer eventType;
@@ -77,50 +78,8 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequest = new AdminRequestController();
-        if (adminRequest.getEventType()!= null) {
-           eventType = adminRequest.getEventType();
-           switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    if (adminRequest.getRequest().getPersonId() != null) {
-                        tabAddress.setDisabled(false);
-                        tabLegalRepresentatives.setDisabled(false);
-                        tabAdditionalCards.setDisabled(false);
-                    } else {
-                        tabAddress.setDisabled(true);
-                        tabLegalRepresentatives.setDisabled(true);
-                        tabAdditionalCards.setDisabled(true);
-                    }
-                    if (adminRequest.getRequest().getPersonId() != null) {
-                        legalPersonParam = adminRequest.getRequest().getPersonId().getLegalPerson();
-                    } else {
-                        legalPersonParam = null;
-                    }
-                break;
-                case WebConstants.EVENT_VIEW:
-                    if (adminRequest.getRequest().getPersonId() != null) {
-                        tabAddress.setDisabled(false);
-                        tabLegalRepresentatives.setDisabled(false);
-                        tabAdditionalCards.setDisabled(false);
-                    } else {
-                        tabAddress.setDisabled(true);
-                        tabLegalRepresentatives.setDisabled(true);
-                        tabAdditionalCards.setDisabled(true);
-                    }
-                    if (adminRequest.getRequest().getPersonId() != null) {
-                        legalPersonParam = adminRequest.getRequest().getPersonId().getLegalPerson();
-                    } else {
-                        legalPersonParam = null;
-                    }
-                break;
-                case WebConstants.EVENT_ADD:
-                    legalPersonParam = null;
-                    tabAddress.setDisabled(true);
-                    tabLegalRepresentatives.setDisabled(true);
-                    tabAdditionalCards.setDisabled(true);
-                break;
-           }
-        }
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        legalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalCustomer) Sessions.getCurrent().getAttribute("object") : null;
         initialize();
     }
 
@@ -130,7 +89,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -156,18 +114,18 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         txtIdentificationNumber.setRawValue(null);
     }
 
-    private void loadFields(LegalPerson legalPerson) {
+    private void loadFields(LegalCustomer legalCustomer) {
         try {
-            txtPersonId.setText(legalPerson.getPersonId().toString());
-            txtTradeName.setText(legalPerson.getTradeName());
-            txtEnterpriseName.setText(legalPerson.getEnterpriseName());
-            txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
-            txtRegistryNumber.setText(legalPerson.getRegisterNumber());
-            txtPaidInCapital.setText(legalPerson.getPayedCapital().toString());
-            txtPhoneNumber.setValue(legalPerson.getEnterprisePhone());
-            txtWebSite.setValue(legalPerson.getWebSite());
-            txtEmail.setValue(legalPerson.getPersonId().getEmail());
-            txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
+            txtPersonId.setText(legalCustomer.getPersonId().toString());
+            txtTradeName.setText(legalCustomer.getTradeName());
+            txtEnterpriseName.setText(legalCustomer.getEnterpriseName());
+            txtDateInscriptionRegister.setValue(legalCustomer.getDateInscriptionRegister());
+            txtRegistryNumber.setText(legalCustomer.getRegisterNumber());
+            txtPaidInCapital.setText(legalCustomer.getPayedCapital().toString());
+            //txtPhoneNumber.setValue(legalCustomer.getEnterprisePhone());
+            txtWebSite.setValue(legalCustomer.getWebSite());
+            txtEmail.setValue(legalCustomer.getPersonId().getEmail());
+            txtIdentificationNumber.setText(legalCustomer.getIdentificationNumber());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -217,16 +175,16 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
     }
 
-    private void saveLegalPerson(LegalPerson _legalPerson) {
+    private void saveLegalPerson(LegalCustomer _legalCustomer) {
         tabAddress.setSelected(true);
         try {
-            LegalPerson legalPerson = null;
+            LegalCustomer legalCustomer = null;
             Person person = null;
 
-            if (_legalPerson != null) {
-                legalPerson = _legalPerson;
+            if (_legalCustomer != null) {
+                legalCustomer = _legalCustomer;
             } else {//New LegalPerson
-                legalPerson = new LegalPerson();
+                legalCustomer = new LegalCustomer();
                 person = new Person();
             }
 
@@ -250,19 +208,19 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
 
-            legalPerson.setPersonId(person);
-            legalPerson.setTradeName(txtTradeName.getText());
-            legalPerson.setEnterpriseName(txtEnterpriseName.getText());
-            legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
-            legalPerson.setRegisterNumber(txtRegistryNumber.getText());
-            legalPerson.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
-            legalPerson.setEnterprisePhone(txtPhoneNumber.getText());
-            legalPerson.setWebSite(txtWebSite.getText());
-            legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
-            legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
-            legalPerson = utilsEJB.saveLegalPerson(legalPerson);
-            legalPersonParam = legalPerson;
+            legalCustomer.setPersonId(person);
+            legalCustomer.setTradeName(txtTradeName.getText());
+            legalCustomer.setEnterpriseName(txtEnterpriseName.getText());
+            legalCustomer.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
+            legalCustomer.setRegisterNumber(txtRegistryNumber.getText());
+            legalCustomer.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
+            //legalCustomer.setEnterprisePhone(txtPhoneNumber.getText());
+            legalCustomer.setWebSite(txtWebSite.getText());
+            legalCustomer.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
+            legalCustomer.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            legalCustomer.setIdentificationNumber(txtIdentificationNumber.getText());
+            legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
+            legalCustomerParam = legalCustomer;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -276,7 +234,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
                     saveLegalPerson(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveLegalPerson(legalPersonParam);
+                    saveLegalPerson(legalCustomerParam);
                     break;
                 default:
                     break;
@@ -287,13 +245,13 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(legalPersonParam);
+                loadFields(legalCustomerParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(legalPersonParam);
+                loadFields(legalCustomerParam);
                 txtTradeName.setDisabled(true);
                 txtEnterpriseName.setDisabled(true);
                 txtDateInscriptionRegister.setDisabled(true);
@@ -323,7 +281,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
 
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getPersonId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalCustomerParam != null ? legalCustomerParam.getPersonId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -346,7 +304,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         List<DocumentsPersonType> documentsPersonType;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getDocumentsPersonTypeId().getId() : 0));
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalCustomerParam != null ? legalCustomerParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -366,7 +324,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
 
         try {
             economicActivity = utilsEJB.getEconomicActivitys(request);
-            loadGenericCombobox(economicActivity, cmbEconomicActivity, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getEconomicActivityId().getId() : 0));
+            loadGenericCombobox(economicActivity, cmbEconomicActivity, "description", evenInteger, Long.valueOf(legalCustomerParam != null ? legalCustomerParam.getEconomicActivityId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

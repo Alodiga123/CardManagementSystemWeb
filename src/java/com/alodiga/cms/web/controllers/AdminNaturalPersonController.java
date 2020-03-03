@@ -168,6 +168,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
         try {
+            String Gender = "M";
             txtIdentificationNumber.setText(applicantNaturalPerson.getIdentificationNumber());
             txtDueDateDocumentIdentification.setValue(applicantNaturalPerson.getDueDateDocumentIdentification());
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
@@ -179,11 +180,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
             txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
             txtPhoneNumber.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
-            if (applicantNaturalPerson.getGender() == "M") {
+            if (applicantNaturalPerson.getGender().equals(Gender)) {
                 genderMale.setChecked(true);
             } else {
                 genderFemale.setChecked(true);
             }
+            applicantNaturalPersonParent = applicantNaturalPerson;
+            
         } catch (Exception ex) {
             showError(ex);
         }

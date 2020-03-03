@@ -213,10 +213,10 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell20.setParent(item20);
         item20.setParent(lbxPermissions);
 
-        //Opción RequestApproved
+        //Opción List Customer
         Listitem item21 = new Listitem();
         Listcell listCell21 = new Listcell();
-        listCell21.setLabel(Labels.getLabel("cms.menu.requestApproved.list"));
+        listCell21.setLabel(Labels.getLabel("cms.menu.customer.list"));
         listCell21.addEventListener("onClick", new RedirectListener("listCustomer.zul"));
         listCell21.setParent(item21);
         item21.setParent(lbxPermissions);
@@ -228,7 +228,22 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell22.addEventListener("onClick", new RedirectListener("listPlasticManufacturer.zul"));
         listCell22.setParent(item22);
         item22.setParent(lbxPermissions);
-        
+
+        //Opción Account Type
+        Listitem item23 = new Listitem();
+        Listcell listCell23 = new Listcell();
+        listCell23.setLabel(Labels.getLabel("cms.menu.accountType"));
+        listCell23.addEventListener("onClick", new RedirectListener("listAccountType.zul"));
+        listCell23.setParent(item23);
+        item23.setParent(lbxPermissions);
+
+        //Opción Account Type
+        Listitem item24 = new Listitem();
+        Listcell listCell24 = new Listcell();
+        listCell24.setLabel(Labels.getLabel("cms.menu.subAccountType"));
+        listCell24.addEventListener("onClick", new RedirectListener("listSubAccountType.zul"));
+        listCell24.setParent(item24);
+        item24.setParent(lbxPermissions);
 
         //Opción Rates By Program
         Listitem item30 = new Listitem();
