@@ -33,6 +33,7 @@ public class ListRequestController extends GenericAbstractListController<Request
     private RequestEJB requestEJB = null;
     private List<Request> requests = null;
     public static int indAddRequestPerson;
+    public static int indRequestOption = 1;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -51,6 +52,7 @@ public class ListRequestController extends GenericAbstractListController<Request
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
+            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, indRequestOption);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadList(requests);
@@ -61,6 +63,10 @@ public class ListRequestController extends GenericAbstractListController<Request
 
     public int getAddRequestPerson() {
         return indAddRequestPerson;
+    }
+    
+    public int getIndRequestOption() {
+        return indRequestOption;
     }
 
     public void onClick$btnAddNaturalPersonRequest() throws InterruptedException {

@@ -1,6 +1,7 @@
+
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -8,8 +9,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Person;
-import com.cms.commons.models.PersonHasAddress;
+import com.cms.commons.models.Program;
+import com.cms.commons.models.ProjectAnnualVolume;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -22,6 +23,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -32,14 +34,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListAddressController extends GenericAbstractListController<PersonHasAddress> {
+public class ListProjectAnnualVolumeController extends GenericAbstractListController<ProjectAnnualVolume> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private PersonEJB personEJB = null;
-    private List<PersonHasAddress> personHasAddress = null;
-    private int optionMenu;
+    private ProgramEJB programEJB = null;
+    private List<ProjectAnnualVolume> projectAnnualVolume = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -49,13 +50,15 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateProjectAnnualVolume", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(personHasAddress);
+                loadDataList(projectAnnualVolume);
             }
+
+     
         });
     }
 
@@ -67,21 +70,21 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminPersonAddress.zul";
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            adminPage = "/adminProjectedAnnualVolume.zul";
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
-            loadDataList(personHasAddress);
+            loadDataList(projectAnnualVolume);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
+
     public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", personHasAddress);
+            paramsPass.put("object", projectAnnualVolume);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -89,24 +92,23 @@ public class ListAddressController extends GenericAbstractListController<PersonH
         }
     }
 
-    public void onClick$btnDelete() {
-    }
-
-    public void loadDataList(List<PersonHasAddress> list) {
+   
+    public void loadDataList(List<ProjectAnnualVolume> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
-                for (PersonHasAddress personHasAddress : list) {
+                btnDownload.setVisible(true);
+                for (ProjectAnnualVolume projectAnnualVolume : list) {
                     item = new Listitem();
-                    item.setValue(personHasAddress);
-                    item.appendChild(new Listcell(personHasAddress.getAddressId().getCountryId().getName()));
-                    item.appendChild(new Listcell(personHasAddress.getAddressId().getCityId().getName()));
-                    item.appendChild(new Listcell(personHasAddress.getAddressId().getNameEdification()));
-                    item.appendChild(new Listcell(personHasAddress.getAddressId().getAddressTypeId().getDescription()));
-                    item.appendChild(createButtonEditModal(personHasAddress));
-                    item.appendChild(createButtonViewModal(personHasAddress));
+                    item.setValue(projectAnnualVolume);
+                    item.appendChild(new Listcell(projectAnnualVolume.getYear().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getAccountsNumber().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getActiveCardNumber().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getAverageLoad().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getAverageCardBalance().toString()));
+                    item.appendChild(createButtonEditModal(projectAnnualVolume));
+                    item.appendChild(createButtonViewModal(projectAnnualVolume));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -175,39 +177,30 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     }
 
     public void getData() {
-        personHasAddress = new ArrayList<PersonHasAddress>();
-        Person person = null;
+        Program program = null;
         try {
-            AdminRequestController adminRequest = new AdminRequestController();
-            
-            if (optionMenu == 1) {
-                person = adminRequest.getRequest().getPersonId();
-            }else if (optionMenu == 2) {
-                person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-            }else{
-                person = adminRequest.getRequest().getPersonId();
+             //Programa principal
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
             }
-
-            EJBRequest request1 = new EJBRequest();
+            EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, person.getId());
-            request1.setParams(params);
-            personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
+            params.put(Constants.PROGRAM_KEY, program.getId());
+            request.setParams(params);
+            projectAnnualVolume = programEJB.getProjectAnnualVolumeByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
             showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
-        } finally {
-            showEmptyList();
         }
     }
 
     private void showEmptyList() {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-        item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.setParent(lbxRecords);
@@ -225,8 +218,9 @@ public class ListAddressController extends GenericAbstractListController<PersonH
         txtName.setText("");
     }
 
+
     @Override
-    public List<PersonHasAddress> getFilterList(String filter) {
+    public List<ProjectAnnualVolume> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
