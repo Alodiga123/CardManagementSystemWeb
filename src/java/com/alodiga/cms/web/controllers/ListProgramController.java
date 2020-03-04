@@ -135,18 +135,6 @@ public class ListProgramController extends GenericAbstractListController<Program
         Executions.getCurrent().sendRedirect(adminPage);
     }
 
-//    public void onClick$btnAdd() throws InterruptedException {
-//        try {
-//            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-//            Map<String, Object> paramsPass = new HashMap<String, Object>();
-//            paramsPass.put("object", programs);
-//            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-//            window.doModal();
-//        } catch (Exception ex) {
-//            this.showMessage("sp.error.general", true, ex);
-//        }
-//    }
-
     private void showEmptyList() {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));

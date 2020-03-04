@@ -101,6 +101,7 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
         txtAverageLoad.setReadonly(true);
         txtAverageCardBalance.setReadonly(true);
         btnSave.setVisible(false);
+        cmbYear.setDisabled(true);
     }
     
     public Boolean validateEmpty() {
@@ -187,8 +188,8 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
                 txtActiveCardNumber.setDisabled(true);
                 txtAverageLoad.setDisabled(true);
                 txtAverageCardBalance.setDisabled(true);
-                blockFields();
                 loadCmbYear(eventType);
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbYear(eventType);
@@ -209,10 +210,12 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
                 item.setValue(y);
                 item.setLabel("Year "+y);
                 item.setParent(cmbYear);
-                item = new Comboitem();
-            }
-            if (eventType != 1) {
-                cmbYear.setValue(projectAnnualVolumeParam.getYear().toString());
+                if (eventType != 1) {
+                    if (y ==  Integer.valueOf(projectAnnualVolumeParam.getYear())) {
+                        cmbYear.setSelectedItem(item);
+                    }
+                }
+                item = new Comboitem(); 
             }
         } catch (Exception ex) {
             showError(ex);
