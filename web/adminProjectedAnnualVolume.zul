@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAddNetwork" title="${c:l('cms.tab.NetworkProgramMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminAddNetworkController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winProjectAnnualVolume" title="${c:l('cms.tab.projectedAnnualVolumeMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminProjectAnnualVolumeController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -20,18 +20,28 @@
                                             <vlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="300px"/>
-                                                        <column label="" width="300px"/>
-                                                        <column label="" width="200px"/>
+                                                        <column label="" width="280px"/>
+                                                        <column label="" width="280px"/>
+                                                        <column label="" width="250px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.netWork')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.year')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.accounts.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.active.card.number')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbNetwork" width="200px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbYear" width="200px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtAccountsNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtActiveCardNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.average.load')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.average.card.balance')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtAverageLoad" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtAverageCardBalance" width="240px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

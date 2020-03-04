@@ -135,14 +135,6 @@ public class ListCountryController extends GenericAbstractListController<Country
         txtAlias.setText("");
     }
 
-//    public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilteredList(txtAlias.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
-
     @Override
     public List<Country> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
