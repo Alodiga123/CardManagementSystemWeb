@@ -10,6 +10,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.ProjectAnnualVolume;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -42,10 +43,9 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     private ProjectAnnualVolume projectAnnualVolumeParam;
     private Button btnSave;
     public Window winProjectAnnualVolume;
-    public static ProjectAnnualVolume projectAnnualVolumeParent = null; 
     private Integer eventType;
-    Map params = null;
-
+    private ProjectAnnualVolume projectAnnualVolume = null;
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -125,10 +125,9 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
 
     private void saveProjectAnnualVolume(ProjectAnnualVolume _projectAnnualVolume) throws RegisterNotFoundException, NullParameterException, GeneralException {
         Program program = null;
-        
+        List<ProjectAnnualVolume> projectAnnualVolumeList = null; 
+        int indRegisterExist = 0;
         try {
-            ProjectAnnualVolume projectAnnualVolume = null;
-
             if (_projectAnnualVolume != null) {
                 projectAnnualVolume = _projectAnnualVolume;
             } else {//New address
@@ -140,21 +139,42 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
             if (adminProgram.getProgramParent().getId() != null) {
                 program = adminProgram.getProgramParent();
             }
-
-            //Guardar ProjectAnnualVolume
-            projectAnnualVolume.setProgramId(program);
-            projectAnnualVolume.setYear(Integer.parseInt(cmbYear.getSelectedItem().getValue().toString()));
-            projectAnnualVolume.setAccountsNumber(Integer.parseInt(txtAccountsNumber.getText()));
-            projectAnnualVolume.setActiveCardNumber(Integer.parseInt(txtActiveCardNumber.getText()));
-            projectAnnualVolume.setAverageLoad(Float.parseFloat(txtAverageLoad.getValue()));
-            projectAnnualVolume.setAverageCardBalance(Float.parseFloat(txtAverageCardBalance.getValue()));
-            projectAnnualVolume = programEJB.saveProjectAnnualVolume(projectAnnualVolume);
-            projectAnnualVolumeParam = projectAnnualVolume;
-            this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateProjectAnnualVolume", EventQueues.APPLICATION, true).publish(new Event(""));
-        } catch (Exception ex) {
+            
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PROGRAM_KEY, program.getId());
+            request1.setParams(params);
+            projectAnnualVolumeList = programEJB.getProjectAnnualVolumeByProgram(request1);
+            for (ProjectAnnualVolume p: projectAnnualVolumeList) {
+                if (p.getYear() == Integer.parseInt(cmbYear.getSelectedItem().getValue().toString())) {
+                    indRegisterExist = 1;
+                    this.showMessage("sp.common.yearRegisterBD", false, null);
+                }
+            }     
+        } catch (NullParameterException ex) {
             showError(ex);
+        } catch (EmptyListException ex) {
+           showError(ex); 
+        } catch (GeneralException ex) {
+            showError(ex);
+        } finally {
+            if (indRegisterExist != 1) {
+                CreateProjectAnnualVolume(program,projectAnnualVolume);
+                projectAnnualVolume = programEJB.saveProjectAnnualVolume(projectAnnualVolume);
+                this.showMessage("sp.common.save.success", false, null);
+                EventQueues.lookup("updateProjectAnnualVolume", EventQueues.APPLICATION, true).publish(new Event(""));
+            }
         }
+    }
+    
+    public ProjectAnnualVolume CreateProjectAnnualVolume(Program program, ProjectAnnualVolume projectAnnualVolume) {
+        projectAnnualVolume.setProgramId(program);
+        projectAnnualVolume.setYear(Integer.parseInt(cmbYear.getSelectedItem().getValue().toString()));
+        projectAnnualVolume.setAccountsNumber(Integer.parseInt(txtAccountsNumber.getText()));
+        projectAnnualVolume.setActiveCardNumber(Integer.parseInt(txtActiveCardNumber.getText()));
+        projectAnnualVolume.setAverageLoad(Float.parseFloat(txtAverageLoad.getValue()));
+        projectAnnualVolume.setAverageCardBalance(Float.parseFloat(txtAverageCardBalance.getValue()));
+        return projectAnnualVolume;
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
