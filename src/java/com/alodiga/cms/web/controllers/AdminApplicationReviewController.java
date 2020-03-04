@@ -10,7 +10,6 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Address;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
@@ -44,7 +43,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
@@ -315,6 +313,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setCivilStatusId(applicant.getCivilStatusId());
             naturalCustomer.setFamilyResponsibilities(applicant.getFamilyResponsibilities());
             naturalCustomer.setProfessionId(applicant.getProfessionId());
+            naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
 
@@ -375,7 +374,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, applicantNaturalPerson.getId());
+            params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
             request1.setParams(params);
             personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
 
