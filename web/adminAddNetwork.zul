@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAddNetwork" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminAddNetworkController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAddNetwork" title="${c:l('cms.tab.NetworkProgramMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminAddNetworkController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -18,7 +18,6 @@
                                         <div height="5px" width="100%" style="background:#333;" align="center"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="300px"/>

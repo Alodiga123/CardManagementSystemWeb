@@ -12,6 +12,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
 import com.cms.commons.models.ApplicantNaturalPerson;
+import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalCustomerHasLegalRepresentatives;
@@ -296,7 +297,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             person.setPersonTypeId(adminRequest.getRequest().getPersonId().getPersonTypeId());
             person.setEmail(adminRequest.getRequest().getPersonId().getEmail());
             person.setCreateDate(new Timestamp(new Date().getTime()));
-            person.setPersonClassificationId(personClassification);
+            person.setPersonClassificationId(getClassificationCustomer());
             person = personEJB.savePerson(person);
 
             //Guarda el Cliente
