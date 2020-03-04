@@ -19,6 +19,7 @@
                                         <div>
                                             <vlayout>
                                                 <label value="${c:l('cms.crud.customer.additionalData.spouse')}" sclass="lblbold"/>
+                                                <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -55,6 +56,7 @@
                                                     </rows>
                                                 </grid>
                                                 <label value="${c:l('cms.crud.customer.additionalData.carData')}" sclass="lblbold"/>
+                                                <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -81,6 +83,7 @@
                                                     </rows>
                                                 </grid>
                                                 <label value="${c:l('cms.crud.customer.additionalData.financialInformation')}" sclass="lblbold"/>
+                                                <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -88,6 +91,14 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.income')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="3">
+                                                                <div height="0.5px" width="100%" style="background:#333;" align="left"></div>
+                                                            </cell>
+                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.salary')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.profession')}" sclass="lblbold"/>
@@ -107,6 +118,14 @@
                                                             <textbox id="txtRentIncome" value="" width="250px" maxlength="20"/>
                                                             <textbox id="txtOtherIncome" value="" width="250px" maxlength="20"/>
                                                             <textbox id="txtTotalIncome" value="" width="250px" maxlength="20"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.customer.additionalData.financialInformation.expenses')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="3">
+                                                                <div height="0.5px" width="100%" style="background:#333;" align="left"></div>
+                                                            </cell>
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.housingExpenses')}" sclass="lblbold"/>
