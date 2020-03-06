@@ -383,24 +383,4 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             ex.printStackTrace();
         }
     }
-
-//    private void loadCmbKinShipApplicant(Integer evenInteger) {
-//        //cmbKinShipApplicant
-//        EJBRequest request1 = new EJBRequest();
-//        List<KinShipApplicant> kinShipApplicants;
-//
-//        try {
-//            kinShipApplicants = personEJB.getKinShipApplicant(request1);
-//            loadGenericCombobox(kinShipApplicants, cmbKinShipApplicant, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getKinShipApplicantId().getId() : 0));
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        }
-//    }
 }
