@@ -80,7 +80,7 @@ public class ListProgramController extends GenericAbstractListController<Program
             programs = new ArrayList<Program>();
             request.setFirst(0);
             request.setLimit(null);
-            programs = programEJB.getProgram(request);//getProgram(request);
+            programs = programEJB.getProgram(request);
         } catch (EmptyListException ex) {
             Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
@@ -134,18 +134,6 @@ public class ListProgramController extends GenericAbstractListController<Program
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect(adminPage);
     }
-
-//    public void onClick$btnAdd() throws InterruptedException {
-//        try {
-//            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-//            Map<String, Object> paramsPass = new HashMap<String, Object>();
-//            paramsPass.put("object", programs);
-//            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-//            window.doModal();
-//        } catch (Exception ex) {
-//            this.showMessage("sp.error.general", true, ex);
-//        }
-//    }
 
     private void showEmptyList() {
         Listitem item = new Listitem();

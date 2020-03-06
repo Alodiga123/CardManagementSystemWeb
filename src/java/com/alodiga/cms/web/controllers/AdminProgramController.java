@@ -223,8 +223,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void saveProgram(Program _program) {
-        tabNetwork.setSelected(true);
-
         short indBranded = 0;
         short indReloadable = 0;
         short indCashAcces = 0;

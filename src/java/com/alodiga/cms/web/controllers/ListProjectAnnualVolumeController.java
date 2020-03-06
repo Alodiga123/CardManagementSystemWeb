@@ -1,7 +1,7 @@
 
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,8 +9,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasCommerceCategory;
+import com.cms.commons.models.Program;
+import com.cms.commons.models.ProjectAnnualVolume;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -23,6 +23,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -33,13 +34,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListCommerceCategoryController extends GenericAbstractListController<ProductHasCommerceCategory> {
+public class ListProjectAnnualVolumeController extends GenericAbstractListController<ProjectAnnualVolume> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private ProductEJB productEJB = null;
-    private List<ProductHasCommerceCategory> productHasCommerceCategory = null;
+    private ProgramEJB programEJB = null;
+    private List<ProjectAnnualVolume> projectAnnualVolume = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -49,13 +50,15 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateProjectAnnualVolume", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(productHasCommerceCategory);
+                loadDataList(projectAnnualVolume);
             }
+
+     
         });
     }
 
@@ -67,10 +70,10 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminAddCommerceCategory.zul";
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            adminPage = "/adminProjectedAnnualVolume.zul";
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
-            loadDataList(productHasCommerceCategory);
+            loadDataList(projectAnnualVolume);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -81,7 +84,7 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", productHasCommerceCategory);
+            paramsPass.put("object", projectAnnualVolume);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -89,19 +92,23 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         }
     }
 
-    public void loadDataList(List<ProductHasCommerceCategory> list) {
+   
+    public void loadDataList(List<ProjectAnnualVolume> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (ProductHasCommerceCategory productHasCommerceCategory : list) {
+                btnDownload.setVisible(true);
+                for (ProjectAnnualVolume projectAnnualVolume : list) {
                     item = new Listitem();
-                    item.setValue(productHasCommerceCategory);
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getMccCode()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getsegmentCommerceId().getName()));
-                    item.appendChild(createButtonEditModal(productHasCommerceCategory));
-                    item.appendChild(createButtonViewModal(productHasCommerceCategory));
+                    item.setValue(projectAnnualVolume);
+                    item.appendChild(new Listcell(projectAnnualVolume.getYear().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getAccountsNumber().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getActiveCardNumber().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getAverageLoad().toString()));
+                    item.appendChild(new Listcell(projectAnnualVolume.getAverageCardBalance().toString()));
+                    item.appendChild(createButtonEditModal(projectAnnualVolume));
+                    item.appendChild(createButtonViewModal(projectAnnualVolume));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -170,18 +177,18 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
     }
 
     public void getData() {
-        Product product = null;
+        Program program = null;
         try {
-             //Producto principal
-            AdminProductController adminProduct = new AdminProductController();
-            if (adminProduct.getProductParent().getId() != null) {
-                product = adminProduct.getProductParent();
+             //Programa principal
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PRODUCT_KEY, product.getId());
+            params.put(Constants.PROGRAM_KEY, program.getId());
             request.setParams(params);
-            productHasCommerceCategory = productEJB.getCommerceCategoryByProduct(request);
+            projectAnnualVolume = programEJB.getProjectAnnualVolumeByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -211,8 +218,9 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         txtName.setText("");
     }
 
+
     @Override
-    public List<ProductHasCommerceCategory> getFilterList(String filter) {
+    public List<ProjectAnnualVolume> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
