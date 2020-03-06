@@ -183,7 +183,7 @@ public class ListNetworkController extends GenericAbstractListController<Program
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.NETWORK_BY_PROGRAM, program.getId());
+            params.put(Constants.PROGRAM_KEY, program.getId());
             request.setParams(params);
             programHasNetworkList = utilsEJB.getProgramHasNetworkByProgram(request);
         } catch (NullParameterException ex) {

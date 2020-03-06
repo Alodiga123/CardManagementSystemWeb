@@ -12,6 +12,7 @@ import com.cms.commons.models.AdditionalInformationNaturalCustomer;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -54,41 +55,14 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
     private PersonEJB personEJB = null;
     private Button btnSave;
     private Integer eventType;
-    private AdminNaturalPersonCustomerController naturalCustomer = null;
-    public static AdditionalInformationNaturalCustomer additionalInformationNaturalCustomerParent = null;
+    private NaturalCustomer naturalCustomer;
     public AdditionalInformationNaturalCustomer additionalInformationNaturalCustomerParam;
+    private List<AdditionalInformationNaturalCustomer> additionalInformationList;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        naturalCustomer = new AdminNaturalPersonCustomerController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-//        additionalInformationNaturalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AdditionalInformationNaturalCustomer) Sessions.getCurrent().getAttribute("object") : null;
-        if (naturalCustomer.getEventType() != null) {
-            eventType = naturalCustomer.getEventType();
-            switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    if (naturalCustomer.getNaturalCustomer().getId() != null) {
-                        //additionalInformationNaturalCustomerParam = naturalCustomer.getNaturalCustomer().getNaturalCustomerId().;
-                        additionalInformationNaturalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AdditionalInformationNaturalCustomer) Sessions.getCurrent().getAttribute("object") : null;
-                    } else {
-                        naturalCustomer = null;
-                    }
-                    break;
-                case WebConstants.EVENT_VIEW:
-                    if (naturalCustomer.getNaturalCustomer().getId() != null) {
-                        //applicantNaturalPersonParam = adminRequest.getRequest().getPersonId().getApplicantNaturalPerson();
-                        additionalInformationNaturalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AdditionalInformationNaturalCustomer) Sessions.getCurrent().getAttribute("object") : null;
-                    } else {
-                        naturalCustomer = null;
-                    }
-                    break;
-                case WebConstants.EVENT_ADD:
-                    additionalInformationNaturalCustomerParam = null;
-                    break;
-            }
-        }
-
         initialize();
     }
 
@@ -98,6 +72,43 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+
+            AdminNaturalPersonCustomerController customer = new AdminNaturalPersonCustomerController();
+            if (customer != null) {
+                naturalCustomer = customer.getNaturalCustomer();
+
+                Map params = new HashMap();
+                EJBRequest request2 = new EJBRequest();
+                params.put(Constants.NATURAL_CUSTOMER_KEY, naturalCustomer.getId());
+                request2.setParams(params);
+                additionalInformationList = personEJB.getAdditionalInformationNaturalCustomeByCustomer(request2);
+            } else {
+                additionalInformationList = null;
+            }
+
+            switch (eventType) {
+                case WebConstants.EVENT_EDIT:
+                    if (additionalInformationList != null) {
+                        for (AdditionalInformationNaturalCustomer r : additionalInformationList) {
+                            additionalInformationNaturalCustomerParam = r;
+                        }
+                    } else {
+                        additionalInformationNaturalCustomerParam = null;
+                    }
+                    break;
+                case WebConstants.EVENT_VIEW:
+                    if (additionalInformationList != null) {
+                        for (AdditionalInformationNaturalCustomer r : additionalInformationList) {
+                            additionalInformationNaturalCustomerParam = r;
+                        }
+                    } else {
+                        additionalInformationNaturalCustomerParam = null;
+                    }
+                    break;
+                case WebConstants.EVENT_ADD:
+                    additionalInformationNaturalCustomerParam = null;
+                    break;
+            }
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -108,10 +119,6 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
         cmbDocumentsPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
-    }
-
-    public AdditionalInformationNaturalCustomer getAdditionalInformationNaturalCustomer() {
-        return additionalInformationNaturalCustomerParam;
     }
 
     public void clearFields() {
@@ -162,7 +169,7 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
             txtEducationExpenses.setText(additionalInformationNaturalCustomer.getEducationExpenses().toString());
             txtTotalExpenses.setText(additionalInformationNaturalCustomer.getTotalExpenses().toString());
 
-            additionalInformationNaturalCustomerParent = additionalInformationNaturalCustomer;
+            additionalInformationNaturalCustomerParam = additionalInformationNaturalCustomer;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -203,7 +210,6 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
 
             if (_addiAdditionalInformationNaturalCustomer != null) {
                 additionalInformationNaturalCustomer = _addiAdditionalInformationNaturalCustomer;
-                //person = additionalInformationNaturalCustomer.getPersonId();
             } else {//New ApplicantNaturalPerson
                 additionalInformationNaturalCustomer = new AdditionalInformationNaturalCustomer();
             }
@@ -239,8 +245,8 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
             additionalInformationNaturalCustomer.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             additionalInformationNaturalCustomer = personEJB.saveAdditionalInformationNaturalCustomer(additionalInformationNaturalCustomer);
             this.showMessage("sp.common.save.success", false, null);
-            
-            additionalInformationNaturalCustomerParent = additionalInformationNaturalCustomer;
+
+            additionalInformationNaturalCustomerParam = additionalInformationNaturalCustomer;
 
         } catch (Exception ex) {
             showError(ex);
@@ -264,22 +270,19 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 if (additionalInformationNaturalCustomerParam != null) {
-                    additionalInformationNaturalCustomerParent = additionalInformationNaturalCustomerParam;
                     loadFields(additionalInformationNaturalCustomerParam);
-                    onChange$cmbCountry();
-                } 
-//                else {
-//                    additionalInformationNaturalCustomerParam = null;
-//                }
+                } else {
+                    additionalInformationNaturalCustomerParam = null;
+                }
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
                 blockFields();
                 if (additionalInformationNaturalCustomerParam != null) {
-                    additionalInformationNaturalCustomerParent = additionalInformationNaturalCustomerParam;
                     loadFields(additionalInformationNaturalCustomerParam);
-//                    onChange$cmbCountry();
+                } else {
+                    additionalInformationNaturalCustomerParam = null;
                 }
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -311,7 +314,7 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
             ex.printStackTrace();
         }
     }
-    
+
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();

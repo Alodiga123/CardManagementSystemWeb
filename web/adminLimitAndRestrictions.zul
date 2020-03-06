@@ -38,8 +38,8 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.use')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.maxNumbTransDaily')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.maxNumbTransMont')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.maxNumbTransDaily')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.maxNumbTransMont')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbProductUse" width="250px" mold="rounded" readonly="true"/>
@@ -47,9 +47,9 @@
                                                             <textbox id="txtMaxNumbTransMont" value="" width="250px" maxlength="30"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.amountMinTransDomestic')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.amountMaxTransDomestic')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.amountMinTransInt')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.amountMinTransDomestic')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.amountMaxTransDomestic')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.amountMinTransInt')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtAmountMinTransDomestic" value="" width="250px" maxlength="30"/> 
@@ -57,9 +57,9 @@
                                                             <textbox id="txtAmountMinTransInt" value="" width="250px" maxlength="30"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.amountMaxTransInt')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.dailyAmountLimitDomestic')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.monthlyAmountLimitDomestic')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.amountMaxTransInt')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.dailyAmountLimitDomestic')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.monthlyAmountLimitDomestic')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtAmountMaxTransInt" value="" width="250px" maxlength="30"/> 
@@ -67,8 +67,8 @@
                                                             <textbox id="txtMonthlyAmountLimitDomestic" value="" width="250px" maxlength="30"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.dailyAmountLimitInt')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms,product.limitAndRestrictions.monthlyAmountLimitInt')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.dailyAmountLimitInt')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.monthlyAmountLimitInt')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtDailyAmountLimitInt" value="" width="250px" maxlength="30"/> 

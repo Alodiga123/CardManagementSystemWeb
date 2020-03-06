@@ -70,9 +70,7 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             adminPage = "/adminAddCommerceCategory.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            if (productHasCommerceCategory != null) {
-               loadDataList(productHasCommerceCategory);
-            }
+            loadDataList(productHasCommerceCategory);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -172,7 +170,6 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
     }
 
     public void getData() {
-        productHasCommerceCategory = new ArrayList<ProductHasCommerceCategory>();
         Product product = null;
         try {
              //Producto principal
