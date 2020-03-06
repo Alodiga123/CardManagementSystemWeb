@@ -61,6 +61,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Integer eventType;
     public Window winAdminNaturalPersonAddress;
     private AdminRequestController adminRequest = null;
+    private int optionMenu;
     Map params = null;
 
     @Override
@@ -88,6 +89,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -174,7 +176,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     }
 
     private void saveAddress(PersonHasAddress _personHasAddress) {
-        Person applicantCard = null;
+        Person person = null;
         boolean indAddressDelivery = true;
         try {
             Address address = null;
@@ -194,12 +196,27 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             } else {
                 indAddressDelivery = false;
             }
-           
-            AdminRequestController adminRequest = new AdminRequestController();
-            if (adminRequest.getRequest().getPersonId() != null) {
-                applicantCard = adminRequest.getRequest().getPersonId();
+
+            if (optionMenu == 1) {
+
+                AdminRequestController adminRequest = new AdminRequestController();
+                if (adminRequest.getRequest().getPersonId() != null) {
+                    person = adminRequest.getRequest().getPersonId();
+                }
+
+//                if (adminRequest.getRequest().getPersonId() != null) {
+//                    person = adminRequest.getRequest().getPersonId();
+//                }
+            } else if (optionMenu == 2) {
+                person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
+            } else {
+                person = null;
             }
 
+            //AdminRequestController adminRequest = new AdminRequestController();
+//            if (adminRequest.getRequest().getPersonId() != null) {
+//                applicantCard = adminRequest.getRequest().getPersonId();
+//            }
             //Guarda la dirección del solicitante
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
@@ -218,7 +235,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
 
             //Asocia la dirección al solicitante y la guarda en BD
             personHasAddress.setAddressId(address);
-            personHasAddress.setPersonId(applicantCard);
+            personHasAddress.setPersonId(person);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             personHasAddressParam = personHasAddress;
 

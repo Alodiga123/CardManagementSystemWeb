@@ -3,10 +3,9 @@ package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
-import com.cms.commons.util.Constants;
+import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import org.zkoss.zk.ui.Component;
@@ -32,22 +31,23 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     private Integer eventType;
     public Window winAdminFamilyReferences;
     public String indGender = null;
+    private int optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
+            case WebConstants.EVENT_EDIT:
+                familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
                 break;
-                case WebConstants.EVENT_VIEW:
-                    familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
+            case WebConstants.EVENT_VIEW:
+                familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
                 break;
-                case WebConstants.EVENT_ADD:
-                    familyReferencesParam = null;
+            case WebConstants.EVENT_ADD:
+                familyReferencesParam = null;
                 break;
-           }
+        }
         initialize();
     }
 
@@ -56,6 +56,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
         super.initialize();
         try {
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -106,29 +107,56 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     }
 
     private void saveFamilyReferences(FamilyReferences _familyReferences) {
-        ApplicantNaturalPerson applicantNaturalPerson = null;
+        ApplicantNaturalPerson naturalPerson = null;
+        NaturalCustomer naturalCustomer = null;
         try {
             FamilyReferences familyReferences = null;
-            
+
             if (_familyReferences != null) {
                 familyReferences = _familyReferences;
+                naturalPerson = familyReferencesParam.getApplicantNaturalPersonId();
+                naturalCustomer = familyReferencesParam.getNaturalCustomerId();
             } else {//New LegalPerson
                 familyReferences = new FamilyReferences();
             }
-            
+
             //Solicitante
-            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            if (optionMenu == 1) {
+                AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+//                naturalPerson = familyReferencesParam.getApplicantNaturalPersonId();
+                if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                    naturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+                }
+            } else if (optionMenu == 2) {
+                if (naturalCustomer == null) {
+                    AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
+                    AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+
+                    if (adminNaturalCustomer != null) {
+                        naturalCustomer = adminNaturalCustomer.getNaturalCustomer();
+                    }
+                    if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                        naturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+                    }
+
+                }
+            } else {
+                naturalPerson = null;
+                naturalCustomer = null;
             }
-            
+
             //Guarda la referencia familiar asociada al solicitante
             familyReferences.setFirstNames(txtFullName.getText());
-            familyReferences.setApplicantNaturalPersonId(applicantNaturalPerson);
+            if (naturalPerson != null) {
+                familyReferences.setApplicantNaturalPersonId(naturalPerson);
+            }
             familyReferences.setCity(txtCity.getText());
             familyReferences.setLocalPhone(txtLocalPhone.getText());
             familyReferences.setCellPhone(txtCellPhone.getText());
             familyReferences.setLastNames(txtFullLastName.getText());
+            if (naturalCustomer != null) {
+                familyReferences.setNaturalCustomerId(naturalCustomer);
+            }
             familyReferences = personEJB.saveFamilyReferences(familyReferences);
             familyReferencesParam = familyReferences;
             this.showMessage("sp.common.save.success", false, null);
