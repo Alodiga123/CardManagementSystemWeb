@@ -38,6 +38,8 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
 
 public class AdminProductController extends GenericAbstractAdminController {
@@ -48,8 +50,6 @@ public class AdminProductController extends GenericAbstractAdminController {
     private ProgramEJB programEJB = null;
     private Product productParam;
     private Textbox txtName;
-    private Textbox txtBinNumber;
-    private Textbox txtValidityYears;
     private Textbox txtDaysBeforeExpiration;
     private Textbox txtDaysToInactivate;
     private Textbox txtDaysToActivate;
@@ -58,25 +58,28 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Datebox dtbBeginDateValidity;
     private Datebox dtbEndDateValidity;
     private Combobox cmbCountry;
-    private Combobox cmbKindCard;
-    private Combobox cmbIssuer;
-    private Combobox cmbProductType;
     private Combobox cmbProgram;
     private Combobox cmbProgramType;
-    private Combobox cmbBinSponsor;
+    private Combobox cmbKindCard;
     private Combobox cmbLevelProduct;
     private Combobox cmbProductUse;
     private Combobox cmbDomesticCurrency;
     private Combobox cmbInternationalCurrency;
     private Combobox cmbStorageMedio;
     private Combobox cmbSegmentMarketing;
+    private Radio r24Months;
+    private Radio r36Months;
+    private Radio r48Months;
+    private Label lblIssuer;
+    private Label lblProductType;
+    private Label lblBinSponsor;
+    private Label lblBinNumber;
     private Tab tabCommerceCategory;
     private Tab tabRestrictions; 
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     public static Product productParent = null;
-//    private ListProductController listProduct;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -115,8 +118,6 @@ public class AdminProductController extends GenericAbstractAdminController {
     
     public void clearFields() {
         txtName.setRawValue(null);
-        txtBinNumber.setRawValue(null);
-        txtValidityYears.setRawValue(null);
         txtDaysBeforeExpiration.setRawValue(null);
         txtDaysToInactivate.setRawValue(null);
         txtDaysToActivate.setRawValue(null);
@@ -133,8 +134,6 @@ public class AdminProductController extends GenericAbstractAdminController {
     private void loadFields(Product product) {
         try {
             txtName.setText(product.getName());
-            txtBinNumber.setText(product.getBinNumber());
-            txtValidityYears.setValue(product.getValidityYears().toString());
             txtDaysBeforeExpiration.setValue(product.getDaysBeforeExpiration().toString());
             txtDaysToInactivate.setValue(product.getDaysToInactivate().toString());
             txtDaysToActivate.setValue(product.getDaysToActivate().toString());
@@ -142,6 +141,19 @@ public class AdminProductController extends GenericAbstractAdminController {
             txtDaysToWithdrawCard.setValue(product.getDaysToWithdrawCard().toString());
             dtbBeginDateValidity.setValue(product.getBeginDateValidity());
             dtbEndDateValidity.setValue(product.getEndDateValidity());
+            switch (product.getValidityMonths()) {
+                case WebConstants.VALIDITY_MONTH_24:   
+                    r24Months.setChecked(true);
+                    break;
+                case WebConstants.VALIDITY_MONTH_36:  
+                    r36Months.setChecked(true);
+                    break;
+                case WebConstants.VALIDITY_MONTH_48:
+                    r48Months.setChecked(true);
+                    break;
+            }
+            loadProgramData(product.getProgramId());
+            validateProductUse(product.getProductUseId().getId());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -154,6 +166,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     private void saveProduct(Product _product) throws RegisterNotFoundException, NullParameterException, GeneralException {
+        int validityMonth = 0;
         try {
             Product product = null;
             
@@ -162,21 +175,28 @@ public class AdminProductController extends GenericAbstractAdminController {
             } else {//New Product
                 product = new Product();
             }
+            
+            if (r24Months.isChecked()) {
+                validityMonth = WebConstants.VALIDITY_MONTH_24;
+            } else if (r36Months.isChecked()) {
+                validityMonth = WebConstants.VALIDITY_MONTH_36;
+            } else {
+                validityMonth = WebConstants.VALIDITY_MONTH_48;
+            }
     
             //Guardar Producto
             product.setName(txtName.getText());
             product.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            product.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
-            product.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
-            product.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
+            product.setIssuerId(((Program) cmbProgram.getSelectedItem().getValue()).getIssuerId());
+            product.setProductTypeId(((Program) cmbProgram.getSelectedItem().getValue()).getProductTypeId());
+            product.setBinSponsorId(((Program) cmbProgram.getSelectedItem().getValue()).getBinSponsorId());
+            product.setBinNumber(((Program) cmbProgram.getSelectedItem().getValue()).getBiniinNumber());
             product.setKindCardId((KindCard) cmbKindCard.getSelectedItem().getValue());
             product.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
             product.setLevelProductId((LevelProduct) cmbLevelProduct.getSelectedItem().getValue());
-            product.setBinNumber(txtBinNumber.getText());
             product.setProductUseId((ProductUse) cmbProductUse.getSelectedItem().getValue());
             product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
             product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
-            product.setValidityYears((Integer.parseInt(txtValidityYears.getText())));
             product.setStorageMedioid((StorageMedio) cmbStorageMedio.getSelectedItem().getValue());
             product.setDaysBeforeExpiration((Integer.parseInt(txtDaysBeforeExpiration.getText())));
             product.setDaysToInactivate((Integer.parseInt(txtDaysToInactivate.getText())));
@@ -187,6 +207,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setEndDateValidity((dtbEndDateValidity.getValue())); 
             product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
+            product.setValidityMonths(validityMonth);
             product = productEJB.saveProduct(product);
             productParam = product;
             productParent = product;
@@ -201,9 +222,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         public Boolean validateEmpty() {
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtBinNumber.getText().isEmpty()) {
-            txtBinNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -232,17 +250,52 @@ public class AdminProductController extends GenericAbstractAdminController {
         loadCmbProgram(eventType, programType.getId());
     }
     
+    public void onChange$cmbProgram() {
+        Program program = (Program) cmbProgram.getSelectedItem().getValue();
+        lblIssuer.setVisible(true);
+        lblProductType.setVisible(true);
+        lblBinSponsor.setVisible(true);
+        lblBinNumber.setVisible(true);
+        loadProgramData(program);
+    }
+    
+    public void loadProgramData(Program program) {
+        lblIssuer.setValue(program.getIssuerId().getId().toString());
+        lblProductType.setValue(program.getProductTypeId().getName());
+        lblBinSponsor.setValue(program.getBinSponsorId().getDescription());
+        lblBinNumber.setValue(program.getBiniinNumber());
+    }
+    
+    public void onChange$cmbProductUse() {
+        ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
+        validateProductUse(productUse.getId());
+    }  
+    
+    public void validateProductUse(int productUseId) {
+        switch (productUseId) {
+                case 1:
+                    cmbDomesticCurrency.setDisabled(false);
+                    cmbInternationalCurrency.setDisabled(true);
+                    break;
+                case 2:
+                    cmbDomesticCurrency.setDisabled(true);
+                    cmbInternationalCurrency.setDisabled(false);
+                    break;
+                case 3:
+                    cmbDomesticCurrency.setDisabled(false);
+                    cmbInternationalCurrency.setDisabled(false);
+                    break;
+            }
+    }
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 productParent = productParam;
                 loadFields(productParam);
                 loadCmbCountry(eventType);
-                loadCmbIssuer(eventType);
-                loadCmbProductType(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
-                loadCmbBinSponsor(eventType);
                 loadCmbLevelProduct(eventType);
                 loadCmbProductUse(eventType);
                 loadCmbDomesticCurrency(eventType);
@@ -254,23 +307,21 @@ public class AdminProductController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 productParent = productParam;
                 loadFields(productParam);
-                txtName.setDisabled(true);
-                txtBinNumber.setDisabled(true);
-                txtValidityYears.setDisabled(true);
-                txtDaysBeforeExpiration.setDisabled(true);
-                txtDaysToInactivate.setDisabled(true);
-                txtDaysToActivate.setDisabled(true);
-                txtDaysToUse.setDisabled(true);
-                txtDaysToWithdrawCard.setDisabled(true);
-                dtbBeginDateValidity.setDisabled(true);
-                dtbEndDateValidity.setDisabled(true);
+                txtName.setReadonly(true);
+                r24Months.setDisabled(true);
+                r36Months.setDisabled(true);
+                r48Months.setDisabled(true);
+                txtDaysBeforeExpiration.setReadonly(true);
+                txtDaysToInactivate.setReadonly(true);
+                txtDaysToActivate.setReadonly(true);
+                txtDaysToUse.setReadonly(true);
+                txtDaysToWithdrawCard.setReadonly(true);
+                dtbBeginDateValidity.setReadonly(true);
+                dtbEndDateValidity.setReadonly(true);
                 blockFields();
                 loadCmbCountry(eventType);
-                loadCmbIssuer(eventType);
-                loadCmbProductType(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
-                loadCmbBinSponsor(eventType);
                 loadCmbLevelProduct(eventType);
                 loadCmbProductUse(eventType);
                 loadCmbDomesticCurrency(eventType);
@@ -281,11 +332,8 @@ public class AdminProductController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbIssuer(eventType);
-                loadCmbProductType(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
-                loadCmbBinSponsor(eventType);
                 loadCmbLevelProduct(eventType);
                 loadCmbProductUse(eventType);
                 loadCmbDomesticCurrency(eventType);
@@ -315,42 +363,6 @@ public class AdminProductController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-
-    private void loadCmbIssuer(Integer eventType) {
-        EJBRequest request1 = new EJBRequest();
-        List<Issuer> issuerList;
-        try {
-            issuerList = utilsEJB.getIssuers(request1);
-            loadGenericCombobox(issuerList,cmbIssuer,"name",eventType,Long.valueOf(productParam != null? productParam.getIssuerId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }    
-    }
- 
-    private void loadCmbProductType(Integer eventType) {
-        EJBRequest request1 = new EJBRequest();
-        List<ProductType> productTypeList;
-        try {
-            productTypeList = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productTypeList,cmbProductType,"name",eventType,Long.valueOf(productParam != null? productParam.getProductTypeId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }    
-    }
     
     private void loadCmbKindCard(Integer eventType) {
         EJBRequest request1 = new EJBRequest();
@@ -376,24 +388,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         try {
             programTypeList = utilsEJB.getProgramType(request1);
             loadGenericCombobox(programTypeList,cmbProgramType,"name",eventType,Long.valueOf(productParam != null? productParam.getProgramTypeId().getId(): 0) );            
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }    
-    }
-    
-    private void loadCmbBinSponsor(Integer eventType) {
-        EJBRequest request1 = new EJBRequest();
-        List<BinSponsor> binSponsorList;
-        try {
-            binSponsorList = utilsEJB.getBinSponsor(request1);
-            loadGenericCombobox(binSponsorList,cmbBinSponsor,"description",eventType,Long.valueOf(productParam != null? productParam.getBinSponsorId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -534,6 +528,10 @@ public class AdminProductController extends GenericAbstractAdminController {
             showError(ex);
             ex.printStackTrace();
         }
+    }
+
+    private void setText(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
