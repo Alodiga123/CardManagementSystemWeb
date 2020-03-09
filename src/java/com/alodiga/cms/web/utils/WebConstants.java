@@ -45,36 +45,7 @@ public class WebConstants {
     public static final int PERSON_TYPES = 1;
     public static final String ID_MONETARY_TYPE_TRUE = "true";
     public static final String ID_MONETARY_TYPE_FALSE = "false";
-    public static final int BOOLEAN = 10;
-    public static final int DISTRIBUTOR = 6;
-    public static final int CUSTOMER = 7;
-    public static final int PHONENUMBER = 8;
-    public static final int PRODUCT = 9;
-    public static final int T_STATUS = 11;
-    public static final int STORE = 12;
-    public static final int CHECK_WALLET = 13;
-    public static final int TOP_UP_COMMISSION_CHANGE = 14;
-    public static final int PROMOTION_TYPE = 15;
-    public static final String ATTACHMENT_FILE_EXCEL = File.separator + "var" + File.separator + "excelFile" + File.separator;
-    public static final String ATTACHMENT_FILE_PACH = File.separator + "var" + File.separator + "ticketAttachment" + File.separator;
-    //public static final String BANNER_FILE_PACH = Executions.getCurrent().getDesktop().getWebApp().getRealPath("/")  + "images" + File.separator + "banners" + File.separator;
-    public static final String BANNER_FILE_PACH = File.separator + "var" + File.separator + "banners" + File.separator;
-    public static final String SESSION_ENTERPRISE = "enterprise";
-    public static final String PREFERENCES_MAP = "preferenceMap";
-    public static final String ANY = "ninguno";
-    public static final String ALL = "todos";
-    /*public static final Integer NOTIFICATION_LOGIN = 1;
-     public static final Integer NOTIFICATION_PASSDWORD = 2;
-     public static final Integer NOTIFICATION_SERIAL = 3;
-     public static final Integer NOTIFICATION_ACCESS_NUMBER = 4;
-     public static final Integer NOTIFICATION_TOTAL_AMOUNT = 5;
-     public static final Integer NOTIFICATION_MAIL_ADDRESS = 6;
-     public static final Integer NOTIFICATION_NAME_CUSTOMER = 7;
-     public static final Integer NOTIFICATION_CUSTOMER_ENTERPRISE = 8;
-     public static final Integer NOTIFICATION_CURRENCY = 9;
-     public static final Integer NOTIFICATION_DNI = 10;
-     public static final Integer NOTIFICATION_SECRET_PIN = 11;*/
-
+    
     public static final String MENU_SECURITY = "menu.security";
     public static final String MENUITEM_SECURITY_PROFILE = "menu.security.profile";
     public static final String MENUITEM_SECURITY_USER = "menu.security.user";
@@ -84,7 +55,6 @@ public class WebConstants {
     public static final String MENUITEM_INVENTORY_PRODUCT = "menu.inventory.product";
     public static final String MENUITEM_INVENTORY_MOBILE_OPERATOR = "menu.inventory.mobileOperator";
     public static final String MENUITEM_INVENTORY_PROVIDER = "menu.inventory.provider";
-    //public static final String MENUITEM_INVENTORY_COMMISION = "menu.inventory.file";
     public static final String MENUITEM_INVENTORY_TOP_UP_COMMISSION = "menu.inventory.topUp.commission";
     public static final String MENU_CONTENT = "menu.content";
     public static final String MENUITEM_CONTENT_REPORT = "menu.content.report";
@@ -144,13 +114,14 @@ public class WebConstants {
 
     //CRUD ProgramLoyalty
     public static final int STATUS_PROGRAM_LOYALTY_PENDING = 1;
-
-    public static final int STATUS_CUSTOMER = 1;
-
-    //CRUD AccountProperties
-//    public static final String ACCOUNT_PROPERTIES_ALLOWS_YES = "Yes";
-//    public static final String ACCOUNT_PROPERTIES_ALLOWS_NO = "No";
-    //
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
     public static final int PROGRAM_LOYALTY_TYPE_BONIFICATION = 2;
+    public static final int STATUS_CUSTOMER = 1;
+
+    //CRUD Product
+    public static final int VALIDITY_MONTH_24 = 24;
+    public static final int VALIDITY_MONTH_36 = 36;
+    public static final int VALIDITY_MONTH_48 = 48;
+    
+    
 }

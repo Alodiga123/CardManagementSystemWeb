@@ -13,11 +13,13 @@ import com.cms.commons.models.AddressType;
 import com.cms.commons.models.City;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.EdificationType;
+import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -26,16 +28,12 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 
-public class AdminPersonAddressController extends GenericAbstractAdminController {
+public class AdminCustomerCardAddressController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtUbanization;
@@ -50,34 +48,44 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Combobox cmbStreetType;
     private Combobox cmbEdificationType;
     private Combobox cmbZipZone;
-    private Combobox cmbAddressTypes;
-    private Radio rAddressDeliveryYes;
-    private Radio rAddressDeliveryNo;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
-    public static Address addressParent = null;
-    private PersonHasAddress personHasAddressParam;
+    private Address addressParam;
     private Button btnSave;
     private Integer eventType;
-    public Window winAdminNaturalPersonAddress;
-    private AdminRequestController adminRequest = null;
-    private int optionMenu;
-    Map params = null;
+    private NaturalCustomer naturalCustomer;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequest = new AdminRequestController();
-        AdminNaturalPersonController adminPerson = new AdminNaturalPersonController();
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                personHasAddressParam = (PersonHasAddress) Sessions.getCurrent().getAttribute("object");
+                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
+                    //NaturalCustomer naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+                    naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+                    
+                    if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
+                        addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
+                    } else {
+                        addressParam = null;
+                    }
+                }
                 break;
             case WebConstants.EVENT_VIEW:
-                personHasAddressParam = (PersonHasAddress) Sessions.getCurrent().getAttribute("object");
+                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
+                    naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+//                    NaturalCustomer naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+                    if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
+                        addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
+                    } else {
+                        addressParam = null;
+                    }
+                }
                 break;
             case WebConstants.EVENT_ADD:
-                personHasAddressParam = null;
+                addressParam = null;
                 break;
         }
         initialize();
@@ -89,7 +97,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -123,19 +130,14 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         txtEmail.setRawValue(null);
     }
 
-    private void loadFields(PersonHasAddress personHasAddress) {
+    private void loadFields(Address address) {
         try {
-            txtUbanization.setValue(personHasAddress.getAddressId().getUrbanization());
-            txtNameStreet.setValue(personHasAddress.getAddressId().getNameStreet());
-            txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
-            txtTower.setValue(personHasAddress.getAddressId().getTower());
-            txtFloor.setValue(personHasAddress.getAddressId().getFloor().toString());
+            txtUbanization.setValue(address.getUrbanization());
+            txtNameStreet.setValue(address.getNameStreet());
+            txtNameEdification.setValue(address.getNameEdification());
+            txtTower.setValue(address.getTower());
+            txtFloor.setValue(address.getFloor().toString());
 
-            if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
-                rAddressDeliveryYes.setChecked(true);
-            } else {
-                rAddressDeliveryNo.setChecked(true);
-            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -147,9 +149,10 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         txtNameEdification.setReadonly(true);
         txtTower.setReadonly(true);
         txtFloor.setReadonly(true);
-        txtEmail.setReadonly(true);
-        rAddressDeliveryYes.setDisabled(true);
-        rAddressDeliveryNo.setDisabled(true);
+        cmbCountry.setDisabled(true);
+        cmbState.setDisabled(true);
+        cmbCity.setDisabled(true);
+        cmbEdificationType.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -175,49 +178,29 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         return false;
     }
 
-    private void saveAddress(PersonHasAddress _personHasAddress) {
-        Person person = null;
-        boolean indAddressDelivery = true;
+    private void saveAddress(Address _address) {
+        //NaturalCustomer applicantPersonCard = null;
+        Person applicantPersonCard = null;
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
 
-            if (_personHasAddress != null) {
-                address = _personHasAddress.getAddressId();
-                personHasAddress = _personHasAddress;
-
+            if (naturalCustomer.getPersonId() != null) {
+                personHasAddress = naturalCustomer.getPersonId().getPersonHasAddress();
+            }
+            
+            if (_address != null) {
+                address = _address;
+                //personHasAddress = applicantPersonCard.getPersonHasAddress();
             } else {//New address
                 address = new Address();
                 personHasAddress = new PersonHasAddress();
             }
 
-            if (rAddressDeliveryYes.isChecked()) {
-                indAddressDelivery = true;
-            } else {
-                indAddressDelivery = false;
-            }
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.ADDRESS_TYPE_DELIVERY);
+            AddressType addressType = utilsEJB.loadAddressType(request);
 
-            if (optionMenu == 1) {
-
-                AdminRequestController adminRequest = new AdminRequestController();
-                if (adminRequest.getRequest().getPersonId() != null) {
-                    person = adminRequest.getRequest().getPersonId();
-                }
-
-//                if (adminRequest.getRequest().getPersonId() != null) {
-//                    person = adminRequest.getRequest().getPersonId();
-//                }
-            } else if (optionMenu == 2) {
-                person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-            } else {
-                person = null;
-            }
-
-            //AdminRequestController adminRequest = new AdminRequestController();
-//            if (adminRequest.getRequest().getPersonId() != null) {
-//                applicantCard = adminRequest.getRequest().getPersonId();
-//            }
-            //Guarda la dirección del solicitante
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
@@ -228,20 +211,16 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            address.setIndAddressDelivery(indAddressDelivery);
-            address.setAddressTypeId((AddressType) cmbAddressTypes.getSelectedItem().getValue());
+            address.setAddressTypeId(addressType);
             address = utilsEJB.saveAddress(address);
-            addressParent = address;
+            addressParam = address;
 
-            //Asocia la dirección al solicitante y la guarda en BD
+            //PersonHasAddress
             personHasAddress.setAddressId(address);
-            personHasAddress.setPersonId(person);
+            personHasAddress.setPersonId(naturalCustomer.getPersonId());
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
-            personHasAddressParam = personHasAddress;
 
             this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true).publish(new Event(""));
-
         } catch (Exception ex) {
             showError(ex);
         }
@@ -254,7 +233,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                     saveAddress(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveAddress(personHasAddressParam);
+                    saveAddress(addressParam);
                     break;
                 default:
                     break;
@@ -262,49 +241,43 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         }
     }
 
-    public void onClick$btnBack() {
-        winAdminNaturalPersonAddress.detach();
-    }
-
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(personHasAddressParam);
+                loadFields(addressParam);
                 loadCmbCountry(eventType);
-                loadCmbStreetType(eventType);
+                LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                loadCmbAddressTypes(eventType);
                 onChange$cmbCountry();
                 onChange$cmbState();
                 onChange$cmbCity();
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(personHasAddressParam);
+                loadFields(addressParam);
+                blockFields();
                 loadCmbCountry(eventType);
-                loadCmbStreetType(eventType);
+                LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                loadCmbAddressTypes(eventType);
                 onChange$cmbCountry();
                 onChange$cmbState();
                 onChange$cmbCity();
-                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbStreetType(eventType);
+                LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
-                loadCmbAddressTypes(eventType);
+                break;
+            default:
                 break;
         }
     }
 
     private void loadCmbCountry(Integer evenInteger) {
-        //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(personHasAddressParam != null ? personHasAddressParam.getAddressId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -327,7 +300,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         List<State> states;
         try {
             states = utilsEJB.getStatesByCountry(request1);
-            loadGenericCombobox(states, cmbState, "name", evenInteger, Long.valueOf(personHasAddressParam != null ? personHasAddressParam.getAddressId().getCityId().getStateId().getId() : 0));
+            loadGenericCombobox(states, cmbState, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getStateId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -350,7 +323,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         List<City> citys;
         try {
             citys = utilsEJB.getCitiesByState(request1);
-            loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(personHasAddressParam != null ? personHasAddressParam.getAddressId().getCityId().getId() : 0));
+            loadGenericCombobox(citys, cmbCity, "name", evenInteger, Long.valueOf(addressParam != null ? addressParam.getCityId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -363,13 +336,13 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         }
     }
 
-    private void loadCmbStreetType(Integer evenInteger) {
+    private void LoadCmbStreetType(Integer evenInteger) {
         //cmbStreetType
         EJBRequest request1 = new EJBRequest();
         List<StreetType> streetTypes;
         try {
             streetTypes = utilsEJB.getStreetTypes(request1);
-            loadGenericCombobox(streetTypes, cmbStreetType, "description", evenInteger, Long.valueOf(personHasAddressParam != null ? personHasAddressParam.getAddressId().getStreetTypeId().getId() : 0));
+            loadGenericCombobox(streetTypes, cmbStreetType, "description", evenInteger, Long.valueOf(addressParam != null ? addressParam.getStreetTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -388,7 +361,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         List<EdificationType> edificationTypes;
         try {
             edificationTypes = utilsEJB.getEdificationTypes(request1);
-            loadGenericCombobox(edificationTypes, cmbEdificationType, "description", evenInteger, Long.valueOf(personHasAddressParam != null ? personHasAddressParam.getAddressId().getEdificationTypeId().getId() : 0));
+            loadGenericCombobox(edificationTypes, cmbEdificationType, "description", evenInteger, Long.valueOf(addressParam != null ? addressParam.getEdificationTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -413,37 +386,19 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             zipZones = utilsEJB.getZipZoneByCities(request1);
             cmbZipZone.getItems().clear();
             for (ZipZone c : zipZones) {
+
                 Comboitem item = new Comboitem();
                 item.setValue(c);
                 item.setLabel(c.getCode());
                 item.setDescription(c.getName());
                 item.setParent(cmbZipZone);
-                if (personHasAddressParam != null && c.getId().equals(personHasAddressParam.getAddressId().getZipZoneId().getId())) {
+                if (addressParam != null && c.getId().equals(addressParam.getZipZoneId().getId())) {
                     cmbZipZone.setSelectedItem(item);
                 }
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbZipZone.setDisabled(true);
             }
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-
-    private void loadCmbAddressTypes(Integer evenInteger) {
-        //cmbAddressTypes
-        EJBRequest request1 = new EJBRequest();
-        List<AddressType> addressTypes;
-        try {
-            addressTypes = utilsEJB.getAddressType(request1);
-            loadGenericCombobox(addressTypes, cmbAddressTypes, "description", evenInteger, Long.valueOf(personHasAddressParam != null ? personHasAddressParam.getAddressId().getAddressTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
