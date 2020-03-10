@@ -188,7 +188,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         NaturalCustomer naturalCustomer = null;
 
         try {
-
             if (optionMenu == 1) {
                 AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
                 if (adminNaturalPerson.getApplicantNaturalPerson() != null) {

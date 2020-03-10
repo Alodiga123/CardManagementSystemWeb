@@ -13,7 +13,6 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.LegalCustomer;
-import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.Request;
@@ -22,28 +21,17 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.http.impl.conn.Wire;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tab;
-import org.zkoss.zul.Tabbox;
-import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Tabpanels;
-import org.zkoss.zul.Tabs;
 
 public class AdminLegalPersonCustomerController extends GenericAbstractAdminController {
 
@@ -51,35 +39,29 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     private Textbox txtIdentificationNumber;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
-    private Textbox txtPhoneNumber;
     private Textbox txtRegistryNumber;
     private Textbox txtPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
-    private Tab tabAddress;
-    private Tab tabLegalRepresentatives;
-    private Tab tabAdditionalCards;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbEconomicActivity;
-    private Datebox txtExpirationDate;
     private Datebox txtDateInscriptionRegister;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
-    private LegalCustomer legalCustomerParam;
+    public static LegalCustomer legalCustomerParam = null;
     private Person person;
     private Button btnSave;
     private Integer eventType;
-
-    public Tabbox tb;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        legalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalCustomer) Sessions.getCurrent().getAttribute("object") : null;
+//        legalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalCustomer) Sessions.getCurrent().getAttribute("object") : null;
+        legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
         initialize();
     }
 
@@ -93,6 +75,10 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public LegalCustomer getLegalCustomer() {
+        return legalCustomerParam;
     }
 
     public void onChange$cmbCountry() {
@@ -108,7 +94,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         txtDateInscriptionRegister.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
         txtPaidInCapital.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
         txtWebSite.setRawValue(null);
         txtEmail.setRawValue(null);
         txtIdentificationNumber.setRawValue(null);
@@ -122,7 +107,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             txtDateInscriptionRegister.setValue(legalCustomer.getDateInscriptionRegister());
             txtRegistryNumber.setText(legalCustomer.getRegisterNumber());
             txtPaidInCapital.setText(legalCustomer.getPayedCapital().toString());
-            //txtPhoneNumber.setValue(legalCustomer.getEnterprisePhone());
             txtWebSite.setValue(legalCustomer.getWebSite());
             txtEmail.setValue(legalCustomer.getPersonId().getEmail());
             txtIdentificationNumber.setText(legalCustomer.getIdentificationNumber());
@@ -137,14 +121,12 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
         txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
         txtPaidInCapital.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
         txtWebSite.setReadonly(true);
         txtEmail.setReadonly(true);
-        cmbEconomicActivity.setDisabled(true);
-        cmbDocumentsPersonType.setDisabled(true);
         txtIdentificationNumber.setReadonly(true);
-        txtExpirationDate.setDisabled(true);
         cmbCountry.setDisabled(true);
+        cmbDocumentsPersonType.setDisabled(true);
+        cmbEconomicActivity.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -154,9 +136,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
@@ -176,7 +155,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     }
 
     private void saveLegalPerson(LegalCustomer _legalCustomer) {
-        tabAddress.setSelected(true);
         try {
             LegalCustomer legalCustomer = null;
             Person person = null;
@@ -198,7 +176,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
-            
+
             //Guardar Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
@@ -214,7 +192,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             legalCustomer.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             legalCustomer.setRegisterNumber(txtRegistryNumber.getText());
             legalCustomer.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
-            //legalCustomer.setEnterprisePhone(txtPhoneNumber.getText());
             legalCustomer.setWebSite(txtWebSite.getText());
             legalCustomer.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
             legalCustomer.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
@@ -252,15 +229,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(legalCustomerParam);
-                txtTradeName.setDisabled(true);
-                txtEnterpriseName.setDisabled(true);
-                txtDateInscriptionRegister.setDisabled(true);
-                txtRegistryNumber.setDisabled(true);
-                txtPaidInCapital.setDisabled(true);
-                txtPhoneNumber.setDisabled(true);
-                txtWebSite.setDisabled(true);
-                txtEmail.setDisabled(true);
-                txtIdentificationNumber.setDisabled(true);
+                blockFields();
                 loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
                 onChange$cmbCountry();
@@ -295,11 +264,11 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     }
 
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
-        //cmbDocumentsPersonType
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, legalCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
