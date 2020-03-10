@@ -5,13 +5,14 @@ import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import static com.alodiga.cms.web.controllers.AdminNaturalPersonController.applicant;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CivilStatus;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
+import com.cms.commons.models.LegalCustomer;
+import com.cms.commons.models.LegalCustomerHasLegalRepresentatives;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.LegalRepresentatives;
@@ -65,6 +66,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public String indGender = null;
     public AdminRequestController adminRequest = null;
     public AdminLegalPersonController adminLegalPerson = null;
+    public AdminLegalPersonCustomerController adminLegalCustomerPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,16 +74,16 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         adminRequest = new AdminRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
+            case WebConstants.EVENT_EDIT:
+                legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
                 break;
-                case WebConstants.EVENT_VIEW:
-                    legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
+            case WebConstants.EVENT_VIEW:
+                legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
                 break;
-                case WebConstants.EVENT_ADD:
-                    legalRepresentativesParam = null;
+            case WebConstants.EVENT_ADD:
+                legalRepresentativesParam = null;
                 break;
-           }
+        }
         initialize();
     }
 
@@ -124,11 +126,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
             txtBirthDay.setValue(legalRepresentatives.getDateBirth());
             txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
-            if(legalRepresentatives.getGender().trim().equalsIgnoreCase("F")){
+            if (legalRepresentatives.getGender().trim().equalsIgnoreCase("F")) {
                 genderFemale.setChecked(true);
-            }else{
+            } else {
                 genderMale.setChecked(true);
-            }     
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -169,10 +171,12 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
     private void saveLegalRepresentatives(LegalRepresentatives _legalRepresentatives) {
         LegalPerson legalPerson = null;
+        LegalCustomer legalCustomer = null;
         Person personLegalRepresentatives = null;
         try {
             LegalRepresentatives legalRepresentatives = null;
             LegalPersonHasLegalRepresentatives legalPersonHasLegalRepresentatives = null;
+            LegalCustomerHasLegalRepresentatives legalCustomerHasLegalRepresentatives = null;
             PhonePerson phonePerson = null;
             Person person = null;
 
@@ -184,15 +188,25 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 person = new Person();
                 legalRepresentatives = new LegalRepresentatives();
                 legalPersonHasLegalRepresentatives = new LegalPersonHasLegalRepresentatives();
+                legalCustomerHasLegalRepresentatives = new LegalCustomerHasLegalRepresentatives();
                 phonePerson = new PhonePerson();
             }
-            
-            //Solicitante Jurídico
+
+            if (genderFemale.isChecked()) {
+                indGender = "F";
+            } else {
+                indGender = "M";
+            }
+
             adminLegalPerson = new AdminLegalPersonController();
+            adminLegalCustomerPerson = new AdminLegalPersonCustomerController();
+
             if (adminLegalPerson.getLegalPerson() != null) {
                 legalPerson = adminLegalPerson.getLegalPerson();
+            } else if (adminLegalCustomerPerson.getLegalCustomer() != null) {
+                legalCustomer = adminLegalCustomerPerson.getLegalCustomer();
             }
-            
+
             //Obtener la clasificacion del Representante Legal
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_LEGAL_REPRESENTATIVES);
@@ -215,11 +229,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
             legalRepresentatives.setDueDateDocumentIdentification(txtDueDateIdentification.getValue());
             legalRepresentatives.setAge(Integer.parseInt(txtAge.getText().toString()));
-            if (genderFemale.isChecked()) {
-                indGender = "F";
-            } else {
-                indGender = "M";
-            }
             legalRepresentatives.setGender(indGender);
             legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
             legalRepresentatives.setDateBirth(txtBirthDay.getValue());
@@ -233,12 +242,18 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             phonePerson.setPersonId(personLegalRepresentatives);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
             phonePerson = personEJB.savePhonePerson(phonePerson);
-            
+
             //Asocia el Representante Legal al Solicitante Jurídico
             if (eventType == 1) {
-                legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
-                legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
-                legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
+                if (legalPerson != null) {
+                    legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
+                    legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
+                    legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
+                } else if (legalCustomer != null) {
+                    legalCustomerHasLegalRepresentatives.setLegalCustomerId(legalCustomer);
+                    legalCustomerHasLegalRepresentatives.setLegalRepresentativesId(legalRepresentatives);
+                    legalCustomerHasLegalRepresentatives = personEJB.saveLegalCustomerHasLegalRepresentatives(legalCustomerHasLegalRepresentatives);
+                }
             }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
@@ -324,7 +339,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON,WebConstants.IND_NATURAL_PERSON);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {

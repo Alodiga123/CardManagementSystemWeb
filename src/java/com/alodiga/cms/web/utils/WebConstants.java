@@ -106,6 +106,7 @@ public class WebConstants {
     public static final String LEGALREPRESENTATIVE_GENDER_FEMALE = "F";
     public static final String LEGALREPRESENTATIVE_GENDER_MALE = "M";
     public static final Boolean IND_NATURAL_PERSON = true;
+    public static final Boolean IND_LEGAL_PERSON = false;
 
     //CRUD Transaction
     public static final String PROGRAM_MONETARY_TYPE_YES = "Yes";

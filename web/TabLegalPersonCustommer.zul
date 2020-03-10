@@ -59,7 +59,7 @@
                                                             <include src="listAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listLegalRepresentative.zul"/>
+                                                            <include src="listLegalRepresentativeCustomer.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listAdditionalCards.zul"/>

@@ -12,6 +12,7 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CardRequestNaturalPerson;
+import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -48,6 +49,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private List<CardRequestNaturalPerson> cardRequestNaturalPersonList = null;
     private User currentUser;
     private Button btnSave;
+    private int optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -55,8 +57,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         initialize();
         startListener();
     }
-    
-    
+
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateCardRequestNaturalPerson", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
@@ -77,6 +78,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             permissionAdd = true;
             permissionRead = true;
             adminPage = "adminAdditionalCards.zul";
+            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
@@ -89,17 +91,36 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     public void getData() {
         cardRequestNaturalPersonList = new ArrayList<CardRequestNaturalPerson>();
         LegalPerson legalPerson = null;
+        LegalCustomer legalCustomer = null;
         try {
-            //Solicitante de Tarjeta
-            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
-            if (adminLegalPerson.getLegalPerson() != null) {
-                legalPerson = adminLegalPerson.getLegalPerson();
+
+            if (optionMenu == 1) {
+                //Solicitante de Tarjeta
+                AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
+                if (adminLegalPerson.getLegalPerson() != null) {
+                    legalPerson = adminLegalPerson.getLegalPerson();
+                }
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
+                request1.setParams(params);
+                cardRequestNaturalPersonList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request1);
+
+            } else if (optionMenu == 2) {
+                AdminLegalPersonCustomerController adminLegalCustomer = new AdminLegalPersonCustomerController();
+                if (adminLegalCustomer != null) {
+                    legalCustomer = adminLegalCustomer.getLegalCustomer();
+                }
+
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.LEGAL_CUSTOMER_KEY, legalCustomer.getId());
+                request1.setParams(params);
+                cardRequestNaturalPersonList = personEJB.getCardRequestNaturalPersonsByLegalCustomer(request1);
+            } else {
+                cardRequestNaturalPersonList = null;
             }
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
-            request1.setParams(params);
-            cardRequestNaturalPersonList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request1);
+
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -107,8 +128,8 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             showError(ex);
         }
     }
-    
-        public void onClick$btnAdd() throws InterruptedException {
+
+    public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
@@ -130,8 +151,8 @@ public class ListAdditionalCardsController extends GenericAbstractListController
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
-    }  
-    
+    }
+
     public void loadDataList(List<CardRequestNaturalPerson> list) {
         try {
             lbxRecords.getItems().clear();
@@ -142,7 +163,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                     item.setValue(cardRequestNaturalPerson);
                     StringBuilder builder = new StringBuilder(cardRequestNaturalPerson.getFirstNames());
                     builder.append(" ");
-                    builder.append(cardRequestNaturalPerson.getLastNames());                    
+                    builder.append(cardRequestNaturalPerson.getLastNames());
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getIdentificationNumber()));
@@ -168,23 +189,22 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             showError(ex);
         }
     }
-    
-    
+
     public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
+        Listcell listcellEditModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
             });
             button.setParent(listcellEditModal);
@@ -193,22 +213,22 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         }
         return listcellEditModal;
     }
-    
+
     public Listcell createButtonViewModal(final Object obg) {
-       Listcell listcellViewModal = new Listcell();
-        try {    
+        Listcell listcellViewModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
