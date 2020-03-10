@@ -179,12 +179,16 @@ public class ListAddressController extends GenericAbstractListController<PersonH
         Person person = null;
         try {
             AdminRequestController adminRequest = new AdminRequestController();
-            
+
             if (optionMenu == 1) {
                 person = adminRequest.getRequest().getPersonId();
-            }else if (optionMenu == 2) {
-                person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-            }else{
+            } else if (optionMenu == 2) {
+                if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
+                    person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
+                }else if(AdminLegalPersonCustomerController.legalCustomerParam.getPersonId() != null) {
+                    person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
+                }
+            } else {
                 person = null;
             }
 

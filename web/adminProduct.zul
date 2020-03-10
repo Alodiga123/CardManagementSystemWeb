@@ -47,41 +47,52 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.issuer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.kindCard')}" sclass="lblbold"/>
-                                                       </row>
-                                                        <row>
-                                                            <combobox id="cmbIssuer" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbProductType" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbKindCard" width="270px" mold="rounded" readonly="true" />
-                                                       </row>
-                                                         <row>
                                                             <label value="${c:l('cms.common.binSponsor')}" sclass="lblbold"/> 
-                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.levelProduct')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbBinSponsor" width="270px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <combobox id="cmbLevelProduct" width="270px" mold="rounded" readonly="true" />                                                            
+                                                            <label id="lblIssuer" width="260px"/>
+                                                            <label id="lblProductType" width="260px"/>
+                                                            <label id="lblBinSponsor" width="260px"/>
                                                         </row>
-                                                        <row>
+                                                         <row>
                                                             <label value="${c:l('cms.common.bin.Number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.kindCard')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblBinNumber" width="270px"/>
+                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <combobox id="cmbKindCard" width="270px" mold="rounded" readonly="true" />
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.levelProduct')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.productUse')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.domesticCurrency')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtBinNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <combobox id="cmbLevelProduct" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbProductUse" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDomesticCurrency" width="270px" mold="rounded" readonly="true" />
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.internationalCurrency')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.validityYears')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.validityMonths')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.storageMedio')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbInternationalCurrency" width="270px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtValidityYears" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <hbox>
+                                                            <radiogroup id="ValidityMonths" onCheck="value = self.selectedItem.label"/>
+                                                                 <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="r24Months" label="${c:l('cms.crud.product.24Month')}" radiogroup="ValidityMonths" />
+                                                                            <radio id="r36Months" label="${c:l('cms.crud.product.36Month')} " radiogroup="ValidityMonths" />
+                                                                            <radio id="r48Months" label="${c:l('cms.crud.product.48Month')}" radiogroup="ValidityMonths" />
+                                                                        </row>
+                                                                    </rows>
+                                                                 </grid>
+                                                            </hbox>
                                                             <combobox id="cmbStorageMedio" width="270px" mold="rounded" readonly="true" />                                                            
                                                         </row>
                                                         <row>

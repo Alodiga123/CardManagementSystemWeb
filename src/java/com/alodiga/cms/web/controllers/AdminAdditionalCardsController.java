@@ -11,6 +11,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
+import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
@@ -51,6 +52,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Integer eventType;
     public AdminRequestController adminRequest = null;
     public AdminLegalPersonController adminLegalPerson = null;
+    public AdminLegalPersonCustomerController adminLegalCustomerPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -144,6 +146,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
 
     private void saveCardRequestNaturalPerson(CardRequestNaturalPerson _cardRequestNaturalPerson) {
         LegalPerson legalPerson = null;
+        LegalCustomer legalCustomer = null;
         Person personCardRequestNaturalPerson = null;
         try {
             CardRequestNaturalPerson cardRequestNaturalPerson = null;
@@ -159,8 +162,12 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
 
             //Solicitante Jurídico
             adminLegalPerson = new AdminLegalPersonController();
+            adminLegalCustomerPerson = new AdminLegalPersonCustomerController();
+
             if (adminLegalPerson.getLegalPerson() != null) {
                 legalPerson = adminLegalPerson.getLegalPerson();
+            } else if (adminLegalCustomerPerson.getLegalCustomer() != null) {
+                legalCustomer = adminLegalCustomerPerson.getLegalCustomer();
             }
             
             //Obtener la clasificacion del solicitante de tarjeta adicional
@@ -170,7 +177,6 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
 
             //Guardar la persona
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
             if (eventType == 1) {
                 person.setCreateDate(new Timestamp(new Date().getTime()));
                 person.setPersonClassificationId(personClassification);
@@ -180,13 +186,18 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
 
             //Guarda el solicitante adicional de tarjeta
             cardRequestNaturalPerson.setPersonId(personCardRequestNaturalPerson);
-            cardRequestNaturalPerson.setLegalPersonid(legalPerson);
+            if (legalPerson != null) {
+                cardRequestNaturalPerson.setLegalPersonid(legalPerson);
+            }
             cardRequestNaturalPerson.setFirstNames(txtFullName.getText());
             cardRequestNaturalPerson.setLastNames(txtFullLastName.getText());
             cardRequestNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
             cardRequestNaturalPerson.setProposedLimit(Float.parseFloat(txtProposedLimit.getText()));
             cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            if (legalCustomer != null) {
+                cardRequestNaturalPerson.setLegalCustomerId(legalCustomer);
+            }
             cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             cardRequestNaturalPersonParam = cardRequestNaturalPerson;
             this.showMessage("sp.common.save.success", false, null);

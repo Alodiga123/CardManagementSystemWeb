@@ -8,8 +8,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.LegalPerson;
-import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
+import com.cms.commons.models.LegalCustomer;
+import com.cms.commons.models.LegalCustomerHasLegalRepresentatives;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -23,7 +23,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -34,13 +33,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListLegalRepresentativeController extends GenericAbstractListController<LegalPersonHasLegalRepresentatives> {
+public class ListLegalRepresentativeCustomerController extends GenericAbstractListController<LegalCustomerHasLegalRepresentatives> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
     private PersonEJB personEJB = null;
-    private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
+    private List<LegalCustomerHasLegalRepresentatives> legalRepresentatives = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -89,27 +88,27 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         }
     }
 
-    public void loadDataList(List<LegalPersonHasLegalRepresentatives> list) {
+    public void loadDataList(List<LegalCustomerHasLegalRepresentatives> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (LegalPersonHasLegalRepresentatives legalRepresentatives : list) {
+                for (LegalCustomerHasLegalRepresentatives legalRepresentatives : list) {
                     item = new Listitem();
                     item.setValue(legalRepresentatives);
-                    StringBuilder builder = new StringBuilder(legalRepresentatives.getLegalRepresentativesid().getFirstNames());
+                    StringBuilder builder = new StringBuilder(legalRepresentatives.getLegalRepresentativesId().getFirstNames());
                     builder.append(" ");
-                    builder.append(legalRepresentatives.getLegalRepresentativesid().getLastNames());
+                    builder.append(legalRepresentatives.getLegalRepresentativesId().getLastNames());
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(builder.toString()));
-                    item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getDocumentsPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getIdentificationNumber()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDueDateDocumentIdentification())));
-                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDateBirth())));
+                    item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesId().getDocumentsPersonTypeId().getDescription()));
+                    item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesId().getIdentificationNumber()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesId().getDueDateDocumentIdentification())));
+                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesId().getDateBirth())));
                     
-                    item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
-                    item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
+                    item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesId()));
+                    item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesId()));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -180,19 +179,19 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     
    
     public void getData() {
-        legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
-        LegalPerson legalPerson = null;
+        legalRepresentatives = new ArrayList<LegalCustomerHasLegalRepresentatives>();
+        LegalCustomer legalCustomer = null;
         try {
             //Solicitante de Tarjeta
-            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
-            if (adminLegalPerson.getLegalPerson() != null) {
-                legalPerson = adminLegalPerson.getLegalPerson();
+            AdminLegalPersonCustomerController adminLegalPerson = new AdminLegalPersonCustomerController();
+            if (adminLegalPerson.getLegalCustomer() != null) {
+                legalCustomer = adminLegalPerson.getLegalCustomer();
             }
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
+            params.put(Constants.LEGAL_CUSTOMER_KEY, legalCustomer.getId());
             request1.setParams(params);
-            legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);
+            legalRepresentatives = personEJB.getLegalRepresentativesesByCustomer(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -224,7 +223,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     }
 
     @Override
-    public List<LegalPersonHasLegalRepresentatives> getFilterList(String filter) {
+    public List<LegalCustomerHasLegalRepresentatives> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

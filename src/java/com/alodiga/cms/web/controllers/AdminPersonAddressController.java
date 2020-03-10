@@ -198,25 +198,20 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             }
 
             if (optionMenu == 1) {
-
                 AdminRequestController adminRequest = new AdminRequestController();
                 if (adminRequest.getRequest().getPersonId() != null) {
                     person = adminRequest.getRequest().getPersonId();
                 }
-
-//                if (adminRequest.getRequest().getPersonId() != null) {
-//                    person = adminRequest.getRequest().getPersonId();
-//                }
             } else if (optionMenu == 2) {
-                person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
+                if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
+                    person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
+                } else if (AdminLegalPersonCustomerController.legalCustomerParam.getPersonId() != null) {
+                    person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
+                }
             } else {
                 person = null;
             }
-
-            //AdminRequestController adminRequest = new AdminRequestController();
-//            if (adminRequest.getRequest().getPersonId() != null) {
-//                applicantCard = adminRequest.getRequest().getPersonId();
-//            }
+            
             //Guarda la dirección del solicitante
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
