@@ -79,7 +79,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
     }
 
     public void clearFields() {
-        //txtProduct.setRawValue(null);
         txtMaxNumbTransDaily.setRawValue(null);
         txtMaxNumbTransMont.setRawValue(null);
         txtAmountMinTransDomestic.setRawValue(null);
@@ -120,7 +119,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
     }
 
     public void blockFields() {
-        //txtProduct.setReadonly(true);
         txtMaxNumbTransDaily.setReadonly(true);
         txtMaxNumbTransMont.setReadonly(true);
         txtAmountMinTransDomestic.setReadonly(true);
@@ -134,16 +132,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         btnSave.setVisible(false);
     }
 
-//    public Boolean validateEmpty() {
-//        if (txtProduct.getText().isEmpty()) {
-//            txtProduct.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else {
-//            return true;
-//        }
-//        return false;
-//
-//    }
     private void saveProductHasChannelHasTransaction(ProductHasChannelHasTransaction _productHasChannelHasTransaction) {
         Product product = null;
         try {
