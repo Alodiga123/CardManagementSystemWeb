@@ -141,6 +141,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                     rApprovedNo.setChecked(true);
                 }
                 txtObservations.setValue(requestHasCollectionsRequest.getObservations());
+                UrlFile = requestHasCollectionsRequest.getUrlImageFile();
 
                 AImage image;
                 image = new org.zkoss.image.AImage(requestHasCollectionsRequest.getUrlImageFile());
