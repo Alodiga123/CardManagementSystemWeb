@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.cardRequest.list')}" />
+                                                <toolbarbutton label="${c:l('cms.menu.cardAssigment')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -38,15 +38,8 @@
                                                     <textbox id="txtRequestNumber" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
-                                                    <!--Add button-->
-                                                    <div align="left" width="160px">
-                                                        <button id="btnAddNaturalPersonRequest" label="${c:l('cms.common.actions.addNaturalPersonRequest')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
-                                                    </div>
-                                                    <div align="left" width="160px">
-                                                        <button id="btnAddLegalPersonRequest" label="${c:l('cms.common.actions.addLegalPersonRequest')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
-                                                    </div>
                                                     <!--Filters button-->
-                                                    <div align="right" width="480px">
+                                                    <div align="right" width="900px">
                                                         <button id="btnSearch" label="${c:l('sp.common.actions.search')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.search.filter.tooltip')}"/>
                                                         <button id="btnClear" label="${c:l('sp.common.actions.cancel')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.cancel.filter.tooltip')}"/>
                                                     </div>
@@ -54,22 +47,24 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="920px" mold="paging" pageSize="10" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="920px" mold="paging" pageSize="10" height="350px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.requestNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.requestDate')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.statusRequest')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.descriptionPersonType')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.applicant')}" width="195px" sort="auto"/>
-                                                    <listheader label="-" width="45px"/>
-                                                    <listheader label="-" width="45px"/>
+                                                    <!--<listheader label="-" width="45px"/>
+                                                    <listheader label="-" width="45px"/>-->
                                                 </listhead>
                                             </listbox>
                                         </div>
+                                        <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Download button-->
                                         <div align="right">
-                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/>
+                                            <button id="btnAssigment" width="150px" label="${c:l('cms.menu.btncardAssigment')}" class="open orange"/>
                                         </div>
+                                        
                                     </vlayout>
                                 </div>
                                 <div></div>
