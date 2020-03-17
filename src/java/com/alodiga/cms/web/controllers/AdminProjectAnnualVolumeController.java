@@ -146,9 +146,11 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
             request1.setParams(params);
             projectAnnualVolumeList = programEJB.getProjectAnnualVolumeByProgram(request1);
             for (ProjectAnnualVolume p: projectAnnualVolumeList) {
-                if (p.getYear() == Integer.parseInt(cmbYear.getSelectedItem().getValue().toString())) {
-                    indRegisterExist = 1;
-                    this.showMessage("sp.common.yearRegisterBD", false, null);
+                if (eventType == 1) {
+                    if (p.getYear() == Integer.parseInt(cmbYear.getSelectedItem().getValue().toString())) {
+                        indRegisterExist = 1;
+                        this.showMessage("sp.common.yearRegisterBD", false, null);
+                    }
                 }
             }     
         } catch (NullParameterException ex) {
