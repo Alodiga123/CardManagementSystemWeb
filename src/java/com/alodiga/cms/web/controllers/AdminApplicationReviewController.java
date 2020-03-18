@@ -75,7 +75,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private ReviewRequest reviewCollectionsRequestParam;
     private List<ReviewRequest> reviewCollectionsRequest;
     private Button btnSave;
-    Map params = null;
     private Request requestCard;
     Request requestNumber = null;
     private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList;
@@ -111,6 +110,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getReviewCollectionsRequestParam();
+            this.clearMessage();
         } catch (Exception ex) {
             showError(ex);
         } finally {
@@ -262,7 +262,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                 //Verificar que todos los recaudos estén aprobados y que la solicitud este aprobada por el agente comercial
                 if (indReviewCollectionApproved == 0 && reviewCollectionsRequest.getIndApproved() == true) {
                     //Se aprueba la solicitud
-                    requestCard.setStatusRequestId(getStatusRequest(Constants.STATUS_REQUEST_APPROVED));
+                    requestCard.setStatusRequestId(getStatusRequest(requestCard, Constants.STATUS_REQUEST_APPROVED));
                     requestCard = requestEJB.saveRequest(requestCard);
                     //Verificar si el solicitante es jurídico o natural
                     if (requestCard.getIndPersonNaturalRequest() == true) {
@@ -282,13 +282,13 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             showError(ex);
         }
     }
-
-    public StatusRequest getStatusRequest(int statusRequestId) {
-        StatusRequest statusRequest = null;
+    
+    public StatusRequest getStatusRequest(Request requestCard, int statusRequestId) {
+        StatusRequest statusRequest = requestCard.getStatusRequestId();
         try {
             EJBRequest request = new EJBRequest();
             request.setParam(statusRequestId);
-            statusRequest = utilsEJB.loadStatusRequest(request);
+            statusRequest = requestEJB.loadStatusRequest(request);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -315,7 +315,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         try {
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_REQUEST_COLLECTIONS_WITHOUT_APPROVAL);
-            StatusRequest statusRequestRejected = utilsEJB.loadStatusRequest(request);
+            StatusRequest statusRequestRejected = requestEJB.loadStatusRequest(request);
             requestCard.setStatusRequestId(statusRequestRejected);
             requestCard = requestEJB.saveRequest(requestCard);
         } catch (Exception ex) {
@@ -327,7 +327,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         try {
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_REQUEST_REJECTED);
-            StatusRequest statusRequestRejected = utilsEJB.loadStatusRequest(request);
+            StatusRequest statusRequestRejected = requestEJB.loadStatusRequest(request);
             requestCard.setStatusRequestId(statusRequestRejected);
             request.setParam(Constants.REASON_REQUEST_REJECTED_BY_COLLECTIONS);
             ReasonRejectionRequest reasonRejectionRequest = requestEJB.loadReasonRejectionRequest(request);
@@ -658,5 +658,4 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             ex.printStackTrace();
         }
     }
-
 }
