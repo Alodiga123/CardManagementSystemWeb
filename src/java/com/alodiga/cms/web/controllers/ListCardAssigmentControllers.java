@@ -329,17 +329,39 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         cardRequestList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request5);
 
                         cardNumber = cardNumberCredentialList.get(i);
-                        card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
+                        card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
                         //card = cardEJB.saveCard(card);
                         i++;
-                        
+
                         if (cardComplementaryList != null) {
                             for (CardRequestNaturalPerson additionalCards : cardRequestList) {
                                 cardNumber = cardNumberCredentialList.get(i);
-                                
+
+                                StringBuilder applicantName = new StringBuilder(additionalCards.getFirstNames());
+                                applicantName.append(" ");
+                                applicantName.append(additionalCards.getLastNames());
+                                String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
+                                cardHolder = cardHolder + " ";
+                                StringBuilder applicantLastName = new StringBuilder(additionalCards.getLastNames());
+                                applicantLastName.append(" ");
+                                applicantLastName.append(additionalCards.getLastNames());
+                                String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
+                                cardHolder = cardHolder + apellido;
+
+                                card.setCardNumber(cardNumber.getCardNumber());
+                                card.setProgramId(r.getProgramId());
+                                card.setProductId(reviewRequestParam.getProductId());
+                                card.setCardHolder(cardHolder);
+                                card.setIssueDate(new Timestamp(new Date().getTime()));
+                                card.setExpirationDate(nuevaFecha);
+                                card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
+                                card.setCardStatusId(cardStatus);
+                                card.setPersonCustomerId(r.getPersonCustomerId());
+                                card.setCreateDate(new Timestamp(new Date().getTime()));
+
                                 i++;
                             }
-                            
+
                         }
 
                         //Asignar tarjetas a empleados
