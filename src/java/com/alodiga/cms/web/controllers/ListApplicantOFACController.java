@@ -108,13 +108,15 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
             Map params = new HashMap();
             params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
             request1.setParams(params);
-            applicantList = personEJB.getCardComplementaryByApplicant(request1);
-            applicantList.add(applicantNaturalPerson);
+            applicantList = personEJB.getCardComplementaryByApplicant(request1);   
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
+            showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
+        } finally {
+            applicantList.add(applicantNaturalPerson);
         }
     }  
 
