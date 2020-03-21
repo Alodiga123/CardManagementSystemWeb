@@ -18,6 +18,7 @@ import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -240,7 +241,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
 
                 //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
-                request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_REQUESTED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
 
@@ -369,8 +369,14 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             }
                         }
                     }
+                    //Actualiza el estatus de la solicitud
+                    request1 = new EJBRequest();
+                    request1.setParam(Constants.STATUS_REQUEST_CUSTOMER_ASSIGNED_CARD);
+                    StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
+                    r.setStatusRequestId(statusRequest);
+                    r = requestEJB.saveRequest(r);
                 }
-                this.showMessage("sp.common.save.success", false, null);
+                this.showMessage("cms.common.msj.assignCard", false, null);
             }
 
         } catch (Exception ex) {
