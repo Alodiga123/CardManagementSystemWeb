@@ -386,6 +386,12 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
+            
+            //Actualiza el cliente en la solicitud de tarjeta
+            requestCard.setPersonCustomerId(naturalCustomer.getPersonId());
+            requestCard = requestEJB.saveRequest(requestCard);
+            
+            //Guarda el resto de la información relacionada con el cliente
             saveFamilyReferentCustomer(naturalCustomer);
             saveAddressCustomer(naturalCustomer);
 
@@ -563,6 +569,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             legalCustomer.setWebSite(applicant.getWebSite());
             legalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
+            
+            //Actualiza el cliente en la solicitud de tarjeta
+            requestCard.setPersonCustomerId(legalCustomer.getPersonId());
+            requestCard = requestEJB.saveRequest(requestCard);
 
             //3 Agregar la dirección del cliente
             EJBRequest request = new EJBRequest();
