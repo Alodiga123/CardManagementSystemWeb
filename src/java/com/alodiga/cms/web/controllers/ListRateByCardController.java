@@ -18,7 +18,7 @@ import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.RateByProgram;
-import com.cms.commons.models.RateCard;
+import com.cms.commons.models.RateByCard;
 import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -43,14 +44,14 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
     private Listbox lbxRecords;
     private Combobox cmbProgram;
     private Combobox cmbProduct;
-    private Combobox cmbCardHolder;
+    private Combobox cmbCardHolders;
     private ProductEJB productEJB = null;
     private ProgramEJB programEJB = null;
     private CardEJB cardEJB = null;
-    private List<RateByProgram> rateByProgramList = null;
-    private List<RateByProduct> rateByProductByProductList = new ArrayList<RateByProduct>();
-    private RateCard RateByCardParam;
-    private Product product = null;
+    private List<RateByCard> rateByCardByCardList = new ArrayList<RateByCard>();
+    private List<RateByProduct> rateByProductList = null;
+    private RateByCard RateByCardParam;
+    private Card product = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -81,15 +82,20 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
     }
 
     public void onChange$cmbProgram() {
-        cmbCardHolder.setVisible(true);
+        cmbCardHolders.setValue("");
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         loadCmbCardHolder(WebConstants.EVENT_ADD, program.getId());
     }
     
-        public void onChange$cmbCardHolder() {
-        cmbProduct.setVisible(true);
-        Card card = (Card) cmbCardHolder.getSelectedItem().getValue();
+    public void onChange$cmbCardHolders() {
+        cmbProduct.setValue("");
+        Card card = (Card) cmbCardHolders.getSelectedItem().getValue();
         loadCmbProduct(WebConstants.EVENT_ADD, card.getCardHolder());
+    }
+    
+    public void onChange$cmbProduct() {
+        Card card = (Card) cmbProduct.getSelectedItem().getValue();
+        getData(card.getProductId().getId());
     }
 
     public void onClick$btnAdd() throws InterruptedException {
@@ -98,54 +104,54 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
     }
 
     public void onClick$btnViewRates() throws InterruptedException {
-        product = (Product) cmbProduct.getSelectedItem().getValue();
-        loadList(rateByProgramList, product);
+        product = (Card) cmbProduct.getSelectedItem().getValue();
+        loadList(rateByProductList, product);
     }
 
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<RateByProgram> list, Product productId) {
-        List<RateByProduct> rateByProductList = new ArrayList<RateByProduct>();
-        RateByProduct rateByProduct = null;
+    public void loadList(List<RateByProduct> list, Card productId) {
+        List<RateByCard> rateByCardList = new ArrayList<RateByCard>();
+        RateByCard rateByCard = null;
         EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
         int indLoadList = 0;
         String rbp1;
         int indExist = 0;
         try {
-            params.put(QueryConstants.PARAM_PRODUCT_ID, product.getId());
+            params.put(QueryConstants.PARAM_PRODUCT_ID, product.getProductId().getId());
             request1.setParams(params);
-            rateByProductByProductList = productEJB.getRateByProductByProduct(request1);
-            if (rateByProductByProductList != null) {
-                indLoadList = 1;
-                for (RateByProduct r : rateByProductByProductList) {
-                    rateByProductList.add(r);
+            rateByCardByCardList = cardEJB.getRateByCardByCard(request1);
+            if (rateByCardByCardList != null) {
+                indLoadList = 1;                
+                for (RateByCard r : rateByCardByCardList) {
+                    rateByCardByCardList.add(r);
                 }
                 if (list != null && !list.isEmpty()) {
-                    for (RateByProgram rp : list) {
+                    for (RateByProduct rp : list) {
                         rbp1 = rp.getChannelId().getId().toString() + rp.getTransactionId().getId().toString() + productId.getProgramId().getId().toString();
-                        rateByProduct = new RateByProduct();
-                        rateByProduct.setChannelId(rp.getChannelId());
-                        rateByProduct.setFixedRate(rp.getFixedRate());
-                        rateByProduct.setPercentageRate(rp.getPercentageRate());
-                        rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
-                        rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
-                        rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
-                        rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
-                        rateByProduct.setTransactionId(rp.getTransactionId());
-                        rateByProduct = productEJB.saveRateByProduct(rateByProduct);
-                        rateByProductList.add(rateByProduct);
+                        rateByCard = new RateByCard();
+                        rateByCard.setCardId(product);
+                        rateByCard.setChannelId(rp.getChannelId());
+                        rateByCard.setFixedRate(rp.getFixedRate());
+                        rateByCard.setPercentageRate(rp.getPercentageRate());
+                        rateByCard.setRateApplicationTypeId(rp.getRateApplicationTypeId());
+                        rateByCard.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
+                        rateByCard.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
+                        rateByCard.setTransactionId(rp.getTransactionId());
+                        rateByCard = cardEJB.saveRateByCard(rateByCard);
+                        rateByCardByCardList.add(rateByCard);
                     }
                 }
             }
             lbxRecords.getItems().clear();
             Listitem item = null;
-            if (rateByProductList != null && !rateByProductList.isEmpty()) {
-                for (RateByProduct r : rateByProductList) {
+            if (rateByCardByCardList != null && !rateByCardByCardList.isEmpty()) {
+                for (RateByCard r : rateByCardByCardList) {
                     item = new Listitem();
                     item.setValue(r);
-                    item.appendChild(new Listcell (r.getProductId().getCountryId().getName()));
+                    item.appendChild(new Listcell (r.getCardId().getProductId().getCountryId().getName()));
                     item.appendChild(new Listcell(r.getChannelId().getName()));
                     item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                     item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -177,23 +183,23 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                     lbxRecords.getItems().clear();
                     Listitem item = null;
                     if (list != null && !list.isEmpty()) {
-                        for (RateByProgram rp : list) {
-                            rateByProduct = new RateByProduct();
-                            rateByProduct.setChannelId(rp.getChannelId());
-                            rateByProduct.setTransactionId(rp.getTransactionId());
-                            rateByProduct.setFixedRate(rp.getFixedRate());
-                            rateByProduct.setPercentageRate(rp.getPercentageRate());
-                            rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
-                            rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
-                            rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
-                            rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
-                            rateByProduct = productEJB.saveRateByProduct(rateByProduct);
-                            rateByProductList.add(rateByProduct);
+                        for (RateByProduct rp : list) {
+                            rateByCard = new RateByCard();
+                            rateByCard.setCardId(product);
+                            rateByCard.setChannelId(rp.getChannelId());
+                            rateByCard.setFixedRate(rp.getFixedRate());
+                            rateByCard.setPercentageRate(rp.getPercentageRate());
+                            rateByCard.setRateApplicationTypeId(rp.getRateApplicationTypeId());
+                            rateByCard.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
+                            rateByCard.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
+                            rateByCard.setTransactionId(rp.getTransactionId());
+                            rateByCard = cardEJB.saveRateByCard(rateByCard);
+                            rateByCardByCardList.add(rateByCard);
                         }
-                        for (RateByProduct r : rateByProductList) {
+                        for (RateByCard r : rateByCardByCardList) {
                             item = new Listitem();
                             item.setValue(r);
-                            item.appendChild(new Listcell(r.getProductId().getProgramId().getCardProgramManagerId().getCountryId().getName()));
+                            item.appendChild(new Listcell(r.getCardId().getProductId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -222,13 +228,13 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
         }
     }
 
-    public void getData(Long programId) {
+    public void getData(Long productId) {
         try {
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
+            params.put(QueryConstants.PARAM_PRODUCT_ID, productId);
             request1.setParams(params);
-            rateByProgramList = productEJB.getRateByProgramByProgram(request1);
+            rateByProductList = productEJB.getRateByProductByProduct(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -268,15 +274,20 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
     }
 
     private void loadCmbProduct(Integer evenInteger, String cardHolder) {
-        EJBRequest request1 = new EJBRequest();
         cmbProduct.getItems().clear();
+        EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_CARDHOLDER, cardHolder);
         request1.setParams(params);
-        List<Card> card;
+        List<Card> cardList;
         try {
-            card = cardEJB.getCardByCardHolder(request1);
-            loadGenericCombobox(card, cmbProduct, "name", evenInteger, Long.valueOf(0));
+            cardList = cardEJB.getCardByCardHolder(request1);
+            for (int i = 0; i < cardList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(cardList.get(i));
+                item.setLabel(cardList.get(i).getProductId().getName());
+                item.setParent(cmbProduct);
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -290,15 +301,15 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
     }
     
     private void loadCmbCardHolder(Integer evenInteger, long programId) {
+        cmbCardHolders.getItems().clear();
         EJBRequest request1 = new EJBRequest();
-        cmbCardHolder.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
         request1.setParams(params);
         List<Card> cardByProgramList;
         try {
             cardByProgramList = cardEJB.getCardByProgram(request1);
-            loadGenericCombobox(cardByProgramList, cmbCardHolder, "cardHolder", evenInteger, Long.valueOf(0));
+            loadGenericCombobox(cardByProgramList, cmbCardHolders, "cardHolder", evenInteger, Long.valueOf(0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

@@ -81,6 +81,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
         loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
+        getData(program.getId());
     }
 
     public void onClick$btnAdd() throws InterruptedException {
@@ -116,6 +117,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 if (list != null && !list.isEmpty()) {
                     for (RateByProgram rp : list) {
                         rbp1 = rp.getChannelId().getId().toString() + rp.getTransactionId().getId().toString() + productId.getProgramId().getId().toString();
+                        rateByProduct = new RateByProduct();
                         rateByProduct = new RateByProduct();
                         rateByProduct.setChannelId(rp.getChannelId());
                         rateByProduct.setFixedRate(rp.getFixedRate());
@@ -170,6 +172,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                     if (list != null && !list.isEmpty()) {
                         for (RateByProgram rp : list) {
                             rateByProduct = new RateByProduct();
+                            rateByProduct.setProductId(product);
                             rateByProduct.setChannelId(rp.getChannelId());
                             rateByProduct.setTransactionId(rp.getTransactionId());
                             rateByProduct.setFixedRate(rp.getFixedRate());

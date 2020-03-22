@@ -293,7 +293,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell32.setLabel(Labels.getLabel("cms.menu.rateByCard.list"));
         listCell32.addEventListener("onClick", new RedirectListener("listRateByCard.zul"));
         listCell32.setParent(item32);
-        item25.setParent(lbxPermissions);
+        item32.setParent(lbxPermissions);
     }
 }
 
