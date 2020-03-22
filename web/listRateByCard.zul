@@ -33,14 +33,14 @@
                                             <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="220px"/>
-                                                        <column label="" width="200px"/>
+                                                        <column label="" width="220px"/>
                                                         <column label="" width="220px"/>
                                                         <column label="" width="180x"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cmbCardHolder')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
