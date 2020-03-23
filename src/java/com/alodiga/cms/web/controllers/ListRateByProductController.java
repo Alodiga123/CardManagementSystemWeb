@@ -104,6 +104,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         Map params = new HashMap();
         int indLoadList = 0;
         String rbp1;
+        String rbp2;
         int indExist = 0;
         try {
             params.put(QueryConstants.PARAM_PRODUCT_ID, product.getId());
@@ -117,18 +118,26 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 if (list != null && !list.isEmpty()) {
                     for (RateByProgram rp : list) {
                         rbp1 = rp.getChannelId().getId().toString() + rp.getTransactionId().getId().toString() + productId.getProgramId().getId().toString();
-                        rateByProduct = new RateByProduct();
-                        rateByProduct = new RateByProduct();
-                        rateByProduct.setChannelId(rp.getChannelId());
-                        rateByProduct.setFixedRate(rp.getFixedRate());
-                        rateByProduct.setPercentageRate(rp.getPercentageRate());
-                        rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
-                        rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
-                        rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
-                        rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
-                        rateByProduct.setTransactionId(rp.getTransactionId());
-                        rateByProduct = productEJB.saveRateByProduct(rateByProduct);
-                        rateByProductList.add(rateByProduct);
+                        for (RateByProduct r: rateByProductByProductList) {
+                            rbp2 = r.getChannelId().getId().toString() + r.getTransactionId().getId().toString() + r.getProductId().getProgramId().getId().toString();
+                            if (rbp1.equals(rbp2)) {
+                                indExist = 1;
+                            }
+                        }
+                        if (indExist != 1) {
+                            rateByProduct = new RateByProduct();
+                            rateByProduct.setChannelId(rp.getChannelId());
+                            rateByProduct.setFixedRate(rp.getFixedRate());
+                            rateByProduct.setPercentageRate(rp.getPercentageRate());
+                            rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
+                            rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
+                            rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
+                            rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
+                            rateByProduct.setTransactionId(rp.getTransactionId());
+                            rateByProduct = productEJB.saveRateByProduct(rateByProduct);
+                            rateByProductList.add(rateByProduct);
+                        }
+                        indExist = 0;
                     }
                 }
             }
