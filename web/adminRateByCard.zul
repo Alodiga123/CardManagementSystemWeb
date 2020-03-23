@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminRateByProgram" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRateByProgramController" class="general-window">
+    <window id="winAdminRateByCard" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRateByCardController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.rateByProgram.list')}" onClick='Executions.sendRedirect(&quot;listRateByProgram.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.RateByCardlist')}" onClick='Executions.sendRedirect(&quot;listRateByCard.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.rateByProgram.add')}"/>
+                                                <toolbarbutton id= "tbbTitle"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -54,48 +54,39 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.channel')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.menu.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <label id="lblProgram" width="250px"/>
                                                             <label id="lblProductType" width="250px"/>
-                                                            <label id="lblChannel" width="250px"/>
+                                                            <label id="lblProduct" width="250px"/>
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.channel')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.transaction')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <label id="lblChannel" width="250px"/>
                                                             <label id="lblTransaction" width="250px"/>
                                                             <label id="lblRateApplicationType" width="250px"/>
-                                                            <textbox id="txtFixedRate" width="250px"/>
+                                                            
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.percentageRate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.totalTransactionInitialExempt')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtFixedRate" width="250px"/>
+                                                            <textbox id="txtPercentageRate" width="250px"/>
+                                                            <textbox id="txtTotalTransactionInitialExempt" width="250px"/>
+                                                        </row>
+                                                        <row>
                                                             <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtPercentageRate" width="250px"/>
-                                                            <textbox id="txtTotalTransactionInitialExempt" width="250px"/>
                                                             <textbox id="txtTotalTransactionExemptPerMonth" width="250px"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.indModificationCardHolder')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <hbox>
-                                                                <radiogroup id="indModificationCardHolder" onCheck="value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rModificationCardHolderYes" label="${c:l('cms.commom.Yes')}"  radiogroup="indModificationCardHolder" />
-                                                                            <radio id="rModificationCardHolderNo" label="${c:l('cms.commom.No')}"   radiogroup="indModificationCardHolder" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox> 
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -105,7 +96,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('cms.common.actions.saveAndContinue')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRateByProgram.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRateByProduct.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
