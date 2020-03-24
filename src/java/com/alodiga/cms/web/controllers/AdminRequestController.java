@@ -212,7 +212,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             //colocar estatus de solicitud "EN PROCESO"
             request1 = new EJBRequest();
             request1.setParam(Constants.STATUS_REQUEST_IN_PROCESS);
-            StatusRequest statusRequest = utilsEJB.loadStatusRequest(request1);
+            StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
 
             //Guarda la solicitud en la BD
             request.setRequestNumber(numberRequest);

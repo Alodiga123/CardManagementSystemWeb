@@ -4,18 +4,18 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminRequestController" class="general-window">
+    <window id="winAdminRequest" width="100%" height="900px" apply="com.alodiga.cms.web.controllers.AdminRequestController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="900px" align="left" height="780px">
                             <hlayout>
-                                <div width="900px">
+                                <div width="890px">
                                     <vlayout>
-                                        <div height="5px" width="100%" style="background:#333;" align="left"></div>
+                                        <div height="5px" width="890px" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
@@ -48,9 +48,9 @@
                                                 </grid>
                                             </vlayout>
                                         </div>
-                                        <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
+                                        <div id="divInfo" height="20px" width="890px" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
-                                        <div align="right">
+                                        <div height="40px" width="880px" align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
                                             <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
                                         </div>
