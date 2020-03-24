@@ -61,7 +61,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private Button btnSave;
     private Integer eventType;
     public static NaturalCustomer naturalCustomerParam = null;
-//    public NaturalCustomer personCustomerParam;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -127,6 +126,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     }
 
     private void loadFields(NaturalCustomer naturalCustomer) {
+        String Gender = "M";
         try {
             txtIdentificationNumber.setText(naturalCustomer.getIdentificationNumber());
             if (txtDueDateDocumentIdentification != null) {
@@ -156,7 +156,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             }
             txtFullName.setText(naturalCustomer.getFirstNames());
             txtFullLastName.setText(naturalCustomer.getLastNames());
-            if (naturalCustomer.getGender() == "M") {
+            if (naturalCustomer.getGender().equals(Gender)) {
                 genderMale.setChecked(true);
             } else {
                 genderFemale.setChecked(true);
@@ -164,7 +164,9 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             txtBirthPlace.setText(naturalCustomer.getPlaceBirth());
             txtBirthDay.setValue(naturalCustomer.getDateBirth());
             txtFamilyResponsibilities.setText(naturalCustomer.getFamilyResponsibilities().toString());
-//            txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
+            if (txtCountryStayTime != null) {
+                txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
+            }
             txtMarriedLastName.setText(naturalCustomer.getMarriedLastName());
         } catch (Exception ex) {
             showError(ex);

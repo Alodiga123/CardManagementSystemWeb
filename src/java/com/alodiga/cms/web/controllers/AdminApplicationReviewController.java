@@ -12,6 +12,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CardRequestNaturalPerson;
+import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalCustomerHasLegalRepresentatives;
@@ -76,8 +77,9 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private List<ReviewRequest> reviewCollectionsRequest;
     private Button btnSave;
     private Request requestCard;
-    Request requestNumber = null;
+    private Request requestNumber = null;
     private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList;
+    private List<CollectionsRequest>  collectionsByRequestList;
     private List<ApplicantNaturalPerson> cardComplementaryList = null;
     private NaturalCustomer naturalCustomerParent = null;
     public static Person customer = null;
@@ -225,11 +227,24 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             ReviewRequestType reviewRequestType = requestEJB.loadReviewRequestType(request);
 
             if (rApprovedYes.isChecked()) {
+                //Recaudos que han sido revisados por Agente Comercial
                 Map params = new HashMap();
                 EJBRequest request1 = new EJBRequest();
                 params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
                 request1.setParams(params);
                 requestHasCollectionsRequestList = requestEJB.getRequestsHasCollectionsRequestByRequest(request1);
+                //Recaudos asociados a la Solicitud
+                params = new HashMap();
+                params.put(Constants.COUNTRY_KEY, adminRequest.getRequest().getCountryId().getId());
+                params.put(Constants.PROGRAM_KEY, adminRequest.getRequest().getProgramId().getId());
+                params.put(Constants.PRODUCT_TYPE_KEY, adminRequest.getRequest().getProductTypeId().getId());
+                params.put(Constants.PERSON_TYPE_KEY, adminRequest.getRequest().getPersonTypeId().getId());
+                request1.setParams(params);
+                collectionsByRequestList = requestEJB.getCollectionsByRequest(request1);
+                //Se chequea si hay recaudos sin revisar
+                if (collectionsByRequestList.size() > requestHasCollectionsRequestList.size()) {
+                    indReviewCollectionIncomplete = 1;
+                }
                 for (RequestHasCollectionsRequest r : requestHasCollectionsRequestList) {
                     if (r.getIndApproved() == 0) {
                         indReviewCollectionApproved = 1;
@@ -333,6 +348,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             ReasonRejectionRequest reasonRejectionRequest = requestEJB.loadReasonRejectionRequest(request);
             requestCard.setReasonRejectionRequestId(reasonRejectionRequest);
             requestCard = requestEJB.saveRequest(requestCard);
+            this.showMessage("cms.common.requestRejected", false, null);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -370,6 +386,12 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
+            
+            //Actualiza el cliente en la solicitud de tarjeta
+            requestCard.setPersonCustomerId(naturalCustomer.getPersonId());
+            requestCard = requestEJB.saveRequest(requestCard);
+            
+            //Guarda el resto de la información relacionada con el cliente
             saveFamilyReferentCustomer(naturalCustomer);
             saveAddressCustomer(naturalCustomer);
 
@@ -547,6 +569,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             legalCustomer.setWebSite(applicant.getWebSite());
             legalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
+            
+            //Actualiza el cliente en la solicitud de tarjeta
+            requestCard.setPersonCustomerId(legalCustomer.getPersonId());
+            requestCard = requestEJB.saveRequest(requestCard);
 
             //3 Agregar la dirección del cliente
             EJBRequest request = new EJBRequest();
