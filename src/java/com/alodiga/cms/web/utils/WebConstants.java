@@ -46,6 +46,9 @@ public class WebConstants {
     public static final String ID_MONETARY_TYPE_TRUE = "true";
     public static final String ID_MONETARY_TYPE_FALSE = "false";
     public static final String MAIN_APPLICANT = "Solicitante Principal";
+    public static final int MAIN_CUSTOMER = 1;
+    public static final int COMPLEMENTARY_CUSTOMER = 2;
+    
     
     public static final String MENU_SECURITY = "menu.security";
     public static final String MENUITEM_SECURITY_PROFILE = "menu.security.profile";

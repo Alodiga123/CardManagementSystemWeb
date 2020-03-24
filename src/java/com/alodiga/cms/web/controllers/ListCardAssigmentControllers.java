@@ -17,6 +17,8 @@ import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewRequest;
+import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -47,12 +49,11 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private List<Request> requests = null;
-    private Date nuevaFecha;
+    private Date expirationDateCard;
     public static int indAddRequestPerson;
     public static int indRequestOption = 1;
     private String applicantName = "";
     private ReviewRequest reviewRequestParam;
-    //private CardNumberCredential cardNumberCredential;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -170,11 +171,10 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     }
 
     public Card createCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request,
-            CardStatus cardStatus) {
-        Card card = null;
-        card = new Card();
-
-        try {
+        CardStatus cardStatus) {
+        Card card = new Card();
+        
+        try {                
             StringBuilder applicantName = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
             applicantName.append(" ");
             applicantName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
@@ -184,14 +184,13 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             applicantLastName.append(" ");
             applicantLastName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
             String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
-            cardHolder = cardHolder + apellido;
-
+            cardHolder = cardHolder + apellido;                       
             card.setCardNumber(cardNumber.getCardNumber());
             card.setProgramId(request.getProgramId());
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(cardHolder);
             card.setIssueDate(new Timestamp(new Date().getTime()));
-            card.setExpirationDate(nuevaFecha);
+            card.setExpirationDate(expirationDateCard);
             card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
@@ -204,8 +203,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
 
     public Card createLegalCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request,
             CardStatus cardStatus) {
-        Card card = null;
-        card = new Card();
+        Card card = new Card();
 
         try {
             card.setCardNumber(cardNumber.getCardNumber());
@@ -213,7 +211,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(request.getPersonId().getLegalPerson().getEnterpriseName());
             card.setIssueDate(new Timestamp(new Date().getTime()));
-            card.setExpirationDate(nuevaFecha);
+            card.setExpirationDate(expirationDateCard);
             card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
@@ -230,9 +228,10 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         CardStatus cardStatus = null;
         List<CardNumberCredential> cardNumberCredentialList = null;
         List<ReviewRequest> reviewRequestList = null;
-        List<ApplicantNaturalPerson> cardComplementaryList = null;
+        List<NaturalCustomer> cardComplementaryList = null;
         List<CardRequestNaturalPerson> cardRequestList = null;
         CardNumberCredential cardNumber = null;
+        Long countCardComplementary = 0L;
         int i = 0;
 
         try {
@@ -240,9 +239,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
 
-                //estatus de la tarjeta
+                //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
-                request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_REQUESTED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
 
@@ -254,6 +252,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                 cardNumberCredentialList = cardEJB.getCardNumberCredentialByUse(request2);
                 cardNumber = cardNumberCredentialList.get(i);
 
+                //Se asignan las tarjetas a las solictudes aprobadas
                 for (Request r : list) {
                     //Se busca el producto por medio de ReviewRequest
                     EJBRequest request3 = new EJBRequest();
@@ -267,90 +266,133 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         reviewRequestParam = review;
                     }
 
+                    //Se calcula la fecha de vencimiento de la tarjeta
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(new Timestamp(new Date().getTime()));
                     cal.add(Calendar.MONTH, reviewRequestParam.getProductId().getValidityMonths());
-                    nuevaFecha = cal.getTime();
+                    expirationDateCard = cal.getTime();
 
+                    //Caso Solicitante Natural
                     if (r.getPersonTypeId().getIndNaturalPerson() == true) {
-                        EJBRequest request4 = new EJBRequest();
-                        params = new HashMap();
-                        params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, r.getPersonId().getApplicantNaturalPerson().getId());
-                        request4.setParams(params);
-                        cardComplementaryList = personEJB.getCardComplementaryByApplicant(request4);
-
                         //Asignar tarjeta al solicitante principal
                         cardNumber = cardNumberCredentialList.get(i);
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        //card = cardEJB.saveCard(card);
-
-                        //Actualiza el número secuencial con Id de Card
-                        //card.setSequentialNumber(card.getId().intValue());
-                        //card = cardEJB.saveCard(card);
+                        saveCard(card);
+                        updateCardNumberAssigned(cardNumber);
                         i++;
 
-                        //Asignar tarjetas a solicitantes complementarios
-                        if (cardComplementaryList != null) {
-                            for (ApplicantNaturalPerson cardComplementaries : cardComplementaryList) {
-                                cardNumber = cardNumberCredentialList.get(i);
-
-                                StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
-                                applicantName.append(" ");
-                                applicantName.append(cardComplementaries.getLastNames());
-                                String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
-                                cardHolder = cardHolder + " ";
-                                StringBuilder applicantLastName = new StringBuilder(cardComplementaries.getLastNames());
-                                applicantLastName.append(" ");
-                                applicantLastName.append(cardComplementaries.getLastNames());
-                                String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
-                                cardHolder = cardHolder + apellido;
-
-                                card.setCardNumber(cardNumber.getCardNumber());
-                                card.setProgramId(r.getProgramId());
-                                card.setProductId(reviewRequestParam.getProductId());
-                                card.setCardHolder(cardHolder);
-                                card.setIssueDate(new Timestamp(new Date().getTime()));
-                                card.setExpirationDate(nuevaFecha);
-                                card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
-                                card.setCardStatusId(cardStatus);
-                                card.setPersonCustomerId(r.getPersonCustomerId());
-                                card.setCreateDate(new Timestamp(new Date().getTime()));
-
-                                i++;
+                        //Se verifica si hay solicitaantes complementarios
+                        countCardComplementary = personEJB.countCardComplementaryByApplicant(r.getPersonId().getApplicantNaturalPerson().getId());
+                        if (countCardComplementary > 0) {
+                            //Obtiene Lista de solicitantes complementarios
+                            EJBRequest request4 = new EJBRequest();
+                            params = new HashMap();
+                            params.put(Constants.NATURAL_CUSTOMER_KEY, r.getPersonCustomerId().getNaturalCustomer().getId());
+                            request4.setParams(params);
+                            cardComplementaryList = personEJB.getNaturalCustomerByCardComplementaries(request4);
+                            
+                            //Asignar tarjetas a solicitantes complementarios
+                            if (cardComplementaryList != null) {
+                                for (NaturalCustomer cardComplementaries : cardComplementaryList) {
+                                    card = new Card();
+                                    cardNumber = cardNumberCredentialList.get(i);                                
+                                    StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
+                                    applicantName.append(" ");
+                                    applicantName.append(cardComplementaries.getLastNames());
+                                    String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
+                                    cardHolder = cardHolder + " ";
+                                    StringBuilder applicantLastName = new StringBuilder(cardComplementaries.getLastNames());
+                                    applicantLastName.append(" ");
+                                    applicantLastName.append(cardComplementaries.getLastNames());
+                                    String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
+                                    cardHolder = cardHolder + apellido;
+                                    card.setCardNumber(cardNumber.getCardNumber());
+                                    card.setProgramId(r.getProgramId());
+                                    card.setProductId(reviewRequestParam.getProductId());
+                                    card.setCardHolder(cardHolder);
+                                    card.setIssueDate(new Timestamp(new Date().getTime()));
+                                    card.setExpirationDate(expirationDateCard);
+                                    card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
+                                    card.setCardStatusId(cardStatus);
+                                    card.setPersonCustomerId(cardComplementaries.getPersonId());
+                                    card.setCreateDate(new Timestamp(new Date().getTime()));
+                                    saveCard(card);
+                                    updateCardNumberAssigned(cardNumber);
+                                    i++;
+                                }
                             }
                         }
-                        //Asignar tarjeta al solicitante principal
+                        
                     } else {
-
+                        //Caso Solicitante Jurídico
+                        //Obtiene lista de tarjetas adicionales (Empleados)
                         EJBRequest request5 = new EJBRequest();
                         params = new HashMap();
                         params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, r.getPersonId().getLegalPerson().getId());
                         request5.setParams(params);
                         cardRequestList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request5);
 
+                        //Asigna tarjeta a solicitante juridico
                         cardNumber = cardNumberCredentialList.get(i);
-                        card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        //card = cardEJB.saveCard(card);
+                        card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
+                        saveCard(card);
+                        updateCardNumberAssigned(cardNumber);
                         i++;
-                        
-                        if (cardComplementaryList != null) {
+
+                        if (cardRequestList != null) {
                             for (CardRequestNaturalPerson additionalCards : cardRequestList) {
+                                card = new Card();
                                 cardNumber = cardNumberCredentialList.get(i);
-                                
+                                StringBuilder applicantName = new StringBuilder(additionalCards.getFirstNames());
+                                applicantName.append(" ");
+                                applicantName.append(additionalCards.getLastNames());
+                                String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
+                                cardHolder = cardHolder + " ";
+                                StringBuilder applicantLastName = new StringBuilder(additionalCards.getLastNames());
+                                applicantLastName.append(" ");
+                                applicantLastName.append(additionalCards.getLastNames());
+                                String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
+                                cardHolder = cardHolder + apellido;
+                                card.setCardNumber(cardNumber.getCardNumber());
+                                card.setProgramId(r.getProgramId());
+                                card.setProductId(reviewRequestParam.getProductId());
+                                card.setCardHolder(cardHolder);
+                                card.setIssueDate(new Timestamp(new Date().getTime()));
+                                card.setExpirationDate(expirationDateCard);
+                                card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
+                                card.setCardStatusId(cardStatus);
+                                card.setPersonCustomerId(r.getPersonCustomerId());
+                                card.setCreateDate(new Timestamp(new Date().getTime()));
+                                saveCard(card);
+                                updateCardNumberAssigned(cardNumber);
                                 i++;
                             }
-                            
                         }
-
-                        //Asignar tarjetas a empleados
                     }
+                    //Actualiza el estatus de la solicitud
+                    request1 = new EJBRequest();
+                    request1.setParam(Constants.STATUS_REQUEST_CUSTOMER_ASSIGNED_CARD);
+                    StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
+                    r.setStatusRequestId(statusRequest);
+                    r = requestEJB.saveRequest(r);
                 }
-                this.showMessage("sp.common.save.success", false, null);
+                this.showMessage("cms.common.msj.assignCard", false, null);
             }
 
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void saveCard(Card card) {
+        try {
+            card = cardEJB.saveCard(card);
+            card.setSequentialNumber(card.getId().intValue());
+            card = cardEJB.saveCard(card);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        
     }
 
     public void updateCardNumberAssigned(CardNumberCredential cardNumber) {

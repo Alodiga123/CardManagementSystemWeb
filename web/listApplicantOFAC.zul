@@ -11,13 +11,13 @@
                 <div align="center" >
                     <hlayout>
                         <div></div>
-                        <div width="1200px" align="left" height="1400px">
+                        <div width="1200px" align="left" height="670px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                            <separator/>
+                                             <separator/>
                                             <vlayout>
                                                 <hlayout>
                                                     <!--buttons-->

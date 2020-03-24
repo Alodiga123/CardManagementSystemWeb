@@ -96,7 +96,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicant.getPersonId().getId());
-            params.put(Constants.REQUEST_KEY, adminRequest.getRequest().getId());
+            params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
             request.setParams(params);
             List<ReviewOFAC> reviewOFACList = requestEJB.getReviewOFACByApplicantByRequest(request);
             for (ReviewOFAC r: reviewOFACList) {
@@ -120,7 +120,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
             applicantNaturalPerson.setStatusApplicantId((StatusApplicant) cmbStatusApplicant.getSelectedItem().getValue());
             applicantNaturalPerson = personEJB.saveApplicantNaturalPerson(applicantNaturalPerson);
             this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true).publish(new Event(""));
+            EventQueues.lookup("updateApplicantOFAC", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
