@@ -29,6 +29,7 @@ import com.cms.commons.models.IssuerType;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PersonType;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.QueryConstants;
@@ -36,8 +37,10 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import static org.apache.commons.codec.digest.DigestUtils.md5;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
@@ -113,6 +116,10 @@ public class AdminUserController extends GenericAbstractAdminController {
     
         
     private void loadFields(User user) {
+        List<PhonePerson> phonePersonUserList = null;
+        PhonePerson phonePersonUser = null;
+        List<PhonePerson> phonePersonEmployeeAuthorizeList = null;
+        PhonePerson phonePersonEmployeeAuthorize = null;
         try {
             txtIdentificationNumber.setText(user.getIdentificationNumber());
             txtFirstName.setText(user.getFirstNames());
@@ -123,7 +130,29 @@ public class AdminUserController extends GenericAbstractAdminController {
             lblPosition.setValue(user.getEmployeeId().getEmployedPositionId().getName());
             lblUserExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
             lblAuthorizeExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
-            if (user.getEnabled()== true) {
+            if (user.getEmployeeId() != null) {
+                EJBRequest request = new EJBRequest(); 
+                HashMap params = new HashMap();
+                params.put(Constants.PERSON_KEY, user.getEmployeeId().getPersonId().getId());
+                request.setParams(params);
+                phonePersonUserList = personEJB.getPhonePersonByperson(request);
+                for (PhonePerson phoneUser : phonePersonUserList) {
+                    phonePersonUser = phoneUser;
+                }
+                lblUserExtAlodiga.setValue(phonePersonUser.getExtensionPhoneNumber());
+            }
+            if (user.getAuthorizedEmployeeId() != null) {
+                EJBRequest request = new EJBRequest(); 
+                HashMap params = new HashMap();
+                params.put(Constants.PERSON_KEY, user.getAuthorizedEmployeeId().getPersonId().getId());
+                request.setParams(params);
+                phonePersonEmployeeAuthorizeList = personEJB.getPhonePersonByperson(request);
+                for (PhonePerson phoneEmployeeAuthorize : phonePersonEmployeeAuthorizeList) {
+                    phonePersonEmployeeAuthorize = phoneEmployeeAuthorize;
+                }
+                lblAuthorizeExtAlodiga.setValue(phonePersonEmployeeAuthorize.getExtensionPhoneNumber());
+            }
+            if (user.getEnabled() == true) {
                 rEnabledYes.setChecked(true);
             } else {
                 rEnabledNo.setChecked(true);
@@ -185,8 +214,8 @@ public class AdminUserController extends GenericAbstractAdminController {
 
     public void onChange$cmbAuthorizeEmployee() {
         lblAuthorizeExtAlodiga.setVisible(true);
-        User user = (User) cmbAuthorizeEmployee.getSelectedItem().getValue();
-        lblAuthorizeExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
+        Employee employeeAuthorize = (Employee) cmbAuthorizeEmployee.getSelectedItem().getValue();
+        lblAuthorizeExtAlodiga.setValue(employeeAuthorize.getPersonId().getPhonePerson().getNumberPhone());
     }    
     
     
@@ -215,23 +244,24 @@ public class AdminUserController extends GenericAbstractAdminController {
             //Guardar la persona
             Person person = new Person();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId((PersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person.setEmail(txtUserEmail.getText());
-//            person.setPhonePerson();
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
             
             //Guarda el Usuario
-            user.setIdentificationNumber(txtIdentificationNumber.getText().toString());
-            user.setFirstNames(txtFirstName.getText());
-            user.setLastNames(txtLastName.getText());
-            user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());
-//            user.setPersonId((PhonePerson).);
-            user.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
-//            user.setAuthorizedEmployeeId((AuthorizedEmployee) cmbAuthorizeEmployee.getSelectedItem().getValue());
             user.setLogin(txtLogin.getText());
             user.setPassword(txtPassword.getText());
+            user.setPersonId(person);
+            user.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            user.setIdentificationNumber(txtIdentificationNumber.getText().toString());
+            user.setCode(txtIdentificationNumber.getText().toString());
+            user.setFirstNames(txtFirstName.getText());
+            user.setLastNames(txtLastName.getText());
+            user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());            
+            user.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
+            user.setAuthorizedEmployeeId((Employee) cmbAuthorizeEmployee.getSelectedItem().getValue());
             user.setEnabled(indEnabled);
             user = personEJB.saveUser(user);
             userParam =user;
@@ -334,7 +364,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         List<DocumentsPersonType> documentsPersonType;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(userParam != null ? userParam.getPersonId().getNaturalPerson().getDocumentsPersonTypeId().getId(): 0));
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(userParam != null ? userParam.getDocumentsPersonTypeId().getId(): 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -347,12 +377,22 @@ public class AdminUserController extends GenericAbstractAdminController {
     
     private void loadCmbEmployee(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<Employee> employee;
+        List<Employee> employeeList;
         String nameEmployee = "";
         try {
-            employee = personEJB.getEmployee(request1);
-            nameEmployee = "firstNames+' '+lastNames";
-            loadGenericCombobox(employee, cmbEmployee, "firstNames", evenInteger, Long.valueOf(userParam != null ? userParam.getEmployeeId().getId() : 0));
+            employeeList = personEJB.getEmployee(request1);
+            for (int i = 0; i < employeeList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(employeeList.get(i));
+                nameEmployee = employeeList.get(i).getFirstNames()+" "+employeeList.get(i).getLastNames();
+                item.setLabel(nameEmployee);
+                item.setParent(cmbEmployee);
+                if (eventType != 1) {
+                    if (employeeList.get(i).getId().equals(userParam.getEmployeeId().getId())) {
+                        cmbEmployee.setSelectedItem(item);
+                    }
+                }
+            }
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -360,7 +400,6 @@ public class AdminUserController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
     
     private void loadCmbComercialAgency(Integer evenInteger) {
@@ -379,11 +418,23 @@ public class AdminUserController extends GenericAbstractAdminController {
     }
     
     private void loadCmbAuthorizeEmployee(Integer evenInteger) {
-    EJBRequest request1 = new EJBRequest();
-        List<Employee> employee;
+        EJBRequest request1 = new EJBRequest();
+        List<Employee> employeeList;
+        String nameEmployee = "";
         try {
-            employee = personEJB.getEmployee(request1);
-            loadGenericCombobox(employee, cmbAuthorizeEmployee, "firstNames", evenInteger, Long.valueOf(userParam != null ? userParam.getEmployeeId().getId() : 0));
+            employeeList = personEJB.getEmployee(request1);
+            for (int i = 0; i < employeeList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(employeeList.get(i));
+                nameEmployee = employeeList.get(i).getFirstNames()+" "+employeeList.get(i).getLastNames();
+                item.setLabel(nameEmployee);
+                item.setParent(cmbAuthorizeEmployee);
+                if (eventType != 1) {
+                    if (employeeList.get(i).getId().equals(userParam.getAuthorizedEmployeeId().getId())) {
+                        cmbAuthorizeEmployee.setSelectedItem(item);
+                    }
+                }
+            }
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -391,12 +442,10 @@ public class AdminUserController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private Object getSelectedItem() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-
   }
