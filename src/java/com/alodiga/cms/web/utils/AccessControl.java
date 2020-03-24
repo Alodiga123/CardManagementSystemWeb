@@ -5,7 +5,6 @@ import com.alodiga.cms.commons.ejb.AccessControlEJB;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Account;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -53,22 +52,6 @@ public class AccessControl {
         Sessions.getCurrent().removeAttribute(WebConstants.SESSION_PERMISSION);
         Sessions.getCurrent().removeAttribute(WebConstants.SESSION_USER);
     }
-
-   
-
-    
-
-   
-
-    public static Account loadCurrentAccount() throws RegisterNotFoundException, GeneralException, Exception {
-        return (Account) Sessions.getCurrent().getAttribute(WebConstants.SESSION_ACCOUNT);
-    }
-
-   
-
-
-   
-  
 
    
 }

@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.rate.by.product.list')}" onClick='Executions.sendRedirect(&quot;listGeneralRate.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.rate.by.product.list')}" onClick='Executions.sendRedirect(&quot;listRateByProduct.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id= "tbbTitle"/>
                                             </hlayout>

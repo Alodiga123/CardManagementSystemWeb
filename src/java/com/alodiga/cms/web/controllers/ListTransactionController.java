@@ -43,6 +43,10 @@ public class ListTransactionController extends GenericAbstractListController<Tra
     public void initialize() {
         super.initialize();
         try {
+            //Evaluar Permisos
+            permissionEdit = true;
+            permissionAdd = true;
+            permissionRead = true;
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminTransaction.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
@@ -118,7 +122,7 @@ public class ListTransactionController extends GenericAbstractListController<Tra
                     item.appendChild(new Listcell(indMonetaryType));
                     item.appendChild(new Listcell(indTransactionPurchase));
                     item.appendChild(new Listcell(indVariationRateChannel));
-                    item.appendChild( new ListcellEditButton(adminPage, transaction));
+                    item.appendChild(new ListcellEditButton(adminPage, transaction));
                     item.appendChild(new ListcellViewButton(adminPage, transaction,true));
                     item.setParent(lbxRecords);
                 }

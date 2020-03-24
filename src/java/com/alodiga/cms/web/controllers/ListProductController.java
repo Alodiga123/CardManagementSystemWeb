@@ -48,7 +48,6 @@ public class ListProductController extends GenericAbstractListController<Product
     public void initialize() {
         super.initialize();
         try {
-             //Evaluar Permisos
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
@@ -76,7 +75,7 @@ public class ListProductController extends GenericAbstractListController<Product
     }
     
     public void getData() {
-      productList = new ArrayList<Product>();
+        productList = new ArrayList<Product>();
         try {
             request.setFirst(0);
             request.setLimit(null);
@@ -84,6 +83,7 @@ public class ListProductController extends GenericAbstractListController<Product
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
+            showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
         }
@@ -124,6 +124,16 @@ public class ListProductController extends GenericAbstractListController<Product
            showError(ex);
         }
     }
+    
+    private void showEmptyList() {
+        Listitem item = new Listitem();
+        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);
+    }    
 
     public List<Product> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

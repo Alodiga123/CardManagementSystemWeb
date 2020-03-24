@@ -66,7 +66,7 @@
                                                             <include src="listFamilyReferences.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listCardsComplementaries.zul"/>
+                                                            <include src="listCustomerCardsComplementaries.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

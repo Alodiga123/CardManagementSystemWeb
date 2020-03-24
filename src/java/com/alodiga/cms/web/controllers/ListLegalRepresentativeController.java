@@ -1,19 +1,15 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
-import com.cms.commons.models.LegalRepresentatives;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -23,15 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
-
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -45,7 +38,6 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Tab tabAddress;
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;

@@ -11,7 +11,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
-import com.cms.commons.models.Person;
+import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -44,6 +44,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private List<FamilyReferences> familyReferences = null;
+    private int optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,6 +73,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             permissionAdd = true;
             permissionRead = true;
             adminPage = "/adminFamilyReferences.zul";
+            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
@@ -79,8 +81,8 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         } catch (Exception ex) {
             showError(ex);
         }
-    }    
-    
+    }
+
     public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
@@ -131,20 +133,20 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
     }
 
     public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
+        Listcell listcellEditModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
@@ -154,22 +156,22 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         }
         return listcellEditModal;
     }
-    
+
     public Listcell createButtonViewModal(final Object obg) {
-       Listcell listcellViewModal = new Listcell();
-        try {    
+        Listcell listcellViewModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
@@ -179,22 +181,39 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         }
         return listcellViewModal;
     }
-    
-    
+
     public void getData() {
         familyReferences = new ArrayList<FamilyReferences>();
         ApplicantNaturalPerson applicantNaturalPerson = null;
+        NaturalCustomer naturalCustomer = null;
+
         try {
-            //Solicitante de Tarjeta
-            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            if (optionMenu == 1) {
+                AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+                if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                    applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+                }
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+                request1.setParams(params);
+                familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
+                
+            } else if (optionMenu == 2) {
+                AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
+                if (adminNaturalCustomer != null) {
+                    naturalCustomer = adminNaturalCustomer.getNaturalCustomer();
+                }
+                
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.APPLICANT_NATURAL_CUSTOMER_KEY, naturalCustomer.getId());
+                request1.setParams(params);
+                familyReferences = personEJB.getFamilyReferencesByCustomer(request1);
+            } else {
+                familyReferences = null;
             }
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
-            request1.setParams(params);
-            familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
+
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

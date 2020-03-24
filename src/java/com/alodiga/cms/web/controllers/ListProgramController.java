@@ -80,7 +80,7 @@ public class ListProgramController extends GenericAbstractListController<Program
             programs = new ArrayList<Program>();
             request.setFirst(0);
             request.setLimit(null);
-            programs = programEJB.getProgram(request);//getProgram(request);
+            programs = programEJB.getProgram(request);
         } catch (EmptyListException ex) {
             Logger.getLogger(ListProgramController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {

@@ -61,7 +61,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private Button btnSave;
     private Integer eventType;
     public static NaturalCustomer naturalCustomerParam = null;
-//    public NaturalCustomer personCustomerParam;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -127,6 +126,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     }
 
     private void loadFields(NaturalCustomer naturalCustomer) {
+        String Gender = "M";
         try {
             txtIdentificationNumber.setText(naturalCustomer.getIdentificationNumber());
             if (txtDueDateDocumentIdentification != null) {
@@ -156,7 +156,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             }
             txtFullName.setText(naturalCustomer.getFirstNames());
             txtFullLastName.setText(naturalCustomer.getLastNames());
-            if (naturalCustomer.getGender() == "M") {
+            if (naturalCustomer.getGender().equals(Gender)) {
                 genderMale.setChecked(true);
             } else {
                 genderFemale.setChecked(true);
@@ -164,7 +164,9 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             txtBirthPlace.setText(naturalCustomer.getPlaceBirth());
             txtBirthDay.setValue(naturalCustomer.getDateBirth());
             txtFamilyResponsibilities.setText(naturalCustomer.getFamilyResponsibilities().toString());
-//            txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
+            if (txtCountryStayTime != null) {
+                txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
+            }
             txtMarriedLastName.setText(naturalCustomer.getMarriedLastName());
         } catch (Exception ex) {
             showError(ex);
@@ -383,24 +385,4 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             ex.printStackTrace();
         }
     }
-
-//    private void loadCmbKinShipApplicant(Integer evenInteger) {
-//        //cmbKinShipApplicant
-//        EJBRequest request1 = new EJBRequest();
-//        List<KinShipApplicant> kinShipApplicants;
-//
-//        try {
-//            kinShipApplicants = personEJB.getKinShipApplicant(request1);
-//            loadGenericCombobox(kinShipApplicants, cmbKinShipApplicant, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getKinShipApplicantId().getId() : 0));
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        }
-//    }
 }
