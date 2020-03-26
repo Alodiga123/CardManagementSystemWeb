@@ -93,20 +93,22 @@ public class ListUserController extends GenericAbstractListController<User> {
     }
 
     public void loadDataList(List<User> list) {
-          try {
-            String indEnabled = null;
+        String indEnabled = null;
+        Listitem item = null;
+        try {
             lbxRecords.getItems().clear();
-            Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
                 for (User user : list) {
-
                     item = new Listitem();
                     item.setValue(user);
-                    item.appendChild(new Listcell(user.getCode().toString()));
+                    item.appendChild(new Listcell(user.getLogin()));
                     item.appendChild(new Listcell(user.getIdentificationNumber().toString()));
-                    item.appendChild(new Listcell(user.getFirstNames().toString()));
-                    item.appendChild(new Listcell(user.getComercialAgencyId().getId().toString()));
+                    StringBuilder userName = new StringBuilder(user.getFirstNames());
+                    userName.append(" ");
+                    userName.append(user.getLastNames());
+                    item.appendChild(new Listcell(userName.toString()));
+                    item.appendChild(new Listcell(user.getComercialAgencyId().getName()));
                     if (user.getEnabled() == true) {
                         indEnabled = "Yes";
                     } else {
@@ -128,7 +130,6 @@ public class ListUserController extends GenericAbstractListController<User> {
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
         } catch (Exception ex) {
            showError(ex);
         }

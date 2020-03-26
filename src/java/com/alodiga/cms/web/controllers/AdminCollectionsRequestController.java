@@ -46,10 +46,13 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        collectionsRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionsRequest) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            collectionsRequestParam = null;
+        } else {
+            collectionsRequestParam = (CollectionsRequest) Sessions.getCurrent().getAttribute("object");
+        }      
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -151,7 +154,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     private void loadCmbCountry(Integer evenInteger) {
-        //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
 
@@ -171,7 +173,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     private void loadCmbProductType(Integer evenInteger) {
-        //cmbProductType
         EJBRequest request1 = new EJBRequest();
         List<ProductType> productTypes;
         try {
@@ -190,7 +191,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     private void loadCmbPrograms(Integer evenInteger) {
-        //cmbPrograms
         EJBRequest request1 = new EJBRequest();
         List<Program> programs;
 
@@ -210,7 +210,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     private void loadCmbPersonType(Integer evenInteger) {
-        //cmbPersonType
         EJBRequest request1 = new EJBRequest();
         List<PersonType> personTypes;
 
@@ -230,7 +229,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     private void loadCmbCollectionType(Integer evenInteger, int countryId) {
-        //cmbDocumentsPersonType
         EJBRequest request = new EJBRequest();
         cmbCollectionType.getItems().clear();
         Map params = new HashMap();

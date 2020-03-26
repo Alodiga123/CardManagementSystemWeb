@@ -283,7 +283,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     if (requestCard.getIndPersonNaturalRequest() == true) {
                         //Se crea el cliente natural
                         saveNaturalCustomer(requestCard);
-                        saveCardComplementariesCustomer();
                     } else {
                         //Se crea el cliente jurídico
                         saveLegalCustomer(requestCard);
@@ -392,6 +391,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             requestCard = requestEJB.saveRequest(requestCard);
             
             //Guarda el resto de la información relacionada con el cliente
+            saveCardComplementariesCustomer(naturalCustomer);
             saveFamilyReferentCustomer(naturalCustomer);
             saveAddressCustomer(naturalCustomer);
 
@@ -453,7 +453,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         }
     }
 
-    public void saveCardComplementariesCustomer() {
+    public void saveCardComplementariesCustomer(NaturalCustomer naturalCustomerMain) {
         try {
             Long countCardComplementary = 0L;
             Person person = null;
@@ -501,7 +501,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     naturalCustomer.setCivilStatusId(r.getCivilStatusId());
                     naturalCustomer.setFamilyResponsibilities(r.getFamilyResponsibilities());
                     naturalCustomer.setProfessionId(r.getProfessionId());
-                    naturalCustomer.setNaturalCustomerId(naturalCustomerParent.getNaturalCustomerId());
+                    naturalCustomer.setNaturalCustomerId(naturalCustomerMain.getNaturalCustomerId());
                     naturalCustomer.setKinShipApplicantId(r.getKinShipApplicantId());
                     naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
                     naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);

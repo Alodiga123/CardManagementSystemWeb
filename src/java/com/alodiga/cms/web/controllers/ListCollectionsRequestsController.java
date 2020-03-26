@@ -76,7 +76,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
                 for (CollectionsRequest collectionsRequest : list) {
                     item = new Listitem();
                     item.setValue(collectionsRequest);
-                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
+                    item.appendChild(new Listcell(collectionsRequest.getProgramId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
