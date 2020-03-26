@@ -501,7 +501,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     naturalCustomer.setCivilStatusId(r.getCivilStatusId());
                     naturalCustomer.setFamilyResponsibilities(r.getFamilyResponsibilities());
                     naturalCustomer.setProfessionId(r.getProfessionId());
-                    naturalCustomer.setNaturalCustomerId(naturalCustomerMain.getNaturalCustomerId());
+                    naturalCustomer.setNaturalCustomerId(naturalCustomerMain);
                     naturalCustomer.setKinShipApplicantId(r.getKinShipApplicantId());
                     naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
                     naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
