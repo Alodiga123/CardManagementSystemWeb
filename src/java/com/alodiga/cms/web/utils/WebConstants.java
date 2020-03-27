@@ -128,5 +128,10 @@ public class WebConstants {
     public static final int VALIDITY_MONTH_36 = 36;
     public static final int VALIDITY_MONTH_48 = 48;
     
+    //CRUD CardAssigment 
+    public static final int CARD_LENGHT_12 = 12;
+    public static final int CARD_LENGHT_16 = 16;
+    public static final int CARD_LENGHT_18 = 18;
+    public static final int CARD_LENGHT_20 = 20;
     
 }

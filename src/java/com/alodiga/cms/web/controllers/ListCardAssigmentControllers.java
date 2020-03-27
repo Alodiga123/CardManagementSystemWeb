@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
@@ -212,8 +213,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     }
 
     public Card createLegalCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request, CardStatus cardStatus) {
-        Card card = null;
-        card = new Card();
+        Card card = new Card();
         try {
             card.setCardNumber(cardNumber.getCardNumber());
             card.setProgramId(request.getProgramId());
@@ -286,13 +286,12 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         //Asignar tarjeta al solicitante principal
                         cardNumber = cardNumberCredentialList.get(i);
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        saveCard(card);
-                        createAccount(card,r);
+                        card = saveCard(card);
                         updateCardNumberAssigned(cardNumber);
-                        i++;
-                        
+                        createAccount(card,r);
+                        i++;                        
 
-                        //Se verifica si hay solicitaantes complementarios
+                        //Se verifica si hay solicitantes complementarios
                         countCardComplementary = personEJB.countCardComplementaryByApplicant(r.getPersonId().getApplicantNaturalPerson().getId());
                         if (countCardComplementary > 0) {
                             //Obtiene Lista de solicitantes complementarios
@@ -327,9 +326,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     card.setCardStatusId(cardStatus);
                                     card.setPersonCustomerId(cardComplementaries.getPersonId());
                                     card.setCreateDate(new Timestamp(new Date().getTime()));
-                                    saveCard(card);
+                                    card = saveCard(card);
                                     updateCardNumberAssigned(cardNumber);
-                                    createAccount(card, r);
+                                    createAccount(card,r);
                                     i++;
                                 }
                             }
@@ -347,9 +346,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         //Asigna tarjeta a solicitante juridico
                         cardNumber = cardNumberCredentialList.get(i);
                         card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        saveCard(card);
+                        card = saveCard(card);
                         updateCardNumberAssigned(cardNumber);
-                        createAccount(card, r);
+                        createAccount(card,r);
                         i++;
 
                         if (cardRequestList != null) {
@@ -376,9 +375,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 card.setCardStatusId(cardStatus);
                                 card.setPersonCustomerId(r.getPersonCustomerId());
                                 card.setCreateDate(new Timestamp(new Date().getTime()));
-                                saveCard(card);
+                                card = saveCard(card);
                                 updateCardNumberAssigned(cardNumber);
-
                                 createAccount(card,r);
                                 i++;
                             }
@@ -399,7 +397,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         }
     }
     
-    public void saveCard(Card card) {
+    public Card saveCard(Card card) {
         try {
             card = cardEJB.saveCard(card);
             card.setSequentialNumber(card.getId().intValue());
@@ -407,27 +405,28 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         } catch (Exception ex) {
             showError(ex);
         }
-        
+        return card;
     }
-
 
     public void createAccount(Card cardNumber, Request request) {
         AccountCard accountCard = new AccountCard();
         StatusAccount statusAccount = null;
         Transaction transactionAccount = null;
         Channel channelAccount = null;
-        AccountProperties accountPropertiesRequest = null;
         List<AccountProperties> accountPropertiesList = null;
-
+        String numberAccount = "";
+        int lenghtAccount = 0;
+        int num1=100;
+        int num2=999; 
         try {
 
-            //Estatus de la cuenta
+            //Se obtiene el estatus de la cuenta SOLICITADA
             EJBRequest request6 = new EJBRequest();
             request6 = new EJBRequest();
             request6.setParam(Constants.ACCOUNT_STATUS_REQUESTED);
             statusAccount = cardEJB.loadStatusAccount(request6);
 
-            //se busca la cuenta matrix
+            //Se busca la cuenta matrix
             EJBRequest request7 = new EJBRequest();
             Map params = new HashMap();
             params.put(QueryConstants.PARAM_COUNTRY_ID, request.getCountryId().getId());
@@ -435,32 +434,32 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             request7.setParams(params);
             accountPropertiesList = cardEJB.getAccountPropertiesByRequest(request7);
 
-            //Transaccion de la cuenta creada
+            //Se obtiene la transaccion CREACION DE CUENTA
             EJBRequest request8 = new EJBRequest();
             request8 = new EJBRequest();
             request8.setParam(Constants.TRANSACTION_CREATION_ACCOUNT);
             transactionAccount = productEJB.loadTransaction(request8);
             
-            //Canal de la cuenta creada
+            //Se obtiene el tipo de canal INTERNO CMS
             EJBRequest request9 = new EJBRequest();
             request9 = new EJBRequest();
             request9.setParam(Constants.CHANNEL_CREATION_ACCOUNT);
             channelAccount = productEJB.loadChannel(request9);
 
+            //Se crea de la Cuenta y se le asigna a la tarjeta del cliente
             if (accountPropertiesList != null) {
                 for (AccountProperties accountProperties : accountPropertiesList) {
-                    accountPropertiesRequest = accountProperties;
-                }
-                    accountCard.setAccountPropertiesId(accountPropertiesRequest);
-                    accountCard.setAccountNumber("123");
+                    accountCard.setAccountPropertiesId(accountProperties);
+                    lenghtAccount = accountProperties.getLenghtAccount();
+                    accountCard.setAccountNumber(createNumberAccount(lenghtAccount));
                     accountCard.setStatusAccountId(statusAccount);
                     accountCard.setCardId(cardNumber);
                     accountCard.setTransactionId(transactionAccount);
                     accountCard.setChannelId(channelAccount);
                     accountCard.setCreateDate(new Timestamp(new Date().getTime()));
                     accountCard = cardEJB.saveAccountCard(accountCard);
+                }
             }
-
         } catch (EmptyListException ex) {
             Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
@@ -472,6 +471,43 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         }
     }
 
+    public String createNumberAccount(int lenghtAccount) {
+        String numberAccount = "";
+        int num1=0;
+        int num2=0; 
+        try {
+            switch (lenghtAccount) {
+                case WebConstants.CARD_LENGHT_12:
+                    num1=100;
+                    num2=999;
+                    for (int i=0;i<4;i++){
+                        int numAleatorio=(int)Math.floor(Math.random()*(num1-num2)+num2);
+                        numberAccount = numberAccount+String.valueOf(numAleatorio);
+                    }
+                break;
+                case WebConstants.CARD_LENGHT_16: 
+                    num1=1001;
+                    num2=9999;
+                    for (int i=0;i<4;i++){
+                        int numAleatorio=(int)Math.floor(Math.random()*(num1-num2)+num2);
+                        numberAccount = numberAccount+String.valueOf(numAleatorio);
+                    }
+                break;    
+                case WebConstants.CARD_LENGHT_20: 
+                    num1=10001;
+                    num2=99999;
+                    for (int i=0;i<4;i++){
+                        int numAleatorio=(int)Math.floor(Math.random()*(num1-num2)+num2);
+                        numberAccount = numberAccount+String.valueOf(numAleatorio);
+                    }
+                break; 
+            }
+        } catch (Exception e) {
+            showError(e);
+        }
+        return numberAccount;
+    }
+    
     public void updateCardNumberAssigned(CardNumberCredential cardNumber) {
         try {
             cardNumber.setIndUse(true);
