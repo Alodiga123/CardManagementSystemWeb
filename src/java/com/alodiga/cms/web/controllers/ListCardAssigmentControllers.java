@@ -14,7 +14,6 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountCard;
 import com.cms.commons.models.AccountProperties;
-import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardNumberCredential;
 import com.cms.commons.models.CardRequestNaturalPerson;
@@ -23,6 +22,7 @@ import com.cms.commons.models.Channel;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.StatusAccount;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.models.Transaction;
 import com.cms.commons.util.Constants;
@@ -241,7 +241,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         List<CardRequestNaturalPerson> cardRequestList = null;
         CardNumberCredential cardNumber = null;
         Long countCardComplementary = 0L;
-        AccountCard account = null;
         int i = 0;
 
         try {
@@ -288,6 +287,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         cardNumber = cardNumberCredentialList.get(i);
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
                         saveCard(card);
+                        createAccount(card,r);
                         updateCardNumberAssigned(cardNumber);
                         i++;
                         
@@ -329,6 +329,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     card.setCreateDate(new Timestamp(new Date().getTime()));
                                     saveCard(card);
                                     updateCardNumberAssigned(cardNumber);
+                                    createAccount(card, r);
                                     i++;
                                 }
                             }
@@ -348,6 +349,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
                         saveCard(card);
                         updateCardNumberAssigned(cardNumber);
+                        createAccount(card, r);
                         i++;
 
                         if (cardRequestList != null) {
@@ -377,7 +379,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 saveCard(card);
                                 updateCardNumberAssigned(cardNumber);
 
-//                                createAccount(card,r);
+                                createAccount(card,r);
                                 i++;
                             }
                         }
@@ -409,70 +411,71 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     }
 
 
-//    public void createAccount(Card cardNumber, Request request) {
-//        AccountCard accountCard = null;
-//        accountCard = new AccountCard();
-//        CardStatus cardStatus = null;
-//        Transaction transactionAccount = null;
-//        Channel channelAccount = null;
-//        
-//        List<AccountProperties> accountPropertiesList = null;
-//
-//        try {
-//
-////            estatus de la cuenta A REVISAR
-//            EJBRequest request6 = new EJBRequest();
-//            request6 = new EJBRequest();
-//            request6.setParam(Constants.ACCOUNT_STATUS_REQUESTED);
-//            cardStatus = utilsEJB.loadCardStatus(request6);
-//
-//            //se busca la cuenta matrix
-//            EJBRequest request7 = new EJBRequest();
-//            Map params = new HashMap();
-//            params.put(QueryConstants.PARAM_COUNTY_ID, request.getCountryId());
-//            params.put(QueryConstants.PARAM_PROGRAM_ID, request.getProgramId());
-//            request7.setParams(params);
-//            accountPropertiesList = cardEJB.getAccountPropertiesByRequest(request7);
-//
-//            //Transaccion de la cuenta creada
-//            EJBRequest request8 = new EJBRequest();
-//            request8 = new EJBRequest();
-//            request8.setParam(Constants.TRANSACTION_CREATION_ACCOUNT);
-//            transactionAccount = productEJB.loadTransaction(request8);
-//            
-//            //Canal de la cuenta creada
-//            EJBRequest request9 = new EJBRequest();
-//            request9 = new EJBRequest();
-//            request9.setParam(Constants.CHANNEL_CREATION_ACCOUNT);
-//            channelAccount = productEJB.loadChannel(request9);
-//
-//            if (accountPropertiesList != null) {
-//                for (AccountProperties accountProperties : accountPropertiesList) {
-//                    accountCard.setAccountPropertiesId(accountProperties);
-//                    accountCard.setAccountNumber("123");
-////                    accountCard.setStatusAccountId(cardStatus);
-//                    accountCard.setCardId(cardNumber);
-//                    accountCard.setTransactionId(transactionAccount);
-//                    accountCard.setChannelId(channelAccount);
-//                    accountCard.setCreateDate(new Timestamp(new Date().getTime()));
-////                    accountCard = cardEJB.saveAccountCard(accountCard);
-//                }
-//            }
-//
-//        } catch (EmptyListException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (GeneralException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NullParameterException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    public void createAccount(Card cardNumber, Request request) {
+        AccountCard accountCard = new AccountCard();
+        StatusAccount statusAccount = null;
+        Transaction transactionAccount = null;
+        Channel channelAccount = null;
+        AccountProperties accountPropertiesRequest = null;
+        List<AccountProperties> accountPropertiesList = null;
+
+        try {
+
+            //Estatus de la cuenta
+            EJBRequest request6 = new EJBRequest();
+            request6 = new EJBRequest();
+            request6.setParam(Constants.ACCOUNT_STATUS_REQUESTED);
+            statusAccount = cardEJB.loadStatusAccount(request6);
+
+            //se busca la cuenta matrix
+            EJBRequest request7 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(QueryConstants.PARAM_COUNTRY_ID, request.getCountryId().getId());
+            params.put(QueryConstants.PARAM_PROGRAM_ID, request.getProgramId().getId());
+            request7.setParams(params);
+            accountPropertiesList = cardEJB.getAccountPropertiesByRequest(request7);
+
+            //Transaccion de la cuenta creada
+            EJBRequest request8 = new EJBRequest();
+            request8 = new EJBRequest();
+            request8.setParam(Constants.TRANSACTION_CREATION_ACCOUNT);
+            transactionAccount = productEJB.loadTransaction(request8);
+            
+            //Canal de la cuenta creada
+            EJBRequest request9 = new EJBRequest();
+            request9 = new EJBRequest();
+            request9.setParam(Constants.CHANNEL_CREATION_ACCOUNT);
+            channelAccount = productEJB.loadChannel(request9);
+
+            if (accountPropertiesList != null) {
+                for (AccountProperties accountProperties : accountPropertiesList) {
+                    accountPropertiesRequest = accountProperties;
+                }
+                    accountCard.setAccountPropertiesId(accountPropertiesRequest);
+                    accountCard.setAccountNumber("123");
+                    accountCard.setStatusAccountId(statusAccount);
+                    accountCard.setCardId(cardNumber);
+                    accountCard.setTransactionId(transactionAccount);
+                    accountCard.setChannelId(channelAccount);
+                    accountCard.setCreateDate(new Timestamp(new Date().getTime()));
+                    accountCard = cardEJB.saveAccountCard(accountCard);
+            }
+
+        } catch (EmptyListException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void updateCardNumberAssigned(CardNumberCredential cardNumber) {
         try {
             cardNumber.setIndUse(true);
+            cardNumber.setUpdateDate(new Timestamp(new Date().getTime()));
             cardNumber = cardEJB.saveCardNumberCredential(cardNumber);
         } catch (Exception ex) {
             showError(ex);
