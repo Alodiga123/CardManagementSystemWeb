@@ -294,6 +294,22 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell32.addEventListener("onClick", new RedirectListener("listRateByCard.zul"));
         listCell32.setParent(item32);
         item32.setParent(lbxPermissions);
+        
+        //Opción Permission Group
+        Listitem item46 = new Listitem();
+        Listcell listCell46 = new Listcell();
+        listCell46.setLabel(Labels.getLabel("cms.menu.permission.group"));
+        listCell46.addEventListener("onClick", new RedirectListener("listPermissionGroup.zul"));
+        listCell46.setParent(item46);
+        item46.setParent(lbxPermissions);
+        
+        //Opción Permission Group Data
+        Listitem item47 = new Listitem();
+        Listcell listCell47 = new Listcell();
+        listCell47.setLabel(Labels.getLabel("cms.menu.permission.group.data"));
+        listCell47.addEventListener("onClick", new RedirectListener("listPermissionGroupData.zul"));
+        listCell47.setParent(item47);
+        item47.setParent(lbxPermissions);
     }
 }
 
