@@ -53,10 +53,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.country')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.transaction.customerType')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.product.type')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description')}" width="205px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.program')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.personType')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.product.type')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionCollectionsRequest')}" width="205px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

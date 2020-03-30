@@ -1,6 +1,4 @@
 package com.alodiga.cms.web.controllers;
-
-import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,7 +8,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.User;
+import com.cms.commons.models.PermissionGroupData;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -25,13 +23,14 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListUserController extends GenericAbstractListController<User> {
+public class ListPermissionGroupDataController extends GenericAbstractListController<PermissionGroupData> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private PersonEJB personEJB = null;
-    private List<User> userList = null;
-    private User currentUser;
+    private Textbox txtName;
+    private UtilsEJB utilsEJB = null;
+    private List<PermissionGroupData> permissionGroupDataList = null;
+    private PermissionGroupData currentPermissionGroupData;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -43,26 +42,22 @@ public class ListUserController extends GenericAbstractListController<User> {
     public void initialize() {
         super.initialize();
         try {
-            //Evaluar Permisos
-            permissionEdit = true;
-            permissionAdd = true;
-            permissionRead = true;
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminUser.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            currentPermissionGroupData = (PermissionGroupData) session.getAttribute(Constants.USER_OBJ_SESSION);
+            adminPage = "adminPermissionGroupData.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(userList);
+            loadDataList(permissionGroupDataList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    userList = new ArrayList<User>();
+    permissionGroupDataList = new ArrayList<PermissionGroupData>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            userList = personEJB.getUser(request);
+            permissionGroupDataList = utilsEJB.getPermissionGroupData(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -70,8 +65,6 @@ public class ListUserController extends GenericAbstractListController<User> {
             showError(ex);
         }
     }
-
-
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
@@ -92,31 +85,21 @@ public class ListUserController extends GenericAbstractListController<User> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<User> list) {
-        String indEnabled = null;
-        Listitem item = null;
-        try {
+    public void loadDataList(List<PermissionGroupData> list) {
+          try {
             lbxRecords.getItems().clear();
+            Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (User user : list) {
+                for (PermissionGroupData permissionGroupData : list) {
                     item = new Listitem();
-                    item.setValue(user);
-                    item.appendChild(new Listcell(user.getLogin()));
-                    item.appendChild(new Listcell(user.getIdentificationNumber().toString()));
-                    StringBuilder userName = new StringBuilder(user.getFirstNames());
-                    userName.append(" ");
-                    userName.append(user.getLastNames());
-                    item.appendChild(new Listcell(userName.toString()));
-                    item.appendChild(new Listcell(user.getComercialAgencyId().getName()));
-                    if (user.getEnabled() == true) {
-                        indEnabled = "Yes";
-                    } else {
-                        indEnabled = "No";
-                    }
-                    item.appendChild(new Listcell(indEnabled));
-                    item.appendChild(new ListcellEditButton(adminPage, user));
-                    item.appendChild(new ListcellViewButton(adminPage, user,true));
+                    item.setValue(permissionGroupData);
+                    item.appendChild(new Listcell(permissionGroupData.getPermissionGroupId().getName()));
+                    item.appendChild(new Listcell(permissionGroupData.getLanguageId().getDescription()));
+                    item.appendChild(new Listcell(permissionGroupData.getAlias().toString()));
+                    item.appendChild(new Listcell(permissionGroupData.getDescription().toString()));
+                    item.appendChild(new ListcellEditButton(adminPage, permissionGroupData));
+                    item.appendChild(new ListcellViewButton(adminPage, permissionGroupData,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -127,16 +110,19 @@ public class ListUserController extends GenericAbstractListController<User> {
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
            showError(ex);
         }
     }
-
-    @Override
-    public List<User> getFilterList(String filter) {
+    
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+    
+    public List<PermissionGroupData> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

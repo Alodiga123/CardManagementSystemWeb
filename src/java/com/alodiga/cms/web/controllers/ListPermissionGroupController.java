@@ -1,6 +1,4 @@
 package com.alodiga.cms.web.controllers;
-
-import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,7 +8,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.User;
+import com.cms.commons.models.PermissionGroup;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -25,13 +23,13 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListUserController extends GenericAbstractListController<User> {
+public class ListPermissionGroupController extends GenericAbstractListController<PermissionGroup> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private PersonEJB personEJB = null;
-    private List<User> userList = null;
-    private User currentUser;
+    private UtilsEJB utilsEJB = null;
+    private List<PermissionGroup> permissionGroupList = null;
+    private PermissionGroup currentPermissionGroup;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -47,22 +45,22 @@ public class ListUserController extends GenericAbstractListController<User> {
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminUser.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            currentPermissionGroup = (PermissionGroup) session.getAttribute(Constants.USER_OBJ_SESSION);
+            adminPage = "adminPermissionGroup.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(userList);
+            loadDataList(permissionGroupList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    userList = new ArrayList<User>();
+    permissionGroupList = new ArrayList<PermissionGroup>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            userList = personEJB.getUser(request);
+            permissionGroupList = utilsEJB.getPermissionGroup(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -71,9 +69,7 @@ public class ListUserController extends GenericAbstractListController<User> {
         }
     }
 
-
-
-    public void onClick$btnAdd() throws InterruptedException {
+   public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
@@ -92,31 +88,26 @@ public class ListUserController extends GenericAbstractListController<User> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<User> list) {
+    public void loadDataList(List<PermissionGroup> list) {
         String indEnabled = null;
         Listitem item = null;
         try {
             lbxRecords.getItems().clear();
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (User user : list) {
+                for (PermissionGroup permissionGroup : list) {
                     item = new Listitem();
-                    item.setValue(user);
-                    item.appendChild(new Listcell(user.getLogin()));
-                    item.appendChild(new Listcell(user.getIdentificationNumber().toString()));
-                    StringBuilder userName = new StringBuilder(user.getFirstNames());
-                    userName.append(" ");
-                    userName.append(user.getLastNames());
-                    item.appendChild(new Listcell(userName.toString()));
-                    item.appendChild(new Listcell(user.getComercialAgencyId().getName()));
-                    if (user.getEnabled() == true) {
+                    item.setValue(permissionGroup);
+                    item.appendChild(new Listcell(permissionGroup.getName()));
+                    if (permissionGroup.getEnabled() == true) {
                         indEnabled = "Yes";
                     } else {
                         indEnabled = "No";
                     }
+                    
                     item.appendChild(new Listcell(indEnabled));
-                    item.appendChild(new ListcellEditButton(adminPage, user));
-                    item.appendChild(new ListcellViewButton(adminPage, user,true));
+                    item.appendChild(new ListcellEditButton(adminPage, permissionGroup));
+                    item.appendChild(new ListcellViewButton(adminPage, permissionGroup,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -126,17 +117,17 @@ public class ListUserController extends GenericAbstractListController<User> {
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-        } catch (Exception ex) {
-           showError(ex);
-        }
+
+            } catch (Exception ex) {
+            showError(ex);
+            }
     }
 
+
     @Override
-    public List<User> getFilterList(String filter) {
+    public List<PermissionGroup> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

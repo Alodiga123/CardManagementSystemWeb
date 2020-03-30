@@ -100,7 +100,7 @@
                                                         
                                                         <row>
                                                             <textbox id="txtLogin" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtPassword" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtPassword" type="password" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <hbox>
                                                             <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
