@@ -203,7 +203,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         Listitem item19 = new Listitem();
         Listcell listCell19 = new Listcell();
         listCell19.setLabel(Labels.getLabel("cms.menu.generalRate.list"));
-        listCell19.addEventListener("onClick", new RedirectListener("listGeneralRate.zul"));
+        listCell19.addEventListener("onClick", new RedirectListener("TabGeneralRates.zul"));
         listCell19.setParent(item19);
         item19.setParent(lbxPermissions);
 
