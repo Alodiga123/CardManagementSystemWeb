@@ -46,6 +46,9 @@ public class WebConstants {
     public static final String ID_MONETARY_TYPE_TRUE = "true";
     public static final String ID_MONETARY_TYPE_FALSE = "false";
     public static final String MAIN_APPLICANT = "Solicitante Principal";
+    public static final int MAIN_CUSTOMER = 1;
+    public static final int COMPLEMENTARY_CUSTOMER = 2;
+    
     
     public static final String MENU_SECURITY = "menu.security";
     public static final String MENUITEM_SECURITY_PROFILE = "menu.security.profile";
@@ -125,5 +128,10 @@ public class WebConstants {
     public static final int VALIDITY_MONTH_36 = 36;
     public static final int VALIDITY_MONTH_48 = 48;
     
+    //CRUD CardAssigment 
+    public static final int CARD_LENGHT_12 = 12;
+    public static final int CARD_LENGHT_16 = 16;
+    public static final int CARD_LENGHT_18 = 18;
+    public static final int CARD_LENGHT_20 = 20;
     
 }

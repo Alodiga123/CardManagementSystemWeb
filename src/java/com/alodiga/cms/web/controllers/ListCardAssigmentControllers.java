@@ -14,7 +14,6 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountCard;
 import com.cms.commons.models.AccountProperties;
-import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardNumberCredential;
 import com.cms.commons.models.CardRequestNaturalPerson;
@@ -22,6 +21,9 @@ import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.Channel;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewRequest;
+import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.StatusAccount;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.models.Transaction;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -35,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
@@ -56,12 +59,11 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     private UtilsEJB utilsEJB = null;
     private ProductEJB productEJB = null;
     private List<Request> requests = null;
-    private Date nuevaFecha;
+    private Date expirationDateCard;
     public static int indAddRequestPerson;
     public static int indRequestOption = 1;
     private String applicantName = "";
     private ReviewRequest reviewRequestParam;
-    //private CardNumberCredential cardNumberCredential;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -180,11 +182,10 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     }
 
     public Card createCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request,
-            CardStatus cardStatus) {
-        Card card = null;
-        card = new Card();
-
-        try {
+        CardStatus cardStatus) {
+        Card card = new Card();
+        
+        try {                
             StringBuilder applicantName = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
             applicantName.append(" ");
             applicantName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
@@ -194,14 +195,13 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             applicantLastName.append(" ");
             applicantLastName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
             String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
-            cardHolder = cardHolder + apellido;
-
+            cardHolder = cardHolder + apellido;                       
             card.setCardNumber(cardNumber.getCardNumber());
             card.setProgramId(request.getProgramId());
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(cardHolder);
             card.setIssueDate(new Timestamp(new Date().getTime()));
-            card.setExpirationDate(nuevaFecha);
+            card.setExpirationDate(expirationDateCard);
             card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
@@ -213,15 +213,14 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     }
 
     public Card createLegalCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request, CardStatus cardStatus) {
-        Card card = null;
-        card = new Card();
+        Card card = new Card();
         try {
             card.setCardNumber(cardNumber.getCardNumber());
             card.setProgramId(request.getProgramId());
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(request.getPersonId().getLegalPerson().getEnterpriseName());
             card.setIssueDate(new Timestamp(new Date().getTime()));
-            card.setExpirationDate(nuevaFecha);
+            card.setExpirationDate(expirationDateCard);
             card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
@@ -238,10 +237,10 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         CardStatus cardStatus = null;
         List<CardNumberCredential> cardNumberCredentialList = null;
         List<ReviewRequest> reviewRequestList = null;
-        List<ApplicantNaturalPerson> cardComplementaryList = null;
+        List<NaturalCustomer> cardComplementaryList = null;
         List<CardRequestNaturalPerson> cardRequestList = null;
         CardNumberCredential cardNumber = null;
-        AccountCard account = null;
+        Long countCardComplementary = 0L;
         int i = 0;
 
         try {
@@ -249,9 +248,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
 
-                //estatus de la tarjeta
+                //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
-                request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_REQUESTED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
 
@@ -263,6 +261,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                 cardNumberCredentialList = cardEJB.getCardNumberCredentialByUse(request2);
                 cardNumber = cardNumberCredentialList.get(i);
 
+                //Se asignan las tarjetas a las solictudes aprobadas
                 for (Request r : list) {
                     //Se busca el producto por medio de ReviewRequest
                     EJBRequest request3 = new EJBRequest();
@@ -276,77 +275,86 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         reviewRequestParam = review;
                     }
 
+                    //Se calcula la fecha de vencimiento de la tarjeta
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(new Timestamp(new Date().getTime()));
                     cal.add(Calendar.MONTH, reviewRequestParam.getProductId().getValidityMonths());
-                    nuevaFecha = cal.getTime();
+                    expirationDateCard = cal.getTime();
 
+                    //Caso Solicitante Natural
                     if (r.getPersonTypeId().getIndNaturalPerson() == true) {
-                        EJBRequest request4 = new EJBRequest();
-                        params = new HashMap();
-                        params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, r.getPersonId().getApplicantNaturalPerson().getId());
-                        request4.setParams(params);
-                        cardComplementaryList = personEJB.getCardComplementaryByApplicant(request4);
-
                         //Asignar tarjeta al solicitante principal
                         cardNumber = cardNumberCredentialList.get(i);
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        //card = cardEJB.saveCard(card);
+                        card = saveCard(card);
+                        updateCardNumberAssigned(cardNumber);
+                        createAccount(card,r);
+                        i++;                        
 
-                        //Actualiza el número secuencial con Id de Card
-                        //card.setSequentialNumber(card.getId().intValue());
-                        //card = cardEJB.saveCard(card);
-                        i++;
-                        
-
-                        //Asignar tarjetas a solicitantes complementarios
-                        if (cardComplementaryList != null) {
-                            for (ApplicantNaturalPerson cardComplementaries : cardComplementaryList) {
-                                cardNumber = cardNumberCredentialList.get(i);
-
-                                StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
-                                applicantName.append(" ");
-                                applicantName.append(cardComplementaries.getLastNames());
-                                String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
-                                cardHolder = cardHolder + " ";
-                                StringBuilder applicantLastName = new StringBuilder(cardComplementaries.getLastNames());
-                                applicantLastName.append(" ");
-                                applicantLastName.append(cardComplementaries.getLastNames());
-                                String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
-                                cardHolder = cardHolder + apellido;
-
-                                card.setCardNumber(cardNumber.getCardNumber());
-                                card.setProgramId(r.getProgramId());
-                                card.setProductId(reviewRequestParam.getProductId());
-                                card.setCardHolder(cardHolder);
-                                card.setIssueDate(new Timestamp(new Date().getTime()));
-                                card.setExpirationDate(nuevaFecha);
-                                card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
-                                card.setCardStatusId(cardStatus);
-                                card.setPersonCustomerId(r.getPersonCustomerId());
-                                card.setCreateDate(new Timestamp(new Date().getTime()));
-                                //card = cardEJB.saveCard(card);
-
-                                i++;
+                        //Se verifica si hay solicitantes complementarios
+                        countCardComplementary = personEJB.countCardComplementaryByApplicant(r.getPersonId().getApplicantNaturalPerson().getId());
+                        if (countCardComplementary > 0) {
+                            //Obtiene Lista de solicitantes complementarios
+                            EJBRequest request4 = new EJBRequest();
+                            params = new HashMap();
+                            params.put(Constants.NATURAL_CUSTOMER_KEY, r.getPersonCustomerId().getNaturalCustomer().getId());
+                            request4.setParams(params);
+                            cardComplementaryList = personEJB.getNaturalCustomerByCardComplementaries(request4);
+                            
+                            //Asignar tarjetas a solicitantes complementarios
+                            if (cardComplementaryList != null) {
+                                for (NaturalCustomer cardComplementaries : cardComplementaryList) {
+                                    card = new Card();
+                                    cardNumber = cardNumberCredentialList.get(i);                                
+                                    StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
+                                    applicantName.append(" ");
+                                    applicantName.append(cardComplementaries.getLastNames());
+                                    String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
+                                    cardHolder = cardHolder + " ";
+                                    StringBuilder applicantLastName = new StringBuilder(cardComplementaries.getLastNames());
+                                    applicantLastName.append(" ");
+                                    applicantLastName.append(cardComplementaries.getLastNames());
+                                    String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
+                                    cardHolder = cardHolder + apellido;
+                                    card.setCardNumber(cardNumber.getCardNumber());
+                                    card.setProgramId(r.getProgramId());
+                                    card.setProductId(reviewRequestParam.getProductId());
+                                    card.setCardHolder(cardHolder);
+                                    card.setIssueDate(new Timestamp(new Date().getTime()));
+                                    card.setExpirationDate(expirationDateCard);
+                                    card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
+                                    card.setCardStatusId(cardStatus);
+                                    card.setPersonCustomerId(cardComplementaries.getPersonId());
+                                    card.setCreateDate(new Timestamp(new Date().getTime()));
+                                    card = saveCard(card);
+                                    updateCardNumberAssigned(cardNumber);
+                                    createAccount(card,r);
+                                    i++;
+                                }
                             }
                         }
-                        //Asignar tarjeta al solicitante principal
+                        
                     } else {
+                        //Caso Solicitante Jurídico
+                        //Obtiene lista de tarjetas adicionales (Empleados)
                         EJBRequest request5 = new EJBRequest();
                         params = new HashMap();
                         params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, r.getPersonId().getLegalPerson().getId());
                         request5.setParams(params);
                         cardRequestList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request5);
 
+                        //Asigna tarjeta a solicitante juridico
                         cardNumber = cardNumberCredentialList.get(i);
                         card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        //card = cardEJB.saveCard(card);
+                        card = saveCard(card);
+                        updateCardNumberAssigned(cardNumber);
+                        createAccount(card,r);
                         i++;
 
                         if (cardRequestList != null) {
                             for (CardRequestNaturalPerson additionalCards : cardRequestList) {
+                                card = new Card();
                                 cardNumber = cardNumberCredentialList.get(i);
-
                                 StringBuilder applicantName = new StringBuilder(additionalCards.getFirstNames());
                                 applicantName.append(" ");
                                 applicantName.append(additionalCards.getLastNames());
@@ -357,101 +365,153 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 applicantLastName.append(additionalCards.getLastNames());
                                 String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
                                 cardHolder = cardHolder + apellido;
-
                                 card.setCardNumber(cardNumber.getCardNumber());
                                 card.setProgramId(r.getProgramId());
                                 card.setProductId(reviewRequestParam.getProductId());
                                 card.setCardHolder(cardHolder);
                                 card.setIssueDate(new Timestamp(new Date().getTime()));
-                                card.setExpirationDate(nuevaFecha);
+                                card.setExpirationDate(expirationDateCard);
                                 card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
                                 card.setCardStatusId(cardStatus);
                                 card.setPersonCustomerId(r.getPersonCustomerId());
                                 card.setCreateDate(new Timestamp(new Date().getTime()));
-                                //card = cardEJB.saveCard(card);
-
-//                                createAccount(card,r);
+                                card = saveCard(card);
+                                updateCardNumberAssigned(cardNumber);
+                                createAccount(card,r);
                                 i++;
                             }
-
                         }
-
-                        //Asignar tarjetas a empleados
                     }
+                    //Actualiza el estatus de la solicitud
+                    request1 = new EJBRequest();
+                    request1.setParam(Constants.STATUS_REQUEST_CUSTOMER_ASSIGNED_CARD);
+                    StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
+                    r.setStatusRequestId(statusRequest);
+                    r = requestEJB.saveRequest(r);
                 }
-                this.showMessage("sp.common.save.success", false, null);
+                this.showMessage("cms.common.msj.assignCard", false, null);
             }
 
         } catch (Exception ex) {
             showError(ex);
         }
     }
+    
+    public Card saveCard(Card card) {
+        try {
+            card = cardEJB.saveCard(card);
+            card.setSequentialNumber(card.getId().intValue());
+            card = cardEJB.saveCard(card);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return card;
+    }
 
+    public void createAccount(Card cardNumber, Request request) {
+        AccountCard accountCard = new AccountCard();
+        StatusAccount statusAccount = null;
+        Transaction transactionAccount = null;
+        Channel channelAccount = null;
+        List<AccountProperties> accountPropertiesList = null;
+        String numberAccount = "";
+        int lenghtAccount = 0;
+        int num1=100;
+        int num2=999; 
+        try {
 
-//    public void createAccount(Card cardNumber, Request request) {
-//        AccountCard accountCard = null;
-//        accountCard = new AccountCard();
-//        CardStatus cardStatus = null;
-//        Transaction transactionAccount = null;
-//        Channel channelAccount = null;
-//        
-//        List<AccountProperties> accountPropertiesList = null;
-//
-//        try {
-//
-////            estatus de la cuenta A REVISAR
-//            EJBRequest request6 = new EJBRequest();
-//            request6 = new EJBRequest();
-//            request6.setParam(Constants.ACCOUNT_STATUS_REQUESTED);
-//            cardStatus = utilsEJB.loadCardStatus(request6);
-//
-//            //se busca la cuenta matrix
-//            EJBRequest request7 = new EJBRequest();
-//            Map params = new HashMap();
-//            params.put(QueryConstants.PARAM_COUNTY_ID, request.getCountryId());
-//            params.put(QueryConstants.PARAM_PROGRAM_ID, request.getProgramId());
-//            request7.setParams(params);
-//            accountPropertiesList = cardEJB.getAccountPropertiesByRequest(request7);
-//
-//            //Transaccion de la cuenta creada
-//            EJBRequest request8 = new EJBRequest();
-//            request8 = new EJBRequest();
-//            request8.setParam(Constants.TRANSACTION_CREATION_ACCOUNT);
-//            transactionAccount = productEJB.loadTransaction(request8);
-//            
-//            //Canal de la cuenta creada
-//            EJBRequest request9 = new EJBRequest();
-//            request9 = new EJBRequest();
-//            request9.setParam(Constants.CHANNEL_CREATION_ACCOUNT);
-//            channelAccount = productEJB.loadChannel(request9);
-//
-//            if (accountPropertiesList != null) {
-//                for (AccountProperties accountProperties : accountPropertiesList) {
-//                    accountCard.setAccountPropertiesId(accountProperties);
-//                    accountCard.setAccountNumber("123");
-////                    accountCard.setStatusAccountId(cardStatus);
-//                    accountCard.setCardId(cardNumber);
-//                    accountCard.setTransactionId(transactionAccount);
-//                    accountCard.setChannelId(channelAccount);
-//                    accountCard.setCreateDate(new Timestamp(new Date().getTime()));
-////                    accountCard = cardEJB.saveAccountCard(accountCard);
-//                }
-//            }
-//
-//        } catch (EmptyListException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (GeneralException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NullParameterException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+            //Se obtiene el estatus de la cuenta SOLICITADA
+            EJBRequest request6 = new EJBRequest();
+            request6 = new EJBRequest();
+            request6.setParam(Constants.ACCOUNT_STATUS_REQUESTED);
+            statusAccount = cardEJB.loadStatusAccount(request6);
 
+            //Se busca la cuenta matrix
+            EJBRequest request7 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(QueryConstants.PARAM_COUNTRY_ID, request.getCountryId().getId());
+            params.put(QueryConstants.PARAM_PROGRAM_ID, request.getProgramId().getId());
+            request7.setParams(params);
+            accountPropertiesList = cardEJB.getAccountPropertiesByRequest(request7);
+
+            //Se obtiene la transaccion CREACION DE CUENTA
+            EJBRequest request8 = new EJBRequest();
+            request8 = new EJBRequest();
+            request8.setParam(Constants.TRANSACTION_CREATION_ACCOUNT);
+            transactionAccount = productEJB.loadTransaction(request8);
+            
+            //Se obtiene el tipo de canal INTERNO CMS
+            EJBRequest request9 = new EJBRequest();
+            request9 = new EJBRequest();
+            request9.setParam(Constants.CHANNEL_CREATION_ACCOUNT);
+            channelAccount = productEJB.loadChannel(request9);
+
+            //Se crea de la Cuenta y se le asigna a la tarjeta del cliente
+            if (accountPropertiesList != null) {
+                for (AccountProperties accountProperties : accountPropertiesList) {
+                    accountCard.setAccountPropertiesId(accountProperties);
+                    lenghtAccount = accountProperties.getLenghtAccount();
+                    accountCard.setAccountNumber(createNumberAccount(lenghtAccount));
+                    accountCard.setStatusAccountId(statusAccount);
+                    accountCard.setCardId(cardNumber);
+                    accountCard.setTransactionId(transactionAccount);
+                    accountCard.setChannelId(channelAccount);
+                    accountCard.setCreateDate(new Timestamp(new Date().getTime()));
+                    accountCard = cardEJB.saveAccountCard(accountCard);
+                }
+            }
+        } catch (EmptyListException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public String createNumberAccount(int lenghtAccount) {
+        String numberAccount = "";
+        int num1=0;
+        int num2=0; 
+        try {
+            switch (lenghtAccount) {
+                case WebConstants.CARD_LENGHT_12:
+                    num1=100;
+                    num2=999;
+                    for (int i=0;i<4;i++){
+                        int numAleatorio=(int)Math.floor(Math.random()*(num1-num2)+num2);
+                        numberAccount = numberAccount+String.valueOf(numAleatorio);
+                    }
+                break;
+                case WebConstants.CARD_LENGHT_16: 
+                    num1=1001;
+                    num2=9999;
+                    for (int i=0;i<4;i++){
+                        int numAleatorio=(int)Math.floor(Math.random()*(num1-num2)+num2);
+                        numberAccount = numberAccount+String.valueOf(numAleatorio);
+                    }
+                break;    
+                case WebConstants.CARD_LENGHT_20: 
+                    num1=10001;
+                    num2=99999;
+                    for (int i=0;i<4;i++){
+                        int numAleatorio=(int)Math.floor(Math.random()*(num1-num2)+num2);
+                        numberAccount = numberAccount+String.valueOf(numAleatorio);
+                    }
+                break; 
+            }
+        } catch (Exception e) {
+            showError(e);
+        }
+        return numberAccount;
+    }
+    
     public void updateCardNumberAssigned(CardNumberCredential cardNumber) {
         try {
             cardNumber.setIndUse(true);
+            cardNumber.setUpdateDate(new Timestamp(new Date().getTime()));
             cardNumber = cardEJB.saveCardNumberCredential(cardNumber);
         } catch (Exception ex) {
             showError(ex);

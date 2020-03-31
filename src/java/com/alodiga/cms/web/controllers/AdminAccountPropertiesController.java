@@ -72,8 +72,12 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        accountPropertiesParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AccountProperties) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            accountPropertiesParam = null;                    
+        } else {
+            accountPropertiesParam = (AccountProperties) Sessions.getCurrent().getAttribute("object");            
+        }
         initialize();
     }
 

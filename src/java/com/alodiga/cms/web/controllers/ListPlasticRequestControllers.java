@@ -1,6 +1,6 @@
 package com.alodiga.cms.web.controllers;
-
-import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,10 +10,13 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.models.Card;
+import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
@@ -25,13 +28,16 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListUserController extends GenericAbstractListController<User> {
+public class ListPlasticRequestControllers extends GenericAbstractListController<PlasticCustomizingRequest> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private PersonEJB personEJB = null;
-    private List<User> userList = null;
-    private User currentUser;
+    private Textbox txtName;
+    private RequestEJB requestEJB = null;
+    private List<PlasticCustomizingRequest> plasticCustomizingRequest = null;
+   
+
+    
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -39,30 +45,26 @@ public class ListUserController extends GenericAbstractListController<User> {
         initialize();
     }
 
+
     @Override
     public void initialize() {
         super.initialize();
         try {
-            //Evaluar Permisos
-            permissionEdit = true;
-            permissionAdd = true;
-            permissionRead = true;
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminUser.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            adminPage = "adminPlasticRequest.zul";
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
-            loadDataList(userList);
+            loadDataList(plasticCustomizingRequest);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    userList = new ArrayList<User>();
+    plasticCustomizingRequest = new ArrayList<PlasticCustomizingRequest>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            userList = personEJB.getUser(request);
+            plasticCustomizingRequest= requestEJB.getPlasticCustomizingRequest(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -88,35 +90,37 @@ public class ListUserController extends GenericAbstractListController<User> {
         }
     }
 
+
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<User> list) {
-        String indEnabled = null;
-        Listitem item = null;
-        try {
+//    public List<RequestType> getFilterList(String filter) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+
+    public void loadDataList(List<PlasticCustomizingRequest> list) {
+          try {
             lbxRecords.getItems().clear();
+            Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (User user : list) {
+                for (PlasticCustomizingRequest plasticCustomizingRequest : list) {
+
                     item = new Listitem();
-                    item.setValue(user);
-                    item.appendChild(new Listcell(user.getLogin()));
-                    item.appendChild(new Listcell(user.getIdentificationNumber().toString()));
-                    StringBuilder userName = new StringBuilder(user.getFirstNames());
-                    userName.append(" ");
-                    userName.append(user.getLastNames());
-                    item.appendChild(new Listcell(userName.toString()));
-                    item.appendChild(new Listcell(user.getComercialAgencyId().getName()));
-                    if (user.getEnabled() == true) {
-                        indEnabled = "Yes";
-                    } else {
-                        indEnabled = "No";
-                    }
-                    item.appendChild(new Listcell(indEnabled));
-                    item.appendChild(new ListcellEditButton(adminPage, user));
-                    item.appendChild(new ListcellViewButton(adminPage, user,true));
+                    item.setValue(plasticCustomizingRequest);
+                    String pattern = "yyyy-MM-dd";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    item.appendChild(new Listcell(plasticCustomizingRequest.getRequestNumber()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(plasticCustomizingRequest.getRequestDate())));
+                    item.appendChild(new Listcell(plasticCustomizingRequest.getPlasticManufacturerId().getName()));
+                    item.appendChild(new Listcell(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription()));
+                    item.appendChild( new ListcellEditButton(adminPage, plasticCustomizingRequest));
+                    item.appendChild(new ListcellViewButton(adminPage, plasticCustomizingRequest,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -126,18 +130,22 @@ public class ListUserController extends GenericAbstractListController<User> {
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
            showError(ex);
         }
     }
 
     @Override
-    public List<User> getFilterList(String filter) {
+    public List<PlasticCustomizingRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+
+
+
+    
 
 }

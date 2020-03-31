@@ -68,8 +68,12 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         ListRequestController listRequest = new ListRequestController();
-        requestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Request) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            requestParam = null;
+        } else {
+            requestParam = (Request) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
