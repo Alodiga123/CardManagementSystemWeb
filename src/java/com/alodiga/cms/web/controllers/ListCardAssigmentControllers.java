@@ -14,7 +14,6 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountCard;
 import com.cms.commons.models.AccountProperties;
-import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardNumberCredential;
 import com.cms.commons.models.CardRequestNaturalPerson;
@@ -242,7 +241,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         List<CardRequestNaturalPerson> cardRequestList = null;
         CardNumberCredential cardNumber = null;
         Long countCardComplementary = 0L;
-        AccountCard account = null;
         int i = 0;
 
         try {
@@ -513,6 +511,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     public void updateCardNumberAssigned(CardNumberCredential cardNumber) {
         try {
             cardNumber.setIndUse(true);
+            cardNumber.setUpdateDate(new Timestamp(new Date().getTime()));
             cardNumber = cardEJB.saveCardNumberCredential(cardNumber);
         } catch (Exception ex) {
             showError(ex);
