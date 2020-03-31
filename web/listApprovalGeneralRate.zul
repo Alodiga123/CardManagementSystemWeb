@@ -20,7 +20,7 @@
                                             <vlayout>
                                                 <hlayout>
                                                     <!--buttons-->
-                                                    <div align="right" width="850px">
+                                                    <div align="left" width="850px">
                                                         <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="150px" class="open orange" />                                                        
                                                     </div>
                                                 </hlayout>
