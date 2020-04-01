@@ -9,6 +9,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.PermissionGroup;
+import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -30,13 +31,14 @@ public class ListPermissionGroupController extends GenericAbstractListController
     private UtilsEJB utilsEJB = null;
     private List<PermissionGroup> permissionGroupList = null;
     private PermissionGroup currentPermissionGroup;
-
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
     }
-
+    
+       
     @Override
     public void initialize() {
         super.initialize();
@@ -45,7 +47,6 @@ public class ListPermissionGroupController extends GenericAbstractListController
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            currentPermissionGroup = (PermissionGroup) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminPermissionGroup.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
@@ -83,16 +84,15 @@ public class ListPermissionGroupController extends GenericAbstractListController
             showError(ex);
         }
     }
-
+   
     public void startListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void loadDataList(List<PermissionGroup> list) {
         String indEnabled = null;
-        Listitem item = null;
         try {
             lbxRecords.getItems().clear();
+            Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
                 for (PermissionGroup permissionGroup : list) {
@@ -103,8 +103,7 @@ public class ListPermissionGroupController extends GenericAbstractListController
                         indEnabled = "Yes";
                     } else {
                         indEnabled = "No";
-                    }
-                    
+                    }                    
                     item.appendChild(new Listcell(indEnabled));
                     item.appendChild(new ListcellEditButton(adminPage, permissionGroup));
                     item.appendChild(new ListcellViewButton(adminPage, permissionGroup,true));
@@ -124,7 +123,6 @@ public class ListPermissionGroupController extends GenericAbstractListController
             showError(ex);
             }
     }
-
 
     @Override
     public List<PermissionGroup> getFilterList(String filter) {

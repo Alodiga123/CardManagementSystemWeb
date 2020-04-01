@@ -58,9 +58,9 @@
                                                             <label value="${c:l('cms.common.alias.permission.group')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbPermissionGroupId" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbLanguage" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbAliasPermissionGroup" width="270px" mold="rounded" readonly="true" />                                                            
+                                                            <combobox id="cmbPermiGroupId" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbLanguageId" width="270px" mold="rounded" readonly="true" />
+                                                            <label id="lblAliasPermiGroup" width="270px"/>                                                            
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.description.permission.group')}" sclass="lblbold"/>

@@ -27,7 +27,7 @@ public class ListPermissionGroupDataController extends GenericAbstractListContro
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtName;
+    private Textbox txtDescription;
     private UtilsEJB utilsEJB = null;
     private List<PermissionGroupData> permissionGroupDataList = null;
     private PermissionGroupData currentPermissionGroupData;
@@ -42,7 +42,6 @@ public class ListPermissionGroupDataController extends GenericAbstractListContro
     public void initialize() {
         super.initialize();
         try {
-            currentPermissionGroupData = (PermissionGroupData) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminPermissionGroupData.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
@@ -119,7 +118,7 @@ public class ListPermissionGroupDataController extends GenericAbstractListContro
     }
     
     public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
+        txtDescription.setText("");
     }
     
     public List<PermissionGroupData> getFilterList(String filter) {
