@@ -67,7 +67,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateCardComplementaries", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateApplicantOFAC", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
             public void onEvent(Event evt) {
                 getData();
