@@ -53,9 +53,9 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
     private UtilsEJB utilsEJB = null;
     private PermissionGroupData permissionGroupDataParam;
     private Textbox txtDescription;
+    private Textbox txtAlias;
     private Combobox cmbPermiGroupId;
     private Combobox cmbLanguageId;
-    private Label lblAliasPermiGroup;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -97,6 +97,7 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
     private void loadFields(PermissionGroupData permissionGroupData) {
         try {
             txtDescription.setText(permissionGroupData.getDescription());
+            txtAlias.setText(permissionGroupData.getAlias().toString());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -105,9 +106,9 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
 
     public void blockFields() {
         txtDescription.setReadonly(true);
+        txtAlias.setReadonly(true);
         cmbPermiGroupId.setReadonly(true);
         cmbLanguageId.setReadonly(true);
-        lblAliasPermiGroup.setVisible(true);
         btnSave.setVisible(false);
     }
 
@@ -117,14 +118,14 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
             
             if (_permissionGroupData != null) {
                 permissionGroupData = _permissionGroupData;
-            } else {//New Product
+            } else {//New PermissionGroupData
                 permissionGroupData = new PermissionGroupData();
             }
 
             //Guardar PermissionGroupData
             permissionGroupData.setPermissionGroupId((PermissionGroup) cmbPermiGroupId.getSelectedItem().getValue());
             permissionGroupData.setLanguageId((Language) cmbLanguageId.getSelectedItem().getValue());
-            permissionGroupData.setAlias((lblAliasPermiGroup).getValue());
+            permissionGroupData.setAlias(txtAlias.getText());
             permissionGroupData.setDescription(txtDescription.getText());
             permissionGroupData = utilsEJB.savePermissionGroupData(permissionGroupData);
             permissionGroupDataParam = permissionGroupData;
@@ -138,6 +139,9 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtAlias.getText().isEmpty()) {
+            txtAlias.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);    
         } else {
             return true;
         }
@@ -159,34 +163,40 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         }
     }
     
-    public void onChange$cmbPermiGroupId() {
-        cmbLanguageId.setVisible(true);
-        PermissionGroup permissionGroup = (PermissionGroup) cmbPermiGroupId.getSelectedItem().getValue();
-    }
+//    public void onChange$cmbPermiGroupId() {
+//        cmbLanguageId.setVisible(true);
+//        PermissionGroup permissionGroup = (PermissionGroup) cmbPermiGroupId.getSelectedItem().getValue();
+////        loadCmbLanguageId(eventType, permissionGroup.getId());
+//    }
     
-    public void onChange$cmbLanguageId() {
-        Language language = (Language) cmbLanguageId.getSelectedItem().getValue();
-        lblAliasPermiGroup.setVisible(true);
-    }
+//    public void onChange$cmbLanguageId() {
+//        lblAliasPermiGroup.setVisible(true);
+//        Language language = (Language) cmbLanguageId.getSelectedItem().getValue();
+////        lblAliasPermiGroup.setValue(Language);
+//    }
    
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(permissionGroupDataParam);
+                txtDescription.setReadonly(true);
+                txtAlias.setReadonly(true);
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
-                onChange$cmbPermiGroupId();
-                onChange$cmbLanguageId();
+//                onChange$cmbPermiGroupId();
+//                onChange$cmbLanguageId();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(permissionGroupDataParam);
                 txtDescription.setReadonly(true);
-//                lblAliasPermiGroup.setReadonly(true);
+                txtAlias.setReadonly(true);
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
                 blockFields();
-                onChange$cmbPermiGroupId();
-                onChange$cmbLanguageId();
+                loadCmbPermiGroupId(eventType);
+                loadCmbLanguageId(eventType);
+//                onChange$cmbPermiGroupId();
+//                onChange$cmbLanguageId();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbPermiGroupId(eventType);
@@ -197,12 +207,12 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         }
     }
 
-    private void loadCmbPermiGroupId(Integer evenInteger) {
+    private void loadCmbPermiGroupId(Integer eventType) {
         EJBRequest request1 = new EJBRequest();
         List<PermissionGroup> permissionGroup;
         try {
             permissionGroup = utilsEJB.getPermissionGroup(request1);
-            loadGenericCombobox(permissionGroup,cmbPermiGroupId, "id",evenInteger,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getPermissionGroupId().getId(): 0) );            
+            loadGenericCombobox(permissionGroup,cmbPermiGroupId, "name",eventType,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getPermissionGroupId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -220,7 +230,7 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         List<Language> languageList;
         try {
             languageList = utilsEJB.getLanguage(request1);
-            loadGenericCombobox(languageList,cmbLanguageId,"id",eventType,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getLanguageId().getId(): 0) );            
+            loadGenericCombobox(languageList,cmbLanguageId,"description",eventType,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getLanguageId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -232,25 +242,6 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
             ex.printStackTrace();
         }    
     }
-    
-//    private void loadCmbAliasPermiGroup(Integer eventType) {
-//        EJBRequest request1 = new EJBRequest();
-//        List<PermissionGroupData> permissionGroupDataList;
-//        try {
-//            permissionGroupDataList = utilsEJB.getPermissionGroupData(request1);
-////            loadGenericCombobox(permissionGroupDataList, cmbAliasPermiGroup,"name",eventType,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getAlias().toString(): 0) );            
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        }    
-//    }   
-
 
 
     private void setText(String name) {

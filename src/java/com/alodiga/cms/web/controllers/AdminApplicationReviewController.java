@@ -146,11 +146,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private void loadFields(ReviewRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
             NumberFormat n = NumberFormat.getCurrencyInstance();
-            txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
-            txtAgency.setValue(user.getComercialAgencyId().getName());
-            txtCommercialAssessorUserCode.setValue(user.getCode());
-            txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
-            txtIdentification.setValue(user.getIdentificationNumber());
+            txtCity.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getCityId().getName());
+            txtAgency.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getName());
+            txtCommercialAssessorUserCode.setValue(reviewCollectionsRequest.getUserId().getCode());
+            txtAssessorName.setValue(reviewCollectionsRequest.getUserId().getFirstNames() + " " + reviewCollectionsRequest.getUserId().getLastNames());
+            txtIdentification.setValue(reviewCollectionsRequest.getUserId().getIdentificationNumber());
             if (reviewCollectionsRequest.getMaximumRechargeAmount() != null) {
                 txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
             }
@@ -264,6 +264,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setObservations(txtObservations.getText());
             reviewCollectionsRequest.setReviewRequestTypeId(reviewRequestType);
             reviewCollectionsRequest.setIndApproved(indApproved);
+            reviewCollectionsRequest.setCreateDate(new Timestamp(new Date().getTime()));
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
 
             //Actualiza el agente comercial en la solictud de tarjeta
@@ -646,6 +647,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_ADD:
+                    txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
+                    txtAgency.setValue(user.getComercialAgencyId().getName());
+                    txtCommercialAssessorUserCode.setValue(user.getCode());
+                    txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
+                    txtIdentification.setValue(user.getIdentificationNumber());
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
 

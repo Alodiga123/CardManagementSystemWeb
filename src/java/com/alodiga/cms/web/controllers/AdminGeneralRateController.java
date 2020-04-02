@@ -18,9 +18,12 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
+import static org.python.apache.xml.serialize.LineSeparator.Windows;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Radio;
@@ -28,6 +31,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Window;
 
 public class AdminGeneralRateController extends GenericAbstractAdminController {
 
@@ -49,6 +53,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     private Button btnSave;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
+    public Window winAdminGeneralRate;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -61,19 +66,6 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.generalRate.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.generalRate.view"));
-                break;
-            case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.generalRate.add"));
-                break;
-            default:
-                break;
-        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
@@ -139,6 +131,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             generalRate = productEJB.saveGeneralRate(generalRate);
             generalRateParam = generalRate;
             this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updateGeneralRate", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -156,6 +149,10 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             default:
                 break;
         }
+    }
+    
+    public void onClick$btnBack() {
+        winAdminGeneralRate.detach();
     }
 
     public void loadData() {
