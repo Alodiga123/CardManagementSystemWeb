@@ -42,10 +42,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.id.permission.group')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.language.id')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.alias.permission.group')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description.permission.group')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.id.permission.group')}" width="190px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.language.id')}" width="175px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.alias.permission.group')}" width="220px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.description.permission.group')}" width="220px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
