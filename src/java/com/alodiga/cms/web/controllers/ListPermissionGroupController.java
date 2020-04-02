@@ -9,6 +9,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.PermissionGroup;
+import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -30,6 +31,7 @@ public class ListPermissionGroupController extends GenericAbstractListController
     private UtilsEJB utilsEJB = null;
     private List<PermissionGroup> permissionGroupList = null;
     private PermissionGroup currentPermissionGroup;
+    private User user = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -45,7 +47,7 @@ public class ListPermissionGroupController extends GenericAbstractListController
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            currentPermissionGroup = (PermissionGroup) session.getAttribute(Constants.USER_OBJ_SESSION);
+            user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminPermissionGroup.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
