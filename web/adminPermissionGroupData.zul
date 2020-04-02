@@ -60,7 +60,7 @@
                                                         <row>
                                                             <combobox id="cmbPermiGroupId" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbLanguageId" width="270px" mold="rounded" readonly="true" />
-                                                            <label id="lblAliasPermiGroup" width="270px"/>                                                            
+                                                            <textbox id="txtAlias" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                         
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.description.permission.group')}" sclass="lblbold"/>
