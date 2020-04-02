@@ -152,7 +152,7 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(permissionGroupParam);
-                txtNamePermissionGroup.setDisabled(true);
+                txtNamePermissionGroup.setReadonly(true);
                 blockFields();
                 rEnabledYes.setDisabled(true);
                 rEnabledNo.setDisabled(true);

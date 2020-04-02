@@ -179,8 +179,6 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(permissionGroupDataParam);
-                txtDescription.setReadonly(true);
-                txtAlias.setReadonly(true);
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
 //                onChange$cmbPermiGroupId();
