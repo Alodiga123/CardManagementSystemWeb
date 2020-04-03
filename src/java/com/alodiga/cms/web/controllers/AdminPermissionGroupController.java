@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -9,7 +8,6 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.PermissionGroup;
-import com.cms.commons.models.Transaction;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -164,6 +162,4 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
                 break;
         }
     }
-
-    
 }
