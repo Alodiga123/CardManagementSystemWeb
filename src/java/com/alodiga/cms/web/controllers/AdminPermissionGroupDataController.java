@@ -162,27 +162,13 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
             }
         }
     }
-    
-//    public void onChange$cmbPermiGroupId() {
-//        cmbLanguageId.setVisible(true);
-//        PermissionGroup permissionGroup = (PermissionGroup) cmbPermiGroupId.getSelectedItem().getValue();
-////        loadCmbLanguageId(eventType, permissionGroup.getId());
-//    }
-    
-//    public void onChange$cmbLanguageId() {
-//        lblAliasPermiGroup.setVisible(true);
-//        Language language = (Language) cmbLanguageId.getSelectedItem().getValue();
-////        lblAliasPermiGroup.setValue(Language);
-//    }
-   
+     
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(permissionGroupDataParam);
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
-//                onChange$cmbPermiGroupId();
-//                onChange$cmbLanguageId();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(permissionGroupDataParam);
@@ -193,8 +179,6 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
                 blockFields();
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
-//                onChange$cmbPermiGroupId();
-//                onChange$cmbLanguageId();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbPermiGroupId(eventType);

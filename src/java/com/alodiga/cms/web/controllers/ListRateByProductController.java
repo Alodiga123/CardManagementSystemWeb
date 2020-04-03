@@ -271,7 +271,6 @@ public class ListRateByProductController extends GenericAbstractListController<R
     }
 
     private void loadCmbProduct(Integer evenInteger, long programId) {
-
         EJBRequest request1 = new EJBRequest();
         cmbProduct.getItems().clear();
         Map params = new HashMap();
