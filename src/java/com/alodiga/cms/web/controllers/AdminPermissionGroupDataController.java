@@ -1,8 +1,5 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -11,19 +8,9 @@ import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Country;
-import com.cms.commons.models.Currency;
-import com.cms.commons.models.KindCard;
 import com.cms.commons.models.Language;
-import com.cms.commons.models.LevelProduct;
 import com.cms.commons.models.PermissionGroup;
 import com.cms.commons.models.PermissionGroupData;
-import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductUse;
-import com.cms.commons.models.Program;
-import com.cms.commons.models.ProgramType;
-import com.cms.commons.models.SegmentMarketing;
-import com.cms.commons.models.StorageMedio;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -163,26 +150,12 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         }
     }
     
-//    public void onChange$cmbPermiGroupId() {
-//        cmbLanguageId.setVisible(true);
-//        PermissionGroup permissionGroup = (PermissionGroup) cmbPermiGroupId.getSelectedItem().getValue();
-////        loadCmbLanguageId(eventType, permissionGroup.getId());
-//    }
-    
-//    public void onChange$cmbLanguageId() {
-//        lblAliasPermiGroup.setVisible(true);
-//        Language language = (Language) cmbLanguageId.getSelectedItem().getValue();
-////        lblAliasPermiGroup.setValue(Language);
-//    }
-   
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(permissionGroupDataParam);
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
-//                onChange$cmbPermiGroupId();
-//                onChange$cmbLanguageId();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(permissionGroupDataParam);
@@ -193,8 +166,6 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
                 blockFields();
                 loadCmbPermiGroupId(eventType);
                 loadCmbLanguageId(eventType);
-//                onChange$cmbPermiGroupId();
-//                onChange$cmbLanguageId();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbPermiGroupId(eventType);
@@ -240,7 +211,6 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
             ex.printStackTrace();
         }    
     }
-
 
     private void setText(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
