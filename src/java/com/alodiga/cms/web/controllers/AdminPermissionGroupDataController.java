@@ -149,7 +149,7 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
             }
         }
     }
-    
+     
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
