@@ -9,9 +9,6 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
-import com.cms.commons.models.FamilyReferences;
-import com.cms.commons.models.KinShipApplicant;
-import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.util.Constants;
@@ -27,7 +24,6 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class AdminApplicantOFACController extends GenericAbstractAdminController {

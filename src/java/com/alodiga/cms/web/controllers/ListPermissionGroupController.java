@@ -31,7 +31,8 @@ public class ListPermissionGroupController extends GenericAbstractListController
     private UtilsEJB utilsEJB = null;
     private List<PermissionGroup> permissionGroupList = null;
     private PermissionGroup currentPermissionGroup;
-    
+    private User user = null;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -47,6 +48,7 @@ public class ListPermissionGroupController extends GenericAbstractListController
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
+            user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminPermissionGroup.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
