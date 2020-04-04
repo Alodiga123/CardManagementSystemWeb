@@ -169,7 +169,6 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
     }
 
     public void onClick$btnSave() {
-//        if (validateEmpty()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveLoyaltyTransactionHasCommerce(null);
@@ -180,7 +179,6 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
             default:
                 break;
         }
-//        }
     }
 
     public void onClick$btnBack() {
