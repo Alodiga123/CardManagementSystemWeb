@@ -32,18 +32,9 @@
                                                 <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
-                                        <div height="5px" width="100%" style="background:#333;" align="left"></div>
+                                        <div height="7px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -58,16 +49,20 @@
                                                             <label value="${c:l('cms.common.alias.permission.group')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbPermissionGroupId" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbLanguage" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbAliasPermissionGroup" width="270px" mold="rounded" readonly="true" />                                                            
+                                                            <combobox id="cmbPermiGroupId" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbLanguageId" width="270px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtAlias" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                         
                                                        </row>
-                                                        <row>
+                                                      <row>
                                                             <label value="${c:l('cms.common.description.permission.group')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <textbox id="txtDescription" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                        </row>
+                                                       </row>
+                                                       <row>
+                                                           <cell colspan="3">
+                                                               <hlayout>
+                                                                   <textbox id="txtDescription" multiline="true" rows="1" width="870px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1200"/>
+                                                               </hlayout>
+                                                           </cell>    
+                                                       </row>  
                                                     </rows>
                                                 </grid>
                                             </vlayout>

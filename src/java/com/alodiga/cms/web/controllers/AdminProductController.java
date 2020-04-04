@@ -199,31 +199,6 @@ public class AdminProductController extends GenericAbstractAdminController {
             } else {
                 validityMonth = WebConstants.VALIDITY_MONTH_48;
             }
-            
-//    public void String ValidityDate (String vBeginDate, String  vEndDate) {
-//        dtbBeginDateValidity = null;
-//        dtbEndDateValidity = null;
-//        long validityDate;
-//        SimpleDateFormat sdf= new SimpleDateFormat ();
-//        try {          
-//            dtbBeginDateValidity = sdf.parse(vBeginDate);
-//            dtbEndDateValidity = sdf.parse(vEndDate); 
-//        } catch (ParseException e) {
-// 
-//            System.out.println("Se ha producido un error en el parseo");
-//        }
-//        
-//        //INSTANCIA DEL CALENDARIO 
-//            Calendar dateinicio = Calendar.getInstance();
-//            Calendar datefinal = Calendar.getInstance();
-//            
-//            dateinicio.setTime(dtbBeginDateValidity);
-//            datefinal.setTime(dtbEndDateValidity);
-//    }
-    
- 
-        
-        
 
             //Guardar Producto
             product.setName(txtName.getText());
