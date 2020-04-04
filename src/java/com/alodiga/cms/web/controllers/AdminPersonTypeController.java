@@ -8,21 +8,16 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.Currency;
 import com.cms.commons.models.OriginApplication;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 public class AdminPersonTypeController extends GenericAbstractAdminController {
@@ -40,10 +35,14 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         Sessions.getCurrent();
-        personTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonType) Sessions.getCurrent().getAttribute("object") : null;
+//        personTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            personTypeParam = null;
+        } else {
+            personTypeParam = (PersonType) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override
@@ -64,7 +63,6 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     private void loadFields(PersonType personType) {
         try {
             txtName.setText(personType.getDescription());
-
         } catch (Exception ex) {
             showError(ex);
         }
@@ -83,17 +81,8 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             return true;
         }
         return false;
-
     }
-
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
+ 
     private void savePersonType(PersonType _personType) {
         try {
             PersonType personType = null;
@@ -156,7 +145,7 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
         List<Country> countryList;
         try {
             countryList = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countryList,cmbCountry, "name",evenInteger,Long.valueOf(personTypeParam != null? personTypeParam.getCountryId().getId(): 0));            
+            loadGenericCombobox(countryList, cmbCountry, "name", evenInteger, Long.valueOf(personTypeParam != null ? personTypeParam.getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -165,14 +154,14 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     private void loadCmbOriginApplication(Integer evenInteger) {
         EJBRequest request = new EJBRequest();
         List<OriginApplication> originApplicationList;
         try {
             originApplicationList = utilsEJB.getOriginApplication(request);
-            loadGenericCombobox(originApplicationList,cmbOriginApplication, "name",evenInteger,Long.valueOf(personTypeParam != null? personTypeParam.getOriginApplicationId().getId(): 0));
-            } catch (EmptyListException ex) {
+            loadGenericCombobox(originApplicationList, cmbOriginApplication, "name", evenInteger, Long.valueOf(personTypeParam != null ? personTypeParam.getOriginApplicationId().getId() : 0));
+        } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
             showError(ex);

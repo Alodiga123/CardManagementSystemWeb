@@ -65,7 +65,6 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
                 if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
                     //NaturalCustomer naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
                     naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
-                    
                     if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
                         addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
                     } else {

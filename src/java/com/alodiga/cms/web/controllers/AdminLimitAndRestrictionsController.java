@@ -185,7 +185,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             default:
                 break;
         }
-//        }
     }
 
     public void onClick$btnBack() {
@@ -197,7 +196,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             case WebConstants.EVENT_EDIT:
                 loadFields(productHasChannelHasTransactionParam);
                 loadField(productHasChannelHasTransactionParam);
-                //txtProduct.setReadonly(true);
                 loadCmbProductUse(eventType);
                 loadCmbTransaction(eventType);
                 loadCmbChannel(eventType);
