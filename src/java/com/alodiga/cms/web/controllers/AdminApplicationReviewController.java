@@ -79,7 +79,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private Request requestCard;
     private Request requestNumber = null;
     private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList;
-    private List<CollectionsRequest>  collectionsByRequestList;
+    private List<CollectionsRequest> collectionsByRequestList;
     private List<ApplicantNaturalPerson> cardComplementaryList = null;
     private NaturalCustomer naturalCustomerParent = null;
     public static Person customer = null;
@@ -145,34 +145,46 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
     private void loadFields(ReviewRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
-            NumberFormat n = NumberFormat.getCurrencyInstance();
+            if (reviewCollectionsRequest != null) {
+                NumberFormat n = NumberFormat.getCurrencyInstance();
+                txtCity.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getCityId().getName());
+                txtAgency.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getName());
+                txtCommercialAssessorUserCode.setValue(reviewCollectionsRequest.getUserId().getCode());
+                txtAssessorName.setValue(reviewCollectionsRequest.getUserId().getFirstNames() + " " + reviewCollectionsRequest.getUserId().getLastNames());
+                txtIdentification.setValue(reviewCollectionsRequest.getUserId().getIdentificationNumber());
+                if (reviewCollectionsRequest.getMaximumRechargeAmount() != null) {
+                    txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
+                }
+                if (reviewCollectionsRequest.getReviewDate() != null) {
+                    txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
+                }
+                if (reviewCollectionsRequest.getObservations() != null) {
+                    txtObservations.setText(reviewCollectionsRequest.getObservations());
+                }
+                if (reviewCollectionsRequest.getIndApproved() != null) {
+                    if (reviewCollectionsRequest.getIndApproved() == true) {
+                        rApprovedYes.setChecked(true);
+                        if (reviewCollectionsRequest.getRequestId().getStatusRequestId().getId() != Constants.STATUS_REQUEST_COLLECTIONS_WITHOUT_APPROVAL) {
+                            blockFields();
+                        }
+                        cmbProduct.setDisabled(true);
+                    } else {
+                        rApprovedNo.setChecked(true);
+                    }
+                }
+            } else {
+                txtCity = null;
+                txtAgency = null;
+                txtCommercialAssessorUserCode = null;
+                txtAssessorName = null;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
             txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
             txtAgency.setValue(user.getComercialAgencyId().getName());
             txtCommercialAssessorUserCode.setValue(user.getCode());
             txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
-            txtIdentification.setValue(user.getIdentificationNumber());
-            if (reviewCollectionsRequest.getMaximumRechargeAmount() != null) {
-                txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
-            }
-            if (reviewCollectionsRequest.getReviewDate() != null) {
-                txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
-            }
-            if (reviewCollectionsRequest.getObservations() != null) {
-                txtObservations.setText(reviewCollectionsRequest.getObservations());
-            }
-            if (reviewCollectionsRequest.getIndApproved() != null) {
-                if (reviewCollectionsRequest.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);
-                    if (reviewCollectionsRequest.getRequestId().getStatusRequestId().getId() != Constants.STATUS_REQUEST_COLLECTIONS_WITHOUT_APPROVAL) {
-                        blockFields();
-                    }
-                    cmbProduct.setDisabled(true);
-                } else {
-                    rApprovedNo.setChecked(true);
-                }
-            }
-        } catch (Exception ex) {
-            showError(ex);
         }
     }
 
@@ -264,6 +276,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setObservations(txtObservations.getText());
             reviewCollectionsRequest.setReviewRequestTypeId(reviewRequestType);
             reviewCollectionsRequest.setIndApproved(indApproved);
+            reviewCollectionsRequest.setCreateDate(new Timestamp(new Date().getTime()));
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
 
             //Actualiza el agente comercial en la solictud de tarjeta
@@ -296,7 +309,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             showError(ex);
         }
     }
-    
+
     public StatusRequest getStatusRequest(Request requestCard, int statusRequestId) {
         StatusRequest statusRequest = requestCard.getStatusRequestId();
         try {
@@ -385,11 +398,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
-            
+
             //Actualiza el cliente en la solicitud de tarjeta
             requestCard.setPersonCustomerId(naturalCustomer.getPersonId());
             requestCard = requestEJB.saveRequest(requestCard);
-            
+
             //Guarda el resto de la información relacionada con el cliente
             saveCardComplementariesCustomer(naturalCustomer);
             saveFamilyReferentCustomer(naturalCustomer);
@@ -569,7 +582,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             legalCustomer.setWebSite(applicant.getWebSite());
             legalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
-            
+
             //Actualiza el cliente en la solicitud de tarjeta
             requestCard.setPersonCustomerId(legalCustomer.getPersonId());
             requestCard = requestEJB.saveRequest(requestCard);
@@ -646,6 +659,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_ADD:
+                    txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
+                    txtAgency.setValue(user.getComercialAgencyId().getName());
+                    txtCommercialAssessorUserCode.setValue(user.getCode());
+                    txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
+                    txtIdentification.setValue(user.getIdentificationNumber());
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
 
@@ -660,7 +678,6 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             Logger.getLogger(AdminApplicationReviewController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     private void loadCmbProduct(Integer evenInteger, Long programId) {

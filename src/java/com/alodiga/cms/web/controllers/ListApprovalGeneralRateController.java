@@ -1,28 +1,31 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.GeneralRate;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.ApplicantNaturalPerson;
+import com.cms.commons.models.ApprovalGeneralRate;
 import com.cms.commons.models.Request;
-import com.cms.commons.models.RequestType;
+import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.User;
+import com.cms.commons.models.StatusApplicant;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.net.URL;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
@@ -37,36 +40,38 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class ListGeneralRateController extends GenericAbstractListController<Request> {
+public class ListApprovalGeneralRateController extends GenericAbstractListController<ApprovalGeneralRate> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtRequestNumber;
+    private Textbox txtName;
     private ProductEJB productEJB = null;
-    private List<GeneralRate> generalRateList = null;
-    private Toolbarbutton tbbTitle;
+    private List<ApprovalGeneralRate> approvalGeneralRateList = null;
+    private User currentUser;
+    private Button btnSave;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        initialize(); 
+        initialize();
         startListener();
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateGeneralRate", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateApprovalGeneralRate", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
             public void onEvent(Event evt) {
                 getData();
-                loadList(generalRateList);
+                loadDataList(approvalGeneralRateList);
             }
         });
     }
-
 
     @Override
     public void initialize() {
@@ -74,37 +79,62 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
         try {
             //Evaluar Permisos
             permissionEdit = true;
-            permissionAdd = true; 
+            permissionAdd = true;
             permissionRead = true;
-            tbbTitle.setLabel(Labels.getLabel("cms.common.generalRate.list"));
-            adminPage = "adminGeneralRate.zul";
+            adminPage = "/adminApprovalGeneralRates.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            loadList(generalRateList);
+            loadDataList(approvalGeneralRateList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
- 
-    public void onClick$btnDelete() {
+
+    public void getData() {
+        approvalGeneralRateList = new ArrayList<ApprovalGeneralRate>();
+        try {
+            request.setFirst(0);
+            request.setLimit(null);
+            approvalGeneralRateList = productEJB.getApprovalGeneralRate(request);   
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        }
+    }  
+
+    public void onClick$btnDownload() throws InterruptedException {
+        try {
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.additionalCards.list"));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
-    public void loadList(List<GeneralRate> list) {
-        String applicantName = "";
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }    
+    
+    public void loadDataList(List<ApprovalGeneralRate> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (GeneralRate generalRate : list) {
+                for (ApprovalGeneralRate approvalGeneralRate : list) {
                     item = new Listitem();
-                    item.setValue(generalRate);
-                    item.appendChild(new Listcell(generalRate.getCountryId().getName()));
-                    item.appendChild(new Listcell(generalRate.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(generalRate.getChannelId().getName()));
-                    item.appendChild(new Listcell(generalRate.getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(generalRate.getFixedRate().toString()));
-                    item.appendChild(createButtonEditModal(generalRate));
-                    item.appendChild(createButtonViewModal(generalRate));
+                    item.setValue(approvalGeneralRate);
+                    String pattern = "dd/MM/yyyy";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    StringBuilder builder = new StringBuilder(approvalGeneralRate.getUserId().getFirstNames());
+                    builder.append(" ");
+                    builder.append(approvalGeneralRate.getUserId().getLastNames());                    
+                    item.appendChild(new Listcell(builder.toString()));
+                    item.appendChild(new Listcell(approvalGeneralRate.getUserId().getComercialAgencyId().getName()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(approvalGeneralRate.getApprovalDate())));               
+                    item.appendChild(createButtonEditModal(approvalGeneralRate));
+                    item.appendChild(createButtonViewModal(approvalGeneralRate));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -116,46 +146,22 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-    public void getData() {
-        generalRateList = new ArrayList<GeneralRate>();
-        try {
-            request.setFirst(0);
-            request.setLimit(null);
-            generalRateList = productEJB.getGeneralRate(request);
-        } catch (NullParameterException ex) {
-            showError(ex);
-        } catch (EmptyListException ex) {
-           showEmptyList();
-        } catch (GeneralException ex) {
-            showError(ex);
-        }
-    }
     
-    
-    private void showEmptyList(){
-                Listitem item = new Listitem();
-                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.setParent(lbxRecords);  
-    }
-
-    public void onClick$btnDownload() throws InterruptedException {
+    public void onClick$btnAdd() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", approvalGeneralRateList);
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+            window.doModal();
         } catch (Exception ex) {
-            showError(ex);
+            this.showMessage("sp.error.general", true, ex);
         }
-    }
-
-    public void onClick$btnClear() throws InterruptedException {
-        txtRequestNumber.setText("");
     }
     
     public Listcell createButtonEditModal(final Object obg) {
@@ -180,18 +186,6 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
             ex.printStackTrace();
         }
         return listcellEditModal;
-    }
-    
-       public void onClick$btnAddGeneralRate() throws InterruptedException {
-        try {
-            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-            Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", generalRateList);
-            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-            window.doModal();
-        } catch (Exception ex) {
-            this.showMessage("sp.error.general", true, ex);
-        }
     }
     
     public Listcell createButtonViewModal(final Object obg) {
@@ -220,13 +214,8 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
     }
 
     @Override
-    public List<Request> getFilterList(String filter) {
+    public List<ApprovalGeneralRate> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public void loadDataList(List<Request> list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
 }

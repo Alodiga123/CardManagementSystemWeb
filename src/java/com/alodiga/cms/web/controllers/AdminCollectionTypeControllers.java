@@ -35,8 +35,13 @@ public class AdminCollectionTypeControllers extends GenericAbstractAdminControll
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        collectionTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionType) Sessions.getCurrent().getAttribute("object") : null;
+//        collectionTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            collectionTypeParam = null;
+        } else {
+            collectionTypeParam = (CollectionType) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
         loadData();
     }

@@ -38,10 +38,13 @@ public class AdminCountryController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        countryParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Country) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            countryParam = null;                    
+        } else {
+            countryParam = (Country) Sessions.getCurrent().getAttribute("object");            
+        }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override

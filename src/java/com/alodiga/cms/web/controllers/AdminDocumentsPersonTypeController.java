@@ -8,26 +8,20 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.Currency;
 import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.OriginApplication;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 public class AdminDocumentsPersonTypeController extends GenericAbstractAdminController {
@@ -46,10 +40,14 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         Sessions.getCurrent();
-        documentsPersonTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (DocumentsPersonType) Sessions.getCurrent().getAttribute("object") : null;
+//        documentsPersonTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (DocumentsPersonType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            documentsPersonTypeParam = null;
+        } else {
+            documentsPersonTypeParam = (DocumentsPersonType) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
 
     @Override

@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPlasticRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPlasticRequestController" class="general-window">
+    <window id="winAdminPermissionGroup" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPermissionGroupController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -13,7 +13,6 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
-                        <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
                                 <div>
@@ -25,10 +24,12 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton label="${c:l('cms.crumb.plasticRequest.list')}" onClick='Executions.sendRedirect(&quot;listPlasticRequest.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton id="tbbTitle" label=""/>
+                                                 |
+                                                <toolbarbutton label="${c:l('cms.menu.permission.group')}" onClick='Executions.sendRedirect(&quot;listPermissionGroup.zul&quot;)'/>
+                                                 |
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.permission.group.data.add')}"/>
+                                                 |  
+                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -48,29 +49,25 @@
                                                     <columns>
                                                         <column label="" width="290px"/>
                                                         <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.requestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.name.permission.group')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indEnabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="dtbRequestDate" width="270px"/>
-                                                            <combobox id="cmbPlasticManufacturer" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.crud.loyalty.starDate.status')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row> 
-                                                            <cell colspan="2">
-                                                                <hlayout>
-                                                                    <label id="txtStatus" value="" width="250px" style="color:#837E76;"/>
-                                                                    <combobox id="cmbStatusPlasticRequest" width="270px" mold="rounded" readonly="true"/>
-                                                                </hlayout>
-                                                            </cell>
+                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hbox>
+                                                            <radiogroup id="PermiGroupEnabled" onCheck="value = self.selectedItem.label"/>
+                                                                 <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rEnabledYes" label="${c:l('cms.commom.Yes')}" radiogroup="PermiGroupEnabled" />
+                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="PermiGroupEnabled" />
+                                                                        </row>
+                                                                    </rows>
+                                                                 </grid>
+                                                            </hbox>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -80,20 +77,15 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listPlasticRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listPermissionGroup.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
-                                <div></div>
                             </hlayout>
                         </div>
-                        <div></div>
                     </hlayout>
                 </div>
             </center>
-            <south border="none" size="40px">
-                <include src="adminFooter.zul"/>
-            </south>
         </borderlayout>
     </window>
 </zk>
