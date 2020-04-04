@@ -143,6 +143,14 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtObservations.setRawValue(null);
     }
 
+    private void loadUser() {
+        txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
+        txtAgency.setValue(user.getComercialAgencyId().getName());
+        txtCommercialAssessorUserCode.setValue(user.getCode());
+        txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
+        txtIdentification.setValue(user.getIdentificationNumber());
+    }
+
     private void loadFields(ReviewRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
             if (reviewCollectionsRequest != null) {
@@ -650,33 +658,35 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
                     getReviewCollectionsRequestParam();
-                    loadFields(reviewCollectionsRequestParam);
+                    if (reviewCollectionsRequestParam != null) {
+                        loadFields(reviewCollectionsRequestParam);
+                    } else {
+                        loadUser();
+                    }
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_VIEW:
-                    loadFields(reviewCollectionsRequestParam);
+                    getReviewCollectionsRequestParam();
+                    if (reviewCollectionsRequestParam != null) {
+                        loadFields(reviewCollectionsRequestParam);
+                    } else {
+                        loadUser();
+                    }
                     blockFields();
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_ADD:
-                    txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
-                    txtAgency.setValue(user.getComercialAgencyId().getName());
-                    txtCommercialAssessorUserCode.setValue(user.getCode());
-                    txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
-                    txtIdentification.setValue(user.getIdentificationNumber());
+                    loadUser();
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
 
             }
         } catch (EmptyListException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NullParameterException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
