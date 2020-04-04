@@ -66,7 +66,12 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+//        naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+        if (eventType == WebConstants.EVENT_ADD) {
+            naturalCustomerParam = null;
+        } else {
+            naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -352,7 +357,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            //loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getPersonId().getApplicantNaturalPerson().getCivilStatusId().getId() : 0));
             loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getPersonId().getNaturalCustomer().getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

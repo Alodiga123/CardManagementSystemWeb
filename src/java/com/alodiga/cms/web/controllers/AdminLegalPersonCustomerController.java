@@ -6,6 +6,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -60,8 +61,12 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-//        legalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalCustomer) Sessions.getCurrent().getAttribute("object") : null;
-        legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
+//        legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
+        if (eventType == WebConstants.EVENT_ADD) {
+            legalCustomerParam = null;
+        } else {
+            legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 

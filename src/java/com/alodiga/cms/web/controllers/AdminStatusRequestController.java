@@ -25,10 +25,14 @@ public class AdminStatusRequestController extends GenericAbstractAdminController
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        statusRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (StatusRequest) Sessions.getCurrent().getAttribute("object") : null;
+//        statusRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (StatusRequest) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute( WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            statusRequestParam = null;
+        } else {
+            statusRequestParam = (StatusRequest) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
-        //initView(eventType, "sp.crud.status");
     }
     
     @Override

@@ -146,7 +146,6 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
             }
             txtBirthPlace.setText(naturalCustomer.getPlaceBirth());
             txtBirthDay.setValue(naturalCustomer.getDateBirth());
-//            txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
             txtEmail.setText(naturalCustomer.getPersonId().getEmail());
 
             EJBRequest request = new EJBRequest();

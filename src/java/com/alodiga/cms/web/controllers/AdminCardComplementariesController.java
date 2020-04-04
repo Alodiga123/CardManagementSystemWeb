@@ -42,7 +42,6 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
-import org.zkoss.zul.Window;
 
 public class AdminCardComplementariesController extends GenericAbstractAdminController {
 
