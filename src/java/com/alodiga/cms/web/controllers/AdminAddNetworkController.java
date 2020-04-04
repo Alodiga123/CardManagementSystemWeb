@@ -12,6 +12,7 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.Network;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramHasNetwork;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -64,6 +65,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -75,8 +77,11 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbNetworks(eventType, country.getId());
     }
-
-    public void clearFields() {
+    
+    public void onClick$btnAdd() {
+        cmbCountry.setValue("");
+        cmbNetwork.setValue("");
+        this.clearMessage();
     }
 
     private void loadFields(ProgramHasNetwork programHasNetwork) {
@@ -89,35 +94,59 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
 
     private void saveProgramHasNetwork(ProgramHasNetwork _programHasNetwork) {
         Program program = null;
+        Network network = null;
+        ProgramHasNetwork programHasNetwork = null;
+        List<ProgramHasNetwork> programHasNetworkList = null;
+        int indExistRegister = 0;
         
         try {
-            ProgramHasNetwork programHasNetwork = null;
-
             if (_programHasNetwork != null) {
                 programHasNetwork = _programHasNetwork;
             } else {//New address
                 programHasNetwork = new ProgramHasNetwork();
             }
             
-            //Program
+            //Red asociada al programa
+            network = (Network) cmbNetwork.getSelectedItem().getValue();
+            
+            //Programa
             AdminProgramController adminProgram = new AdminProgramController();
             if (adminProgram.getProgramParent().getId() != null) {
                 program = adminProgram.getProgramParent();
             }
-
-            //ProgramHasNetwork
-            programHasNetwork.setProgramId(program);
-            programHasNetwork.setNetworkId((Network) cmbNetwork.getSelectedItem().getValue());
-            programHasNetwork = utilsEJB.saveProgramHasNetwork(programHasNetwork);
-            programHasNetworksParam = programHasNetwork;
-            this.showMessage("sp.common.save.success", false, null);
-
-            EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true).publish(new Event(""));
+            
+            //Verifica si el registro existe en BD
+            if (eventType == WebConstants.EVENT_ADD) {
+                EJBRequest request = new EJBRequest();
+                params = new HashMap();
+                params.put(Constants.PROGRAM_KEY, program.getId());
+                params.put(Constants.NETWORK_KEY, network.getId());
+                request.setParams(params);
+                programHasNetworkList = programEJB.getProgramHasNetworkByNetworkByProgram(request);
+                if (programHasNetworkList != null) {
+                    indExistRegister = 1;
+                    this.showMessage("cms.common.msj.registrationAlreadyExistsProgramHasNetwork", false, null);
+                }
+            }
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            try {
+                if (indExistRegister == 0) {
+                    //ProgramHasNetwork
+                    programHasNetwork.setProgramId(program);
+                    programHasNetwork.setNetworkId((Network) cmbNetwork.getSelectedItem().getValue());
+                    programHasNetwork = programEJB.saveProgramHasNetwork(programHasNetwork);
+                    programHasNetworksParam = programHasNetwork;
+                    this.showMessage("sp.common.save.success", false, null);
+                    EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true).publish(new Event(""));
+                }                
+            } catch (Exception ex) {
+                showError(ex);   
+            }
         }
     }
-
+    
     public void onClick$btnSave() {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
@@ -196,5 +225,9 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
             showError(ex);
             ex.printStackTrace();
         }
+    }
+
+    public void clearFields() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

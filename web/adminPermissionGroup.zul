@@ -27,7 +27,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.menu.permission.group')}" onClick='Executions.sendRedirect(&quot;listPermissionGroup.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.permission.group.data.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.permission.group.add')}"/>
                                                  |  
                                                 <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
@@ -56,7 +56,7 @@
                                                             <label value="${c:l('cms.common.indEnabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtNamePermissionGroup" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <hbox>
                                                             <radiogroup id="PermiGroupEnabled" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
