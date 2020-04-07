@@ -18,13 +18,12 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     private UtilsEJB utilsEJB = null;
     private PersonClassification personclassificationParam;
     private Button btnSave;
-    private Integer evenType2 = -1;
+    private Integer evenType;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-//        personclassificationParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonClassification) Sessions.getCurrent().getAttribute("object") : null;
-        evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
             personclassificationParam = null;
         } else {
@@ -90,7 +89,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
-            switch (evenType2) {
+            switch (evenType) {
                 case WebConstants.EVENT_ADD:
                     savePersonClassification(null);
                     break;
@@ -102,7 +101,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     }
 
     public void loadData() {
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(personclassificationParam);
                 break;

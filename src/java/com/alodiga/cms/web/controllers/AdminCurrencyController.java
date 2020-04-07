@@ -20,14 +20,13 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
     private UtilsEJB utilsEJB = null;
     private Currency currencyParam;
     private Button btnSave;
-    private Integer evenType2 = -1;
+    private Integer evenType;
     private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-//        currencyParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Currency) Sessions.getCurrent().getAttribute("object") : null;
-        evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
             currencyParam = null;
         } else {
@@ -40,7 +39,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.currency.edit"));
                 break;
@@ -116,7 +115,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
-            switch (evenType2) {
+            switch (evenType) {
                 case WebConstants.EVENT_ADD:
                     saveCurrency(null);
                     break;
@@ -128,7 +127,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
     }
 
     public void loadData() {
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(currencyParam);
                 break;
