@@ -62,8 +62,7 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
         
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
-                    //NaturalCustomer naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {                    
                     naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
                     if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
                         addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
@@ -75,7 +74,6 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             case WebConstants.EVENT_VIEW:
                 if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
                     naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
-//                    NaturalCustomer naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
                     if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
                         addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
                     } else {
@@ -178,7 +176,6 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
     }
 
     private void saveAddress(Address _address) {
-        //NaturalCustomer applicantPersonCard = null;
         Person applicantPersonCard = null;
         try {
             Address address = null;
@@ -190,7 +187,6 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             
             if (_address != null) {
                 address = _address;
-                //personHasAddress = applicantPersonCard.getPersonHasAddress();
             } else {//New address
                 address = new Address();
                 personHasAddress = new PersonHasAddress();

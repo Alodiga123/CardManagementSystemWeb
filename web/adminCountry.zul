@@ -63,12 +63,10 @@
                                                             <hlayout>
                                                               <textbox id="txtCode" value="" width="230px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="4" />
                                                               <label value="*" sclass="lblreq" />
-                                                              <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hlayout>
                                                             <hbox>
                                                                <textbox id="txtShortName" value="" width="230px" onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="2"/>
                                                                <label value="*" sclass="lblreq" />
-                                                               <label value="${c:l('sp.common.max5')}" sclass="lblexample"/>
                                                             </hbox>
                                                         </row>
                                                          <row>
