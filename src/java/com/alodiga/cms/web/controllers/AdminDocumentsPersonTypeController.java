@@ -40,7 +40,6 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         Sessions.getCurrent();
-//        documentsPersonTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (DocumentsPersonType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
             documentsPersonTypeParam = null;

@@ -42,11 +42,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
     }
 
     private void checkOption() {
-//        String option = getOptionInSession();
-//        if (option.equals(OPTION_NONE)) {
-//        } else if (option.equals(OPTION_CUSTOMERS_LIST)) {
-//            //ltcCustomerList.setImage("/images/icon-target.png");
-//        }
+
     }
 
     private void loadAccountData() {

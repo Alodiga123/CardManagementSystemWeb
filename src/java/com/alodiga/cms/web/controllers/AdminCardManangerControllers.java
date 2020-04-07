@@ -31,14 +31,12 @@ public class AdminCardManangerControllers extends GenericAbstractAdminController
     private ProductEJB productEJB = null;
     private Card cardParam;
     private Button btnSave;
-    private Integer evenType2 = -1;
+    private Integer evenType;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
-//        cardParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Card) Sessions.getCurrent().getAttribute("object") : null;
-        evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
             cardParam = null;
         } else {
@@ -107,7 +105,7 @@ public class AdminCardManangerControllers extends GenericAbstractAdminController
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
-            switch (evenType2) {
+            switch (evenType) {
                 case WebConstants.EVENT_ADD:
                     saveCardStatus(null);
                     break;
@@ -119,7 +117,7 @@ public class AdminCardManangerControllers extends GenericAbstractAdminController
     }
 
     public void loadData() {
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(cardParam);
                 break;
