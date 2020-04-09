@@ -80,8 +80,9 @@ public class AdminPermissionController extends GenericAbstractAdminController {
     
     private void loadFields(Permission permission) {
         try {
-            txtAction.setText(permission.getName().toString());
-            
+            txtAction.setText(permission.getAction().toString());
+            txtEntity.setText(permission.getEntity().toString());
+            txtNamePermission.setText(permission.getName().toString());
             if (permission.getEnabled() == true) {
                 rEnabledYes.setChecked(true);
             } else {
@@ -137,8 +138,9 @@ public class AdminPermissionController extends GenericAbstractAdminController {
                 indEnabled = false;
             }
             
+            permission.setPermissionGroupId((PermissionGroup) cmbPermissionGroup.getSelectedItem().getValue());
             permission.setAction(txtAction.getText());
-            permission.setEntity(txtEntity.getText());
+            permission.setEntity(txtEntity.getText().toString());
             permission.setName(txtNamePermission.getText());
             permission.setEnabled(indEnabled);
             permission = utilsEJB.savePermission(permission);
