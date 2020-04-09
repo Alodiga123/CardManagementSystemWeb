@@ -8,7 +8,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.PermissionGroup;
+import com.cms.commons.models.Permission;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -24,13 +24,14 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListPermissionGroupController extends GenericAbstractListController<PermissionGroup> {
+
+public class ListPermissionController extends GenericAbstractListController<Permission> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private UtilsEJB utilsEJB = null;
-    private List<PermissionGroup> permissionGroupList = null;
-    private PermissionGroup currentPermissionGroup;
+    private List<Permission> permissionList = null;
+    private Permission currentPermission;
     private User user = null;
 
     @Override
@@ -49,21 +50,21 @@ public class ListPermissionGroupController extends GenericAbstractListController
             permissionAdd = true;
             permissionRead = true;
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminPermissionGroup.zul";
+            adminPage = "adminPermission.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(permissionGroupList);
+            loadDataList(permissionList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    permissionGroupList = new ArrayList<PermissionGroup>();
+    permissionList = new ArrayList<Permission>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            permissionGroupList = utilsEJB.getPermissionGroup(request);
+            permissionList = utilsEJB.getPermission(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -90,31 +91,35 @@ public class ListPermissionGroupController extends GenericAbstractListController
     public void startListener() {
     }
 
-    public void loadDataList(List<PermissionGroup> list) {
+    public void loadDataList(List<Permission> list) {
         String indEnabled = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (PermissionGroup permissionGroup : list) {
+                for (Permission permission : list) {
                     item = new Listitem();
-                    item.setValue(permissionGroup);
-                    item.appendChild(new Listcell(permissionGroup.getName()));
-                    if (permissionGroup.getEnabled() == true) {
+                    item.setValue(permission);
+                    item.appendChild(new Listcell(permission.getPermissionGroupId().getName()));
+                    item.appendChild(new Listcell(permission.getAction().toString()));
+                    item.appendChild(new Listcell(permission.getEntity().toString()));
+                    item.appendChild(new Listcell(permission.getName().toString()));
+                    if (permission.getEnabled() == true) {
                         indEnabled = "Yes";
                     } else {
                         indEnabled = "No";
                     }                    
                     item.appendChild(new Listcell(indEnabled));
-                    item.appendChild(new ListcellEditButton(adminPage, permissionGroup));
-                    item.appendChild(new ListcellViewButton(adminPage, permissionGroup,true));
+                    item.appendChild(new ListcellEditButton(adminPage, permission));
+                    item.appendChild(new ListcellViewButton(adminPage, permission,true));
                     item.setParent(lbxRecords);
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -127,7 +132,7 @@ public class ListPermissionGroupController extends GenericAbstractListController
     }
 
     @Override
-    public List<PermissionGroup> getFilterList(String filter) {
+    public List<Permission> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
