@@ -74,8 +74,12 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        programLoyaltyParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProgramLoyalty) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            programLoyaltyParam = null;
+        } else {
+            programLoyaltyParam = (ProgramLoyalty) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -216,8 +220,6 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     }
 
     private void saveProgramLoyalty(ProgramLoyalty _programLoyalty) {
-        //tabParameters.setSelected(true);
-
         int indMonday = 0;
         int indTuesday = 0;
         int indWednesday = 0;

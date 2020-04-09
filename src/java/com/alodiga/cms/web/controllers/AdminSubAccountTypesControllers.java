@@ -33,8 +33,13 @@ public class AdminSubAccountTypesControllers extends GenericAbstractAdminControl
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        subAccountTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (SubAccountType) Sessions.getCurrent().getAttribute("object") : null;
+//        subAccountTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (SubAccountType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            subAccountTypeParam = null;
+        } else {
+            subAccountTypeParam = (SubAccountType) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
         loadData();
     }

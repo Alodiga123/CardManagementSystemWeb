@@ -73,17 +73,11 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
-                break;
-            case WebConstants.EVENT_VIEW:
-                naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
-                break;
-            case WebConstants.EVENT_ADD:
-                naturalCustomerParam = null;
-                break;
-        }
+        if (eventType == WebConstants.EVENT_ADD) {
+            naturalCustomerParam = null;
+        } else {
+            naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+        }        
         initialize();
     }
 
@@ -146,7 +140,6 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
             }
             txtBirthPlace.setText(naturalCustomer.getPlaceBirth());
             txtBirthDay.setValue(naturalCustomer.getDateBirth());
-//            txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
             txtEmail.setText(naturalCustomer.getPersonId().getEmail());
 
             EJBRequest request = new EJBRequest();

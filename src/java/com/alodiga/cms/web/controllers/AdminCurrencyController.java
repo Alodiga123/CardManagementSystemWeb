@@ -16,27 +16,30 @@ import org.zkoss.zul.Toolbarbutton;
 public class AdminCurrencyController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtSimbol,txtName;
+    private Textbox txtSimbol, txtName;
     private UtilsEJB utilsEJB = null;
     private Currency currencyParam;
     private Button btnSave;
-    private Integer evenType2 = -1;
-    private Toolbarbutton tbbTitle;        
-            
+    private Integer evenType;
+    private Toolbarbutton tbbTitle;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);       
-        currencyParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Currency) Sessions.getCurrent().getAttribute("object") : null;
-        evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        super.doAfterCompose(comp);
+        evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        if (eventType == WebConstants.EVENT_ADD) {
+            currencyParam = null;
+        } else {
+            currencyParam = (Currency) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
         loadData();
-
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.currency.edit"));
                 break;
@@ -50,7 +53,6 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
                 break;
         }
         try {
-
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         } catch (Exception ex) {
             showError(ex);
@@ -89,9 +91,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
             return true;
         }
         return false;
-
     }
-
 
     private void saveCurrency(Currency currency_) {
         try {
@@ -107,7 +107,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
             currency = utilsEJB.saveCurrency(currency);
             currencyParam = currency;
             this.showMessage("sp.common.save.success", false, null);
-        } catch ( Exception ex) {
+        } catch (Exception ex) {
             showError(ex);
         }
 
@@ -115,19 +115,19 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
-            switch (evenType2) {
+            switch (evenType) {
                 case WebConstants.EVENT_ADD:
                     saveCurrency(null);
-                break;
+                    break;
                 case WebConstants.EVENT_EDIT:
-                   saveCurrency(currencyParam);
-                break;
+                    saveCurrency(currencyParam);
+                    break;
             }
         }
     }
 
     public void loadData() {
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(currencyParam);
                 break;

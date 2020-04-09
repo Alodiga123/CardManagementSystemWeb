@@ -15,7 +15,6 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountProperties;
 import com.cms.commons.models.AccountType;
 import com.cms.commons.models.AccountTypeHasProductType;
-import com.cms.commons.models.Card;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
