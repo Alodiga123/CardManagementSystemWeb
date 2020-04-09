@@ -41,7 +41,7 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
     private Textbox txtDescription;
     private Textbox txtAlias;
     private Combobox cmbPermission;
-    private Combobox cmbLanguageId;
+    private Combobox cmbLanguage;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -94,7 +94,7 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
         txtDescription.setReadonly(true);
         txtAlias.setReadonly(true);
         cmbPermission.setReadonly(true);
-        cmbLanguageId.setReadonly(true);
+        cmbLanguage.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -110,7 +110,7 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
 
             //Guardar PermissionData
             permissionData.setPermissionId((Permission) cmbPermission.getSelectedItem().getValue());
-            permissionData.setLanguageId((Language) cmbLanguageId.getSelectedItem().getValue());
+            permissionData.setLanguageId((Language) cmbLanguage.getSelectedItem().getValue());
             permissionData.setAlias(txtAlias.getText());
             permissionData.setDescription(txtDescription.getText());
             permissionData = utilsEJB.savePermissionData(permissionData);
@@ -154,21 +154,21 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
             case WebConstants.EVENT_EDIT:
                 loadFields(permissionDataParam);
                 loadCmbPermission(eventType);
-                loadCmbLanguageId(eventType);
+                loadCmbLanguage(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(permissionDataParam);
                 txtDescription.setReadonly(true);
                 txtAlias.setReadonly(true);
                 loadCmbPermission(eventType);
-                loadCmbLanguageId(eventType);
+                loadCmbLanguage(eventType);
                 blockFields();
                 loadCmbPermission(eventType);
-                loadCmbLanguageId(eventType);
+                loadCmbLanguage(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbPermission(eventType);
-                loadCmbLanguageId(eventType);
+                loadCmbLanguage(eventType);
                 break;
             default:
                 break;
@@ -193,12 +193,12 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
         }
     }
     
-    private void loadCmbLanguageId(Integer eventType) {
+    private void loadCmbLanguage(Integer eventType) {
         EJBRequest request1 = new EJBRequest();
         List<Language> languageList;
         try {
             languageList = utilsEJB.getLanguage(request1);
-            loadGenericCombobox(languageList,cmbLanguageId,"description",eventType,Long.valueOf(permissionDataParam != null? permissionDataParam.getLanguageId().getId(): 0) );            
+            loadGenericCombobox(languageList,cmbLanguage,"description",eventType,Long.valueOf(permissionDataParam != null? permissionDataParam.getLanguageId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
