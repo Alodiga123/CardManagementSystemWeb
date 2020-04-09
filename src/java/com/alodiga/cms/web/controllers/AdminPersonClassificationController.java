@@ -16,30 +16,27 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
-    private PersonClassification  personclassificationParam;
+    private PersonClassification personclassificationParam;
     private Button btnSave;
-    private Integer evenType2 = -1;
-    
+    private Integer evenType;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        
-        personclassificationParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonClassification) Sessions.getCurrent().getAttribute("object") : null;
-        evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        if (eventType == WebConstants.EVENT_ADD) {
+            personclassificationParam = null;
+        } else {
+            personclassificationParam = (PersonClassification) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
         loadData();
-//      initView(eventType, "sp.crud.requestType");
     }
 
-//    @Override
-//    public void initView(int eventType, String adminView) {
-//        super.initView(eventType, "sp.crud.requestType");
-//    }
     @Override
     public void initialize() {
         super.initialize();
         try {
-
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         } catch (Exception ex) {
             showError(ex);
@@ -47,19 +44,18 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     }
 
     public void clearFields() {
-    
         txtName.setRawValue(null);
     }
 
     private void loadFields(PersonClassification personclassification) {
-        try {txtName.setText(personclassification.getDescription());
+        try {
+            txtName.setText(personclassification.getDescription());
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-       
         txtName.setReadonly(true);
         btnSave.setVisible(false);
     }
@@ -68,13 +64,10 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-            return  false;
+            return false;
         }
-         
         return true;
-
     }
-
 
     private void savePersonClassification(PersonClassification personclassification_) {
         try {
@@ -89,27 +82,26 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
             personclassification = utilsEJB.savePersonClassification(personclassification);
             personclassificationParam = personclassification;
             this.showMessage("sp.common.save.success", false, null);
-        } catch ( Exception ex) {
+        } catch (Exception ex) {
             showError(ex);
         }
-
     }
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
-            switch (evenType2) {
+            switch (evenType) {
                 case WebConstants.EVENT_ADD:
                     savePersonClassification(null);
-                break;
+                    break;
                 case WebConstants.EVENT_EDIT:
-                   savePersonClassification(personclassificationParam);
-                break;
+                    savePersonClassification(personclassificationParam);
+                    break;
             }
         }
     }
 
     public void loadData() {
-        switch (evenType2) {
+        switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(personclassificationParam);
                 break;
@@ -123,8 +115,5 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
                 break;
         }
     }
-
- 
-    
 
 }

@@ -222,16 +222,6 @@ public class AdminParametersController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
-//    public Boolean validateEmpty() {
-//        if (txtProduct.getText().isEmpty()) {
-//            txtProduct.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
-//        } else {
-//            return true;
-//        }
-//        return false;
-//
-//    }
     private void saveProgramLoyaltyTransactionParam(ProgramLoyaltyTransaction _programLoyaltyTransaction) throws RegisterNotFoundException, NullParameterException, GeneralException {
         ProgramLoyaltyTransaction programLoyaltyTransaction = null;
         List<ProgramLoyaltyTransaction> programLoyaltyTransactionUnique = null;
@@ -319,7 +309,6 @@ public class AdminParametersController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
-//        if (validateEmpty()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveProgramLoyaltyTransactionParam(null);
@@ -330,7 +319,6 @@ public class AdminParametersController extends GenericAbstractAdminController {
             default:
                 break;
         }
-//        }
     }
 
     public void onClick$btnBack() {

@@ -52,20 +52,25 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.requestNumbe')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.plasticRequest.requestDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row> 
-                                                            <textbox id="txtRequestNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="40"/>
-                                                            <datebox id="dtbRequestDate" width="270px"/>
-                                                            <combobox id="cmbPlasticManufacturer" width="200px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                        <row>
                                                             <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row> 
+                                                        <row>
+                                                            <datebox id="dtbRequestDate" width="270px"/>
+                                                            <combobox id="cmbPlasticManufacturer" width="200px" mold="rounded" readonly="true"/>
                                                             <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.loyalty.starDate.status')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row> 
+                                                            <cell colspan="2">
+                                                                <hlayout>
+                                                                    <label id="txtStatus" value="" width="250px" style="color:#837E76;"/>
+                                                                    <combobox id="cmbStatusPlasticRequest" width="270px" mold="rounded" readonly="true"/>
+                                                                </hlayout>
+                                                            </cell>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -7,7 +7,6 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Currency;
@@ -23,11 +22,8 @@ import com.cms.commons.models.SourceFunds;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -86,8 +82,12 @@ public class AdminProgramController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        programParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Program) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+            programParam = null;
+        } else {
+            programParam = (Program) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -144,6 +144,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             } else {
                 rReloadableNo.setChecked(true);
             }
+            
             txtOtherSourceOfFound.setText(program.getOtherSourceFunds());
             if (program.getSharedBrand() == 1) {
                 rBrandedYes.setChecked(true);
@@ -344,8 +345,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbcardIssuanceType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                txtOtherSourceOfFound.setDisabled(true);
-                txtOtheResponsibleNetwoork.setDisabled(true);
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -502,9 +501,11 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 item.setLabel(nameProgramOwner.toString());
                 item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbProgramOwner);
-                if (programParam.getProgramOwnerId().getId() != null) {
-                    cmbProgramOwner.setSelectedItem(item);
-                }
+                if (evenInteger != WebConstants.EVENT_ADD) {
+                    if (programParam.getProgramOwnerId().getId() != null) {
+                        cmbProgramOwner.setSelectedItem(item);
+                    }
+                }                
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbProgramOwner.setDisabled(true);

@@ -60,8 +60,11 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-//        legalCustomerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (LegalCustomer) Sessions.getCurrent().getAttribute("object") : null;
-        legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
+        if (eventType == WebConstants.EVENT_ADD) {
+            legalCustomerParam = null;
+        } else {
+            legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -170,7 +173,6 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.REQUEST_ID_LEGAL_PERSON);
             Request request = requestEJB.loadRequest(request1);
-            //System.out.println("Solicitud cableada: " + request.getRequestNumber());
 
             //PersonClassification
             request1 = new EJBRequest();
@@ -186,6 +188,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
 
+            //Guarda los cambios en el Cliente Jurídico
             legalCustomer.setPersonId(person);
             legalCustomer.setTradeName(txtTradeName.getText());
             legalCustomer.setEnterpriseName(txtEnterpriseName.getText());

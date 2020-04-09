@@ -79,7 +79,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private Request requestCard;
     private Request requestNumber = null;
     private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList;
-    private List<CollectionsRequest>  collectionsByRequestList;
+    private List<CollectionsRequest> collectionsByRequestList;
     private List<ApplicantNaturalPerson> cardComplementaryList = null;
     private NaturalCustomer naturalCustomerParent = null;
     public static Person customer = null;
@@ -143,36 +143,56 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtObservations.setRawValue(null);
     }
 
+    private void loadUser() {
+        txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
+        txtAgency.setValue(user.getComercialAgencyId().getName());
+        txtCommercialAssessorUserCode.setValue(user.getCode());
+        txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
+        txtIdentification.setValue(user.getIdentificationNumber());
+    }
+
     private void loadFields(ReviewRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
-            NumberFormat n = NumberFormat.getCurrencyInstance();
-            txtCity.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getCityId().getName());
-            txtAgency.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getName());
-            txtCommercialAssessorUserCode.setValue(reviewCollectionsRequest.getUserId().getCode());
-            txtAssessorName.setValue(reviewCollectionsRequest.getUserId().getFirstNames() + " " + reviewCollectionsRequest.getUserId().getLastNames());
-            txtIdentification.setValue(reviewCollectionsRequest.getUserId().getIdentificationNumber());
-            if (reviewCollectionsRequest.getMaximumRechargeAmount() != null) {
-                txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
-            }
-            if (reviewCollectionsRequest.getReviewDate() != null) {
-                txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
-            }
-            if (reviewCollectionsRequest.getObservations() != null) {
-                txtObservations.setText(reviewCollectionsRequest.getObservations());
-            }
-            if (reviewCollectionsRequest.getIndApproved() != null) {
-                if (reviewCollectionsRequest.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);
-                    if (reviewCollectionsRequest.getRequestId().getStatusRequestId().getId() != Constants.STATUS_REQUEST_COLLECTIONS_WITHOUT_APPROVAL) {
-                        blockFields();
-                    }
-                    cmbProduct.setDisabled(true);
-                } else {
-                    rApprovedNo.setChecked(true);
+            if (reviewCollectionsRequest != null) {
+                NumberFormat n = NumberFormat.getCurrencyInstance();
+                txtCity.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getCityId().getName());
+                txtAgency.setValue(reviewCollectionsRequest.getUserId().getComercialAgencyId().getName());
+                txtCommercialAssessorUserCode.setValue(reviewCollectionsRequest.getUserId().getCode());
+                txtAssessorName.setValue(reviewCollectionsRequest.getUserId().getFirstNames() + " " + reviewCollectionsRequest.getUserId().getLastNames());
+                txtIdentification.setValue(reviewCollectionsRequest.getUserId().getIdentificationNumber());
+                if (reviewCollectionsRequest.getMaximumRechargeAmount() != null) {
+                    txtMaximumRechargeAmount.setText(reviewCollectionsRequest.getMaximumRechargeAmount().toString());
                 }
+                if (reviewCollectionsRequest.getReviewDate() != null) {
+                    txtReviewDate.setValue(reviewCollectionsRequest.getReviewDate());
+                }
+                if (reviewCollectionsRequest.getObservations() != null) {
+                    txtObservations.setText(reviewCollectionsRequest.getObservations());
+                }
+                if (reviewCollectionsRequest.getIndApproved() != null) {
+                    if (reviewCollectionsRequest.getIndApproved() == true) {
+                        rApprovedYes.setChecked(true);
+                        if (reviewCollectionsRequest.getRequestId().getStatusRequestId().getId() != Constants.STATUS_REQUEST_COLLECTIONS_WITHOUT_APPROVAL) {
+                            blockFields();
+                        }
+                        cmbProduct.setDisabled(true);
+                    } else {
+                        rApprovedNo.setChecked(true);
+                    }
+                }
+            } else {
+                txtCity = null;
+                txtAgency = null;
+                txtCommercialAssessorUserCode = null;
+                txtAssessorName = null;
             }
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
+            txtAgency.setValue(user.getComercialAgencyId().getName());
+            txtCommercialAssessorUserCode.setValue(user.getCode());
+            txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
         }
     }
 
@@ -297,7 +317,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             showError(ex);
         }
     }
-    
+
     public StatusRequest getStatusRequest(Request requestCard, int statusRequestId) {
         StatusRequest statusRequest = requestCard.getStatusRequestId();
         try {
@@ -386,11 +406,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
-            
+
             //Actualiza el cliente en la solicitud de tarjeta
             requestCard.setPersonCustomerId(naturalCustomer.getPersonId());
             requestCard = requestEJB.saveRequest(requestCard);
-            
+
             //Guarda el resto de la información relacionada con el cliente
             saveCardComplementariesCustomer(naturalCustomer);
             saveFamilyReferentCustomer(naturalCustomer);
@@ -570,7 +590,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             legalCustomer.setWebSite(applicant.getWebSite());
             legalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             legalCustomer = personEJB.saveLegalCustomer(legalCustomer);
-            
+
             //Actualiza el cliente en la solicitud de tarjeta
             requestCard.setPersonCustomerId(legalCustomer.getPersonId());
             requestCard = requestEJB.saveRequest(requestCard);
@@ -638,35 +658,36 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
                     getReviewCollectionsRequestParam();
-                    loadFields(reviewCollectionsRequestParam);
+                    if (reviewCollectionsRequestParam != null) {
+                        loadFields(reviewCollectionsRequestParam);
+                    } else {
+                        loadUser();
+                    }
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_VIEW:
-                    loadFields(reviewCollectionsRequestParam);
+                    getReviewCollectionsRequestParam();
+                    if (reviewCollectionsRequestParam != null) {
+                        loadFields(reviewCollectionsRequestParam);
+                    } else {
+                        loadUser();
+                    }
                     blockFields();
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_ADD:
-                    txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
-                    txtAgency.setValue(user.getComercialAgencyId().getName());
-                    txtCommercialAssessorUserCode.setValue(user.getCode());
-                    txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
-                    txtIdentification.setValue(user.getIdentificationNumber());
+                    loadUser();
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
 
             }
         } catch (EmptyListException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NullParameterException ex) {
-            Logger.getLogger(AdminApplicationReviewController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminApplicationReviewController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     private void loadCmbProduct(Integer evenInteger, Long programId) {
