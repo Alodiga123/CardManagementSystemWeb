@@ -102,6 +102,11 @@ public class AdminProductController extends GenericAbstractAdminController {
                 break;
         }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           productParam = null;                    
+       } else {
+           productParam = (Product) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

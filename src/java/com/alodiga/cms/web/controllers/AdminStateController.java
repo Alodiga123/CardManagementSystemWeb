@@ -37,6 +37,11 @@ public class AdminStateController extends GenericAbstractAdminController {
         super.doAfterCompose(comp);
         stateParam = (Sessions.getCurrent().getAttribute("object") != null) ? (State) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute( WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           stateParam = null;                    
+       } else {
+           stateParam = (State) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
         //initView(eventType, "sp.crud.country");
     }

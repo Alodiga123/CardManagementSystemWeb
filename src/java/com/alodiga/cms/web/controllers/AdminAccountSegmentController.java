@@ -52,6 +52,11 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           accountSegmentParam = null;                    
+       } else {
+           accountSegmentParam = (AccountSegment) Sessions.getCurrent().getAttribute("object");            
+       }
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 accountSegmentParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AccountSegment) Sessions.getCurrent().getAttribute("object") : null;

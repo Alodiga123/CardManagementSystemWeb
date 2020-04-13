@@ -52,6 +52,11 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
         Sessions.getCurrent();
         permissionDataParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PermissionData) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           permissionDataParam = null;                    
+       } else {
+           permissionDataParam = (PermissionData) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 
