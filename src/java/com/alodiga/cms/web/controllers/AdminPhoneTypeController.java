@@ -30,6 +30,11 @@ public class AdminPhoneTypeController extends GenericAbstractAdminController {
         super.doAfterCompose(comp);
         phoneTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PhoneType) Sessions.getCurrent().getAttribute("object") : null;
         event = (Integer) Sessions.getCurrent().getAttribute("eventType");
+        if (eventType == WebConstants.EVENT_ADD) {
+           phoneTypeParam = null;                    
+       } else {
+           phoneTypeParam = (PhoneType) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

@@ -76,6 +76,11 @@ public class AdminUserController extends GenericAbstractAdminController {
         super.doAfterCompose(comp);
         userParam = (Sessions.getCurrent().getAttribute("object") != null) ? (User) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           userParam = null;                    
+       } else {
+           userParam = (User) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

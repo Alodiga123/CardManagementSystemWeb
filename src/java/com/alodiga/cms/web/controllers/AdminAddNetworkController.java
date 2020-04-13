@@ -58,6 +58,11 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
                 break;
         }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           programHasNetworksParam = null;                    
+       } else {
+           programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

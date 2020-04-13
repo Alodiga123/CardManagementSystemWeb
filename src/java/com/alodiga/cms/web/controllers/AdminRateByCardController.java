@@ -47,6 +47,11 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
         super.doAfterCompose(comp);
         rateByCardParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RateByCard) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           rateByCardParam = null;                    
+       } else {
+           rateByCardParam = (RateByCard) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

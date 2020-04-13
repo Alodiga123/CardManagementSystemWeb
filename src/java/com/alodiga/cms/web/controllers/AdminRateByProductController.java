@@ -47,6 +47,11 @@ public class AdminRateByProductController extends GenericAbstractAdminController
         super.doAfterCompose(comp);
         rateByProductParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RateByProduct) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           rateByProductParam = null;                    
+       } else {
+           rateByProductParam = (RateByProduct) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

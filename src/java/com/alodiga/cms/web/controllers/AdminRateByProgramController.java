@@ -57,6 +57,11 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
         super.doAfterCompose(comp);
         rateByProgramParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RateByProgram) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           rateByProgramParam = null;                    
+       } else {
+           rateByProgramParam = (RateByProgram) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

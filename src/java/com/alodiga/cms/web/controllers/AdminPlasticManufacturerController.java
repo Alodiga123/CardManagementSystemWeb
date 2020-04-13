@@ -73,6 +73,11 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         super.doAfterCompose(comp);
         plasticManufacturerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PlasticManufacturer) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           plasticManufacturerParam = null;                    
+       } else {
+           plasticManufacturerParam = (PlasticManufacturer) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 
