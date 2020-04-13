@@ -43,7 +43,6 @@ public class AdminStateController extends GenericAbstractAdminController {
            stateParam = (State) Sessions.getCurrent().getAttribute("object");            
        }
         initialize();
-        //initView(eventType, "sp.crud.country");
     }
     
     @Override
@@ -177,9 +176,7 @@ public class AdminStateController extends GenericAbstractAdminController {
                     cmbCountry.setSelectedItem(item);
                 }
             }
-            if (evenInteger.equals(WebConstants.EVENT_ADD)) {
-                cmbCountry.setSelectedIndex(1);
-            } if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbCountry.setDisabled(true);
             }
             
