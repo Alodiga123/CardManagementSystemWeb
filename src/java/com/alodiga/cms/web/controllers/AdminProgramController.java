@@ -73,6 +73,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private ProductEJB productEJB = null;
     private Program programParam;
     private Tab tabNetwork;
+    private Tab tabProjectedAnnualVolume;
     private Button btnSave;
     private Button btnAddNetWork;
     private Integer eventType;
@@ -102,6 +103,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.program.view"));
                 break;
             case WebConstants.EVENT_ADD:
+                tabNetwork.setDisabled(true);
+                tabProjectedAnnualVolume.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.program.add"));
                 break;
             default:
@@ -290,6 +293,8 @@ public class AdminProgramController extends GenericAbstractAdminController {
             }
             program = programEJB.saveProgram(program);
             programParent = program;
+            tabNetwork.setDisabled(false);
+            tabProjectedAnnualVolume.setDisabled(false);
 
             this.showMessage("sp.common.save.success", false, null);
 
