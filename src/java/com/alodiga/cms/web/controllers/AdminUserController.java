@@ -214,7 +214,9 @@ public class AdminUserController extends GenericAbstractAdminController {
         lblUserExtAlodiga.setVisible(true);
         Employee employee = (Employee) cmbEmployee.getSelectedItem().getValue();
         lblPosition.setValue(employee.getEmployedPositionId().getName());
-        lblUserExtAlodiga.setValue(employee.getPersonId().getPhonePerson().getExtensionPhoneNumber());
+        if (employee.getPersonId().getPhonePerson() != null) {
+            lblUserExtAlodiga.setValue(employee.getPersonId().getPhonePerson().getExtensionPhoneNumber());
+        }
     }
 
     public void onChange$cmbAuthorizeEmployee() {

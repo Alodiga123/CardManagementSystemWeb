@@ -90,17 +90,17 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             if (transaction.getIndMonetaryType() == true) {
                 rMonetaryTypeYes.setChecked(true);
             } else {
-                rMonetaryTypeNo.setChecked(false);
+                rMonetaryTypeNo.setChecked(true);
             }
             if (transaction.getIndTransactionPurchase() == true) {
                 rTransactionPurchaseYes.setChecked(true);
             } else {
-                rTransactionPurchaseNo.setChecked(false);
+                rTransactionPurchaseNo.setChecked(true);
             }
             if (transaction.getIndVariationRateChannel() == true) {
                 rVariationRateChannelYes.setChecked(true);
             } else {
-                rVariationRateChannelNo.setChecked(false);
+                rVariationRateChannelNo.setChecked(true);
             }
              } catch (Exception ex) {
             showError(ex);
