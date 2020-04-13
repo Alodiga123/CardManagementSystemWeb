@@ -139,9 +139,7 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
             loyaltyTransactionHasCommerceCategoryUnique = programEJB.getLoyaltyTransactionHasCommerceCategoryUnique(request1);
             if (loyaltyTransactionHasCommerceCategoryUnique != null) {
                 this.showMessage("cms.common.programLoyaltyTransactionExist", false, null);
-            }      
-
-            EventQueues.lookup("updateLoyaltyCommerce", EventQueues.APPLICATION, true).publish(new Event(""));
+            }     
         } catch (Exception ex) {
             showError(ex);
         } finally {
@@ -157,7 +155,7 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
                     loyaltyTransactionHasCommerceCategoryParam = loyaltyTransactionHasCommerceCategory;
                     this.showMessage("sp.common.save.success", false, null);
                 }
-                EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true).publish(new Event(""));
+                EventQueues.lookup("updateLoyaltyCommerce", EventQueues.APPLICATION, true).publish(new Event(""));
             } catch (RegisterNotFoundException ex) {
                 showError(ex);
             } catch (NullParameterException ex) {
