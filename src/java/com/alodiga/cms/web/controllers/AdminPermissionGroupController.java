@@ -43,6 +43,11 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
         Sessions.getCurrent();
         permissionGroupParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PermissionGroup) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           permissionGroupParam = null;                    
+       } else {
+           permissionGroupParam = (PermissionGroup) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 
