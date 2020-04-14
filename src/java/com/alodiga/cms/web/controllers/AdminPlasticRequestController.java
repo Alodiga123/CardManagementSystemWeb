@@ -50,6 +50,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     private StatusPlasticCustomizingRequest statusPending;
+    public static PlasticCustomizingRequest plasticCustomer = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -94,6 +95,10 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public PlasticCustomizingRequest getPlasticCustomizingRequest() {
+        return this.plasticCustomer;
     }
 
     public void clearFields() {
@@ -152,6 +157,8 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             }
             plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);
             this.showMessage("sp.common.save.success", false, null);
+            
+            plasticCustomer = plasticCustomizingRequest;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -174,6 +181,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 txtStatus.setVisible(false);
+                plasticCustomer = plasticCustomizingRequestParam;
                 loadFields(plasticCustomizingRequestParam);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
@@ -181,6 +189,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
                 break;
             case WebConstants.EVENT_VIEW:
                 txtStatus.setVisible(false);
+                plasticCustomer = plasticCustomizingRequestParam;
                 loadFields(plasticCustomizingRequestParam);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
