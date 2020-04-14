@@ -39,8 +39,11 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
-public class ListRateByProgramController extends GenericAbstractListController<Request> {
+public class ListRateByProgramController extends GenericAbstractListController<RateByProgram> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
@@ -50,8 +53,9 @@ public class ListRateByProgramController extends GenericAbstractListController<R
     private ProgramEJB programEJB = null;
     private List<GeneralRate> generalRateList = null;
     private List<RateByProgram> rateByProgramByProgramList = new ArrayList<RateByProgram>();
-    private Program program = null;
+    private static Program program = null;
     private ProductType productType = null;
+    private Tab tabApprovalRates;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -79,17 +83,11 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             permissionAdd = true; 
             permissionRead = true;
             adminPage = "adminRateByProgram.zul";
-            program = (Program) session.getAttribute(WebConstants.PROGRAM);
-            productType = (ProductType) session.getAttribute(WebConstants.PRODUCT_TYPE);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
-            if (productType != null) {
-                lblProductType.setValue(program.getProductTypeId().getName());
-                getData(program.getProductTypeId().getId());
-                loadList(generalRateList);
-            }
+            tabApprovalRates.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -100,12 +98,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
         Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
-        Sessions.getCurrent().setAttribute(WebConstants.PRODUCT_TYPE, program.getProductTypeId());
         getData(program.getProductTypeId().getId());
     }
   
     public void onClick$btnViewRates() throws InterruptedException {
         loadList(generalRateList);
+        tabApprovalRates.setDisabled(false);
     }
 
     public void onClick$btnDelete() {
@@ -155,30 +153,32 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                     }
                 } 
             }
-            lbxRecords.getItems().clear();
-            Listitem item = null;
-            if (rateByProgramList != null && !rateByProgramList.isEmpty()) {
-                for (RateByProgram r : rateByProgramList) {
+            if (lbxRecords != null) {
+                lbxRecords.getItems().clear();
+                Listitem item = null;
+                if (rateByProgramList != null && !rateByProgramList.isEmpty()) {
+                    for (RateByProgram r : rateByProgramList) {
+                        item = new Listitem();
+                        item.setValue(r);
+                        item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
+                        item.appendChild(new Listcell(r.getChannelId().getName()));
+                        item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                        item.appendChild(new Listcell(r.getFixedRate().toString()));
+                        item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        item.appendChild(createButtonEditModal(r));
+                        item.appendChild(createButtonViewModal(r));
+                        item.setParent(lbxRecords);
+                    }
+                } else {
+                    btnDownload.setVisible(false);
                     item = new Listitem();
-                    item.setValue(r);
-                    item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
-                    item.appendChild(new Listcell(r.getChannelId().getName()));
-                    item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(r.getFixedRate().toString()));
-                    item.appendChild(new Listcell(r.getPercentageRate().toString()));
-                    item.appendChild(createButtonEditModal(r));
-                    item.appendChild(createButtonViewModal(r));
+                    item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                    item.appendChild(new Listcell());
+                    item.appendChild(new Listcell());
+                    item.appendChild(new Listcell());
                     item.setParent(lbxRecords);
                 }
-            } else {
-                btnDownload.setVisible(false);
-                item = new Listitem();
-                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.setParent(lbxRecords);
-            }
+            }            
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -318,10 +318,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         List<Program> programs;
         try {
             programs = programEJB.getProgram(request1);
-            if (program != null) {
-                evenInteger = WebConstants.EVENT_EDIT;    
-            }
-            loadGenericCombobox(programs,cmbProgram,"name",evenInteger,Long.valueOf(program != null ? program.getId() : 0));
+            loadGenericCombobox(programs,cmbProgram,"name",evenInteger,Long.valueOf(0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -343,12 +340,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
     }
 
     @Override
-    public List<Request> getFilterList(String filter) {
+    public List<RateByProgram> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void loadDataList(List<Request> list) {
+    public void loadDataList(List<RateByProgram> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
