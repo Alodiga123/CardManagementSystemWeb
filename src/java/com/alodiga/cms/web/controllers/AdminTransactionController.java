@@ -49,6 +49,11 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         Sessions.getCurrent();
         transactionParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Transaction) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           transactionParam = null;                    
+       } else {
+           transactionParam = (Transaction) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 
@@ -85,17 +90,17 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             if (transaction.getIndMonetaryType() == true) {
                 rMonetaryTypeYes.setChecked(true);
             } else {
-                rMonetaryTypeNo.setChecked(false);
+                rMonetaryTypeNo.setChecked(true);
             }
             if (transaction.getIndTransactionPurchase() == true) {
                 rTransactionPurchaseYes.setChecked(true);
             } else {
-                rTransactionPurchaseNo.setChecked(false);
+                rTransactionPurchaseNo.setChecked(true);
             }
             if (transaction.getIndVariationRateChannel() == true) {
                 rVariationRateChannelYes.setChecked(true);
             } else {
-                rVariationRateChannelNo.setChecked(false);
+                rVariationRateChannelNo.setChecked(true);
             }
              } catch (Exception ex) {
             showError(ex);
@@ -105,7 +110,6 @@ public class AdminTransactionController extends GenericAbstractAdminController {
 
     public void blockFields() {
         txtCodeTransaction.setReadonly(true);
-        
         btnSave.setVisible(false);
     }
 
@@ -182,8 +186,8 @@ public class AdminTransactionController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(transactionParam);
-                txtCodeTransaction.setDisabled(true);
-                txtDescriptionTransaction.setDisabled(true);
+                txtCodeTransaction.setReadonly(true);
+                txtDescriptionTransaction.setReadonly(true);
                 blockFields();
                 rMonetaryTypeYes.setDisabled(true);
                 rMonetaryTypeNo.setDisabled(true);

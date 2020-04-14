@@ -27,6 +27,11 @@ public class AdminAccountTypesControllers extends GenericAbstractAdminController
         super.doAfterCompose(comp);
         accountTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AccountType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           accountTypeParam = null;                    
+       } else {
+           accountTypeParam = (AccountType) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
         loadData();
     }

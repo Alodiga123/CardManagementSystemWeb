@@ -21,14 +21,16 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
-
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Window;
 
 public class AdminRateByProgramController extends GenericAbstractAdminController {
 
@@ -51,31 +53,23 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     private Button btnSave;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
+    public Window winAdminRateByProgram;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        rateByProgramParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RateByProgram) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           rateByProgramParam = null;                    
+        } else {
+           rateByProgramParam = (RateByProgram) Sessions.getCurrent().getAttribute("object");            
+        }        
         initialize();
     }
 
     @Override
     public void initialize() {
-        super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByProgram.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByProgram.view"));
-                break;
-            case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByProgram.add"));
-                break;
-            default:
-                break;
-        }
+        super.initialize();        
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
@@ -149,6 +143,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             rateByProgram = productEJB.saveRateByProgram(rateByProgram);
             rateByProgramParam = rateByProgram;
             this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updateRateByProgram", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -169,7 +164,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     }
     
     public void onclick$btnBack() {
-        Executions.getCurrent().sendRedirect("listRateByProgram.zul");
+        winAdminRateByProgram.detach();
     }
 
     public void loadData() {
