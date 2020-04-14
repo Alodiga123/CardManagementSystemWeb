@@ -24,32 +24,32 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('cms.common.RateByCardlist')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <grid fixedLayout="true">
-                                                    <columns>
-                                                        <column label="" width="220px"/>
-                                                        <column label="" width="220px"/>
-                                                        <column label="" width="220px"/>
-                                                        <column label="" width="180x"/>
-                                                    </columns>
-                                                    <rows>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cmbCardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <combobox id="cmbProgram" width="200px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbCardHolders" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProduct" width="200px" mold="rounded" readonly="true" />
-                                                            <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
-                                                       </row>
-                                                    </rows>   
+                                                <columns>
+                                                    <column label="" width="220px"/>
+                                                    <column label="" width="220px"/>
+                                                    <column label="" width="220px"/>
+                                                    <column label="" width="180x"/>
+                                                </columns>
+                                                <rows>
+                                                    <row>
+                                                        <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                        <label value="${c:l('cms.common.cmbCardHolder')}" sclass="lblbold"/>
+                                                        <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
+                                                    </row>
+                                                    <row>
+                                                        <combobox id="cmbProgram" width="200px" mold="rounded" readonly="true" />
+                                                        <combobox id="cmbCardHolders" width="200px" mold="rounded" readonly="true"/>
+                                                        <combobox id="cmbProduct" width="200px" mold="rounded" readonly="true" />
+                                                        <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                    </row>
+                                                </rows>   
                                             </grid>  
                                             <separator/>
                                             <!--Record Listbox-->

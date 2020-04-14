@@ -19,11 +19,13 @@ public class ListcellViewButton extends Listcell {
 
     public ListcellViewButton(String destinationView, Object obj, boolean isRedirect, Long permissionId) {
         ViewButton viewButton = new ViewButton(destinationView, obj,permissionId);
+        viewButton.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
         viewButton.setParent(this);
     }
     
     public ListcellViewButton(String destinationView, Object obj, boolean isRedirect) {
         ViewButton viewButton = new ViewButton(destinationView, obj);
+        viewButton.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
         viewButton.setClass("open orange");
         viewButton.setParent(this);
     }

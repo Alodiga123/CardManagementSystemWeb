@@ -82,7 +82,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-//        programParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Program) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
             programParam = null;
@@ -145,6 +144,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             } else {
                 rReloadableNo.setChecked(true);
             }
+            
             txtOtherSourceOfFound.setText(program.getOtherSourceFunds());
             if (program.getSharedBrand() == 1) {
                 rBrandedYes.setChecked(true);
@@ -345,8 +345,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbcardIssuanceType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                txtOtherSourceOfFound.setDisabled(true);
-                txtOtheResponsibleNetwoork.setDisabled(true);
                 loadCmbCurrency(eventType);
                 loadCmbProgramType(eventType);
                 loadCmbProductType(eventType);
@@ -503,9 +501,11 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 item.setLabel(nameProgramOwner.toString());
                 item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbProgramOwner);
-                if (programParam.getProgramOwnerId().getId() != null) {
-                    cmbProgramOwner.setSelectedItem(item);
-                }
+                if (evenInteger != WebConstants.EVENT_ADD) {
+                    if (programParam.getProgramOwnerId().getId() != null) {
+                        cmbProgramOwner.setSelectedItem(item);
+                    }
+                }                
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbProgramOwner.setDisabled(true);

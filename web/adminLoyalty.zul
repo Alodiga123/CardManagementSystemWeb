@@ -48,7 +48,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.loyalty.conversionRatePoints')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.starDate.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.loyalty.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtConversionRatePoints" width="265px" maxlength="10"/>

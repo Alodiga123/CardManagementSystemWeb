@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -122,13 +123,17 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
                 params.put(Constants.PROGRAM_KEY, program.getId());
                 params.put(Constants.NETWORK_KEY, network.getId());
                 request.setParams(params);
-                programHasNetworkList = programEJB.getProgramHasNetworkByNetworkByProgram(request);
+                programHasNetworkList = programEJB.getProgramHasNetworkBD(request);
                 if (programHasNetworkList != null) {
                     indExistRegister = 1;
                     this.showMessage("cms.common.msj.registrationAlreadyExistsProgramHasNetwork", false, null);
                 }
             }
-        } catch (Exception ex) {
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {
+            showError(ex); 
+        } catch (GeneralException ex) {
             showError(ex);
         } finally {
             try {
@@ -141,9 +146,13 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
                     this.showMessage("sp.common.save.success", false, null);
                     EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true).publish(new Event(""));
                 }                
-            } catch (Exception ex) {
-                showError(ex);   
-            }
+            } catch (NullParameterException ex) {
+                showError(ex); 
+            } catch (GeneralException ex) {
+                showError(ex);
+            } catch (RegisterNotFoundException ex) {
+                showError(ex); 
+            } 
         }
     }
     
