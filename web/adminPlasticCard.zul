@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPlasticRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPlasticRequestController" class="general-window">
+    <window id="winAdminPlasticCard" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="450px" apply="com.alodiga.cms.web.controllers.AdminPlasticCardController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -36,25 +36,24 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.requestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="dtbRequestDate" width="270px"/>
-                                                            <combobox id="cmbPlasticManufacturer" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                            <label id="lblProgram" value="" width="280px" style="color:#837E76;"/>
+                                                            <label id="lblPlasticManufacturer" value="" width="280px" style="color:#837E76;"/>
+                                                            <label id="lblCardNumber" value="" width="280px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row> 
-                                                            <cell colspan="2">
-                                                                <hlayout>
-                                                                    <label id="txtStatus" value="" width="250px" style="color:#837E76;"/>
-                                                                    <combobox id="cmbStatusPlasticRequest" width="270px" mold="rounded" readonly="true"/>
-                                                                </hlayout>
-                                                            </cell>
+                                                        <row>
+                                                            <label id="lblExpirationDate" value="" width="280px" style="color:#837E76;"/>
+                                                            <label id="lblCardHolder" value="" width="280px" style="color:#837E76;"/>
+                                                            <combobox id="cmbCardStatus" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -64,7 +63,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listPlasticRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray"/>
                                         </div>
                                     </vlayout>
                                 </div>
