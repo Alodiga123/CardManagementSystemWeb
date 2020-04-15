@@ -61,8 +61,9 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
     private Label lblProductType;
     private User currentUser;
     private Button btnSave;
-    private Program program = null;
+    public Program program = null;
     private ProductType productType = null;
+    private ListRateByProgramController listRateByProgram = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,9 +73,9 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateApprovalRateByProgram", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
-            public void onEvent(Event evt) {
+            public void onEvent(Event evt) { 
                 getData();
                 loadDataList(approvalProgramRateList);
             }
@@ -89,13 +90,13 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminApprovalRateByProgram.zul";
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
             if (program != null) {
                 lblProgram.setValue(program.getName());
                 lblProductType.setValue(program.getProductTypeId().getName());
-            }               
+            } 
+            adminPage = "/adminApprovalProgramRate.zul";
+            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);             
             getData();
             loadDataList(approvalProgramRateList);
         } catch (Exception ex) {
