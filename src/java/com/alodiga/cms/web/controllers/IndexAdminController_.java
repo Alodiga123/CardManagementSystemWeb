@@ -25,7 +25,7 @@ public class IndexAdminController_ extends GenericAbstractController {
     private Groupbox gbxLogin;
     private Groupbox gbxRecoverPass;
     private AccessControlEJB accessControlEJB = null;
-    private String adminHome ="home-admin.zul";
+    private String adminHome = "home-admin.zul";
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -33,17 +33,18 @@ public class IndexAdminController_ extends GenericAbstractController {
         initialize();
     }
 
-
     @Override
     public void initialize() {
         super.initialize();
+//        txtLogin.setText("lg");
+//        txtPassword.setText("963");
+
     }
 
     public void clearFields() {
         txtLogin.setRawValue(null);
         txtPassword.setRawValue(null);
     }
-
 
     public Boolean validateEmpty() {
         if (txtLogin.getText().isEmpty()) {
@@ -60,17 +61,17 @@ public class IndexAdminController_ extends GenericAbstractController {
     }
 
     public boolean validateRecoverLogin() {
-        
+
         if (txtRecoverLogin.getText().isEmpty()) {
             this.showMessage("sp.error.field.cannotNull", true, null);
             txtRecoverLogin.setFocus(true);
-        }else{
+        } else {
             return true;
         }
         return false;
     }
 
-     public boolean validate() {
+    public boolean validate() {
         return true;
     }
 
@@ -84,28 +85,28 @@ public class IndexAdminController_ extends GenericAbstractController {
                 this.showMessage("error.general", true, null);
             }
             try {
-                User user = new User();       
+                User user = new User();
                 user = accessControlEJB.validateUser(txtLogin.getText(), txtPassword.getText());
                 session.setAttribute(Constants.USER_OBJ_SESSION, user);
                 Executions.sendRedirect(Constants.HOME_ADMIN);
             } catch (RegisterNotFoundException ex) {
-               this.showMessage("login.cms.user.not.found", true, null); 
+                this.showMessage("login.cms.user.not.found", true, null);
             } catch (DisabledUserException ex) {
-               this.showMessage("login.cms.user.disabled", true, null); 
+                this.showMessage("login.cms.user.disabled", true, null);
             } catch (NullParameterException ex) {
-               this.showMessage("cms.msj.error.general", true, null);
+                this.showMessage("cms.msj.error.general", true, null);
             } catch (GeneralException ex) {
                 this.showMessage("cms.msj.error.general", true, null);
             } catch (InvalidPasswordException ex) {
-                this.showMessage("login.cms.user.invalid.password", true, null); 
+                this.showMessage("login.cms.user.invalid.password", true, null);
             }
         }
     }
 
     public void onOK$txtLogin() throws InterruptedException {
-    this.clearMessage();
+        this.clearMessage();
         if (validate()) {
-             onClick$btnLogin();
+            onClick$btnLogin();
         }
     }
 
@@ -125,8 +126,9 @@ public class IndexAdminController_ extends GenericAbstractController {
         gbxLogin.setVisible(true);
         gbxRecoverPass.setVisible(false);
     }
+
     public void onClick$btnRecoverPass() throws InterruptedException {
-       
+
     }
 
 }
