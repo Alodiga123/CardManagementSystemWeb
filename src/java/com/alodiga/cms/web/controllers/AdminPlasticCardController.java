@@ -11,20 +11,16 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.PlasticCustomizingRequest;
-import com.cms.commons.models.StatusPlasticCustomizingRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 public class AdminPlasticCardController extends GenericAbstractAdminController {
@@ -43,8 +39,6 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     public Window winAdminPlasticCard;
-//    private Toolbarbutton tbbTitle;
-//    private StatusPlasticCustomizingRequest statusPending;
     public static PlasticCustomizingRequest plasticCustomer = null;
 
     @Override
