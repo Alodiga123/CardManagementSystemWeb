@@ -39,6 +39,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Window;
 
 public class ListRateByProgramController extends GenericAbstractListController<Request> {
 
