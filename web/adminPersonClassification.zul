@@ -26,9 +26,10 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.commom.Classification.Person')}" onClick='Executions.sendRedirect(&quot;listClassificationPerson.zul&quot;)'/>                      
+                                                <toolbarbutton label="${c:l('cms.commom.Classification.Person')}" onClick='Executions.sendRedirect(&quot;listClassificationPerson.zul&quot;)'/>                      
                                                  |
-                                                <toolbarbutton label="${c:l('sp.commom.Person')}" />                      
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.person.add')}"/> 
+                                                 |      
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -54,10 +55,8 @@
                                                             <label value="${c:l('sp.common.description')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
-                                                             <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
-                                                     
                                                     </rows>
                                                 </grid>
                                             </vlayout>
