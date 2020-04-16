@@ -70,7 +70,7 @@ public class ListStateController extends GenericAbstractListController<State> {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
+             
                 for (State state : list) {
                     item = new Listitem();
                     item.setValue(state);
@@ -110,7 +110,7 @@ public class ListStateController extends GenericAbstractListController<State> {
         }
     }
     
-    
+   
     private void showEmptyList(){
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
@@ -122,7 +122,7 @@ public class ListStateController extends GenericAbstractListController<State> {
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.country.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.menu.country.state.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -132,13 +132,6 @@ public class ListStateController extends GenericAbstractListController<State> {
         txtAlias.setText("");
     }
 
-//    public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilteredList(txtAlias.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
 
     @Override
     public List<State> getFilterList(String filter) {
