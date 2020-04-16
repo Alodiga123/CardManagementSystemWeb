@@ -13,12 +13,12 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.GeneralRate;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.RateApplicationType;
+import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.Transaction;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
-//import static org.python.apache.xml.serialize.LineSeparator.Windows;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -58,8 +58,12 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        generalRateParam = (Sessions.getCurrent().getAttribute("object") != null) ? (GeneralRate) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           generalRateParam = null;                    
+        } else {
+           generalRateParam = (GeneralRate) Sessions.getCurrent().getAttribute("object");           
+        }
         initialize();
     }
 

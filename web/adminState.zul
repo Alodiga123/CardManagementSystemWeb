@@ -45,19 +45,22 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.name.state')}" sclass="lblbold"/>                                              
-                                                        </row>
-                                                        <row>
+                                                            <label value="${c:l('cms.common.State')}" sclass="lblbold"/>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            </hlayout>                                                
+                                                                <textbox id="txtName" width="2700px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>                                                           
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
-                                                        </row>
+                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>                                      
                                                     </rows>
                                                 </grid>
                                             </vlayout>
