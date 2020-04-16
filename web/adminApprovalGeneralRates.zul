@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="500px">
+                        <div width="900px" align="left" height="500px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>

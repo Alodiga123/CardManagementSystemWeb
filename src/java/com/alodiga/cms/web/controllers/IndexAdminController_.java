@@ -37,8 +37,6 @@ public class IndexAdminController_ extends GenericAbstractController {
     @Override
     public void initialize() {
         super.initialize();
-//        txtLogin.setText("lg");
-//        txtPassword.setText("963");
     }
 
     public void clearFields() {
@@ -95,9 +93,9 @@ public class IndexAdminController_ extends GenericAbstractController {
             } catch (DisabledUserException ex) {
                this.showMessage("login.cms.user.disabled", true, null); 
             } catch (NullParameterException ex) {
-               this.showMessage("error.general", true, null);
+               this.showMessage("cms.msj.error.general", true, null);
             } catch (GeneralException ex) {
-                this.showMessage("error.general", true, null);
+                this.showMessage("cms.msj.error.general", true, null);
             } catch (InvalidPasswordException ex) {
                 this.showMessage("login.cms.user.invalid.password", true, null); 
             }

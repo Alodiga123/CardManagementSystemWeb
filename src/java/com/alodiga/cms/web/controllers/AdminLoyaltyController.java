@@ -380,9 +380,9 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                txtStatus.setVisible(false);
                 cmbStatusProgramLoyalty.setVisible(true);
                 loadFields(programLoyaltyParam);
+                txtStatus.setVisible(false);
                 loadFieldDays(daysWeekHasProgramLoyaltyParam);
                 loadCmbProgram(eventType);
                 loadCmbProgramLoyaltyType(eventType);
@@ -390,9 +390,9 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
                 onChange$cmbProgram();
                 break;
             case WebConstants.EVENT_VIEW:
-                txtStatus.setVisible(false);
                 cmbStatusProgramLoyalty.setVisible(true);
                 loadFields(programLoyaltyParam);
+                txtStatus.setVisible(false);
                 loadFieldDays(daysWeekHasProgramLoyaltyParam);
                 blockFields();
                 loadCmbProgram(eventType);
@@ -451,6 +451,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         EJBRequest request1 = new EJBRequest();
         List<ProgramLoyaltyType> programLoyaltyTypes;
         try {
+            cmbProgramLoyaltyType.getItems().clear();
             programLoyaltyTypes = programEJB.getProgramLoyaltyType(request1);
             loadGenericCombobox(programLoyaltyTypes, cmbProgramLoyaltyType, "name", evenInteger, Long.valueOf(programLoyaltyParam != null ? programLoyaltyParam.getProgramLoyaltyTypeId().getId() : 0));
         } catch (EmptyListException ex) {
