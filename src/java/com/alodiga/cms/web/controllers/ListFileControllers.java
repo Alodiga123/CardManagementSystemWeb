@@ -6,7 +6,6 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.models.Product;
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -38,13 +38,9 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
     private Listbox lbxRecords;
     private Label lblNameFile;
     private RequestEJB requestEJB = null;
-    private CardEJB cardEJB = null;
-    private List<ResultPlasticCustomizingRequest> resultPlasticCustomizingRequest = null;
     private PlasticCustomizingRequest plastiCustomerParam;
-    private ResultPlasticCustomizingRequest resultPlastiCustomerParam;
-    private List<StatusResultPlasticCustomizing> statusResult;
-    private Product product = null;
     private static List<String[]> readList = null;
+    private Button btnRead;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -56,11 +52,7 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
     public void initialize() {
         super.initialize();
         try {
-//            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-//            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
-//            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
-            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             loadField();
 
         } catch (Exception ex) {
@@ -74,10 +66,14 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
     }
 
     private void loadField() {
+        String nombreArchivo = "archivo_prueba.csv";
+        
         AdminPlasticRequestController adminPlasticRequest = new AdminPlasticRequestController();
         if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {
             plastiCustomerParam = adminPlasticRequest.getPlasticCustomizingRequest();
         }
+        
+        lblNameFile.setValue(nombreArchivo);
     }
 
     public static void leer() {
@@ -116,6 +112,8 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
     }
 
     public void loadFile(List<String[]> archivo) {
+        int statusResultFile = 0;
+        String statusDes = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -125,10 +123,22 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
                     item = new Listitem();
                     item.setValue(linea);
 
+                    EJBRequest request1 = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PLASTIC_MANUFACTURER_KEY,plastiCustomerParam.getPlasticManufacturerId().getId());
+                    request1.setParams(params);
+                    List<StatusResultPlasticCustomizing> statusResultPlasticCustomizingList = requestEJB.getStatusByPlasticManufacturer(request1);
+                    for (StatusResultPlasticCustomizing statusResult : statusResultPlasticCustomizingList) {
+                        statusResultFile = Integer.parseInt(linea[5].trim());
+                        if (statusResultFile == statusResult.getStatusPlasticCustomizingRequestd().getId()) {
+                                statusDes = statusResult.getStatusPlasticCustomizingRequestd().getDescription();
+                        }                              
+                    }
+                    
                     item.appendChild(new Listcell(linea[0]));
                     item.appendChild(new Listcell(linea[3]));
                     item.appendChild(new Listcell(linea[2]));
-                    item.appendChild(new Listcell(linea[5]));
+                    item.appendChild(new Listcell(statusDes));
                     item.setParent(lbxRecords);
                 }
             }
@@ -158,17 +168,7 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     resultPlasticCustomizingRequest = new ResultPlasticCustomizingRequest();
 
-//                    EJBRequest request1 = new EJBRequest();
-//                    Map params = new HashMap();
-//                    params.put(Constants.DESCRiPTION_KEY, linea[5]);
-//                    request1.setParams(params);
-//                    statusResult = requestEJB.getStatusByDescription(request1);
-//
-//                    for (StatusResultPlasticCustomizing r : statusResult) {
-//                        statusResultParam = r;
-//                    }
-
-                    resultPlasticCustomizingRequest.setCardNumber(linea[0].toString());
+                    resultPlasticCustomizingRequest.setCardNumber(linea[0]);
                     resultPlasticCustomizingRequest.setCardHolder(linea[2]);
                     resultPlasticCustomizingRequest.setIdentificationNumberCardHolder(linea[1]);
                     resultPlasticCustomizingRequest.setProductTypeDescription(linea[4]);
@@ -193,6 +193,7 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
                     resultPlasticCustomizingRequest = requestEJB.saveResultPlasticCustomizingRequest(resultPlasticCustomizingRequest);
                 }
                 this.showMessage("cms.common.msj.assignPlasticCard", false, null);
+                btnRead.setVisible(false);
 
             }
         } catch (GeneralException ex) {
