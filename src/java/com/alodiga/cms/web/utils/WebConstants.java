@@ -124,6 +124,9 @@ public class WebConstants {
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
     public static final int PROGRAM_LOYALTY_TYPE_BONIFICATION = 2;
     public static final int STATUS_CUSTOMER = 1;
+    
+    //CRUD PlasticCustomizingRequest
+    public static final int STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING = 1;
 
     //CRUD Product
     public static final int VALIDITY_MONTH_24 = 24;

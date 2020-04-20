@@ -87,7 +87,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             if (eventType == WebConstants.EVENT_ADD) {
                 EJBRequest request1 = new EJBRequest();
-                request1.setParam(WebConstants.STATUS_PROGRAM_LOYALTY_PENDING);
+                request1.setParam(WebConstants.STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING);
                 statusPending = requestEJB.loadStatusPlasticCustomizingRequest(request1);
                 txtStatus.setValue(statusPending.getDescription());
             }
