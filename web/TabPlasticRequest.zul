@@ -39,6 +39,7 @@
                                                     <tabs>
                                                         <tab id="tabPlasticRequest" label="${c:l('cms.tab.plasticRequest')}" />
                                                         <tab id="tabPlasticCard" label="${c:l('cms.tab.plasticRequest.listRequestCard')}"/>
+                                                        <tab id="tabFile" label="${c:l('cms.tab.file')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -46,6 +47,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listPlasticCard.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listFile.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

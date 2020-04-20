@@ -28,7 +28,7 @@
                                                 |
                                                 <toolbarbutton label="${c:l('cms.bread.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.enterprise.data')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.collectionsRequest.requirementData')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -63,7 +63,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.collectionsRequest.requirement')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>

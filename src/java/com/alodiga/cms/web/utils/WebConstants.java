@@ -136,4 +136,9 @@ public class WebConstants {
     public static final int CARD_LENGHT_18 = 18;
     public static final int CARD_LENGHT_20 = 20;
     
+    //CRUD PlasticManufacturer
+    public static final int STATUS_PLASTIC_MANUFACTURER_PERSONALIZED = 1;
+    public static final int STATUS_PLASTIC_MANUFACTURER_ERROR = 2;
+    public static final int STATUS_PLASTIC_MANUFACTURER_PENDING = 3;
+    
 }
