@@ -152,7 +152,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY,applicantNaturalPerson.getPersonId().getId());
             request.setParams(params);
-            phonePersonList = personEJB.getPhonePersonByperson(request);
+            phonePersonList = personEJB.getPhoneByPerson(request);
             if (phonePersonList != null) {
                 for (PhonePerson p: phonePersonList) {
                     if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
@@ -286,7 +286,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 Map params = new HashMap();
                 params.put(Constants.PERSON_KEY,person.getId());
                 request.setParams(params);
-                phonePersonList = personEJB.getPhonePersonByperson(request);
+                phonePersonList = personEJB.getPhoneByPerson(request);
                 if (phonePersonList != null) {
                     for (PhonePerson p: phonePersonList) {
                         if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {

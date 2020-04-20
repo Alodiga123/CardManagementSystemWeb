@@ -140,7 +140,7 @@ public class AdminUserController extends GenericAbstractAdminController {
                 HashMap params = new HashMap();
                 params.put(Constants.PERSON_KEY, user.getEmployeeId().getPersonId().getId());
                 request.setParams(params);
-                phonePersonUserList = personEJB.getPhonePersonByperson(request);
+                phonePersonUserList = personEJB.getPhoneByPerson(request);
                 for (PhonePerson phoneUser : phonePersonUserList) {
                     phonePersonUser = phoneUser;
                 }
@@ -151,7 +151,7 @@ public class AdminUserController extends GenericAbstractAdminController {
                 HashMap params = new HashMap();
                 params.put(Constants.PERSON_KEY, user.getAuthorizedEmployeeId().getPersonId().getId());
                 request.setParams(params);
-                phonePersonEmployeeAuthorizeList = personEJB.getPhonePersonByperson(request);
+                phonePersonEmployeeAuthorizeList = personEJB.getPhoneByPerson(request);
                 for (PhonePerson phoneEmployeeAuthorize : phonePersonEmployeeAuthorizeList) {
                     phonePersonEmployeeAuthorize = phoneEmployeeAuthorize;
                 }
