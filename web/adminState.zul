@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('sp.crud.country.state.list')}" onClick='Executions.sendRedirect(&quot;listState.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.menu.country.state')}" onClick='Executions.sendRedirect(&quot;listState.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('sp.common.state')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.country.add')}"/>
                                                 |
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
@@ -36,15 +36,6 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -59,6 +50,9 @@
                                                                 <textbox id="txtName" width="2700px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
+                                                        </row>
+                                                        <row>                                                           
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>

@@ -111,7 +111,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
          // Option State
          Listitem item8 = new Listitem();
          Listcell listCell8 = new Listcell();
-         listCell8.setLabel(Labels.getLabel("sp.common.state"));
+         listCell8.setLabel(Labels.getLabel("cms.common.name.state"));
          listCell8.addEventListener("onClick", new RedirectListener("listState.zul"));
          listCell8.setParent(item8);
          item8.setParent(lbxPermissions);
@@ -236,7 +236,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell23.setParent(item23);
         item23.setParent(lbxPermissions);
 
-        //Opción Account Type
+        //Opción Sub Account Type
         Listitem item24 = new Listitem();
         Listcell listCell24 = new Listcell();
         listCell24.setLabel(Labels.getLabel("cms.menu.subAccountType"));

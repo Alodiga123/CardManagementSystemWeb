@@ -12,6 +12,7 @@ import com.cms.commons.models.State;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -19,6 +20,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminStateController extends GenericAbstractAdminController {
 
@@ -30,6 +32,7 @@ public class AdminStateController extends GenericAbstractAdminController {
     private State stateParam;
     private Button btnSave;
     private Integer eventType;
+    private Toolbarbutton tbbTitle;
     
 
     @Override
@@ -48,18 +51,27 @@ public class AdminStateController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.state.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.state.view"));
+                break;
+            default:
+                break;
+        }        
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
         }
-    }
+    }   
 
     public void clearFields() {
         txtName.setRawValue(null);;
 
-//Cambio prueba
     }
 
     private void loadFields(State state) {
@@ -72,7 +84,6 @@ public class AdminStateController extends GenericAbstractAdminController {
 
     public void blockFields() {
         txtName.setReadonly(true);
-       
         btnSave.setVisible(false);
     }
 
@@ -88,13 +99,6 @@ public class AdminStateController extends GenericAbstractAdminController {
 
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
 
     private void saveState(State _state) {
         try {
@@ -108,14 +112,7 @@ public class AdminStateController extends GenericAbstractAdminController {
             }
             state.setName(txtName.getText());
             state.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            
-            try {
-                state = utilsEJB.saveState(state);
-            } catch (Exception e) {
-                showError(e);
-            }
-            
-            
+            state = utilsEJB.saveState(state);
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
            showError(ex);
@@ -146,7 +143,8 @@ public class AdminStateController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(stateParam);
-                txtName.setDisabled(true);
+                txtName.setReadonly(true);
+                blockFields();
                 loadcmbCountry(eventType);
                 break;
             case WebConstants.EVENT_ADD:
@@ -158,7 +156,7 @@ public class AdminStateController extends GenericAbstractAdminController {
     }
     
     private void loadcmbCountry(Integer evenInteger) {
-        //cmbCurrency
+        
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
  
