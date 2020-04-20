@@ -49,6 +49,13 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        projectAnnualVolumeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProjectAnnualVolume) Sessions.getCurrent().getAttribute("object") : null;
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType == WebConstants.EVENT_ADD) {
+           projectAnnualVolumeParam = null;                    
+       } else {
+           projectAnnualVolumeParam = (ProjectAnnualVolume) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
     }
 

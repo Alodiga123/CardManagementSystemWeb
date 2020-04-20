@@ -32,6 +32,7 @@ public class ListcellViewButton extends Listcell {
     
     public ListcellViewButton(String destinationView, Object obj) {
         ViewButton viewButton = new ViewButton(destinationView, obj);
+        viewButton.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
         viewButton.setParent(this);
     }

@@ -7,6 +7,7 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Permission;
 import com.cms.commons.models.PermissionGroup;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -19,20 +20,24 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 
-public class AdminPermissionGroupController extends GenericAbstractAdminController {
+public class AdminPermissionController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private UtilsEJB utilsEJB = null;
-    private Textbox txtNamePermissionGroup;
+    private Combobox cmbPermissionGroup;
+    private Textbox txtAction;
+    private Textbox txtEntity;
+    private Textbox txtNamePermission;
     private Radio rEnabledYes;
     private Radio rEnabledNo;
-    private PermissionGroup permissionGroupParam;
+    private Permission permissionParam;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -41,12 +46,12 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         Sessions.getCurrent();
-        permissionGroupParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PermissionGroup) Sessions.getCurrent().getAttribute("object") : null;
+        permissionParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Permission) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           permissionGroupParam = null;                    
+           permissionParam = null;                    
        } else {
-           permissionGroupParam = (PermissionGroup) Sessions.getCurrent().getAttribute("object");            
+           permissionParam = (Permission) Sessions.getCurrent().getAttribute("object");            
        }
         initialize();
     }
@@ -56,10 +61,10 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.group.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.group.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.view"));
                 break;
             default:
                 break;
@@ -73,13 +78,17 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
     }
 
     public void clearFields() {
-        txtNamePermissionGroup.setRawValue(null);
+        txtAction.setRawValue(null);
+        txtEntity.setRawValue(null);
+        txtNamePermission.setRawValue(null);
     }
     
-    private void loadFields(PermissionGroup permissionGroup) {
+    private void loadFields(Permission permission) {
         try {
-            txtNamePermissionGroup.setText(permissionGroup.getName().toString());
-            if (permissionGroup.getEnabled() == true) {
+            txtAction.setText(permission.getAction().toString());
+            txtEntity.setText(permission.getEntity().toString());
+            txtNamePermission.setText(permission.getName().toString());
+            if (permission.getEnabled() == true) {
                 rEnabledYes.setChecked(true);
             } else {
                 rEnabledNo.setChecked(false);
@@ -92,29 +101,40 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
     }
 
     public void blockFields() {
-        txtNamePermissionGroup.setReadonly(true);
+        txtAction.setReadonly(true);
+        txtEntity.setReadonly(true);
+        txtNamePermission.setReadonly(true);
+        cmbPermissionGroup.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtNamePermissionGroup.getText().isEmpty()) {
-            txtNamePermissionGroup.setFocus(true);
+        if (txtAction.getText().isEmpty()) {
+            txtAction.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else {
+        } else if (txtEntity.getText().isEmpty()) {
+            txtEntity.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtEntity.getText().isEmpty()) {
+            txtEntity.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtNamePermission.getText().isEmpty()) {
+            txtNamePermission.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);    
             return true;
         }
         return false;
 
     }
 
-    private void savePermissionGroup(PermissionGroup _permissionGroup) {
+    private void savePermission(Permission _permission) {
         Boolean indEnabled = true;
         try {
-            PermissionGroup permissionGroup = null;
-            if (_permissionGroup != null) {
-               permissionGroup = _permissionGroup;
+            Permission permission = null;
+            if (_permission != null) {
+               permission = _permission;
             } else {
-                permissionGroup = new PermissionGroup();
+                permission = new Permission();
             }
             
             if (rEnabledYes.isChecked()) {
@@ -123,10 +143,13 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
                 indEnabled = false;
             }
             
-            permissionGroup.setName(txtNamePermissionGroup.getText());
-            permissionGroup.setEnabled(indEnabled);
-            permissionGroup = utilsEJB.savePermissionGroup(permissionGroup);
-            permissionGroupParam = permissionGroup;
+            permission.setPermissionGroupId((PermissionGroup) cmbPermissionGroup.getSelectedItem().getValue());
+            permission.setAction(txtAction.getText());
+            permission.setEntity(txtEntity.getText().toString());
+            permission.setName(txtNamePermission.getText());
+            permission.setEnabled(indEnabled);
+            permission = utilsEJB.savePermission(permission);
+            permissionParam = permission;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -137,10 +160,10 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    savePermissionGroup(null);
+                    savePermission(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    savePermissionGroup(permissionGroupParam);
+                    savePermission(permissionParam);
                     break;
                 default:
                     break;
@@ -151,20 +174,40 @@ public class AdminPermissionGroupController extends GenericAbstractAdminControll
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(permissionGroupParam);
+                loadFields(permissionParam);
+                loadCmbPermissionGroup(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(permissionGroupParam);
-                txtNamePermissionGroup.setReadonly(true);
+                loadFields(permissionParam);
+                txtAction.setReadonly(true);
+                txtEntity.setReadonly(true);
+                txtNamePermission.setReadonly(true);
                 blockFields();
+                loadCmbPermissionGroup(eventType);
                 rEnabledYes.setDisabled(true);
                 rEnabledNo.setDisabled(true);
                 break;
             case WebConstants.EVENT_ADD:
-                loadFields(permissionGroupParam);
+                loadFields(permissionParam);
+                loadCmbPermissionGroup(eventType);
                 break;
             default:
                 break;
+        }
+    }
+    
+    private void loadCmbPermissionGroup(Integer eventType) {
+        EJBRequest request1 = new EJBRequest();
+        List<PermissionGroup> permissionGroup;
+        try {
+            permissionGroup = utilsEJB.getPermissionGroup(request1);
+            loadGenericCombobox(permissionGroup, cmbPermissionGroup, "name", eventType, Long.valueOf(permissionParam != null ? permissionParam.getPermissionGroupId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
         }
     }
 }

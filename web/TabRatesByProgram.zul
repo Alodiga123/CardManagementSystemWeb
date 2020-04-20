@@ -5,13 +5,13 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabPlastic" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPlasticRequestController" class="general-window">
+    <window id="winTabRatesByProgram" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRateByProgramController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
                 <include src="adminHeader.zul"/>
             </north>
-            <center border="none" flex="true" class="content-transparent" autoscroll="true">
+            <center border="none" flex="true" class="content-transparent">
                 <div align="center" >
                     <hlayout >
                         <div></div>
@@ -27,9 +27,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crumb.plasticRequest.list')}" onClick='Executions.sendRedirect(&quot;listPlasticRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.rateByProgram.list')}" />
                                                 |
-                                                <toolbarbutton id="tbbTitle" label=""/>
+                                                <toolbarbutton id="tbbTitle" label=""/> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -37,19 +37,15 @@
                                             <vlayout>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabPlasticRequest" label="${c:l('cms.tab.plasticRequest')}" />
-                                                        <tab id="tabPlasticCard" label="${c:l('cms.tab.plasticRequest.listRequestCard')}"/>
-                                                        <tab id="tabFile" label="${c:l('cms.tab.file')}"/>
+                                                        <tab id="tabRatesByProgram" label="${c:l('cms.tab.generalRatesByProgramMain')}" />
+                                                        <tab id="tabApprovalRates" label="${c:l('cms.tab.approvalRates')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminPlasticRequest.zul"/>
+                                                            <include src="listRateByProgram.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listPlasticCard.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listFile.zul"/>
+                                                            <include src="listApprovalRateByProgram.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

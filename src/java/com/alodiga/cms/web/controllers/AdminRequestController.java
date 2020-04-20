@@ -57,6 +57,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Tab tabFamilyReferencesMain;
     private Tab tabAdditionalCards;
     private Tab tabLegalRepresentatives;
+    private Tab tabApplicationReview;
     public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
@@ -88,11 +89,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     }
                 } else {
                     if (requestParam.getIndPersonNaturalRequest() == true) {
@@ -100,11 +103,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(true);
                         tabFamilyReferencesMain.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
                     }
                 }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));

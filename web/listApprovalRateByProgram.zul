@@ -4,17 +4,19 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRateByProgramController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListApprovalRateByProgramController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
-            <center border="none" flex="true" class="content-transparent" autoscroll="true">
-                <div align="center" >
+            <center border="none" flex="true" class="content-transparent">
+                <div align="center">
                     <hlayout>
                         <div width="1200px" align="left" height="670px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
+                                        <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
+                                            <separator/>                                            
                                             <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="295px"/>
@@ -27,37 +29,34 @@
                                                             <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProgram" width="270px" mold="rounded" readonly="true" />
+                                                            <label id="lblProgram" width="270px"/>
                                                             <label id="lblProductType" width="270px"/>
-                                                            <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                            <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="150px" class="open orange" />
                                                        </row>
                                                     </rows>   
                                             </grid>  
-                                            <separator/>       
+                                            <separator/> 
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="1000px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.country')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.channel')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.transaction')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.fixedRate')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.percentageRate')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameUser')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.agencyComercial')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.approvalDate')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
                                         </div>
-                                        <!--Download button-->
-                                        <div width="885px" align="right">
-                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/>
-                                        </div>
                                     </vlayout>
                                 </div>
+                                <div></div>
                             </hlayout>
                         </div>
+                        <div></div>
                     </hlayout>
                 </div>
             </center>
         </borderlayout>
     </window>
 </zk>
+

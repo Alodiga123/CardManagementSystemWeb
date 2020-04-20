@@ -58,7 +58,7 @@
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('sp.common.symbol')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.symbolMoney')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtSimbol" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />

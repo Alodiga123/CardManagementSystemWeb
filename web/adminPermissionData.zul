@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPermissionGroupData" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPermissionGroupDataController" class="general-window">
+    <window id="winAdminPermissionData" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminPermissionDataController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -25,9 +25,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.permission.group.data')}" onClick='Executions.sendRedirect(&quot;listPermissionGroupData.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.menu.permission.data')}" onClick='Executions.sendRedirect(&quot;listPermissionData.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.permission.group.data.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.permission.data.add')}"/>
                                                  |  
                                                 <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
@@ -44,17 +44,17 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.id.permission.group')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.id.permission')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.language.id')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.alias.permission.group')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbPermiGroup" width="270px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbPermission" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbLanguage" width="270px" mold="rounded" readonly="true" />
                                                             <textbox id="txtAlias" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                         
                                                        </row>
                                                       <row>
-                                                            <label value="${c:l('cms.common.description.permission.group')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description.permission')}" sclass="lblbold"/>
                                                        </row>
                                                        <row>
                                                            <cell colspan="3">
@@ -71,7 +71,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listPermissionGroupData.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listPermissionData.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

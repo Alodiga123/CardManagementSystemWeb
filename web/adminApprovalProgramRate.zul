@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminApprovalGeneralRates" title="${c:l('cms.common.crud.approvalGeneralRate')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminApprovalRatesController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminApprovalProgramRate" title="${c:l('cms.common.crud.approvalProgramRate')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminApprovalProgramRateController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent">
@@ -26,29 +26,35 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
+                                                            <cell colspan="2">
+                                                                <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                            </cell>
+                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>                                                                                                                        
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="2">
+                                                                <label id="lblProgram" value="" width="250px" style="color:#837E76;"/>
+                                                            </cell>
+                                                            <label id="txtCity" value="" width="250px" style="color:#837E76;"/>                                                            
+                                                        </row>
+                                                        <row>
                                                             <label value="${c:l('cms.crud.applicantionRiview.agency')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.applicantionRiview.commercialAssessorUserCode')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.applicantionRiview.AssessorName')}" sclass="lblbold"/>                                                                                                                    
                                                         </row>
                                                         <row>
-                                                            <label id="txtCity" value="" width="250px" style="color:#837E76;"/>
                                                             <label id="txtAgency" value="" width="250px" style="color:#837E76;"/>
                                                             <label id="txtCommercialAssessorUserCode" value="" width="250px" style="color:#837E76;"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.crud.applicantionRiview.AssessorName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.generalRates.approvalDate')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <label id="txtAssessorName" value="" width="250px" style="color:#837E76;"/>
-                                                            <label id="txtIdentification" value="" width="250px" style="color:#837E76;"/>
-                                                            <datebox id="txtApprovalDate" width="250px"/>
+                                                            <label id="txtAssessorName" value="" width="250px" style="color:#837E76;"/>                                                            
                                                         </row>                                                        
                                                         <row>
+                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>    
+                                                            <label value="${c:l('cms.crud.generalRates.approvalDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.generalRates.indApproved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <label id="txtIdentification" value="" width="250px" style="color:#837E76;"/>
+                                                            <datebox id="txtApprovalDate" width="250px"/>
                                                             <hbox>
                                                                 <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>

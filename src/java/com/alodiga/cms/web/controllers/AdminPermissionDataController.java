@@ -9,8 +9,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Language;
-import com.cms.commons.models.PermissionGroup;
-import com.cms.commons.models.PermissionGroupData;
+import com.cms.commons.models.Permission;
+import com.cms.commons.models.PermissionData;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -27,21 +27,20 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
 
-public class AdminPermissionGroupDataController extends GenericAbstractAdminController {
+public class AdminPermissionDataController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private UtilsEJB utilsEJB = null;
-    private PermissionGroupData permissionGroupDataParam;
+    private PermissionData permissionDataParam;
     private Textbox txtDescription;
     private Textbox txtAlias;
-    private Combobox cmbPermiGroup;
+    private Combobox cmbPermission;
     private Combobox cmbLanguage;
     private Button btnSave;
     private Integer eventType;
@@ -51,12 +50,12 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         Sessions.getCurrent();
-        permissionGroupDataParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PermissionGroupData) Sessions.getCurrent().getAttribute("object") : null;
+        permissionDataParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PermissionData) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           permissionGroupDataParam = null;                    
+           permissionDataParam = null;                    
        } else {
-           permissionGroupDataParam = (PermissionGroupData) Sessions.getCurrent().getAttribute("object");            
+           permissionDataParam = (PermissionData) Sessions.getCurrent().getAttribute("object");            
        }
         initialize();
     }
@@ -66,10 +65,10 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:   
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.group.data.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.data.edit"));
                 break;
             case WebConstants.EVENT_VIEW:  
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.group.data.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.permission.data.view"));
                 break;
             default:
                 break;
@@ -86,10 +85,10 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         txtDescription.setRawValue(null);
     }
     
-    private void loadFields(PermissionGroupData permissionGroupData) {
+    private void loadFields(PermissionData permissionData) {
         try {
-            txtDescription.setText(permissionGroupData.getDescription());
-            txtAlias.setText(permissionGroupData.getAlias().toString());
+            txtDescription.setText(permissionData.getDescription());
+            txtAlias.setText(permissionData.getAlias().toString());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -99,28 +98,28 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
     public void blockFields() {
         txtDescription.setReadonly(true);
         txtAlias.setReadonly(true);
-        cmbPermiGroup.setReadonly(true);
+        cmbPermission.setReadonly(true);
         cmbLanguage.setReadonly(true);
         btnSave.setVisible(false);
     }
 
-    private void savePermissionGroupData(PermissionGroupData _permissionGroupData) throws RegisterNotFoundException, NullParameterException, GeneralException {
+    private void savePermissionData(PermissionData _permissionData) throws RegisterNotFoundException, NullParameterException, GeneralException {
         try {
-            PermissionGroupData permissionGroupData = null;
+            PermissionData permissionData = null;
             
-            if (_permissionGroupData != null) {
-                permissionGroupData = _permissionGroupData;
-            } else {//New PermissionGroupData
-                permissionGroupData = new PermissionGroupData();
+            if (_permissionData != null) {
+                permissionData = _permissionData;
+            } else {//New PermissionData
+                permissionData = new PermissionData();
             }
 
-            //Guardar PermissionGroupData
-            permissionGroupData.setPermissionGroupId((PermissionGroup) cmbPermiGroup.getSelectedItem().getValue());
-            permissionGroupData.setLanguageId((Language) cmbLanguage.getSelectedItem().getValue());
-            permissionGroupData.setAlias(txtAlias.getText());
-            permissionGroupData.setDescription(txtDescription.getText());
-            permissionGroupData = utilsEJB.savePermissionGroupData(permissionGroupData);
-            permissionGroupDataParam = permissionGroupData;
+            //Guardar PermissionData
+            permissionData.setPermissionId((Permission) cmbPermission.getSelectedItem().getValue());
+            permissionData.setLanguageId((Language) cmbLanguage.getSelectedItem().getValue());
+            permissionData.setAlias(txtAlias.getText());
+            permissionData.setDescription(txtDescription.getText());
+            permissionData = utilsEJB.savePermissionData(permissionData);
+            permissionDataParam = permissionData;
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -144,36 +143,36 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    savePermissionGroupData(null);
+                    savePermissionData(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    savePermissionGroupData(permissionGroupDataParam);
+                    savePermissionData(permissionDataParam);
                     break;
                 default:
                     break;
             }
         }
     }
-     
+    
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(permissionGroupDataParam);
-                loadCmbPermiGroup(eventType);
+                loadFields(permissionDataParam);
+                loadCmbPermission(eventType);
                 loadCmbLanguage(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(permissionGroupDataParam);
+                loadFields(permissionDataParam);
                 txtDescription.setReadonly(true);
                 txtAlias.setReadonly(true);
-                loadCmbPermiGroup(eventType);
+                loadCmbPermission(eventType);
                 loadCmbLanguage(eventType);
                 blockFields();
-                loadCmbPermiGroup(eventType);
+                loadCmbPermission(eventType);
                 loadCmbLanguage(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                loadCmbPermiGroup(eventType);
+                loadCmbPermission(eventType);
                 loadCmbLanguage(eventType);
                 break;
             default:
@@ -181,12 +180,12 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         }
     }
 
-    private void loadCmbPermiGroup(Integer eventType) {
+    private void loadCmbPermission(Integer eventType) {
         EJBRequest request1 = new EJBRequest();
-        List<PermissionGroup> permissionGroup;
+        List<Permission> permission;
         try {
-            permissionGroup = utilsEJB.getPermissionGroup(request1);
-            loadGenericCombobox(permissionGroup,cmbPermiGroup, "name",eventType,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getPermissionGroupId().getId(): 0) );            
+            permission = utilsEJB.getPermission(request1);
+            loadGenericCombobox(permission,cmbPermission, "name",eventType,Long.valueOf(permissionDataParam != null? permissionDataParam.getPermissionId().getId() : 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -204,7 +203,7 @@ public class AdminPermissionGroupDataController extends GenericAbstractAdminCont
         List<Language> languageList;
         try {
             languageList = utilsEJB.getLanguage(request1);
-            loadGenericCombobox(languageList,cmbLanguage,"description",eventType,Long.valueOf(permissionGroupDataParam != null? permissionGroupDataParam.getLanguageId().getId(): 0) );            
+            loadGenericCombobox(languageList,cmbLanguage,"description",eventType,Long.valueOf(permissionDataParam != null? permissionDataParam.getLanguageId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
