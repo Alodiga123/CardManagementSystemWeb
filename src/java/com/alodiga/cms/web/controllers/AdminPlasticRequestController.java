@@ -159,6 +159,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             this.showMessage("sp.common.save.success", false, null);
             
             plasticCustomer = plasticCustomizingRequest;
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
