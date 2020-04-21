@@ -76,7 +76,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell3.setParent(item3);
         item3.setParent(lbxPermissions);
 
-        /*// Opcion statusCard
+        // Opcion statusCard
          Listitem item4 = new Listitem();
          Listcell listCell4 = new Listcell();
          listCell4.setLabel(Labels.getLabel("sp.common.statusCard"));
@@ -90,7 +90,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
          listCell5.setLabel(Labels.getLabel("cms.common.statusRequest"));
          listCell5.addEventListener("onClick", new RedirectListener("listStatusRequest.zul"));
          listCell5.setParent(item5);
-         item5.setParent(lbxPermissions);*/
+         item5.setParent(lbxPermissions);
         
         // Opction collectionRequest
         Listitem item6 = new Listitem();
@@ -280,7 +280,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         Listitem item30 = new Listitem();
         Listcell listCell30 = new Listcell();
         listCell30.setLabel(Labels.getLabel("cms.menu.rateByProgram.list"));
-        listCell30.addEventListener("onClick", new RedirectListener("listRateByProgram.zul"));
+        listCell30.addEventListener("onClick", new RedirectListener("TabRatesByProgram.zul"));
         listCell30.setParent(item30);
         item30.setParent(lbxPermissions);
 
@@ -299,6 +299,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell32.addEventListener("onClick", new RedirectListener("listRateByCard.zul"));
         listCell32.setParent(item32);
         item32.setParent(lbxPermissions);
+        
+        //Opción Card Program Manager 
+        Listitem item43 = new Listitem();
+        Listcell listCell43 = new Listcell();
+        listCell43.setLabel(Labels.getLabel("cms.menu.card.program.manager"));
+        listCell43.addEventListener("onClick", new RedirectListener("listCardProgramManager.zul"));
+        listCell43.setParent(item43);
+        item43.setParent(lbxPermissions);
         
         //Opción Permission 
         Listitem item44 = new Listitem();

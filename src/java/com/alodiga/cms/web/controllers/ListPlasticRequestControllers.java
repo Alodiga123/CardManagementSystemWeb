@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
-import com.alodiga.cms.commons.ejb.CardEJB;
+
 import com.alodiga.cms.commons.ejb.RequestEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -10,10 +9,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.Card;
 import com.cms.commons.models.PlasticCustomizingRequest;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -34,10 +30,7 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
     private Listbox lbxRecords;
     private Textbox txtName;
     private RequestEJB requestEJB = null;
-    private List<PlasticCustomizingRequest> plasticCustomizingRequest = null;
-   
-
-    
+    private List<PlasticCustomizingRequest> plasticCustomizingRequest = null;    
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -50,7 +43,7 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
     public void initialize() {
         super.initialize();
         try {
-            adminPage = "adminPlasticRequest.zul";
+            adminPage = "TabPlasticRequest.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadDataList(plasticCustomizingRequest);
@@ -99,10 +92,6 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
     public void loadDataList(List<PlasticCustomizingRequest> list) {
           try {
             lbxRecords.getItems().clear();
@@ -142,10 +131,5 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
     public List<PlasticCustomizingRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-
-
-
-    
 
 }
