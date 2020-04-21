@@ -124,6 +124,9 @@ public class WebConstants {
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
     public static final int PROGRAM_LOYALTY_TYPE_BONIFICATION = 2;
     public static final int STATUS_CUSTOMER = 1;
+    
+    //CRUD PlasticCustomizingRequest
+    public static final int STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING = 1;
 
     //CRUD Product
     public static final int VALIDITY_MONTH_24 = 24;
@@ -135,5 +138,10 @@ public class WebConstants {
     public static final int CARD_LENGHT_16 = 16;
     public static final int CARD_LENGHT_18 = 18;
     public static final int CARD_LENGHT_20 = 20;
+    
+    //CRUD PlasticManufacturer
+    public static final int STATUS_PLASTIC_MANUFACTURER_PERSONALIZED = 1;
+    public static final int STATUS_PLASTIC_MANUFACTURER_ERROR = 2;
+    public static final int STATUS_PLASTIC_MANUFACTURER_PENDING = 3;
     
 }
