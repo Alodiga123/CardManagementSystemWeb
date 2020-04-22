@@ -1,8 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.CardEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
-import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,14 +9,15 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.PlasticCustomizingRequest;
-import com.cms.commons.models.PlasticManufacturer;
+import com.cms.commons.models.DeliveryRequest;
+import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.Sequences;
-import com.cms.commons.models.StatusPlasticCustomizingRequest;
+import com.cms.commons.models.StatusDeliveryRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,33 +33,32 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Toolbarbutton;
 
-public class AdminPlasticRequestController extends GenericAbstractAdminController {
+public class AdminDeliveryRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Label txtStatus = null;
-    private Combobox cmbPlasticManufacturer;
+    private Combobox cmbShippingCompany;
     private Combobox cmbPrograms;
-    private Combobox cmbStatusPlasticRequest;
+    private Combobox cmbStatusDeliveryRequest;
     private Datebox dtbRequestDate;
-    private PlasticCustomizingRequest plasticCustomizingRequestParam;
     private UtilsEJB utilsEJB = null;
-    private RequestEJB requestEJB = null;
     private ProgramEJB programEJB = null;
-    private PersonEJB personEJB = null;
+    private CardEJB cardEJB = null;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
-    private StatusPlasticCustomizingRequest statusPending;
-    public static PlasticCustomizingRequest plasticCustomer = null;
+    private StatusDeliveryRequest statusPending;
+    private DeliveryRequest deliveryRequestParam;
+    public static DeliveryRequest deliveryRequestCard = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-            plasticCustomizingRequestParam = null;
+            deliveryRequestParam = null;
         } else {
-            plasticCustomizingRequestParam = (PlasticCustomizingRequest) Sessions.getCurrent().getAttribute("object");
+            deliveryRequestParam = (DeliveryRequest) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
     }
@@ -69,26 +68,25 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.common.plasticRequest.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.common.deliveryRequest.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.common.plasticRequest.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.common.deliveryRequest.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.common.plasticRequest.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.common.deliveryRequest.add"));
                 break;
             default:
                 break;
         }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             if (eventType == WebConstants.EVENT_ADD) {
                 EJBRequest request1 = new EJBRequest();
-                request1.setParam(WebConstants.STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING);
-                statusPending = requestEJB.loadStatusPlasticCustomizingRequest(request1);
+                request1.setParam(WebConstants.STATUS_DELIVERY_REQUEST_PENDING);
+                statusPending = cardEJB.loadStatusDeliveryRequest(request1);
                 txtStatus.setValue(statusPending.getDescription());
             }
             loadData();
@@ -97,18 +95,17 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         }
     }
     
-    public PlasticCustomizingRequest getPlasticCustomizingRequest() {
-        return this.plasticCustomer;
+    public DeliveryRequest getDeliveryRequest() {
+        return this.deliveryRequestCard;
     }
 
     public void clearFields() {
-        dtbRequestDate.setRawValue(null);
     }
 
-    private void loadFields(PlasticCustomizingRequest plasticCustomizingRequest) {
+    private void loadFields(DeliveryRequest deliveryRequest) {
         try {
-            txtStatus.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());
-            dtbRequestDate.setValue(plasticCustomizingRequest.getRequestDate());
+            txtStatus.setValue(deliveryRequest.getStatusDeliveryRequestId().getDescription());
+            dtbRequestDate.setValue(deliveryRequest.getRequestDate());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -116,49 +113,49 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
 
     public void blockFields() {
         dtbRequestDate.setReadonly(true);
-        cmbPlasticManufacturer.setReadonly(true);
+        cmbShippingCompany.setReadonly(true);
         cmbPrograms.setReadonly(true);
         btnSave.setVisible(false);
     }
 
-    private void savePlasticCustomizingRequest(PlasticCustomizingRequest _plasticCustomizingRequest) {
+    private void saveDeliveryRequest(DeliveryRequest _deliveryRequest) {
         String numberRequest = "";
         try {
-            PlasticCustomizingRequest plasticCustomizingRequest = null;
+            DeliveryRequest deliveryRequest = null;
 
-            if (_plasticCustomizingRequest != null) {
-                plasticCustomizingRequest = _plasticCustomizingRequest;
-                numberRequest = plasticCustomizingRequest.getRequestNumber();
+            if (_deliveryRequest != null) {
+                deliveryRequest = _deliveryRequest;
+                numberRequest = deliveryRequest.getRequestNumber();
             } else {//New collectionsRequest
-                plasticCustomizingRequest = new PlasticCustomizingRequest();
+                deliveryRequest = new DeliveryRequest();
 
                 //Obtiene el numero de secuencia para documento Request
                 EJBRequest request1 = new EJBRequest();
                 Map params = new HashMap();
-                params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_PLASTIC_REQUEST);
+                params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_DELIVERY_REQUEST);
                 request1.setParams(params);
                 List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
                 numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
             }
 
-            plasticCustomizingRequest.setRequestNumber(numberRequest);
-            plasticCustomizingRequest.setRequestDate((dtbRequestDate.getValue()));
-            plasticCustomizingRequest.setPlasticManufacturerId((PlasticManufacturer) cmbPlasticManufacturer.getSelectedItem().getValue());
+            deliveryRequest.setRequestNumber(numberRequest);
+            deliveryRequest.setRequestDate((dtbRequestDate.getValue()));
+            deliveryRequest.setShippingCompanyId((LegalPerson) cmbShippingCompany.getSelectedItem().getValue());
             if (eventType == WebConstants.EVENT_ADD) {
-                plasticCustomizingRequest.setStatusPlasticCustomizingRequestId(statusPending);
+                deliveryRequest.setStatusDeliveryRequestId(statusPending);
             } else {
-                plasticCustomizingRequest.setStatusPlasticCustomizingRequestId((StatusPlasticCustomizingRequest) cmbStatusPlasticRequest.getSelectedItem().getValue());
+                deliveryRequest.setStatusDeliveryRequestId((StatusDeliveryRequest) cmbStatusDeliveryRequest.getSelectedItem().getValue());
             }
-            plasticCustomizingRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
+            deliveryRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
             if (eventType == WebConstants.EVENT_ADD) {
-                plasticCustomizingRequest.setCreateDate(new Timestamp(new Date().getTime()));
+                deliveryRequest.setCreateDate(new Timestamp(new Date().getTime()));
             } else {
-                plasticCustomizingRequest.setUpdateDate(new Timestamp(new Date().getTime()));
+                deliveryRequest.setUpdateDate(new Timestamp(new Date().getTime()));
             }
-            plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);
+            deliveryRequest = cardEJB.saveDeliveryRequest(deliveryRequest);
             this.showMessage("sp.common.save.success", false, null);
             
-            plasticCustomer = plasticCustomizingRequest;
+            deliveryRequestCard = deliveryRequest;
             btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
@@ -168,10 +165,10 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     public void onClick$btnSave() {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
-                savePlasticCustomizingRequest(null);
+                saveDeliveryRequest(null);
                 break;
             case WebConstants.EVENT_EDIT:
-                savePlasticCustomizingRequest(plasticCustomizingRequestParam);
+                saveDeliveryRequest(deliveryRequestParam);
                 break;
             default:
                 break;
@@ -182,25 +179,25 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 txtStatus.setVisible(false);
-                plasticCustomer = plasticCustomizingRequestParam;
-                loadFields(plasticCustomizingRequestParam);
+                deliveryRequestCard = deliveryRequestParam;
+                loadFields(deliveryRequestParam);
                 loadCmbPrograms(eventType);
-                loadCmbPersonType(eventType);
-                loadCmbStatusPlasticRequest(eventType);
+                loadCmbShippingCompany(eventType);
+                loadCmbStatusDeliveryRequest(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 txtStatus.setVisible(false);
-                plasticCustomer = plasticCustomizingRequestParam;
-                loadFields(plasticCustomizingRequestParam);
+                deliveryRequestCard = deliveryRequestParam;
+                loadFields(deliveryRequestParam);
                 loadCmbPrograms(eventType);
-                loadCmbPersonType(eventType);
-                loadCmbStatusPlasticRequest(eventType);
+                loadCmbShippingCompany(eventType);
+                loadCmbStatusDeliveryRequest(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 txtStatus.setVisible(true);
-                cmbStatusPlasticRequest.setVisible(false);
+                cmbStatusDeliveryRequest.setVisible(false);
                 loadCmbPrograms(eventType);
-                loadCmbPersonType(eventType);
+                loadCmbShippingCompany(eventType);
                 break;
             default:
                 break;
@@ -213,7 +210,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
 
         try {
             programs = programEJB.getProgram(request1);
-            loadGenericCombobox(programs, cmbPrograms, "name", evenInteger, Long.valueOf(plasticCustomizingRequestParam != null ? plasticCustomizingRequestParam.getProgramId().getId() : 0));
+            loadGenericCombobox(programs, cmbPrograms, "name", evenInteger, Long.valueOf(deliveryRequestParam != null ? deliveryRequestParam.getProgramId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -226,13 +223,16 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         }
     }
 
-    private void loadCmbPersonType(Integer evenInteger) {
+    private void loadCmbShippingCompany(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<PlasticManufacturer> plasticManufacturer;
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_ECONOMIC_ACTIVITY_ID, Constants.ECONOMIC_ACTIVITY);
+        request1.setParams(params);
+        List<LegalPerson> shippingCompany;
 
         try {
-            plasticManufacturer = personEJB.getPlasticManufacturer(request1);
-            loadGenericCombobox(plasticManufacturer, cmbPlasticManufacturer, "name", evenInteger, Long.valueOf(plasticCustomizingRequestParam != null ? plasticCustomizingRequestParam.getPlasticManufacturerId().getId() : 0));
+            shippingCompany = programEJB.getLegalPersonByDelivery(request1);
+            loadGenericCombobox(shippingCompany, cmbShippingCompany, "enterpriseName", evenInteger, Long.valueOf(deliveryRequestParam != null ? deliveryRequestParam.getShippingCompanyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -245,27 +245,27 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         }
     }
 
-    private void loadCmbStatusPlasticRequest(Integer evenInteger) {
+    private void loadCmbStatusDeliveryRequest(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<StatusPlasticCustomizingRequest> statusPlastic;
+        List<StatusDeliveryRequest> statusDelivery;
         try {
-            statusPlastic = (List<StatusPlasticCustomizingRequest>) requestEJB.getStatusPlasticCustomizingRequest(request1);
-            cmbStatusPlasticRequest.getItems().clear();
-            for (StatusPlasticCustomizingRequest c : statusPlastic) {
+            statusDelivery = (List<StatusDeliveryRequest>) cardEJB.getStatusDeliveryRequest(request1);
+            cmbStatusDeliveryRequest.getItems().clear();
+            for (StatusDeliveryRequest c : statusDelivery) {
                 Comboitem item = new Comboitem();
                 item.setValue(c);
                 item.setLabel(c.getDescription());
                 item.setDescription(c.getDescription());
-                item.setParent(cmbStatusPlasticRequest);
-                if (plasticCustomizingRequestParam != null && c.getId().equals(plasticCustomizingRequestParam.getStatusPlasticCustomizingRequestId().getId())) {
-                    cmbStatusPlasticRequest.setSelectedItem(item);
+                item.setParent(cmbStatusDeliveryRequest);
+                if (deliveryRequestParam != null && c.getId().equals(deliveryRequestParam.getStatusDeliveryRequestId().getId())) {
+                    cmbStatusDeliveryRequest.setSelectedItem(item);
                 }
             }
             if (eventType.equals(WebConstants.EVENT_ADD)) {
-                cmbStatusPlasticRequest.setSelectedIndex(0);
+                cmbStatusDeliveryRequest.setSelectedIndex(0);
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbStatusPlasticRequest.setDisabled(true);
+                cmbStatusDeliveryRequest.setDisabled(true);
             }
         } catch (EmptyListException ex) {
             showError(ex);

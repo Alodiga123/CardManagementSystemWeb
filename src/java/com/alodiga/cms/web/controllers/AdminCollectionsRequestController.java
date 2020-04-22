@@ -103,6 +103,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             collectionsRequest = requestEJB.saveCollectionRequest(collectionsRequest);
             collectionsRequestParam = collectionsRequest;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
