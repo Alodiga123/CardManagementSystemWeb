@@ -301,12 +301,12 @@ public class AdminMainMenuController extends GenericForwardComposer {
         item32.setParent(lbxPermissions);
         
         //Opción Card Program Manager 
-        Listitem item43 = new Listitem();
-        Listcell listCell43 = new Listcell();
-        listCell43.setLabel(Labels.getLabel("cms.menu.card.program.manager"));
-        listCell43.addEventListener("onClick", new RedirectListener("listCardProgramManager.zul"));
-        listCell43.setParent(item43);
-        item43.setParent(lbxPermissions);
+        Listitem item42 = new Listitem();
+        Listcell listCell42 = new Listcell();
+        listCell42.setLabel(Labels.getLabel("cms.menu.card.program.manager"));
+        listCell42.addEventListener("onClick", new RedirectListener("listCardProgramManager.zul"));
+        listCell42.setParent(item42);
+        item42.setParent(lbxPermissions);
         
         //Opción Permission 
         Listitem item43 = new Listitem();
