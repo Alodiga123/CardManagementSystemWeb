@@ -17,24 +17,14 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <separator/>                                            
-                                            <grid fixedLayout="true">
-                                                    <columns>
-                                                        <column label="" width="295px"/>
-                                                        <column label="" width="295px"/>
-                                                        <column label="" align="center" width="295px"/>
-                                                    </columns>
-                                                    <rows>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <label id="lblProgram" width="270px"/>
-                                                            <label id="lblProductType" width="270px"/>
-                                                            <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="150px" class="open orange" />
-                                                       </row>
-                                                    </rows>   
-                                            </grid>  
+                                            <vlayout>
+                                                <hlayout>
+                                                    <!--buttons-->
+                                                    <div align="left" width="850px">
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="150px" class="open orange" />                                                        
+                                                    </div>
+                                                </hlayout>
+                                            </vlayout>
                                             <separator/> 
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="1000px">

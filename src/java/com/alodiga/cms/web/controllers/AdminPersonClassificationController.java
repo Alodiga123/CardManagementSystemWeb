@@ -6,38 +6,56 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminPersonClassificationController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
-    private PersonClassification personclassificationParam;
+    private PersonClassification personClassificationParam;
     private Button btnSave;
     private Integer evenType;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        personClassificationParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonClassification) Sessions.getCurrent().getAttribute("object") : null;
         evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
-            personclassificationParam = null;
+            personClassificationParam = null;
         } else {
-            personclassificationParam = (PersonClassification) Sessions.getCurrent().getAttribute("object");
+            personClassificationParam = (PersonClassification) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
-        loadData();
+        
     }
 
     @Override
     public void initialize() {
-        super.initialize();
+       super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.person.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.person.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.add"));
+                break;    
+            default:
+                break;
+        }  
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            loadData();
         } catch (Exception ex) {
             showError(ex);
         }
@@ -47,9 +65,9 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
         txtName.setRawValue(null);
     }
 
-    private void loadFields(PersonClassification personclassification) {
+    private void loadFields(PersonClassification personClassification) {
         try {
-            txtName.setText(personclassification.getDescription());
+            txtName.setText(personClassification.getDescription().toString());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -69,19 +87,20 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
         return true;
     }
 
-    private void savePersonClassification(PersonClassification personclassification_) {
+    private void savePersonClassification(PersonClassification _personClassification) {
         try {
-            PersonClassification personclassification = null;
+            PersonClassification personClassification = null;
 
-            if (personclassification_ != null) {
-                personclassification = personclassification_;
-            } else {//New requestType
-                personclassification = new PersonClassification();
+            if (_personClassification != null) {
+                personClassification = _personClassification;
+            } else {
+                personClassification = new PersonClassification();
             }
-            personclassification.setDescription(txtName.getText());
-            personclassification = utilsEJB.savePersonClassification(personclassification);
-            personclassificationParam = personclassification;
+            personClassification.setDescription(txtName.getText());
+            personClassification = utilsEJB.savePersonClassification(personClassification);
+            personClassificationParam = personClassification;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -94,7 +113,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
                     savePersonClassification(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    savePersonClassification(personclassificationParam);
+                    savePersonClassification(personClassificationParam);
                     break;
             }
         }
@@ -103,10 +122,11 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     public void loadData() {
         switch (evenType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(personclassificationParam);
+                loadFields(personClassificationParam);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(personclassificationParam);
+                loadFields(personClassificationParam);
+                txtName.setReadonly(true);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:

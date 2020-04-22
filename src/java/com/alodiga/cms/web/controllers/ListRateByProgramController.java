@@ -53,7 +53,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
     private ProgramEJB programEJB = null;
     private List<GeneralRate> generalRateList = null;
     private List<RateByProgram> rateByProgramByProgramList = new ArrayList<RateByProgram>();
-    private static Program program = null;
+    public static Program program = null;
     private ProductType productType = null;
     private Tab tabApprovalRates;
 
@@ -91,6 +91,10 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+       
+    public Program getProgram() {
+        return program;
     }
     
     public void onChange$cmbProgram() {

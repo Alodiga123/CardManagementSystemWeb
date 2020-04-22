@@ -33,7 +33,7 @@
                                                         </row>
                                                         <row>
                                                             <cell colspan="2">
-                                                                <label id="lblProgram" value="" width="250px" style="color:#837E76;"/>
+                                                                <label id="lblProgram" value="" width="250px" style="color:#000000;"/>
                                                             </cell>
                                                             <label id="txtCity" value="" width="250px" style="color:#837E76;"/>                                                            
                                                         </row>

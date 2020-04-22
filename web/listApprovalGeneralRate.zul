@@ -16,7 +16,7 @@
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                             <separator/>
+                                            <separator/>
                                             <vlayout>
                                                 <hlayout>
                                                     <!--buttons-->

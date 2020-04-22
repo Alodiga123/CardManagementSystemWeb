@@ -313,6 +313,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     UpdateRequestWithoutApproving(reviewCollectionsRequest);
                 }
             }
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
