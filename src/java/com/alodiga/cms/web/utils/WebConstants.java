@@ -144,4 +144,7 @@ public class WebConstants {
     public static final int STATUS_PLASTIC_MANUFACTURER_ERROR = 2;
     public static final int STATUS_PLASTIC_MANUFACTURER_PENDING = 3;
     
+    //Address Type
+    public static final int ADDRESS_TYPE_COMPANY = 5;
+    
 }

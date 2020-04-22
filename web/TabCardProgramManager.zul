@@ -46,7 +46,7 @@
                                                 </div>
                                                 <tabbox id="tbxCardProgramManagerTabs" width="970px" height="390px">
                                                     <tabs>
-                                                        <tab id="tabMain" label="${c:l('cms.tab.legalPersonMain')}" />
+                                                        <tab id="tabMain" label="${c:l('cms.tab.CardProgramManagerMain')}" />
                                                         <tab id="tabAddressCardProgramManager" label="${c:l('cms.tab.addressCardProgramManager')}"/>
                                                         <tab id="tabLegalRepresentativesCardProgramManager" label="${c:l('cms.tab.legalRepresentativesCardProgramManager')}" />
                                                     </tabs>
@@ -55,7 +55,7 @@
                                                             <include src="adminCardProgramManager.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listAddressCardProgramManager.zul"/>
+                                                            <include src="adminAddressCardProgramManager.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listLegalRepresentativesCardProgramManager.zul"/>
