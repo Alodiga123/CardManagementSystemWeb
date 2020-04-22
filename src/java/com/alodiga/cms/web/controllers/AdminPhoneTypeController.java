@@ -102,6 +102,7 @@ public class AdminPhoneTypeController extends GenericAbstractAdminController {
             phoneType = personEJB.savePhoneType(phoneType);
             phoneTypeParam = phoneType;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }

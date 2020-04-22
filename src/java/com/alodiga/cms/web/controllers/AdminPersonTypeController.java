@@ -97,6 +97,7 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             personType = utilsEJB.savePersonType(personType);
             personTypeParam = personType;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
