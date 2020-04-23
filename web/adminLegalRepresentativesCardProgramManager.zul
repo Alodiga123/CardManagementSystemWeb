@@ -37,22 +37,22 @@
                                                             <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <!--label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/-->
+                                                            <label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <!--datebox id="txtDueDateIdentification" width="250px"/-->
+                                                            <datebox id="txtDueDateIdentification" width="250px"/>
                                                             <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
                                                             <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <!--label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/-->                                                            
-                                                            <!--label value="${c:l('cms.common.gender')}" sclass="lblbold"/-->
-                                                            <!--label value="${c:l('cms.common.age')}" sclass="lblbold"/-->
+                                                            <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>                                                            
+                                                            <label value="${c:l('cms.common.gender')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.age')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <!--hlayout>
+                                                            <hlayout>
                                                                 <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
                                                             </hlayout>
                                                             <hbox>

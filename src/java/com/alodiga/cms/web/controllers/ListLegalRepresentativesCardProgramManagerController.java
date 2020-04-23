@@ -105,9 +105,7 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getIdentificationNumber()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDueDateDocumentIdentification())));
-                    item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDateBirth())));
-                    
+
                     item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
                     item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
                     item.setParent(lbxRecords);
