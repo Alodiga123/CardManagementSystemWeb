@@ -40,7 +40,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class AdminLegalRepresentCardProgManController extends GenericAbstractAdminController {
+public class AdminLegalRepresentativesCardProgramManagerController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtIdentificationNumber;
@@ -64,15 +64,27 @@ public class AdminLegalRepresentCardProgManController extends GenericAbstractAdm
     private Integer eventType;
     public Window winAdminLegalRepresentCardProgMan;
     public String indGender = null;
-    public AdminRequestController adminRequest = null;
+    public AdminCardProgramManagerController adminCardProgramManager = null;
     public AdminLegalPersonController adminLegalPerson = null;
     public AdminLegalPersonCustomerController adminLegalCustomerPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        adminRequest = new AdminRequestController();
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+//        adminRequest = new AdminRequestController();
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);                
+        if (eventType == WebConstants.EVENT_ADD) {
+            legalRepresentativesParam = null;
+        } else {
+            legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
+        }
+        
+        initialize();
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
@@ -84,12 +96,6 @@ public class AdminLegalRepresentCardProgManController extends GenericAbstractAdm
                 legalRepresentativesParam = null;
                 break;
         }
-        initialize();
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);

@@ -46,6 +46,9 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
     public void initialize() {
         super.initialize();
         try {
+            permissionEdit = true;
+            permissionAdd = true; 
+            permissionRead = true;
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminDocumentsPersonType.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
@@ -57,7 +60,7 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
     }
     
    public void getData() {
-    documentsPersonTypeList = new ArrayList<DocumentsPersonType>();
+        documentsPersonTypeList = new ArrayList<DocumentsPersonType>();
         try {
             request.setFirst(0);
             request.setLimit(null);
@@ -104,8 +107,8 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
                     item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(documentsPersonType.getDescription()));
                     item.appendChild(new Listcell(documentsPersonType.getCodeIdentificationNumber()));
-                    item.appendChild( new ListcellEditButton(adminPage, documentsPersonType));
-                    item.appendChild(new ListcellViewButton(adminPage, documentsPersonType,true));
+                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, documentsPersonType) : new Listcell());
+                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, documentsPersonType) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {
