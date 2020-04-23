@@ -41,10 +41,12 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
+    private AdminCardProgramManagerController adminCardProgramManager = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        adminCardProgramManager = new AdminCardProgramManagerController(); 
         initialize();
         startListener();
     }
@@ -179,13 +181,9 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
    
     public void getData() {
         legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
-        LegalPerson legalPerson = null;
+        LegalPerson legalPerson = adminCardProgramManager.getCardProgramManager();
         try {
-            //Solicitante de Tarjeta
-            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
-            if (adminLegalPerson.getLegalPerson() != null) {
-                legalPerson = adminLegalPerson.getLegalPerson();
-            }
+            
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());

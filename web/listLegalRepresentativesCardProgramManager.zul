@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListLegalRepresentativesCardProgramMananagerController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListLegalRepresentativesCardProgramManagerController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -39,9 +39,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="215px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="170px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="130px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="245px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="245px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="245px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
