@@ -156,6 +156,7 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
 
             if (list != null && !list.isEmpty()) {
                 for (Card plasticCard : list) {
+                    
                     deliveryRequetsHasCard = new DeliveryRequetsHasCard();
                     deliveryRequetsHasCard.setDeliveryRequestId(deliveryRequest);
                     deliveryRequetsHasCard.setCardId(plasticCard);
