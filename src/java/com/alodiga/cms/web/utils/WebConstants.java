@@ -147,4 +147,7 @@ public class WebConstants {
     //CRUD DeliveryRequest
     public static final int STATUS_DELIVERY_REQUEST_PENDING = 1;
     
+    //Address Type
+    public static final int ADDRESS_TYPE_COMPANY = 5;
+    
 }

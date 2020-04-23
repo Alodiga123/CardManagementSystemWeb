@@ -74,7 +74,9 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     private void loadFields(DocumentsPersonType documentsPersonType) {
         try {
             txtDocumentPerson.setText(documentsPersonType.getDescription());
-            txtIdentityCode.setText(documentsPersonType.getCodeIdentificationNumber());
+            if (txtDocumentPerson != null) {
+                txtIdentityCode.setText(documentsPersonType.getCodeIdentificationNumber());
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -99,14 +101,6 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         return false;
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
-
-    public void onClick$btnShortNames() {
-        Executions.getCurrent().sendRedirect("/docs/countries-abbreviation.pdf", "_blank");
-    }
-
     private void saveDocumentsPersonType(DocumentsPersonType _documentsPersonType) {
         try {
             DocumentsPersonType documentsPersonType = null;
@@ -121,6 +115,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             documentsPersonType = utilsEJB.saveDocumentsPersonType(documentsPersonType);
             documentsPersonTypeParam = documentsPersonType;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }

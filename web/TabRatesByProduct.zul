@@ -5,17 +5,17 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabCardProgramManager" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCardProgramManagerController" class="general-window">
+    <window id="winTabRatesByProduct" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRateByProductController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
                 <include src="adminHeader.zul"/>
             </north>
-            <center border="none" flex="true" class="content-transparent" autoscroll="true">
+            <center border="none" flex="true" class="content-transparent">
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="1200px" align="left" height="890px">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
@@ -27,38 +27,25 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.legalPerson.list')}" onClick="Executions.sendRedirect(&quot;listCardProgramManager.zul&quot;)"/>
+                                                <toolbarbutton label="${c:l('cms.common.rateByProgram.list')}" />
                                                 |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.legalPerson.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label=""/> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
-                                                <tabbox id="tbxCardProgramManagerTabs" width="970px" height="390px">
+                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabMain" label="${c:l('cms.tab.CardProgramManagerMain')}" />
-                                                        <tab id="tabAddressCardProgramManager" label="${c:l('cms.tab.addressCardProgramManager')}"/>
-                                                        <tab id="tabLegalRepresentativesCardProgramManager" label="${c:l('cms.tab.legalRepresentativesCardProgramManager')}" />
+                                                        <tab id="tabRatesByProduct" label="${c:l('cms.tab.generalRatesByProductMain')}" />
+                                                        <tab id="tabApprovalRates" label="${c:l('cms.tab.approvalRates')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminCardProgramManager.zul"/>
+                                                            <include src="listRateByProduct.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminAddressCardProgramManager.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listLegalRepresentativesCardProgramManager.zul"/>
+                                                            <include src="listApprovalRateByProduct.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

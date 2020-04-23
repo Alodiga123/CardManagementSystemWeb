@@ -38,8 +38,8 @@
                                                     <textbox id="txtRequestNumber" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
-                                                    <div align="left" width="190px">
-                                                        <button id="btnAdd" label="${c:l('cms.common.actions.addLegalPersonCardProMan')}" width="190px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                    <div align="left" width="100px">
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="100px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
                                                     <!--Filters button-->
                                                     <div align="right" width="700px">

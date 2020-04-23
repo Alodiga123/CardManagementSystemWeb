@@ -164,7 +164,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell14.setParent(item14);
         item14.setParent(lbxPermissions);
 
-        /*// Option PhoneType
+        // Option PhoneType
          Listitem item15 = new Listitem();
          Listcell listCell15 = new Listcell();
          listCell15.setLabel(Labels.getLabel("cms.menu.phoneType.list"));
@@ -186,7 +186,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
          listCell17.setLabel(Labels.getLabel("cms.menu.documentspersonType.list"));
          listCell17.addEventListener("onClick", new RedirectListener("listDocumentsPersonType.zul"));
          listCell17.setParent(item17);
-         item17.setParent(lbxPermissions);*/
+         item17.setParent(lbxPermissions);
         
         // Option Product
         Listitem item18 = new Listitem();
@@ -288,7 +288,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         Listitem item31 = new Listitem();
         Listcell listCell31 = new Listcell();
         listCell31.setLabel(Labels.getLabel("cms.menu.rate.product"));
-        listCell31.addEventListener("onClick", new RedirectListener("listRateByProduct.zul"));
+        listCell31.addEventListener("onClick", new RedirectListener("TabRatesByProduct.zul"));
         listCell31.setParent(item31);
         item31.setParent(lbxPermissions);
         
@@ -309,12 +309,12 @@ public class AdminMainMenuController extends GenericForwardComposer {
         item33.setParent(lbxPermissions);
         
         //Opción Card Program Manager 
-        Listitem item43 = new Listitem();
-        Listcell listCell43 = new Listcell();
-        listCell43.setLabel(Labels.getLabel("cms.menu.card.program.manager"));
-        listCell43.addEventListener("onClick", new RedirectListener("listCardProgramManager.zul"));
-        listCell43.setParent(item43);
-        item43.setParent(lbxPermissions);
+        Listitem item42 = new Listitem();
+        Listcell listCell42 = new Listcell();
+        listCell42.setLabel(Labels.getLabel("cms.menu.card.program.manager"));
+        listCell42.addEventListener("onClick", new RedirectListener("listCardProgramManager.zul"));
+        listCell42.setParent(item42);
+        item42.setParent(lbxPermissions);
         
         //Opción Permission 
         Listitem item44 = new Listitem();

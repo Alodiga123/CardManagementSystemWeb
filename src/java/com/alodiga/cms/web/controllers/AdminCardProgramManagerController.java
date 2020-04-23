@@ -60,9 +60,10 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
     private LegalPerson legalPersonParam;
     private Person person;
     private Button btnSave;
-    private Integer eventType;
+    private static Integer eventType;
     private Toolbarbutton tbbTitle;
-    public static LegalPerson legalPersonParent = null;
+    public static LegalPerson cardProgramManager = null;
+
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -83,14 +84,18 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:   
+                tabAddressCardProgramManager.setDisabled(false);
+                tabLegalRepresentativesCardProgramManager.setDisabled(false);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.edit"));
                 break;
             case WebConstants.EVENT_VIEW:  
+                tabAddressCardProgramManager.setDisabled(false);
+                tabLegalRepresentativesCardProgramManager.setDisabled(false);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tabAddressCardProgramManager.setVisible(true);
-                tabLegalRepresentativesCardProgramManager.setVisible(true);
+                tabAddressCardProgramManager.setDisabled(true);
+                tabLegalRepresentativesCardProgramManager.setDisabled(true);
                 break;
             default:
                 break;
@@ -104,8 +109,12 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         }
     }
     
-    public LegalPerson getLegalPerson() {
-        return legalPersonParent;
+    public LegalPerson getCardProgramManager() {
+        return cardProgramManager;
+    }
+    
+    public Integer getEventType() {
+        return this.eventType;
     }
 
     public void onChange$cmbCountry() {
@@ -232,11 +241,11 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             legalPerson = utilsEJB.saveLegalPerson(legalPerson);
-            legalPersonParent = legalPerson;
+            cardProgramManager = legalPerson;
             
             this.showMessage("sp.common.save.success", false, null);
-            tabAddressCardProgramManager.setVisible(true);
-            tabLegalRepresentativesCardProgramManager.setVisible(false);
+            tabAddressCardProgramManager.setDisabled(true);
+            tabLegalRepresentativesCardProgramManager.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -261,21 +270,20 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadCmbCountry(eventType);
-                legalPersonParent = legalPersonParam;
+                cardProgramManager = legalPersonParam;
                 loadFields(legalPersonParam);
                 onChange$cmbCountry();
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadCmbCountry(eventType);
-                legalPersonParent = legalPersonParam;
+                cardProgramManager = legalPersonParam;
                 loadFields(legalPersonParam);
                 blockFields();
                 onChange$cmbCountry();
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                legalPersonParent = null;
                 loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
                 break;
