@@ -128,7 +128,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
                 txtWebSite.setText(issuer.getWebSite());
             }
             if (issuer.getFaxNumber() != null) {
-                txtFaxNumber.setText(issuer.getFaxNumber());
+                txtFaxNumber.setValue(issuer.getFaxNumber().toString());
             }
             if (issuer.getPersonContactName() != null) {
                 txtPersonContactName.setText(issuer.getPersonContactName());
@@ -200,7 +200,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             issuer.setSwiftCode(txtSwiftCode.getText());
             issuer.setAbaCode(txtAbaCode.getText());
             issuer.setContractNumber(txtContractNumber.getText());
-            issuer.setFaxNumber(txtFaxNumber.getText());
+            issuer.setFaxNumber(txtFaxNumber.getValue());
             issuer.setPersonContactName(txtPersonContactName.getText());
             issuer.setEmailPersonContact(txtEmailPersonContact.getText());
             issuer.setStatusActive(indActive);
