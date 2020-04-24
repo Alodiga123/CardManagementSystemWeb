@@ -13,7 +13,8 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout>
-                        <div width="1200px" align="left" height="1200x">
+                        <div></div>
+                        <div width="1200px" align="left" height="1250x">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
