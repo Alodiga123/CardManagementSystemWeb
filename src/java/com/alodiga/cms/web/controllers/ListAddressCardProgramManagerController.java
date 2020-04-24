@@ -39,11 +39,12 @@ public class ListAddressCardProgramManagerController extends GenericAbstractList
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private List<PersonHasAddress> personHasAddress = null;
-    private int optionMenu;
+    private AdminCardProgramManagerController adminCardProgramManager = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        adminCardProgramManager = new AdminCardProgramManagerController(); 
         initialize();
         startListener();
     }
@@ -67,8 +68,7 @@ public class ListAddressCardProgramManagerController extends GenericAbstractList
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminAddressCardProgramManager.zul";
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            adminPage = "/adminAddressCardProgramManager.zul";            
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(personHasAddress);
@@ -97,7 +97,6 @@ public class ListAddressCardProgramManagerController extends GenericAbstractList
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (PersonHasAddress personHasAddress : list) {
                     item = new Listitem();
                     item.setValue(personHasAddress);
@@ -105,7 +104,7 @@ public class ListAddressCardProgramManagerController extends GenericAbstractList
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getCityId().getName()));
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getUrbanization().toString()));
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getNameEdification()));
-//                    item.appendChild(new Listcell(personHasAddress.getAddressId().getAddressTypeId().getDescription()));
+                    item.appendChild(new Listcell(personHasAddress.getAddressId().getAddressTypeId().getDescription()));
                     item.appendChild(createButtonEditModal(personHasAddress));
                     item.appendChild(createButtonViewModal(personHasAddress));
                     item.setParent(lbxRecords);
@@ -177,22 +176,8 @@ public class ListAddressCardProgramManagerController extends GenericAbstractList
 
     public void getData() {
         personHasAddress = new ArrayList<PersonHasAddress>();
-        Person person = null;
+        Person person = adminCardProgramManager.getCardProgramManager().getPersonId();
         try {
-            AdminRequestController adminRequest = new AdminRequestController();
-
-            if (optionMenu == 1) {
-                person = adminRequest.getRequest().getPersonId();
-            } else if (optionMenu == 2) {
-                if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
-                    person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-                }else if(AdminLegalPersonCustomerController.legalCustomerParam.getPersonId() != null) {
-                    person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
-                }
-            } else {
-                person = null;
-            }
-
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, person.getId());
