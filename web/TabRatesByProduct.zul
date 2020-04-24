@@ -27,7 +27,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.rateByProgram.list')}" />
+                                                <toolbarbutton label="${c:l('cms.common.rateByProduct.list')}" />
                                                 |
                                                 <toolbarbutton id="tbbTitle" label=""/> 
                                             </hlayout>
@@ -35,9 +35,9 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
+                                                <tabbox id="tbxRateByProductTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabRatesByProduct" label="${c:l('cms.tab.generalRatesByProductMain')}" />
+                                                        <tab id="tabRatesByProduct" label="${c:l('cms.tab.RatesByProductMain')}" />
                                                         <tab id="tabApprovalRates" label="${c:l('cms.tab.approvalRates')}"/>
                                                     </tabs>
                                                     <tabpanels>

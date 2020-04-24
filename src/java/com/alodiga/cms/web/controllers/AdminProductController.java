@@ -216,8 +216,17 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
             product.setLevelProductId((LevelProduct) cmbLevelProduct.getSelectedItem().getValue());
             product.setProductUseId((ProductUse) cmbProductUse.getSelectedItem().getValue());
-            product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
-            product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
+            if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
+                product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
+            }
+            if (productUse.getId() == WebConstants.PRODUCT_USE_INTERNATIONAL) {
+                product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            }
+            if (productUse.getId() == WebConstants.PRODUCT_USE_BOTH) {
+                product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
+                product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            }
             product.setStorageMedioid((StorageMedio) cmbStorageMedio.getSelectedItem().getValue());
             product.setDaysBeforeExpiration((Integer.parseInt(txtDaysBeforeExpiration.getText())));
             product.setDaysToInactivate((Integer.parseInt(txtDaysToInactivate.getText())));
