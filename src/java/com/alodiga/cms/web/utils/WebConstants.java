@@ -135,6 +135,9 @@ public class WebConstants {
     public static final int PRODUCT_USE_DOMESTIC = 1;
     public static final int PRODUCT_USE_INTERNATIONAL = 2;
     public static final int PRODUCT_USE_BOTH = 3;
+    public static final int PRODUCT_STATUS_PENDING = 1;
+    public static final int PRODUCT_STATUS_ACTIVATED = 2;
+    public static final int PRODUCT_STATUS_INACTIVATED = 3;
     
     
     //CRUD CardAssigment 

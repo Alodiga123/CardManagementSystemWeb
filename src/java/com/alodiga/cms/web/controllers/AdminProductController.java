@@ -24,6 +24,7 @@ import com.cms.commons.models.ProductUse;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramType;
 import com.cms.commons.models.SegmentMarketing;
+import com.cms.commons.models.StatusProduct;
 import com.cms.commons.models.StorageMedio;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -204,6 +205,11 @@ public class AdminProductController extends GenericAbstractAdminController {
             } else {
                 validityMonth = WebConstants.VALIDITY_MONTH_48;
             }
+            
+            //Obtener estatus PENDING para asociarlo al producto
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(WebConstants.PRODUCT_STATUS_PENDING);
+            StatusProduct statusProduct = productEJB.loadStatusProduct(request1);
 
             //Guardar Producto
             product.setName(txtName.getText());
@@ -239,6 +245,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
             product.setValidityMonths(validityMonth);
             product.setCreateDate(new Timestamp(new Date().getTime()));
+            product.setStatusProductId(statusProduct);
             product = productEJB.saveProduct(product);
             productParam = product;
             productParent = product;
@@ -472,7 +479,11 @@ public class AdminProductController extends GenericAbstractAdminController {
         List<Currency> domesticCurrencyList;
         try {
             domesticCurrencyList = utilsEJB.getCurrency(request1);
-            loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getDomesticCurrencyId().getId(): 0) );            
+            if (eventType == WebConstants.EVENT_ADD) {
+                loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getDomesticCurrencyId().getId(): 0));
+            } else {
+                loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam.getDomesticCurrencyId() != null? productParam.getDomesticCurrencyId().getId(): 0) ); 
+            }                       
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -490,7 +501,11 @@ public class AdminProductController extends GenericAbstractAdminController {
         List<Currency> internationalCurrencyList;
         try {
             internationalCurrencyList = utilsEJB.getCurrency(request1);
-            loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getInternationalCurrencyId().getId(): 0) );            
+            if (eventType == WebConstants.EVENT_ADD) {
+                loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getInternationalCurrencyId().getId(): 0) ); 
+            } else {
+                loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam.getInternationalCurrencyId() != null? productParam.getInternationalCurrencyId().getId(): 0) ); 
+            }                       
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
