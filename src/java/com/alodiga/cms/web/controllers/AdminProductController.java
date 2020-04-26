@@ -82,7 +82,8 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Label lblBinSponsor;
     private Label lblBinNumber;
     private Tab tabCommerceCategory;
-    private Tab tabRestrictions; 
+    private Tab tabRestrictions;
+    private Tab tabActivationProduct;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -124,6 +125,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             case WebConstants.EVENT_ADD:
                 tabCommerceCategory.setDisabled(true);
                 tabRestrictions.setDisabled(true);
+                tabActivationProduct.setDisabled(true);
                 break;
             default:
                 break;
@@ -252,6 +254,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             this.showMessage("sp.common.save.success", false, null);
             tabCommerceCategory.setDisabled(false);
             tabRestrictions.setDisabled(false);
+            tabActivationProduct.setDisabled(false);
         } catch (Exception ex) {
             showError(ex);
         }
