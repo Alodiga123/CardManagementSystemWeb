@@ -364,9 +364,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_REQUEST_REJECTED);
             StatusRequest statusRequestRejected = requestEJB.loadStatusRequest(request);
+            
             requestCard.setStatusRequestId(statusRequestRejected);
             request.setParam(Constants.REASON_REQUEST_REJECTED_BY_COLLECTIONS);
             ReasonRejectionRequest reasonRejectionRequest = requestEJB.loadReasonRejectionRequest(request);
+            
             requestCard.setReasonRejectionRequestId(reasonRejectionRequest);
             requestCard = requestEJB.saveRequest(requestCard);
             this.showMessage("cms.common.requestRejected", false, null);
