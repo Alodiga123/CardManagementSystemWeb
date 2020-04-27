@@ -1,6 +1,8 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.ProgramEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -31,6 +33,8 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
 
     private static final long serialVersionUID = -9145887024839938515L;
     private ProductEJB productEJB = null;
+    private UtilsEJB utilsEJB = null;
+    private ProgramEJB programEJB = null;
     private Label lblProduct;
     private Label lblAgency;
     private Label lblUserActivation;
@@ -43,16 +47,21 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
     private Product productParam;
     private Button btnSave;
     public Window winAdminActivationProduct;
-    private Program program;
-
+    private AdminProductController adminProduct = null;
+    
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        adminProduct = new AdminProductController();
+        productParam = adminProduct.getProductParent();
+        eventType = adminProduct.getEventType();
         if (eventType == WebConstants.EVENT_ADD) {
-            productParam = null;                    
+            productParam = null;
         } else {
-            productParam = (Product) Sessions.getCurrent().getAttribute("object");            
+            if (productParam.getIndActivation() == null) {
+                productParam = null;
+            }            
         }
         initialize();
     }
@@ -63,12 +72,12 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         try {
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
-//            loadData();
+            loadData();
             this.clearMessage();
         } catch (Exception ex) {
             showError(ex);
         } finally {
-//            loadData();
+            loadData();
         }
     }
 
@@ -78,19 +87,27 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
 
     private void loadFields(Product product) throws EmptyListException, GeneralException, NullParameterException {
         try {
-            product = (Product) session.getAttribute(WebConstants.PROGRAM);
-            lblProduct.setValue(program.getName());
-            lblAgency.setValue(user.getComercialAgencyId().getCityId().getName());
-            lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
-            lblIdentification.setValue(user.getIdentificationNumber());
-//            dtbActivationDate.setValue(oroduct.getApprovalDate());
-//            if (oroduct.getIndApproved() != null) {
-//                if (oroduct.getIndApproved() == true) {
-//                    rActivationYes.setChecked(true);    
-//                } else {
-//                    rActivationNo.setChecked(true);
-//                }
-//            }
+            if (product != null ) {
+                lblProduct.setValue(product.getName());
+                lblAgency.setValue(product.getUserActivationId().getComercialAgencyId().getCityId().getName());
+                lblUserActivation.setValue(product.getUserActivationId().getFirstNames() + " " + product.getUserActivationId().getLastNames());
+                lblIdentification.setValue(product.getUserActivationId().getIdentificationNumber());
+                dtbActivationDate.setValue(product.getActivationDate());
+                txtObservations.setValue(product.getObservations().toString());
+                if (product.getIndActivation() != null) {
+                    if (product.getIndActivation() == true) {
+                        rActivationYes.setChecked(true);    
+                    } else {
+                        rActivationNo.setChecked(true);
+                    }
+                }
+            } else {
+                lblProduct.setValue(productParam.getName());
+                lblAgency.setValue(user.getComercialAgencyId().getName());
+                lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
+                lblIdentification.setValue(user.getIdentificationNumber());
+            }
+            
         } catch (Exception ex) {
             showError(ex);
         }
@@ -101,92 +118,91 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         rActivationNo.setDisabled(true);        
         btnSave.setVisible(false);
     }
-////
-////    public Boolean validateEmpty() {
-////        if (txtActivationDate.getText().isEmpty()) {
-////            txtActivationDate.setFocus(true);
-////            this.showMessage("sp.error.field.cannotNull", true, null);
-////        } else {
-////            return true;
-////        }
-////        return false;
-////    }
-//
-//    private void saveApprovalRates(ApprovalProgramRate _approvalProgramRate) {
-//        ApprovalProgramRate approvalProgramRate = null;
-//        boolean indApproved;
-//        try {
-//            if (_approvalProgramRate != null) {
-//                approvalProgramRate = _approvalProgramRate;
-//            } else {
-//                approvalProgramRate = new ApprovalProgramRate();
-//            }
-//            
-//            if (rActivationYes.isChecked()) {
-////                indActivation = true;
-//            } else {
-////                indActivation = false;
-//            }
-//            
-//            //Guarda la aprobación de las tarifas por programa
-//            approvalProgramRate.setProgramId(program);
-//            approvalProgramRate.setApprovalDate(txtApprovalDate.getValue());
-//            approvalProgramRate.setIndApproved(indApproved);
-//            approvalProgramRate.setUserId(user);
-//            approvalProgramRate.setCreateDate(new Timestamp(new Date().getTime()));
-//            approvalProgramRate = productEJB.saveApprovalProgramRate(approvalProgramRate);
-//            this.showMessage("sp.common.save.success", false, null);
-//            EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true).publish(new Event(""));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
-//
-//    public void onClick$btnSave() {
-//        if (validateEmpty()) {
-//            switch (eventType) {
-//                case WebConstants.EVENT_ADD:
-//                    saveApprovalRates(null);
-//                    break;
-//                case WebConstants.EVENT_EDIT:
-//                    saveApprovalRates(approvalProgramRateParam);
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
-//    
-//    public void onClick$btnBack() {
-//        winAdminApprovalProgramRate.detach();
-//    }
-//
-    public void loadData() {
-//        try {
-            switch (eventType) {
-//                case WebConstants.EVENT_EDIT:
-//                    loadFields(approvalProgramRateParam);
-//                break;
-//                case WebConstants.EVENT_VIEW:
-//                    loadFields(approvalProgramRateParam);
-//                    blockFields();
-//                break;
-//                case WebConstants.EVENT_ADD:
-//                    lblProgram.setValue(program.getName());
-//                    txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
-//                    txtAgency.setValue(user.getComercialAgencyId().getName());
-//                    txtCommercialAssessorUserCode.setValue(user.getCode());
-//                    txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
-//                    txtIdentification.setValue(user.getIdentificationNumber());
-//                break;
+
+    public Boolean validateEmpty() {
+        if (dtbActivationDate.getText().isEmpty()) {
+            dtbActivationDate.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    private void saveProduct(Product _product) {
+        Product product= null;
+        boolean indActivation;
+        try {
+            if (_product != null) {
+                product = _product;
+            } else {
+                product = new Product();
             }
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//        } catch (NullParameterException ex) {
-//            showError(ex);
+            
+            if (rActivationYes.isChecked()) {
+                indActivation = true;
+            } else {
+                indActivation = false;
+            }
+            
+            //Guarda la activación de las tarjetas
+            product.setName(lblProduct.getValue());
+            product.setUserActivationId(user);   
+            product.setActivationDate(dtbActivationDate.getValue());
+            product.setIndActivation(indActivation);
+            product.setObservations(txtObservations.getText().toString());
+            product.setCreateDate(new Timestamp(new Date().getTime()));
+            product = productEJB.saveProduct(product);
+            this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true).publish(new Event(""));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    public void onClick$btnSave() {
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveProduct(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveProduct(productParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     
-//}
+    public void onClick$btnBack() {
+        winAdminActivationProduct.detach();
+    }
+
+    public void loadData() {
+        try {
+            switch (eventType) {
+                case WebConstants.EVENT_EDIT:                    
+                    loadFields(productParam);
+                break;
+                case WebConstants.EVENT_VIEW:
+                    loadFields(productParam);
+                    blockFields();
+                break;
+                case WebConstants.EVENT_ADD:
+                    lblProduct.setValue(productParam.getName());
+                    lblAgency.setValue(user.getComercialAgencyId().getName());
+                    lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
+                    lblIdentification.setValue(user.getIdentificationNumber());
+                break;
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+    }
+    
+}

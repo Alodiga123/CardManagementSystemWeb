@@ -80,6 +80,8 @@ public class ListRateByProductController extends GenericAbstractListController<R
         lblProductType.setVisible(true);
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
+        cmbProduct.setValue("");
+        lbxRecords.getItems().clear();
         loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
         getData(program.getId());
     }
@@ -126,6 +128,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                         }
                         if (indExist != 1) {
                             rateByProduct = new RateByProduct();
+                            rateByProduct.setProductId(product);
                             rateByProduct.setChannelId(rp.getChannelId());
                             rateByProduct.setFixedRate(rp.getFixedRate());
                             rateByProduct.setPercentageRate(rp.getPercentageRate());
