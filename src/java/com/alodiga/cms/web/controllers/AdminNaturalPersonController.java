@@ -193,9 +193,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             txtFullName.setText(applicantNaturalPerson.getFirstNames());
             txtFullLastName.setText(applicantNaturalPerson.getLastNames());
             txtMarriedLastName.setText(applicantNaturalPerson.getMarriedLastName());
-            txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
+            if (applicantNaturalPerson.getPlaceBirth() != null) {
+                txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
+            }
             txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
-            txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
+            if (applicantNaturalPerson.getFamilyResponsibilities() != null) {
+                txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
+            }            
             txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
             if (applicantNaturalPerson.getGender().equals(Gender)) {
                 genderMale.setChecked(true);
@@ -356,8 +360,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     onChange$cmbCountry();
                 }
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbPhoneType(eventType);
+                loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_VIEW:               
                 loadCmbCountry(eventType);
@@ -369,8 +373,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     onChange$cmbCountry();
                 }
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbPhoneType(eventType);
+                loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 applicantNaturalPersonParent = null;
@@ -447,7 +451,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private void loadCmbPhoneType(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<PhoneType> phoneType;
-
         try {
             phoneType = personEJB.getPhoneType(request1);
             loadGenericCombobox(phoneType, cmbPhoneType, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));  
@@ -466,10 +469,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private void loadCmbProfession(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Profession> profession;
-
         try {
             profession = personEJB.getProfession(request1);
-            loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getProfessionId().getId() : 0));    
+            if (eventType == WebConstants.EVENT_ADD) {
+                loadGenericCombobox(profession,cmbProfession,"name",eventType,Long.valueOf(applicantNaturalPersonParam != null? applicantNaturalPersonParam.getProfessionId().getId(): 0));
+            } else {
+                loadGenericCombobox(profession,cmbProfession,"name",eventType,Long.valueOf(applicantNaturalPersonParam.getProfessionId() != null? applicantNaturalPersonParam.getProfessionId().getId(): 0)); 
+            }            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

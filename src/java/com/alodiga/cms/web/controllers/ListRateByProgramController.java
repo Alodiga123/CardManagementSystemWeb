@@ -102,6 +102,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
         Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
+        lbxRecords.getItems().clear();
         getData(program.getProductTypeId().getId());
     }
   
