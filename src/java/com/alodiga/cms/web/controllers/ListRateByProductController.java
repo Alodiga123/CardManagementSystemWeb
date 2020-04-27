@@ -85,6 +85,10 @@ public class ListRateByProductController extends GenericAbstractListController<R
         loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
         getData(program.getId());
     }
+    
+    public void onChange$cmbProduct() {
+        lbxRecords.getItems().clear();
+    }
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
