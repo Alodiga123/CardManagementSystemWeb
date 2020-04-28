@@ -133,7 +133,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     public Program getProgramParent() {
-        return programParent;
+        return this.programParent;
     }
 
     private void loadFields(Program program) {
@@ -321,6 +321,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                programParent = programParam;
                 txtOtherSourceOfFound.setDisabled(true);
                 txtOtheResponsibleNetwoork.setDisabled(true);
                 loadFields(programParam);
@@ -336,6 +337,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 loadCmbcardIssuanceType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                programParent = programParam;
                 loadFields(programParam);
                 blockFields();
                 loadCmbCurrency(eventType);

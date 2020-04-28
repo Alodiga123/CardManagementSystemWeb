@@ -1,23 +1,13 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
-import com.alodiga.cms.commons.exception.EmptyListException;
-import com.alodiga.cms.commons.exception.GeneralException;
-import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Transaction;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
@@ -159,6 +149,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             transaction = productEJB.saveTransaction(transaction);
             transactionParam = transaction;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
