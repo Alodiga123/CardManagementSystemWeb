@@ -14,7 +14,6 @@ import com.cms.commons.models.ProjectAnnualVolume;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -52,13 +50,10 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateProjectAnnualVolume", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
-
             public void onEvent(Event evt) {
                 getData();
                 loadDataList(projectAnnualVolume);
-            }
-
-     
+            }     
         });
     }
 
@@ -73,7 +68,9 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
             adminPage = "/adminProjectedAnnualVolume.zul";
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
-            loadDataList(projectAnnualVolume);
+            if (projectAnnualVolume != null) {
+               loadDataList(projectAnnualVolume);
+            }
         } catch (Exception ex) {
             showError(ex);
         }

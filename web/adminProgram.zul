@@ -126,7 +126,7 @@
                                                                 </grid>
                                                             </hbox> 
                                                             <hlayout>
-                                                                <textbox id="txtBinIin" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtBinIin" width="265px" maxlength="60" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <combobox id="cmbCurrency" width="270px" mold="rounded" readonly="true"/>

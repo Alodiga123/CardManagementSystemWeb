@@ -21,6 +21,8 @@ import com.cms.commons.models.ZipZone;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,6 +227,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             address.setIndAddressDelivery(indAddressDelivery);
             address.setAddressTypeId((AddressType) cmbAddressTypes.getSelectedItem().getValue());
+            address.setCreateDate(new Timestamp(new Date().getTime()));
             address = utilsEJB.saveAddress(address);
             addressParent = address;
 

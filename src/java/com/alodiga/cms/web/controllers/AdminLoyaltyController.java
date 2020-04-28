@@ -254,6 +254,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             programLoyalty.setObservations(txtObservations.getText());
             programLoyalty = programEJB.saveProgramLoyalty(programLoyalty);
             programLoyaltyParent = programLoyalty;
+            btnSave.setVisible(false);
 
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
