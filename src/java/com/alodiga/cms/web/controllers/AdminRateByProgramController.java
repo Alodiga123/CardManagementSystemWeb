@@ -54,6 +54,10 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     private Toolbarbutton tbbTitle;
     public Tabbox tb;
     public Window winAdminRateByProgram;
+    private Float fixedRate;
+    private Float percentageRate;
+    private int totalTransactionInitialExempt;
+    private int totalTransactionExemptPerMonth;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -95,9 +99,13 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             lblTransaction.setValue(rateByProgram.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProgram.getRateApplicationTypeId().getDescription());
             txtFixedRate.setText(rateByProgram.getFixedRate().toString());
+            fixedRate = rateByProgram.getFixedRate();
             txtPercentageRate.setText(rateByProgram.getPercentageRate().toString());
+            percentageRate = rateByProgram.getPercentageRate();
             txtTotalTransactionInitialExempt.setText(rateByProgram.getTotalInitialTransactionsExempt().toString());
+            totalTransactionInitialExempt = rateByProgram.getTotalInitialTransactionsExempt();
             txtTotalTransactionExemptPerMonth.setText(rateByProgram.getTotalTransactionsExemptPerMonth().toString());
+            totalTransactionExemptPerMonth = rateByProgram.getTotalTransactionsExemptPerMonth();
             if (rateByProgram.getIndCardHolderModification() == true) {
                 rModificationCardHolderYes.setChecked(true);
             } else {
@@ -111,6 +119,15 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
 
     public void blockFields() {
         btnSave.setVisible(false);
+    }
+    
+    public void onChange$txtFixedRate() {
+        if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
+            this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            btnSave.setDisabled(false);
+        }
     }
 
     private void saveRateByProgram(RateByProgram _rateByProgram) {
