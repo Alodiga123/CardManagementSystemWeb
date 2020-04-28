@@ -65,7 +65,7 @@
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
-                                                            </hbox-->  
+                                                            </hbox>  
                                                             <hlayout>
                                                                 <textbox id="txtAge" value="" width="250px" maxlength="3"/> 
                                                              </hlayout>
@@ -93,8 +93,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray"/>
+                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>                                           
                                         </div>
                                     </vlayout>
                                 </div>

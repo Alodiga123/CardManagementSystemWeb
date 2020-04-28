@@ -28,8 +28,10 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.commom.Classification.Person')}" onClick='Executions.sendRedirect(&quot;listClassificationPerson.zul&quot;)'/>                      
                                                  |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.person.add')}"/> 
-                                                 |      
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.person.add')}"/>
+                                                 |  
+                                                <toolbarbutton id="tbbCurrentAction" /> 
+                                                  
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>

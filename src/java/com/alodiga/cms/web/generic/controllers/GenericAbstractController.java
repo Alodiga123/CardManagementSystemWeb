@@ -147,7 +147,7 @@ public class GenericAbstractController extends GenericForwardComposer implements
                     if(id.get(c) instanceof Long){
                         if(((Long) id.get(c)).equals(objectTrassientId)){
                               combobox.setSelectedItem(item);
-                        };
+                        }
                     }
                 }
             }
