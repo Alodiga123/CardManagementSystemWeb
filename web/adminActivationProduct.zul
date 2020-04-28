@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1000px" align="left" height="500px">
+                        <div width="1000px" align="left" height="700px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -27,22 +27,28 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.menu.product')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.activation.agency')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.userActivation')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.activation.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.activation.agency')}" sclass="lblbold"/>          
                                                         </row>
                                                         <row>
                                                             <label id="lblProduct" value="" width="250px" style="color:#000000;"/>
-                                                            <label id="lblAgency" value="" width="250px" style="color:#000000;"/>
-                                                            <label id="lblUserActivation" value="" width="250px" style="color:#000000;"/>
+                                                            <label id="lblCity" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblAgency" value="" width="250px" style="color:#000000;"/>    
                                                         </row>                                                        
                                                         <row>
+                                                            <label value="${c:l('cms.crud.userActivation')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>    
-                                                            <label value="${c:l('cms.crud.activationDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.indActivation')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.activationDate')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
+                                                            <label id="lblUserActivation" value="" width="250px" style="color:#000000;"/>
                                                             <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>
                                                             <datebox id="txtActivationDate" width="250px"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.indActivation')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>      
                                                             <hbox>
                                                                 <radiogroup id="indActivation" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -61,7 +67,7 @@
                                                         <row>
                                                             <cell colspan="3">
                                                                 <hlayout>
-                                                                    <textbox id="txtObservations" multiline="true" rows="3" width="850px" maxlength="1490"/>
+                                                                    <textbox id="txtObservations" multiline="true" rows="3" width="850px" maxlength="1470"/>
                                                                     <label value="*" sclass="lblreq" />
                                                                 </hlayout>   
                                                             </cell>
