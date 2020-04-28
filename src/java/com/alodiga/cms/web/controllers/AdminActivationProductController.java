@@ -39,6 +39,7 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
     private Label lblAgency;
     private Label lblUserActivation;
     private Label lblIdentification;
+    private Label lblCity;
     private Datebox dtbActivationDate;
     private Radio rActivationYes;
     private Radio rActivationNo;
@@ -89,6 +90,7 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         try {
             if (product != null ) {
                 lblProduct.setValue(product.getName());
+                lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
                 lblAgency.setValue(product.getUserActivationId().getComercialAgencyId().getCityId().getName());
                 lblUserActivation.setValue(product.getUserActivationId().getFirstNames() + " " + product.getUserActivationId().getLastNames());
                 lblIdentification.setValue(product.getUserActivationId().getIdentificationNumber());
@@ -103,6 +105,7 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
                 }
             } else {
                 lblProduct.setValue(productParam.getName());
+                lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
                 lblAgency.setValue(user.getComercialAgencyId().getName());
                 lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
                 lblIdentification.setValue(user.getIdentificationNumber());
@@ -191,6 +194,7 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
                 break;
                 case WebConstants.EVENT_ADD:
                     lblProduct.setValue(productParam.getName());
+                    lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
                     lblAgency.setValue(user.getComercialAgencyId().getName());
                     lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
                     lblIdentification.setValue(user.getIdentificationNumber());
