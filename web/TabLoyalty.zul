@@ -39,6 +39,7 @@
                                                     <tabs>
                                                         <tab id="tabLoyalty" label="${c:l('cms.tab.loyaltyMain')}" />
                                                         <tab id="tabParameters" label="${c:l('cms.tab.pointsAndBonifications')}"/>
+                                                        <tab id="tabLoyaltyActivation" label="${c:l('cms.crud.loyalty.acivation')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -46,6 +47,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listParameters.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="adminLoyaltyActivation.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
