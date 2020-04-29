@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -57,13 +58,14 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
     private Radio genderFemale;
     private Datebox txtDueDateIdentification;
     private Datebox txtBirthDay;
+    private Person person;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private LegalRepresentatives legalRepresentativesParam;
     private Button btnSave;
     private Integer eventType;
     public Window winAdminLegalRepresentCardProgMan;
-    public String indGender = null;
+    public String Gender = null;
     public AdminCardProgramManagerController adminCardProgramManager = null;
 
     @Override
@@ -136,10 +138,10 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
         txtDueDateIdentification.setReadonly(true);
         txtAge.setReadonly(true);
         txtBirthPlace.setReadonly(true);
-        txtBirthDay.setDisabled(true);
+        txtBirthDay.setReadonly(true);
         txtPhoneNumber.setReadonly(true);
-        cmbCountry.setDisabled(true);
-        cmbDocumentsPersonType.setDisabled(true);
+        cmbCountry.setReadonly(true);
+        cmbDocumentsPersonType.setReadonly(true);
         cmbPhoneType.setReadonly(true);
         btnSave.setVisible(false);
     }
@@ -162,7 +164,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
     }
 
     private void saveLegalRepresentatives(LegalRepresentatives _legalRepresentatives) {
-        LegalPerson legalPerson = adminCardProgramManager.getCardProgramManager();;
+        LegalPerson legalPerson = adminCardProgramManager.getCardProgramManager();
         LegalCustomer legalCustomer = null;
         Person personLegalRepresentatives = null;
         try {
@@ -185,9 +187,9 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             }
 
             if (genderFemale.isChecked()) {
-                indGender = "F";
+                Gender = "F";
             } else {
-                indGender = "M";
+                Gender = "M";
             }
 
             //Obtener la clasificacion del Representante Legal
@@ -204,22 +206,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             }
             person = personEJB.savePerson(person);
             personLegalRepresentatives = person;
-
-            //Guarda el Representante Legal
-            legalRepresentatives.setPersonId(personLegalRepresentatives);
-            legalRepresentatives.setFirstNames(txtFullName.getText());
-            legalRepresentatives.setLastNames(txtFullLastName.getText());
-            legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
-            legalRepresentatives.setDueDateDocumentIdentification(txtDueDateIdentification.getValue());
-            legalRepresentatives.setAge(Integer.parseInt(txtAge.getText().toString()));
-            legalRepresentatives.setGender(indGender);
-            legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
-            legalRepresentatives.setDateBirth(txtBirthDay.getValue());
-            legalRepresentatives.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
-            legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
-            legalRepresentativesParam = legalRepresentatives;
-
+            
             //Guarda el telefono del representante legal
             phonePerson.setNumberPhone(txtPhoneNumber.getText());
             phonePerson.setPersonId(personLegalRepresentatives);
@@ -230,15 +217,30 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
             legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
             legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
+            
+            //Guarda el Representante Legal
+            legalRepresentatives.setPersonId(personLegalRepresentatives);
+            legalRepresentatives.setFirstNames(txtFullName.getText());
+            legalRepresentatives.setLastNames(txtFullLastName.getText());
+            legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
+            legalRepresentatives.setDueDateDocumentIdentification(txtDueDateIdentification.getValue());
+            legalRepresentatives.setAge(Integer.parseInt(txtAge.getText().toString()));
+            legalRepresentatives.setGender(Gender);
+            legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
+            legalRepresentatives.setDateBirth(txtBirthDay.getValue());
+            legalRepresentatives.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
+            legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
+            legalRepresentativesParam = legalRepresentatives;
                 
             this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
+            EventQueues.lookup("updateLegalRepresentatives", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
@@ -267,11 +269,12 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
                 txtIdentificationNumber.setReadonly(true);
                 txtFullName.setReadonly(true);
                 txtFullLastName.setReadonly(true);
-                txtBirthPlace.setReadonly(true);
+                txtBirthPlace.setDisabled(true);
                 txtAge.setReadonly(true);
                 txtPhoneNumber.setReadonly(true);
                 txtDueDateIdentification.setReadonly(true);
                 txtBirthDay.setReadonly(true);
+                blockFields();
                 genderMale.setDisabled(true);
                 genderFemale.setDisabled(true);
                 loadCmbCountry(eventType);
