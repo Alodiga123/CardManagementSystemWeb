@@ -185,8 +185,10 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             } else if (optionMenu == 2) {
                 if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
                     person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-                }else if(AdminLegalPersonCustomerController.legalCustomerParam.getPersonId() != null) {
+                }else if(AdminLegalPersonCustomerController.legalCustomerParam != null) {
                     person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
+                }else if(AdminOwnerNaturalPersonController.naturalPersonParam != null) {
+                    person = AdminOwnerNaturalPersonController.naturalPersonParam.getPersonId();
                 }
             } else {
                 person = null;
