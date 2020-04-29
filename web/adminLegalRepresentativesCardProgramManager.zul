@@ -56,12 +56,12 @@
                                                                 <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
                                                             </hlayout>
                                                             <hbox>
-                                                                <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="Gender" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="genderFemale" label="${c:l('cms.gender.female')}" radiogroup="gender" />
-                                                                            <radio id="genderMale" label="${c:l('cms.gender.male')}" radiogroup="gender" />
+                                                                            <radio id="genderFemale" label="${c:l('cms.gender.female')}" radiogroup="Gender" />
+                                                                            <radio id="genderMale" label="${c:l('cms.gender.male')}" radiogroup="Gender" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
