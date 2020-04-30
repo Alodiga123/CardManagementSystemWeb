@@ -4,21 +4,21 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminLegalRepresentCardProgMan" title="${c:l('cms.tab.legalRepresentativesCardProgramManager')}" width="950px" height="480px" apply="com.alodiga.cms.web.controllers.AdminLegalRepresentativesCardProgramManagerController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminOwnerNaturalPerson" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminOwnerNaturalPersonController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="1200px" align="left" height="1000px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -27,64 +27,76 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbCountry" width="250px" mold="rounded" />
+                                                            <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded"/>
                                                             <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.identificationNumberOld')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="txtDueDateIdentification" width="250px"/>
+                                                            <datebox id="txtDueDateDocumentIdentification" width="250px"/>
+                                                            <textbox id="txtIdentificationNumberOld" value="" width="250px" maxlength="40"/>
                                                             <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>                                                            
+                                                            <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.naturalperson.MarriedLastName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtMarriedLastName" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
+                                                        </row>
+                                                        <row> 
+                                                            <label value="${c:l('cms.common.birthday')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.gender')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.age')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.civilState')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
+                                                                <datebox id="txtBirthDay" width="250px"/>
                                                             </hlayout>
                                                             <hbox>
-                                                                <radiogroup id="Gender" onCheck="choice1.value = self.selectedItem.label" />
+                                                                <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="genderFemale" label="${c:l('cms.gender.female')}" radiogroup="Gender" />
-                                                                            <radio id="genderMale" label="${c:l('cms.gender.male')}" radiogroup="Gender" />
+                                                                            <radio id="genderFemale" label="${c:l('cms.gender.female')}" radiogroup="gender" />
+                                                                            <radio id="genderMale" label="${c:l('cms.gender.male')}" radiogroup="gender" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
                                                             </hbox>  
                                                             <hlayout>
-                                                                <textbox id="txtAge" value="" width="250px" maxlength="3"/> 
-                                                             </hlayout>
-                                                        </row>                                                       
+                                                                <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
+                                                            </hlayout>
+                                                        </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.civilState')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.birthday')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.naturalperson.profession')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.naturalperson.familyResponsibilities')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbProfession" width="250px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtFamilyResponsibilities" value="" width="250px" maxlength="2"/>
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60"/>
+                                                        </row>
+                                                        <row>
                                                             <label value="${c:l('cms.common.phoneType')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
-                                                            <datebox id="txtBirthDay" width="250px"/>
-                                                            <combobox id="cmbPhoneType" width="250px" mold="rounded" readonly="true" />
-                                                        </row>
-                                                        <row>
                                                             <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45"/>
+                                                            <combobox id="cmbPhoneType" width="250px" mold="rounded" readonly="true" />
+                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="30"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -93,7 +105,8 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>                                           
+                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" />
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProgramOwner.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
