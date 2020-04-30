@@ -29,6 +29,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+
 public class AdminActivationProductController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;

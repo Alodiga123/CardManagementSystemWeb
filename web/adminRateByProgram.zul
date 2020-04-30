@@ -10,7 +10,6 @@
             <center border="none" flex="true" class="content-transparent">
                 <div align="center" >
                     <hlayout >
-                        <div></div>
                         <div width="900px" align="left" height="600px">
                             <hlayout>                                
                                 <div width="900px">
