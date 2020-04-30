@@ -11,6 +11,8 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
@@ -40,7 +42,10 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     private Radio rModificationCardHolderNo;
     private Button btnSave;
     private Toolbarbutton tbbTitle;
-    public Tabbox tb;
+    private Float fixedRate;
+    private Float percentageRate;
+    private int totalTransactionInitialExempt;
+    private int totalTransactionExemptPerMonth;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -58,16 +63,6 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     @Override
     public void initialize() {
         super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByProduct.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByProduct.view"));
-                break;
-            default:
-                break;
-        }
         try {
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             loadData();
@@ -93,9 +88,13 @@ public class AdminRateByProductController extends GenericAbstractAdminController
             lblTransaction.setValue(rateByProduct.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProduct.getRateApplicationTypeId().getDescription());
             txtFixedRate.setText(rateByProduct.getFixedRate().toString());
+            fixedRate = rateByProduct.getFixedRatePR();
             txtPercentageRate.setText(rateByProduct.getPercentageRate().toString());
+            percentageRate = rateByProduct.getPercentageRatePR();
             txtTotalTransactionInitialExempt.setText(rateByProduct.getTotalInitialTransactionsExempt().toString());
+            totalTransactionInitialExempt = rateByProduct.getTotalInitialTransactionsExemptPR();
             txtTotalTransactionExemptPerMonth.setText(rateByProduct.getTotalTransactionsExemptPerMonth().toString());
+            totalTransactionExemptPerMonth = rateByProduct.getTotalTransactionsExemptPerMonthPR();
             if (rateByProduct.getIndCardHolderModification() == true) {
                 rModificationCardHolderYes.setChecked(true);
             } else {
@@ -110,6 +109,50 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     public void blockFields() {
         btnSave.setVisible(false);
     }
+    
+    public void onChange$txtFixedRate() {
+        this.clearMessage();
+        if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
+            this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
+    
+    public void onChange$txtPercentageRate() {
+        this.clearMessage();
+        if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
+            this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
+    
+    public void onChange$txtTotalTransactionInitialExempt() {
+        this.clearMessage();
+        if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
+            this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
+    
+    public void onChange$txtTotalTransactionExemptPerMonth() {
+        this.clearMessage();
+        if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
+            this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
 
     private void saveRateByProduct(RateByProduct _rateByProduct) {
         try {
@@ -118,7 +161,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
 
             if (_rateByProduct != null) {
                 rateByProduct = _rateByProduct;
-            } else {//New Request
+            } else {
                 rateByProduct = new RateByProduct();
             }
             
@@ -140,6 +183,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
             rateByProduct = productEJB.saveRateByProduct(rateByProduct);
             rateByProductParam = rateByProduct;
             this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updateRateByProduct", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }

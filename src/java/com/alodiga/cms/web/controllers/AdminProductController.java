@@ -85,24 +85,13 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Tab tabRestrictions;
     private Tab tabActivationProduct;
     private Button btnSave;
-    private Integer eventType;
+    public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public static Product productParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                productParam = (Product) Sessions.getCurrent().getAttribute("object");
-                break;
-            case WebConstants.EVENT_VIEW:
-                productParam = (Product) Sessions.getCurrent().getAttribute("object");
-                break;
-            case WebConstants.EVENT_ADD:
-                productParam = null;
-                break;
-        }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
            productParam = null;                    
@@ -153,6 +142,10 @@ public class AdminProductController extends GenericAbstractAdminController {
 
     public Product getProductParent() {
         return productParent;
+    }
+    
+    public Integer getEventType() {
+        return eventType;
     }
     
     private void loadFields(Product product) {
