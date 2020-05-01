@@ -6,15 +6,13 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
+import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.DeliveryRequest;
 import com.cms.commons.models.DeliveryRequetsHasCard;
-import com.cms.commons.models.PlastiCustomizingRequestHasCard;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -42,8 +40,8 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
+    private UtilsEJB utilsEJB = null;
     private List<Card> card = null;
     private Checkbox cbxEnabled;
 
@@ -57,9 +55,8 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
     public void initialize() {
         super.initialize();
         try {
-//            adminPage = "adminCardStatus.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadDataList(card);
         } catch (Exception ex) {
@@ -131,38 +128,67 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
         } catch (Exception ex) {
             showError(ex);
         }
     }
-    
-//    public void onClick$btnAssigment() throws InterruptedException {
-//        try {
-//            saveCard(card);
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
+
+    public void onClick$btnAssigment() throws InterruptedException {
+        try {
+            saveCard(card);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
     private void saveCard(List<Card> list) {
+//        int countRecords = lbxRecords.getChildren().size();
+//        for (int i = 0; i <= countRecords; i++) {
+//            List<Listcell> listCells = ((Listitem) lbxRecords.getItems().get(i)).getChildren();
+//            for (Listcell l : listCells) {
+//                if (l.getChildren().get(5) instanceof Checkbox) {
+//                    if (((Checkbox) l.getChildren().get(5)).isChecked()) {
+//
+//                        Card card = new Card();
+//                        card = (Card) ((Listitem) lbxRecords.getItems().get(i)).getValue();
+//                    }
+//                }
+//            }
+//        }
+
+        int countRecords = list.size();
         DeliveryRequetsHasCard deliveryRequetsHasCard = null;
-        DeliveryRequest deliveryRequest= null;
+        DeliveryRequest deliveryRequest = null;
+
         try {
             AdminDeliveryRequestController adminDeliveryRequest = new AdminDeliveryRequestController();
             if (adminDeliveryRequest.getDeliveryRequest().getId() != null) {
                 deliveryRequest = adminDeliveryRequest.getDeliveryRequest();
             }
 
-            if (list != null && !list.isEmpty()) {
-                for (Card plasticCard : list) {
-                    
-                    deliveryRequetsHasCard = new DeliveryRequetsHasCard();
-                    deliveryRequetsHasCard.setDeliveryRequestId(deliveryRequest);
-                    deliveryRequetsHasCard.setCardId(plasticCard);
-                    deliveryRequetsHasCard.setCreateDate(new Timestamp(new Date().getTime()));
-                    deliveryRequetsHasCard = cardEJB.saveDeliveryRequestHasCard(deliveryRequetsHasCard);
+            for (int i = 0; i < countRecords; i++) {
+                Integer a = i;
+                List<Listcell> listCells = ((Listitem) lbxRecords.getItems().get(i)).getChildren();
+                for (Listcell l : listCells) {
+                    for (Object cell : ((Listcell) l).getChildren()) {
+                        if (cell instanceof Checkbox) {
+                            Checkbox myCheckbox = (Checkbox) cell;
+                            if (myCheckbox.isChecked()) {
+                                Card card = new Card();
+                                card = (Card) ((Listitem) lbxRecords.getItems().get(i)).getValue();
+
+                                deliveryRequetsHasCard = new DeliveryRequetsHasCard();
+                                deliveryRequetsHasCard.setDeliveryRequestId(deliveryRequest);
+                                deliveryRequetsHasCard.setCardId(card);
+                                deliveryRequetsHasCard.setCreateDate(new Timestamp(new Date().getTime()));
+                                deliveryRequetsHasCard = cardEJB.saveDeliveryRequestHasCard(deliveryRequetsHasCard);
+                                
+                                updateStatusCardDelivered(card);
+                            }
+                        }
+                    }
                 }
+                
                 this.showMessage("cms.common.msj.assignPlasticCard", false, null);
             }
         } catch (GeneralException ex) {
@@ -171,6 +197,24 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
             Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
         } catch (RegisterNotFoundException ex) {
             Logger.getLogger(ListDeliveryCardsControllers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateStatusCardDelivered(Card card) {
+        CardStatus cardStatus = null;
+        boolean indDelivery = true;
+        try {
+            //Estatus de la tarjeta Entregada
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(Constants.CARD_STATUS_DELIVERED);
+            cardStatus = utilsEJB.loadCardStatus(request1);
+
+            card.setCardStatusId(cardStatus);
+            card.setIndDeliveryRequest(indDelivery);
+            card = cardEJB.saveCard(card);
+            
+        } catch (Exception ex) {
+            showError(ex);
         }
     }
 

@@ -157,11 +157,11 @@ public class AdminUserController extends GenericAbstractAdminController {
                 }
                 lblAuthorizeExtAlodiga.setValue(phonePersonEmployeeAuthorize.getExtensionPhoneNumber());
             }
-            if (user.getEnabled() == true) {
-                rEnabledYes.setChecked(true);
-            } else {
-                rEnabledNo.setChecked(true);
-            }
+//            if (user.getEnabled() == true) {
+//                rEnabledYes.setChecked(true);
+//            } else {
+//                rEnabledNo.setChecked(true);
+//            }
         
         } catch (Exception ex) {
             showError(ex);
@@ -269,7 +269,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());            
             user.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
             user.setAuthorizedEmployeeId((Employee) cmbAuthorizeEmployee.getSelectedItem().getValue());
-            user.setEnabled(indEnabled);
+//            user.setEnabled(indEnabled);
             user = personEJB.saveUser(user);
             userParam =user;
             this.showMessage("sp.common.save.success", false, null);
