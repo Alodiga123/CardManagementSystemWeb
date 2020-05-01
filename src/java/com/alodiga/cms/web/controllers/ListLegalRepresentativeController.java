@@ -23,7 +23,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -185,8 +184,11 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
         try {
             //Solicitante de Tarjeta
             AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
+            AdminOwnerLegalPersonController adminOwnerLegal = new AdminOwnerLegalPersonController();
             if (adminLegalPerson.getLegalPerson() != null) {
                 legalPerson = adminLegalPerson.getLegalPerson();
+            }else if (adminOwnerLegal.getLegalPerson() != null){
+                legalPerson = adminOwnerLegal.getLegalPerson();
             }
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();

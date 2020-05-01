@@ -67,6 +67,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public AdminRequestController adminRequest = null;
     public AdminLegalPersonController adminLegalPerson = null;
     public AdminLegalPersonCustomerController adminLegalCustomerPerson = null;
+    public AdminOwnerLegalPersonController adminOwnerLegalPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -125,7 +126,9 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             txtAge.setText(legalRepresentatives.getAge().toString());
             txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
             txtBirthDay.setValue(legalRepresentatives.getDateBirth());
-            txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
+            if (txtPhoneNumber != null){
+                txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
+            }
             if (legalRepresentatives.getGender().trim().equalsIgnoreCase("F")) {
                 genderFemale.setChecked(true);
             } else {
@@ -200,11 +203,14 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
             adminLegalPerson = new AdminLegalPersonController();
             adminLegalCustomerPerson = new AdminLegalPersonCustomerController();
+            adminOwnerLegalPerson = new AdminOwnerLegalPersonController();
 
             if (adminLegalPerson.getLegalPerson() != null) {
                 legalPerson = adminLegalPerson.getLegalPerson();
             } else if (adminLegalCustomerPerson.getLegalCustomer() != null) {
                 legalCustomer = adminLegalCustomerPerson.getLegalCustomer();
+            } else if (adminOwnerLegalPerson.getLegalPerson() != null) {
+                legalPerson = adminOwnerLegalPerson.getLegalPerson();
             }
 
             //Obtener la clasificacion del Representante Legal
@@ -238,10 +244,12 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentativesParam = legalRepresentatives;
 
             //Guarda el telefono del representante legal
-            phonePerson.setNumberPhone(txtPhoneNumber.getText());
-            phonePerson.setPersonId(personLegalRepresentatives);
-            phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = personEJB.savePhonePerson(phonePerson);
+            if (txtPhoneNumber != null) {
+                phonePerson.setNumberPhone(txtPhoneNumber.getText());
+                phonePerson.setPersonId(personLegalRepresentatives);
+                phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
+                phonePerson = personEJB.savePhonePerson(phonePerson);
+            }
 
             //Asocia el Representante Legal al Solicitante Jurídico
             if (eventType == 1) {
@@ -257,6 +265,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
