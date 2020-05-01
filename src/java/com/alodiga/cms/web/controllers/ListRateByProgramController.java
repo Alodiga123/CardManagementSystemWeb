@@ -102,6 +102,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
         Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
+        lbxRecords.getItems().clear();
         getData(program.getProductTypeId().getId());
     }
   
@@ -115,7 +116,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
 
     public void loadList(List<GeneralRate> list) {
         List<RateByProgram> rateByProgramList = new ArrayList<RateByProgram>();
-        RateByProgram rateByProgram = new RateByProgram();
+        RateByProgram rateByProgram = null;
         EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
         int indLoadList = 0;
@@ -141,6 +142,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             }
                         }
                         if (indExist != 1) {
+                            rateByProgram = new RateByProgram();
                             rateByProgram.setChannelId(g.getChannelId());
                             rateByProgram.setFixedRate(g.getFixedRate());
                             rateByProgram.setPercentageRate(g.getPercentageRate());
@@ -199,6 +201,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                     Listitem item = null;
                     if (list != null && !list.isEmpty()) {
                         for (GeneralRate g : list) {
+                            rateByProgram = new RateByProgram();
                             rateByProgram.setChannelId(g.getChannelId());
                             rateByProgram.setFixedRate(g.getFixedRate());
                             rateByProgram.setPercentageRate(g.getPercentageRate());

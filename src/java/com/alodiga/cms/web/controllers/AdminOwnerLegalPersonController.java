@@ -15,7 +15,7 @@ import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
-import com.cms.commons.models.PersonType;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -27,28 +27,23 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbarbutton;
 
-public class AdminCardProgramManagerController extends GenericAbstractAdminController {
+public class AdminOwnerLegalPersonController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtIdentificationNumber;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
-    private Textbox txtPhoneNumber;
     private Textbox txtRegistryNumber;
     private Textbox txtPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
-    private Tab tabAddressCardProgramManager;
-    private Tab tabLegalRepresentativesCardProgramManager;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -57,25 +52,21 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
-    private LegalPerson legalPersonParam;
+    public static LegalPerson legalOwnerParam = null;
     private Person person;
     private Button btnSave;
-    private static Integer eventType;
     private Toolbarbutton tbbTitle;
-    public static LegalPerson cardProgramManager = null;
-
+    private Integer eventType;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);                
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-            legalPersonParam = null;
+            legalOwnerParam = null;
         } else {
-            legalPersonParam = (LegalPerson) Sessions.getCurrent().getAttribute("object");
+            legalOwnerParam = (LegalPerson) Sessions.getCurrent().getAttribute("object");
         }
-                   
-
         initialize();
     }
 
@@ -83,19 +74,14 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
     public void initialize() {
         super.initialize();
         switch (eventType) {
-            case WebConstants.EVENT_EDIT:   
-                tabAddressCardProgramManager.setDisabled(false);
-                tabLegalRepresentativesCardProgramManager.setDisabled(false);
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.edit"));
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.common.programOwner.edit"));
                 break;
-            case WebConstants.EVENT_VIEW:  
-                tabAddressCardProgramManager.setDisabled(false);
-                tabLegalRepresentativesCardProgramManager.setDisabled(false);
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.view"));
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.common.programOwner.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tabAddressCardProgramManager.setDisabled(true);
-                tabLegalRepresentativesCardProgramManager.setDisabled(true);
+                tbbTitle.setLabel(Labels.getLabel("cms.common.programOwner.add"));
                 break;
             default:
                 break;
@@ -109,12 +95,8 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         }
     }
     
-    public LegalPerson getCardProgramManager() {
-        return cardProgramManager;
-    }
-    
-    public Integer getEventType() {
-        return this.eventType;
+    public LegalPerson getLegalPerson() {
+        return legalOwnerParam;
     }
 
     public void onChange$cmbCountry() {
@@ -124,36 +106,30 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
     }
 
     public void clearFields() {
+        txtPersonId.setRawValue(null);
         txtTradeName.setRawValue(null);
         txtEnterpriseName.setRawValue(null);
         txtDateInscriptionRegister.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
         txtPaidInCapital.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
         txtWebSite.setRawValue(null);
         txtEmail.setRawValue(null);
         txtIdentificationNumber.setRawValue(null);
     }
 
-    public void loadFields(LegalPerson legalPerson) {
+    private void loadFields(LegalPerson legalOwner) {
         try {
-            txtTradeName.setText(legalPerson.getTradeName());
-            txtEnterpriseName.setText(legalPerson.getEnterpriseName());
-            txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
-            txtRegistryNumber.setText(legalPerson.getRegisterNumber());
-            txtPaidInCapital.setText(legalPerson.getPayedCapital().toString());
-            txtPhoneNumber.setValue(legalPerson.getEnterprisePhone());
-            txtWebSite.setValue(legalPerson.getWebSite());
-            if (txtEmail != null) {
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                request1.setParam(legalPerson.getPersonId().getId());
-                Person person = personEJB.loadPerson(request1);
-                legalPerson.setPersonId(person);
-                txtEmail.setValue(legalPerson.getPersonId().getEmail());
-            }
-            txtEmail.setValue(legalPerson.getPersonId().getEmail());
-            txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
+            txtPersonId.setText(legalOwner.getPersonId().toString());
+            txtTradeName.setText(legalOwner.getTradeName());
+            txtEnterpriseName.setText(legalOwner.getEnterpriseName());
+            txtDateInscriptionRegister.setValue(legalOwner.getDateInscriptionRegister());
+            txtRegistryNumber.setText(legalOwner.getRegisterNumber());
+            txtPaidInCapital.setText(legalOwner.getPayedCapital().toString());
+            txtWebSite.setValue(legalOwner.getWebSite());
+            txtEmail.setValue(legalOwner.getPersonId().getEmail());
+            txtIdentificationNumber.setText(legalOwner.getIdentificationNumber());
+            
+            legalOwnerParam = legalOwner;
         } catch (Exception ex) {
             showError(ex);
         }
@@ -165,13 +141,12 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
         txtPaidInCapital.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
         txtWebSite.setReadonly(true);
         txtEmail.setReadonly(true);
-        cmbEconomicActivity.setDisabled(true);
-        cmbDocumentsPersonType.setDisabled(true);
         txtIdentificationNumber.setReadonly(true);
         cmbCountry.setDisabled(true);
+        cmbDocumentsPersonType.setDisabled(true);
+        cmbEconomicActivity.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -181,9 +156,6 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
@@ -198,54 +170,58 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
 
     }
 
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
-    }
 
-    private void saveLegalPerson(LegalPerson _legalPerson) {
+    private void saveLegalOwner(LegalPerson _legalOwner) {
         try {
-            LegalPerson legalPerson = null;
+            LegalPerson legalOwner = null;
             Person person = null;
 
-            if (_legalPerson != null) {
-                legalPerson = _legalPerson;
-                person = legalPerson.getPersonId();
+            if (_legalOwner != null) {
+                legalOwner = _legalOwner;
             } else {//New LegalPerson
-                legalPerson = new LegalPerson();
+                legalOwner = new LegalPerson();
                 person = new Person();
             }
 
-            //Obtener la clasificacion del solicitante
+            //Request
             EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.CLASSIFICATION_CARD_MANAGEMENT_PROGRAM);
+            request1.setParam(Constants.REQUEST_ID_LEGAL_PERSON);
+            Request request = requestEJB.loadRequest(request1);
+
+            //PersonClassification
+            request1 = new EJBRequest();
+            request1.setParam(Constants.CLASSIFICATION_PERSON_OWNER);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
-            //Guarda el person
+            //Guardar Person
+            String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            person.setPersonTypeId(request.getPersonTypeId());
             person.setEmail(txtEmail.getText());
-            person.setCreateDate(new Timestamp(new Date().getTime()));
-            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
+            if (eventType == WebConstants.EVENT_ADD) {
+                person.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
 
-            //Guarda el LegalPerson
-            legalPerson.setPersonId(person);
-            legalPerson.setTradeName(txtTradeName.getText());
-            legalPerson.setEnterpriseName(txtEnterpriseName.getText());
-            legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
-            legalPerson.setRegisterNumber(txtRegistryNumber.getText());
-            legalPerson.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
-            legalPerson.setEnterprisePhone(txtPhoneNumber.getText());
-            legalPerson.setWebSite(txtWebSite.getText());
-            legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
-            legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
-            legalPerson = utilsEJB.saveLegalPerson(legalPerson);
-            cardProgramManager = legalPerson;
+            //Guarda los cambios en el Propietario Jurídico
+            legalOwner.setPersonId(person);
+            legalOwner.setTradeName(txtTradeName.getText());
+            legalOwner.setEnterpriseName(txtEnterpriseName.getText());
+            legalOwner.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
+            legalOwner.setRegisterNumber(txtRegistryNumber.getText());
+            legalOwner.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
+            legalOwner.setWebSite(txtWebSite.getText());
+            legalOwner.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
+            legalOwner.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            legalOwner.setIdentificationNumber(txtIdentificationNumber.getText());
+            legalOwner = utilsEJB.saveLegalPerson(legalOwner);
+            legalOwnerParam = legalOwner;
             
             this.showMessage("sp.common.save.success", false, null);
-            tabAddressCardProgramManager.setDisabled(true);
-            tabLegalRepresentativesCardProgramManager.setDisabled(true);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -255,10 +231,10 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveLegalPerson(null);
+                    saveLegalOwner(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveLegalPerson(legalPersonParam);
+                    saveLegalOwner(legalOwnerParam);
                     break;
                 default:
                     break;
@@ -269,19 +245,17 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFields(legalOwnerParam);
                 loadCmbCountry(eventType);
-                cardProgramManager = legalPersonParam;
-                loadFields(legalPersonParam);
                 onChange$cmbCountry();
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadCmbCountry(eventType);
-                cardProgramManager = legalPersonParam;
-                loadFields(legalPersonParam);
+                loadFields(legalOwnerParam);
                 blockFields();
-                onChange$cmbCountry();
+                loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
@@ -296,9 +270,10 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
+
         try {
             countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getPersonId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalOwnerParam != null ? legalOwnerParam.getPersonId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -321,7 +296,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         List<DocumentsPersonType> documentsPersonType;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getDocumentsPersonTypeId().getId() : 0));
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalOwnerParam != null ? legalOwnerParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -338,9 +313,10 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         //cmbEconomicActivity
         EJBRequest request = new EJBRequest();
         List<EconomicActivity> economicActivity;
+
         try {
             economicActivity = utilsEJB.getEconomicActivitys(request);
-            loadGenericCombobox(economicActivity, cmbEconomicActivity, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getEconomicActivityId().getId() : 0));
+            loadGenericCombobox(economicActivity, cmbEconomicActivity, "description", evenInteger, Long.valueOf(legalOwnerParam != null ? legalOwnerParam.getEconomicActivityId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

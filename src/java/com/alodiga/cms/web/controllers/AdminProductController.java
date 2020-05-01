@@ -24,6 +24,7 @@ import com.cms.commons.models.ProductUse;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.ProgramType;
 import com.cms.commons.models.SegmentMarketing;
+import com.cms.commons.models.StatusProduct;
 import com.cms.commons.models.StorageMedio;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -81,15 +82,17 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Label lblBinSponsor;
     private Label lblBinNumber;
     private Tab tabCommerceCategory;
-    private Tab tabRestrictions; 
+    private Tab tabRestrictions;
+    private Tab tabActivationProduct;
     private Button btnSave;
-    private Integer eventType;
+    public static Integer eventType;
     private Toolbarbutton tbbTitle;
     public static Product productParent = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 productParam = (Product) Sessions.getCurrent().getAttribute("object");
@@ -101,7 +104,6 @@ public class AdminProductController extends GenericAbstractAdminController {
                 productParam = null;
                 break;
         }
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
            productParam = null;                    
        } else {
@@ -123,6 +125,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             case WebConstants.EVENT_ADD:
                 tabCommerceCategory.setDisabled(true);
                 tabRestrictions.setDisabled(true);
+                tabActivationProduct.setDisabled(true);
                 break;
             default:
                 break;
@@ -150,6 +153,10 @@ public class AdminProductController extends GenericAbstractAdminController {
 
     public Product getProductParent() {
         return productParent;
+    }
+    
+    public Integer getEventType() {
+        return eventType;
     }
     
     private void loadFields(Product product) {
@@ -204,6 +211,11 @@ public class AdminProductController extends GenericAbstractAdminController {
             } else {
                 validityMonth = WebConstants.VALIDITY_MONTH_48;
             }
+            
+            //Obtener estatus PENDING para asociarlo al producto
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(WebConstants.PRODUCT_STATUS_PENDING);
+            StatusProduct statusProduct = productEJB.loadStatusProduct(request1);
 
             //Guardar Producto
             product.setName(txtName.getText());
@@ -216,8 +228,17 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
             product.setLevelProductId((LevelProduct) cmbLevelProduct.getSelectedItem().getValue());
             product.setProductUseId((ProductUse) cmbProductUse.getSelectedItem().getValue());
-            product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
-            product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
+            if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
+                product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
+            }
+            if (productUse.getId() == WebConstants.PRODUCT_USE_INTERNATIONAL) {
+                product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            }
+            if (productUse.getId() == WebConstants.PRODUCT_USE_BOTH) {
+                product.setDomesticCurrencyId((Currency) cmbDomesticCurrency.getSelectedItem().getValue());
+                product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
+            }
             product.setStorageMedioid((StorageMedio) cmbStorageMedio.getSelectedItem().getValue());
             product.setDaysBeforeExpiration((Integer.parseInt(txtDaysBeforeExpiration.getText())));
             product.setDaysToInactivate((Integer.parseInt(txtDaysToInactivate.getText())));
@@ -230,12 +251,14 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
             product.setValidityMonths(validityMonth);
             product.setCreateDate(new Timestamp(new Date().getTime()));
+            product.setStatusProductId(statusProduct);
             product = productEJB.saveProduct(product);
             productParam = product;
             productParent = product;
             this.showMessage("sp.common.save.success", false, null);
             tabCommerceCategory.setDisabled(false);
             tabRestrictions.setDisabled(false);
+            tabActivationProduct.setDisabled(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -463,7 +486,11 @@ public class AdminProductController extends GenericAbstractAdminController {
         List<Currency> domesticCurrencyList;
         try {
             domesticCurrencyList = utilsEJB.getCurrency(request1);
-            loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getDomesticCurrencyId().getId(): 0) );            
+            if (eventType == WebConstants.EVENT_ADD) {
+                loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getDomesticCurrencyId().getId(): 0));
+            } else {
+                loadGenericCombobox(domesticCurrencyList,cmbDomesticCurrency,"name",eventType,Long.valueOf(productParam.getDomesticCurrencyId() != null? productParam.getDomesticCurrencyId().getId(): 0) ); 
+            }                       
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -481,7 +508,11 @@ public class AdminProductController extends GenericAbstractAdminController {
         List<Currency> internationalCurrencyList;
         try {
             internationalCurrencyList = utilsEJB.getCurrency(request1);
-            loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getInternationalCurrencyId().getId(): 0) );            
+            if (eventType == WebConstants.EVENT_ADD) {
+                loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam != null? productParam.getInternationalCurrencyId().getId(): 0) ); 
+            } else {
+                loadGenericCombobox(internationalCurrencyList,cmbInternationalCurrency,"name",eventType,Long.valueOf(productParam.getInternationalCurrencyId() != null? productParam.getInternationalCurrencyId().getId(): 0) ); 
+            }                       
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

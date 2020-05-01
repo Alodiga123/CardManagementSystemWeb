@@ -4,7 +4,6 @@ import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import static com.alodiga.cms.web.controllers.AdminNaturalPersonController.applicant;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -100,26 +99,24 @@ public class ListRequestController extends GenericAbstractListController<Request
                     item.appendChild(new Listcell(request.getRequestNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
                     item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
-                    if (request.getPersonId() != null) {
-                        if (request.getPersonId().getPersonTypeId().getOriginApplicationId().getId() == Constants.ORIGIN_APPLICATION_CMS_ID) {
-                            if (request.getIndPersonNaturalRequest() == true) {
-                                item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
-                                StringBuilder applicantNameNatural = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
-                                applicantNameNatural.append(" ");
-                                applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());          
-                                item.appendChild(new Listcell(applicantNameNatural.toString()));
-                                adminPage = "TabNaturalPerson.zul";
-                                item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
-                                item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
-                            } else {
-                                item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
-                                applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
-                                item.appendChild(new Listcell(applicantNameLegal));
-                                adminPage = "TabLegalPerson.zul";
-                                item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
-                                item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
-                            }
-                        }                        
+                    if (request.getPersonId() != null) {                        
+                        if (request.getIndPersonNaturalRequest() == true) {
+                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                            StringBuilder applicantNameNatural = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
+                            applicantNameNatural.append(" ");
+                            applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());          
+                            item.appendChild(new Listcell(applicantNameNatural.toString()));
+                            adminPage = "TabNaturalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                        } else {
+                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                            applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
+                            item.appendChild(new Listcell(applicantNameLegal));
+                            adminPage = "TabLegalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
+                        }                                                
                     } else {                      
                         if (request.getIndPersonNaturalRequest() == true) {
                             item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));

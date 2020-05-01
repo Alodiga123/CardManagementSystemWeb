@@ -39,10 +39,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.country')}" width="240px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.city')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.nameEdification')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.address.addressTypes')}" width="230px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.city')}" width="170px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.urbanization')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameEdification')}" width="200px" sort="auto"/>
+                                                    <!--listheader label="${c:l('cms.crud.address.addressTypes')}" width="230px" sort="auto"/-->
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

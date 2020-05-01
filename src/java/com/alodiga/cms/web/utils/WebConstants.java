@@ -132,6 +132,13 @@ public class WebConstants {
     public static final int VALIDITY_MONTH_24 = 24;
     public static final int VALIDITY_MONTH_36 = 36;
     public static final int VALIDITY_MONTH_48 = 48;
+    public static final int PRODUCT_USE_DOMESTIC = 1;
+    public static final int PRODUCT_USE_INTERNATIONAL = 2;
+    public static final int PRODUCT_USE_BOTH = 3;
+    public static final int PRODUCT_STATUS_PENDING = 1;
+    public static final int PRODUCT_STATUS_ACTIVATED = 2;
+    public static final int PRODUCT_STATUS_INACTIVATED = 3;
+    
     
     //CRUD CardAssigment 
     public static final int CARD_LENGHT_12 = 12;
@@ -146,5 +153,8 @@ public class WebConstants {
     
     //CRUD DeliveryRequest
     public static final int STATUS_DELIVERY_REQUEST_PENDING = 1;
+    
+    //Address Type
+    public static final int ADDRESS_TYPE_COMPANY = 5;
     
 }
