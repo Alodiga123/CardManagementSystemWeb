@@ -316,6 +316,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell33.setParent(item33);
         item33.setParent(lbxPermissions);
         
+        //Opción Profesion 
+        Listitem item41 = new Listitem();
+        Listcell listCell41 = new Listcell();
+        listCell41.setLabel(Labels.getLabel("cms.menu.profession"));
+        listCell41.addEventListener("onClick", new RedirectListener("listProfession.zul"));
+        listCell41.setParent(item41);
+        item41.setParent(lbxPermissions);    
+
         //Opción Card Program Manager 
         Listitem item42 = new Listitem();
         Listcell listCell42 = new Listcell();
