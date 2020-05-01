@@ -6,6 +6,7 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
+import static com.alodiga.cms.web.controllers.ListRateByProgramController.program;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -20,7 +21,9 @@ import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +31,18 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Window;
 
 public class ListRateByProductController extends GenericAbstractListController<Request> {
 
@@ -47,14 +57,24 @@ public class ListRateByProductController extends GenericAbstractListController<R
     private List<RateByProduct> rateByProductByProductList = new ArrayList<RateByProduct>();
     private RateByProduct RateByProductParam;
     private Product product = null;
+    private Tab tabApprovalRates;
+    public static Program program = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
     }
 
     public void startListener() {
+        EventQueue que = EventQueues.lookup("updateRateByProduct", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+            public void onEvent(Event evt) {
+                getData(program.getId());
+                loadList(rateByProgramList, product);
+            }
+        });
     }
 
     @Override
@@ -70,6 +90,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
+            tabApprovalRates.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -78,10 +99,11 @@ public class ListRateByProductController extends GenericAbstractListController<R
     public void onChange$cmbProgram() {
         cmbProduct.setVisible(true);
         lblProductType.setVisible(true);
-        Program program = (Program) cmbProgram.getSelectedItem().getValue();
+        program = (Program) cmbProgram.getSelectedItem().getValue();
         lblProductType.setValue(program.getProductTypeId().getName());
         cmbProduct.setValue("");
         lbxRecords.getItems().clear();
+        Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
         loadCmbProduct(WebConstants.EVENT_ADD, program.getId());
         getData(program.getId());
     }
@@ -90,14 +112,11 @@ public class ListRateByProductController extends GenericAbstractListController<R
         lbxRecords.getItems().clear();
     }
 
-    public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect("adminRateByProduct.zul");
-    }
-
     public void onClick$btnViewRates() throws InterruptedException {
         product = (Product) cmbProduct.getSelectedItem().getValue();
+        Sessions.getCurrent().setAttribute(WebConstants.PRODUCT, product);
         loadList(rateByProgramList, product);
+        tabApprovalRates.setDisabled(false);
     }
 
     public void onClick$btnDelete() {
@@ -141,6 +160,11 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
                             rateByProduct.setTransactionId(rp.getTransactionId());
+                            rateByProduct.setFixedRatePR(rp.getFixedRate());
+                            rateByProduct.setPercentageRatePR(rp.getPercentageRate());
+                            rateByProduct.setTotalInitialTransactionsExemptPR(rp.getTotalInitialTransactionsExempt());
+                            rateByProduct.setTotalTransactionsExemptPerMonthPR(rp.getTotalTransactionsExemptPerMonth());
+                            rateByProduct.setCreateDate(new Timestamp(new Date().getTime()));
                             rateByProduct = productEJB.saveRateByProduct(rateByProduct);
                             rateByProductList.add(rateByProduct);
                         }
@@ -159,8 +183,8 @@ public class ListRateByProductController extends GenericAbstractListController<R
                     item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                     item.appendChild(new Listcell(r.getFixedRate().toString()));
                     item.appendChild(new Listcell(r.getPercentageRate().toString()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, r) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, r) : new Listcell());
+                    item.appendChild(createButtonEditModal(r));
+                    item.appendChild(createButtonViewModal(r));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -197,6 +221,11 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
+                            rateByProduct.setFixedRatePR(rp.getFixedRate());
+                            rateByProduct.setPercentageRatePR(rp.getPercentageRate());
+                            rateByProduct.setTotalInitialTransactionsExemptPR(rp.getTotalInitialTransactionsExempt());
+                            rateByProduct.setTotalTransactionsExemptPerMonthPR(rp.getTotalTransactionsExemptPerMonth());
+                            rateByProduct.setCreateDate(new Timestamp(new Date().getTime()));
                             rateByProduct = productEJB.saveRateByProduct(rateByProduct);
                             rateByProductList.add(rateByProduct);
                         }
@@ -208,8 +237,8 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
                             item.appendChild(new Listcell(r.getPercentageRate().toString()));
-                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, r) : new Listcell());
-                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, r) : new Listcell());
+                            item.appendChild(createButtonEditModal(r));
+                            item.appendChild(createButtonViewModal(r));
                             item.setParent(lbxRecords);
                         }
                     } else {
@@ -257,6 +286,55 @@ public class ListRateByProductController extends GenericAbstractListController<R
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.setParent(lbxRecords);
+    }
+    
+    public Listcell createButtonEditModal(final Object obg) {
+       Listcell listcellEditModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-edit.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+            });
+            button.setParent(listcellEditModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellEditModal;
+    }
+           
+    public Listcell createButtonViewModal(final Object obg) {
+       Listcell listcellViewModal = new Listcell();
+        try {    
+            Button button = new Button();
+            button.setImage("/images/icon-invoice.png");
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                  Sessions.getCurrent().setAttribute("object", obg);  
+                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                  Map<String, Object> paramsPass = new HashMap<String, Object>();
+                  paramsPass.put("object", obg);
+                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                  window.doModal(); 
+                }
+
+            });
+            button.setParent(listcellViewModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellViewModal;
     }
 
     private void loadCmbProgram(Integer evenInteger) {

@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminState" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminStateController" class="general-window">
+    <window id="winAdminProfession" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProfessionController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -13,7 +13,6 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
-                        <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
                                 <div>
@@ -25,39 +24,39 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton label="${c:l('cms.menu.country.state')}" onClick='Executions.sendRedirect(&quot;listState.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.country.add')}"/>
-                                                |
-                                                <toolbarbutton id="tbbCurrentAction" />
+                                                 |
+                                                <toolbarbutton label="${c:l('cms.common.profession')}" onClick='Executions.sendRedirect(&quot;listProfession.zul&quot;)'/>
+                                                 |
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.profession.add')}"/>
+                                                 |  
+                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
+                                                <div align="right">
+                                                    <hlayout>
+                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
+                                                        <separator/>
+                                                        <label value="*" sclass="lblreq" />
+                                                        <separator/>
+                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
+                                                    </hlayout>
+                                                </div>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
+                                                        <column label="" width="400px"/>
+                                                        <column label="" width="470px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.State')}" sclass="lblbold"/>
-                                                            <hlayout>
-                                                                <textbox id="txtName" width="2700px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
-                                                             <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <label value="${c:l('cms.common.profession.name')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <hlayout>
-                                                                <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
-                                                             <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                        </row>                                      
+                                                            <textbox id="txtName" width="370px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                       </row> 
                                                     </rows>
                                                 </grid>
                                             </vlayout>
@@ -66,20 +65,15 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listState.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProfession.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
-                                <div></div>
                             </hlayout>
                         </div>
-                        <div></div>
                     </hlayout>
                 </div>
             </center>
-            <south border="none" size="40px">
-                <include src="adminFooter.zul"/>
-            </south>
         </borderlayout>
     </window>
 </zk>
