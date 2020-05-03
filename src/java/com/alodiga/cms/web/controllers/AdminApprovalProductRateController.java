@@ -157,7 +157,7 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
             updateProductRate(approvalProductRate);
             
             this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true).publish(new Event(""));
+            EventQueues.lookup("updateApprovalProductRate", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
