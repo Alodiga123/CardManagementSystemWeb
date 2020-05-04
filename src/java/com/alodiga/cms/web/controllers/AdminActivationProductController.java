@@ -136,8 +136,12 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
             if (_product != null) {
                 product = _product;
             } else {
-                product = new Product();
+                //Se obtiene el producto a activar
+                adminProduct = new AdminProductController();
+                product = adminProduct.getProductParent();
             }
+            
+
             
             if (rActivationYes.isChecked()) {
                 indActivation = true;
