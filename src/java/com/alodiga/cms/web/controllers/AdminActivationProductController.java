@@ -131,7 +131,7 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         return false;
     }
 
-    private void saveProduct(Product _product) throws RegisterNotFoundException {
+    private void saveProduct(Product _product) throws RegisterNotFoundException, NullParameterException, GeneralException {
         Product product= null;
         boolean indActivation;
         EJBRequest request1 = new EJBRequest();
@@ -140,9 +140,14 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
             if (_product != null) {
                 product = _product;
             } else {
+
+                //Se obtiene el producto a activar
+                adminProduct = new AdminProductController();
+                product = adminProduct.getProductParent();
                 product = new Product();
-            }                    
-            
+            }                   
+
+    
             if (rActivationYes.isChecked()) {
                 indActivation = true;
                 request1.setParam(WebConstants.PRODUCT_STATUS_ACTIVATED);
@@ -167,9 +172,10 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         } catch (Exception ex) {
             showError(ex);
         }
-    }
 
-    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException{
+      }   
+        
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException  {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
