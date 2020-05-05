@@ -32,7 +32,6 @@ import org.zkoss.zul.Window;
 public class AdminAddNetworkController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Listbox lbxRecords;
     private Combobox cmbCountry;
     private Combobox cmbNetwork;
     private UtilsEJB utilsEJB = null;
@@ -59,10 +58,10 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
         }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           programHasNetworksParam = null;                    
-       } else {
-           programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");            
-       }
+            programHasNetworksParam = null;
+        } else {
+            programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -83,7 +82,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbNetworks(eventType, country.getId());
     }
-    
+
     public void onClick$btnAdd() {
         cmbCountry.setValue("");
         cmbNetwork.setValue("");
@@ -98,29 +97,42 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
         btnSave.setVisible(false);
     }
 
+    public Boolean validateEmpty() {
+        if (cmbCountry.getText().isEmpty()) {
+            cmbCountry.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbNetwork.getText().isEmpty()) {
+            cmbNetwork.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
     private void saveProgramHasNetwork(ProgramHasNetwork _programHasNetwork) {
         Program program = null;
         Network network = null;
         ProgramHasNetwork programHasNetwork = null;
         List<ProgramHasNetwork> programHasNetworkList = null;
         int indExistRegister = 0;
-        
+
         try {
             if (_programHasNetwork != null) {
                 programHasNetwork = _programHasNetwork;
             } else {//New address
                 programHasNetwork = new ProgramHasNetwork();
             }
-            
+
             //Red asociada al programa
             network = (Network) cmbNetwork.getSelectedItem().getValue();
-            
+
             //Programa
             AdminProgramController adminProgram = new AdminProgramController();
             if (adminProgram.getProgramParent().getId() != null) {
                 program = adminProgram.getProgramParent();
             }
-            
+
             //Verifica si el registro existe en BD
             if (eventType == WebConstants.EVENT_ADD) {
                 EJBRequest request = new EJBRequest();
@@ -137,7 +149,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-            showError(ex); 
+            showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         } finally {
@@ -151,27 +163,29 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
                     this.showMessage("sp.common.save.success", false, null);
                     EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true).publish(new Event(""));
                     btnSave.setVisible(false);
-                }                
+                }
             } catch (NullParameterException ex) {
-                showError(ex); 
+                showError(ex);
             } catch (GeneralException ex) {
                 showError(ex);
             } catch (RegisterNotFoundException ex) {
-                showError(ex); 
-            } 
+                showError(ex);
+            }
         }
     }
-    
+
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveProgramHasNetwork(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveProgramHasNetwork(programHasNetworksParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveProgramHasNetwork(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveProgramHasNetwork(programHasNetworksParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
