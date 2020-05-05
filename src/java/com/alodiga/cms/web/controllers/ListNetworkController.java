@@ -114,6 +114,7 @@ public class ListNetworkController extends GenericAbstractListController<Program
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
 
@@ -199,12 +200,14 @@ public class ListNetworkController extends GenericAbstractListController<Program
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
         item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.network.list"));
         } catch (Exception ex) {
             showError(ex);
         }

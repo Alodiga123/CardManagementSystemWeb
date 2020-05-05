@@ -10,9 +10,10 @@ public class WebConstants {
     public static final int EVENT_VIEW = 4;
     public static final int EVENT_ADD_DESCENDANT = 5;
     public static final String EVENTYPE = "eventType";
-    public static final String OPTION_MENU= "optionMenu";
-    public static final String PROGRAM= "program";
-    public static final String PRODUCT_TYPE= "productType";
+    public static final String OPTION_MENU = "optionMenu";
+    public static final String PROGRAM = "program";
+    public static final String PRODUCT = "product";
+    public static final String PRODUCT_TYPE = "productType";
     public static final String SESSION_ACCOUNT = "sp_account";
     public static final String SESSION_DISTRIBUTOR = "sp_loguedDistributor";
     public static final String SESSION_FULLSITE = "sp_fullSite";

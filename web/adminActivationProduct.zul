@@ -43,7 +43,7 @@
                                                         <row>
                                                             <label id="lblUserActivation" value="" width="250px" style="color:#000000;"/>
                                                             <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>
-                                                            <datebox id="txtActivationDate" width="250px"/>
+                                                            <datebox id="dtbActivationDate" width="250px"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.indActivation')}" sclass="lblbold"/>

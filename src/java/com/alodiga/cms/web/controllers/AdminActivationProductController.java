@@ -6,6 +6,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.ApprovalGeneralRate;
@@ -18,6 +19,8 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -28,6 +31,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+
 
 public class AdminActivationProductController extends GenericAbstractAdminController {
 
@@ -55,47 +59,37 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         adminProduct = new AdminProductController();
-        productParam = adminProduct.getProductParent();
         eventType = adminProduct.getEventType();
-        if (eventType == WebConstants.EVENT_ADD) {
-            productParam = null;
-        } else {
-            if (productParam.getIndActivation() == null) {
-                productParam = null;
-            }            
-        }
+        productParam = adminProduct.getProductParent();         
         initialize();
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        try {
-            user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
-            loadData();
-            this.clearMessage();
-        } catch (Exception ex) {
-            showError(ex);
-        } finally {
-            loadData();
-        }
+        user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
+        productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+        loadData();
     }
 
     public void clearFields() {
         dtbActivationDate.setRawValue(null);
     }
-
-    private void loadFields(Product product) throws EmptyListException, GeneralException, NullParameterException {
+    
+    private void loadFields(Product product) {
         try {
-            if (product != null ) {
-                lblProduct.setValue(product.getName());
+            lblProduct.setValue(product.getName());
+            if (product.getIndActivation() != null ) {
                 lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
                 lblAgency.setValue(product.getUserActivationId().getComercialAgencyId().getCityId().getName());
                 lblUserActivation.setValue(product.getUserActivationId().getFirstNames() + " " + product.getUserActivationId().getLastNames());
                 lblIdentification.setValue(product.getUserActivationId().getIdentificationNumber());
-                dtbActivationDate.setValue(product.getActivationDate());
-                txtObservations.setValue(product.getObservations().toString());
+                if (product.getActivationDate() != null) {
+                    dtbActivationDate.setValue(product.getActivationDate());
+                }
+                if (product.getObservations() != null) {
+                    txtObservations.setText(product.getObservations());
+                }
                 if (product.getIndActivation() != null) {
                     if (product.getIndActivation() == true) {
                         rActivationYes.setChecked(true);    
@@ -104,27 +98,30 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
                     }
                 }
             } else {
-                lblProduct.setValue(productParam.getName());
                 lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
                 lblAgency.setValue(user.getComercialAgencyId().getName());
                 lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
                 lblIdentification.setValue(user.getIdentificationNumber());
-            }
-            
+            }        
         } catch (Exception ex) {
-            showError(ex);
+            showError(ex);    
         }
     }
 
     public void blockFields() {
-        rActivationYes.setDisabled(true);
-        rActivationNo.setDisabled(true);        
-        btnSave.setVisible(false);
+            rActivationYes.setDisabled(true);
+            rActivationNo.setDisabled(true);  
+            dtbActivationDate.setDisabled(true);
+            txtObservations.setReadonly(true);
+            btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
         if (dtbActivationDate.getText().isEmpty()) {
             dtbActivationDate.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtObservations.getText().isEmpty()) {
+            txtObservations.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -157,17 +154,17 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
             product.setCreateDate(new Timestamp(new Date().getTime()));
             product = productEJB.saveProduct(product);
             this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true).publish(new Event(""));
+            EventQueues.lookup("updateActivationProduct", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException{
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveProduct(null);
+                    saveProduct(productParam);
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveProduct(productParam);
@@ -183,30 +180,24 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
     }
 
     public void loadData() {
-        try {
-            switch (eventType) {
-                case WebConstants.EVENT_EDIT:                    
-                    loadFields(productParam);
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:                    
+                loadFields(productParam);
+            break;
+            case WebConstants.EVENT_VIEW:           
+                loadFields(productParam);
+                blockFields();
+            break;
+            case WebConstants.EVENT_ADD:
+                lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
+                lblAgency.setValue(user.getComercialAgencyId().getName());
+                lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
+                lblIdentification.setValue(user.getIdentificationNumber());
+            break;
+            default:
                 break;
-                case WebConstants.EVENT_VIEW:
-                    loadFields(productParam);
-                    blockFields();
-                break;
-                case WebConstants.EVENT_ADD:
-                    lblProduct.setValue(productParam.getName());
-                    lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
-                    lblAgency.setValue(user.getComercialAgencyId().getName());
-                    lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
-                    lblIdentification.setValue(user.getIdentificationNumber());
-                break;
-            }
-        } catch (EmptyListException ex) {
-            showError(ex);
-        } catch (GeneralException ex) {
-            showError(ex);
-        } catch (NullParameterException ex) {
-            showError(ex);
         }
-    }
+  }
     
-}
+}  
+    

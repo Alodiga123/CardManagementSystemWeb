@@ -93,17 +93,6 @@ public class AdminProductController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                productParam = (Product) Sessions.getCurrent().getAttribute("object");
-                break;
-            case WebConstants.EVENT_VIEW:
-                productParam = (Product) Sessions.getCurrent().getAttribute("object");
-                break;
-            case WebConstants.EVENT_ADD:
-                productParam = null;
-                break;
-        }
         if (eventType == WebConstants.EVENT_ADD) {
            productParam = null;                    
        } else {
