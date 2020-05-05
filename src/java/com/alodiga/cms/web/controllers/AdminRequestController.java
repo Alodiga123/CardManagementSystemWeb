@@ -349,7 +349,11 @@ public class AdminRequestController extends GenericAbstractAdminController {
         cmbPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, requestParam.getPersonTypeId().getOriginApplicationId().getId());
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, requestParam.getPersonTypeId().getOriginApplicationId().getId());
+        }        
         if (evenInteger == 1) {
             params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, indNaturalPerson);
         } else {

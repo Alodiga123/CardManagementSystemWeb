@@ -21,7 +21,9 @@ import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +154,11 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             rateByProgram.setTotalInitialTransactionsExempt(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonth(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setTransactionId(g.getTransactionId());
+                            rateByProgram.setFixedRateGR(g.getFixedRate());
+                            rateByProgram.setPercentageRateGR(g.getPercentageRate());
+                            rateByProgram.setTotalInitialTransactionsExemptGR(g.getTotalInitialTransactionsExempt());
+                            rateByProgram.setTotalTransactionsExemptPerMonthGR(g.getTotalTransactionsExemptPerMonth());
+                            rateByProgram.setCreateDate(new Timestamp(new Date().getTime()));
                             rateByProgram = productEJB.saveRateByProgram(rateByProgram);
                             rateByProgramList.add(rateByProgram);
                         }
@@ -211,6 +218,11 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             rateByProgram.setTotalInitialTransactionsExempt(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonth(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setTransactionId(g.getTransactionId());
+                            rateByProgram.setFixedRateGR(g.getFixedRate());
+                            rateByProgram.setPercentageRateGR(g.getPercentageRate());
+                            rateByProgram.setTotalInitialTransactionsExemptGR(g.getTotalInitialTransactionsExempt());
+                            rateByProgram.setTotalTransactionsExemptPerMonthGR(g.getTotalTransactionsExemptPerMonth());
+                            rateByProgram.setCreateDate(new Timestamp(new Date().getTime()));
                             rateByProgram = productEJB.saveRateByProgram(rateByProgram);
                             rateByProgramList.add(rateByProgram);
                         }
