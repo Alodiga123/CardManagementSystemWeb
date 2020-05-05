@@ -420,6 +420,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
+        }  
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson());
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
