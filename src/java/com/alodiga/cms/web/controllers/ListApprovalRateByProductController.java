@@ -59,8 +59,6 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
     private Textbox txtName;
     private ProductEJB productEJB = null;
     private List<ApprovalProductRate> approvalProductRateList = null;
-    private Label lblProgram;
-    private Label lblProductType;
     private User currentUser;
     private Button btnSave;
     public Program program = null;
@@ -94,10 +92,6 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
             permissionAdd = true;
             permissionRead = true;
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
-            if (program != null) {
-                lblProgram.setValue(program.getName());
-                lblProductType.setValue(program.getProductTypeId().getName());
-            } 
             adminPage = "/adminApprovalProductRate.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);             
             getData();

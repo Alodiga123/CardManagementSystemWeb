@@ -72,7 +72,9 @@ public class ListRateByProductController extends GenericAbstractListController<R
         que.subscribe(new EventListener() {
             public void onEvent(Event evt) {
                 getData(program.getId());
-                loadList(rateByProgramList, product);
+                if (product != null) {
+                    loadList(rateByProgramList, product);
+                }
             }
         });
     }
@@ -110,11 +112,11 @@ public class ListRateByProductController extends GenericAbstractListController<R
     
     public void onChange$cmbProduct() {
         lbxRecords.getItems().clear();
+        product = (Product) cmbProduct.getSelectedItem().getValue();
+        Sessions.getCurrent().setAttribute(WebConstants.PRODUCT, product);
     }
 
     public void onClick$btnViewRates() throws InterruptedException {
-        product = (Product) cmbProduct.getSelectedItem().getValue();
-        Sessions.getCurrent().setAttribute(WebConstants.PRODUCT, product);
         loadList(rateByProgramList, product);
         tabApprovalRates.setDisabled(false);
     }
@@ -195,7 +197,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
-            }
+            }            
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -249,7 +251,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
                         item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
                         item.setParent(lbxRecords);
-                    }
+                    }                   
                 }
             } catch (RegisterNotFoundException ex) {
                 showError(ex);

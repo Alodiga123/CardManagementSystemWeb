@@ -4,14 +4,14 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminActivationProduct" width="1000px" height="300px" apply="com.alodiga.cms.web.controllers.AdminActivationProductController" class="general-window">
+    <window id="winAdminActivationProduct" width="950px" height="500px" apply="com.alodiga.cms.web.controllers.AdminActivationProductController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent">
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1000px" align="left" height="700px">
+                        <div width="1000px" align="left" height="500px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -26,23 +26,23 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.product')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.activation.city')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.activation.agency')}" sclass="lblbold"/>          
+                                                            <label value="${c:l('cms.menu.activation.product')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.userActivation')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>         
                                                         </row>
                                                         <row>
                                                             <label id="lblProduct" value="" width="250px" style="color:#000000;"/>
-                                                            <label id="lblCity" value="" width="250px" style="color:#837E76;"/>
-                                                            <label id="lblAgency" value="" width="250px" style="color:#000000;"/>    
+                                                            <label id="lblUserActivation" value="" width="250px" style="color:#000000;"/>
+                                                            <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>   
                                                         </row>                                                        
                                                         <row>
-                                                            <label value="${c:l('cms.crud.userActivation')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>    
+                                                            <label value="${c:l('cms.common.activation.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.activation.agency')}" sclass="lblbold"/>  
                                                             <label value="${c:l('cms.crud.activationDate')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <label id="lblUserActivation" value="" width="250px" style="color:#000000;"/>
-                                                            <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblCity" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblAgency" value="" width="250px" style="color:#000000;"/>  
                                                             <datebox id="dtbActivationDate" width="250px"/>
                                                         </row>
                                                         <row>
