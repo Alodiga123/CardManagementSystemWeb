@@ -9,10 +9,12 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApprovalGeneralRate;
 import com.cms.commons.models.ApprovalProgramRate;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.StatusProduct;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -129,24 +131,35 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         return false;
     }
 
-    private void saveProduct(Product _product) {
+    private void saveProduct(Product _product) throws RegisterNotFoundException {
         Product product= null;
         boolean indActivation;
+        EJBRequest request1 = new EJBRequest();
+        StatusProduct statusProduct;
         try {
             if (_product != null) {
                 product = _product;
             } else {
+<<<<<<< HEAD
                 //Se obtiene el producto a activar
                 adminProduct = new AdminProductController();
                 product = adminProduct.getProductParent();
             }
+=======
+                product = new Product();
+            }                    
+>>>>>>> Yoan
             
 
             
             if (rActivationYes.isChecked()) {
                 indActivation = true;
+                request1.setParam(WebConstants.PRODUCT_STATUS_ACTIVATED);
+                statusProduct = productEJB.loadStatusProduct(request1);
             } else {
                 indActivation = false;
+                request1.setParam(WebConstants.PRODUCT_STATUS_INACTIVATED);
+                statusProduct = productEJB.loadStatusProduct(request1);
             }
             
             //Guarda la activación de las tarjetas
@@ -154,6 +167,7 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
             product.setUserActivationId(user);   
             product.setActivationDate(dtbActivationDate.getValue());
             product.setIndActivation(indActivation);
+            product.setStatusProductId(statusProduct);
             product.setObservations(txtObservations.getText().toString());
             product.setCreateDate(new Timestamp(new Date().getTime()));
             product = productEJB.saveProduct(product);
