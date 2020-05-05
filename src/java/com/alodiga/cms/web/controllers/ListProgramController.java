@@ -149,7 +149,7 @@ public class ListProgramController extends GenericAbstractListController<Program
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.country.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.program.list"));
         } catch (Exception ex) {
             showError(ex);
         }

@@ -1,4 +1,3 @@
-
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProgramEJB;
@@ -53,7 +52,7 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
             public void onEvent(Event evt) {
                 getData();
                 loadDataList(projectAnnualVolume);
-            }     
+            }
         });
     }
 
@@ -69,13 +68,12 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
             if (projectAnnualVolume != null) {
-               loadDataList(projectAnnualVolume);
+                loadDataList(projectAnnualVolume);
             }
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
 
     public void onClick$btnAdd() throws InterruptedException {
         try {
@@ -89,7 +87,6 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
         }
     }
 
-   
     public void loadDataList(List<ProjectAnnualVolume> list) {
         try {
             lbxRecords.getItems().clear();
@@ -112,6 +109,9 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -176,7 +176,7 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
     public void getData() {
         Program program = null;
         try {
-             //Programa principal
+            //Programa principal
             AdminProgramController adminProgram = new AdminProgramController();
             if (adminProgram.getProgramParent().getId() != null) {
                 program = adminProgram.getProgramParent();
@@ -201,12 +201,15 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
         item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.projectAnnualVolume.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -215,7 +218,6 @@ public class ListProjectAnnualVolumeController extends GenericAbstractListContro
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
-
 
     @Override
     public List<ProjectAnnualVolume> getFilterList(String filter) {
