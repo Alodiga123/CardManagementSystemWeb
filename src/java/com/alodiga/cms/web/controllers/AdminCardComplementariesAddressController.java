@@ -33,9 +33,8 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
-
 public class AdminCardComplementariesAddressController extends GenericAbstractAdminController {
-  
+
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtUbanization;
     private Textbox txtNameStreet;
@@ -60,30 +59,30 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                        if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
-                            ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
-                            if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
-                                addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
-                            } else {
-                                addressParam = null;
-                            }
-                        }
+            case WebConstants.EVENT_EDIT:
+                if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
+                    ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                    if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
+                        addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
+                    } else {
+                        addressParam = null;
+                    }
+                }
                 break;
-                case WebConstants.EVENT_VIEW:
-                        if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
-                            ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
-                            if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
-                                addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
-                            } else {
-                                addressParam = null;
-                            }
-                        }
+            case WebConstants.EVENT_VIEW:
+                if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
+                    ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                    if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
+                        addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
+                    } else {
+                        addressParam = null;
+                    }
+                }
                 break;
-                case WebConstants.EVENT_ADD:
-                    addressParam = null;
+            case WebConstants.EVENT_ADD:
+                addressParam = null;
                 break;
-           }
+        }
         initialize();
     }
 
@@ -133,7 +132,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             txtNameEdification.setValue(address.getNameEdification());
             txtTower.setValue(address.getTower());
             txtFloor.setValue(address.getFloor().toString());
-
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -156,19 +155,22 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     public Boolean validateEmpty() {
         if (txtUbanization.getText().isEmpty()) {
             txtUbanization.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.urbanization", true, null);
         } else if (txtNameStreet.getText().isEmpty()) {
             txtNameStreet.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.namesStreet", true, null);
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.nameEdification", true, null);
         } else if (txtTower.getText().isEmpty()) {
             txtTower.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.tower", true, null);
         } else if (txtFloor.getText().isEmpty()) {
             txtFloor.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtEmail.getText().isEmpty()) {
+            txtEmail.setFocus(true);
+            this.showMessage("cms.error.field.email", true, null);
         } else {
             return true;
         }
@@ -180,7 +182,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
-            
+
             //Se obtiene la persona asociada a la tarjeta complementaria
             AdminCardComplementariesController adminCardComplementary = new AdminCardComplementariesController();
             if (adminCardComplementary.getPersonCardComplementary().getId() != null) {
@@ -195,6 +197,10 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
                 personHasAddress = new PersonHasAddress();
             }
 
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.ADDRESS_TYPE_DELIVERY);
+            AddressType addressType = utilsEJB.loadAddressType(request);
+
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
@@ -205,9 +211,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             address.setCityId((City) cmbCity.getSelectedItem().getValue());
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            EJBRequest request = new EJBRequest();
-            request.setParam(Constants.ADDRESS_TYPE_DELIVERY);
-            AddressType addressType = utilsEJB.loadAddressType(request);
             address.setAddressTypeId(addressType);
             address = utilsEJB.saveAddress(address);
             addressParam = address;
@@ -218,6 +221,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
 
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }

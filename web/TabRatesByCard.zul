@@ -5,13 +5,13 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabProduct" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProductController" class="general-window">
+    <window id="winTabRatesByCard" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListRateByCardController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
                 <include src="adminHeader.zul"/>
             </north>
-            <center border="none" flex="true" class="content-transparent" autoscroll="true">
+            <center border="none" flex="true" class="content-transparent">
                 <div align="center" >
                     <hlayout >
                         <div></div>
@@ -27,33 +27,25 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.product')}" onClick='Executions.sendRedirect(&quot;listProduct.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.RateByCardlist')}" />
                                                 |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.product.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label=""/> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
+                                                <tabbox id="tbxRateByCardTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabMain" label="${c:l('cms.tab.productMain')}" />
-                                                        <tab id="tabCommerceCategory" label="${c:l('cms.tab.commerceCategory')}"/>
-                                                        <tab id="tabRestrictions" label="${c:l('cms.tab.limitAndRestrictions')}"/>
-                                                        <tab id="tabActivationProduct" label="${c:l('cms.tab.activationProduct')}"/>
+                                                        <tab id="tabRatesByCard" label="${c:l('cms.tab.RatesByCardMain')}" />
+                                                        <tab id="tabApprovalRates" label="${c:l('cms.tab.approvalRates')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminProduct.zul"/>
+                                                            <include src="listRateByCard.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listCommerceCategory.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listLimitAndRestrictions.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="adminActivationProduct.zul"/>
+                                                            <include src="listApprovalRateByCard.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

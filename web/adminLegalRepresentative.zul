@@ -34,7 +34,7 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
+                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.dueDateDocumentIdentification')}" sclass="lblbold"/>
@@ -42,7 +42,7 @@
                                                             <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="txtDueDateIdentification" width="250px"/>
+                                                            <datebox id="txtDueDateIdentification" constraint="no empty: ${c:l('error.field.required')}" width="250px"/>
                                                             <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
                                                             <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
                                                         </row>
@@ -53,7 +53,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
+                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="45" constraint="no empty: ${c:l('error.field.required')}"/>
                                                             </hlayout>
                                                             <hbox>
                                                                 <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
@@ -67,7 +67,7 @@
                                                                 </grid>
                                                             </hbox>  
                                                             <hlayout>
-                                                                <textbox id="txtAge" value="" width="250px" maxlength="3"/> 
+                                                                <textbox id="txtAge" value="" width="250px" maxlength="3" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/> 
                                                              </hlayout>
                                                         </row>                                                       
                                                         <row>
@@ -84,7 +84,7 @@
                                                             <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45"/>
+                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
