@@ -1,6 +1,4 @@
 package com.alodiga.cms.web.controllers;
-
-import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,13 +8,12 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.Profession;
+import com.cms.commons.models.Profile;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -27,16 +24,14 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListProfessionController extends GenericAbstractListController<Profession> {
+public class ListProfileController extends GenericAbstractListController<Profile> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
-    private PersonEJB personEJB = null;
-    private List<Profession> professionList = null;
+    private List<Profile> profileList = null;
     private User currentUser;
-   
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -48,22 +43,33 @@ public class ListProfessionController extends GenericAbstractListController<Prof
     public void initialize() {
         super.initialize();
         try {
+            //Evaluar Permisos
+            permissionEdit = true;
+            permissionAdd = true;
+            permissionRead = true;
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminProfession.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            adminPage = "adminProfile.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(professionList);
+            loadDataList(profileList);
+            
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
+   public void onClick$btnAdd() throws InterruptedException {
+        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
+        Executions.getCurrent().sendRedirect("adminProfile.zul");
+    }
+   
     public void getData() {
-        professionList = new ArrayList<Profession>();
+        profileList = new ArrayList<Profile>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            professionList = personEJB.getProfession(request);
+            profileList = utilsEJB.getProfile(request);
+            
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -71,31 +77,31 @@ public class ListProfessionController extends GenericAbstractListController<Prof
             showError(ex);
         }
     }
-    
-    
-    public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
-        Sessions.getCurrent().removeAttribute("object");
-        Executions.getCurrent().sendRedirect(adminPage);
-    }
+   
     
     public void startListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
-    
-    
-     public void loadDataList(List<Profession> list) {
-          try {
+
+    public void loadDataList(List<Profile> list) {
+        String indEnabled = null;
+        try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (Profession profession : list) {
+                for (Profile profile : list) {
                     item = new Listitem();
-                    item.setValue(profession);
-                    item.appendChild(new Listcell(profession.getName()));
-                    item.appendChild( new ListcellEditButton("adminProfession.zul", profession));
-                    item.appendChild(new ListcellViewButton("adminProfession.zul", profession,true));
+                    item.setValue(profile);
+                    item.appendChild(new Listcell(profile.getName()));
+                    if (profile.getEnabled() == true) {
+                        indEnabled = "Yes";
+                    } else {
+                        indEnabled = "No";
+                    }
+                    item.appendChild(new Listcell(indEnabled));
+                    item.appendChild(new ListcellEditButton("adminProfile.zul", profile));
+                    item.appendChild(new ListcellViewButton("adminProfile.zul", profile,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -105,31 +111,29 @@ public class ListProfessionController extends GenericAbstractListController<Prof
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
-
         } catch (Exception ex) {
            showError(ex);
         }
-      
-      } 
+    }
     
-     
      public void onClick$btnDownload() throws InterruptedException {
         try {
             Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-        
-        public void onClick$btnClear() throws InterruptedException {
+    } 
+    
+     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
-        @Override
-        public List<Profession> getFilterList(String filter) {
+     
+    @Override
+    public List<Profile> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 
 }
