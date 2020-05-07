@@ -147,7 +147,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             } else {
                 rReloadableNo.setChecked(true);
             }
-            
+
             txtOtherSourceOfFound.setText(program.getOtherSourceFunds());
             if (program.getSharedBrand() == 1) {
                 rBrandedYes.setChecked(true);
@@ -188,15 +188,24 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     public Boolean validateEmpty() {
+        Date today = new Date();
+
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (today.compareTo(dtbContrato.getValue()) < 0) {
+            dtbContrato.setFocus(true);
+            this.showMessage("cms.error.date.contract.valid", true, null);
+        } else if (today.compareTo(dtbExpectedLaunchDate.getValue()) > 0) {
+            dtbExpectedLaunchDate.setFocus(true);
+            this.showMessage("cms.error.date.expectedLaunchDate.valid", true, null);
         } else {
             return true;
         }
+
         return false;
     }
 
@@ -286,7 +295,11 @@ public class AdminProgramController extends GenericAbstractAdminController {
             program.setBiniinNumber(txtBinIin.getText());
             program.setCurrencyId((Currency) cmbCurrency.getSelectedItem().getValue());
             program.setUseInternational(indInternational);
-            program.setCreateDate(new Timestamp(new Date().getTime()));
+            if (eventType == WebConstants.EVENT_ADD) {
+                program.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                program.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
             program.setResponsibleNetworkReportingId((ResponsibleNetworkReporting) cmbResponsibleNetwoork.getSelectedItem().getValue());
             if (!txtOtheResponsibleNetwoork.getText().equals("")) {
                 program.setOtherResponsibleNetworkReporting(txtOtheResponsibleNetwoork.getText());
@@ -300,7 +313,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
 
         } catch (Exception ex) {
             showError(ex);
-        }   
+        }
     }
 
     public void onClick$btnSave() {
@@ -467,7 +480,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
         List<ProgramType> programType;
         try {
             programType = utilsEJB.getProgramType(request1);
-            loadGenericCombobox(programType, cmbProgramType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProductTypeId().getId() : 0));
+            loadGenericCombobox(programType, cmbProgramType, "name", evenInteger, Long.valueOf(programParam != null ? programParam.getProgramTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -512,7 +525,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                     if (programParam.getProgramOwnerId().getId() != null) {
                         cmbProgramOwner.setSelectedItem(item);
                     }
-                }                
+                }
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
                 cmbProgramOwner.setDisabled(true);

@@ -11,7 +11,6 @@ import static com.alodiga.cms.web.generic.controllers.GenericDistributionControl
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Request;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -174,7 +173,7 @@ public class ListRequestController extends GenericAbstractListController<Request
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.request.list"));
         } catch (Exception ex) {
             showError(ex);
         }

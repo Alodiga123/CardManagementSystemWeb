@@ -132,7 +132,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
             txtTower.setValue(personHasAddress.getAddressId().getTower());
             txtFloor.setValue(personHasAddress.getAddressId().getFloor().toString());
-
             if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
                 rAddressDeliveryYes.setChecked(true);
             } else {
@@ -213,7 +212,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             } else {
                 person = null;
             }
-            
+
             //Guarda la dirección del solicitante
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
@@ -227,7 +226,11 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             address.setIndAddressDelivery(indAddressDelivery);
             address.setAddressTypeId((AddressType) cmbAddressTypes.getSelectedItem().getValue());
-            address.setCreateDate(new Timestamp(new Date().getTime()));
+            if (eventType == WebConstants.EVENT_ADD) {
+                address.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                address.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
             address = utilsEJB.saveAddress(address);
             addressParent = address;
 
@@ -239,7 +242,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
 
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true).publish(new Event(""));
-
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
