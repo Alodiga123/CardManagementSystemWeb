@@ -25,6 +25,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +127,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             txtAge.setText(legalRepresentatives.getAge().toString());
             txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
             txtBirthDay.setValue(legalRepresentatives.getDateBirth());
-            if (txtPhoneNumber != null){
+            if (txtPhoneNumber != null) {
                 txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
             }
             if (legalRepresentatives.getGender().trim().equalsIgnoreCase("F")) {
@@ -134,6 +135,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             } else {
                 genderMale.setChecked(true);
             }
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -156,15 +158,35 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     public Boolean validateEmpty() {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.YEAR, -18);
+        Calendar cumpleCalendar = Calendar.getInstance();
+        cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
+
         if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.identificationNumber", true, null);
         } else if (txtFullName.getText().isEmpty()) {
             txtFullName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.fullName", true, null);
         } else if (txtFullLastName.getText().isEmpty()) {
             txtFullLastName.setFocus(true);
+            this.showMessage("cms.error.field.lastName", true, null);
+        } else if (txtBirthPlace.getText().isEmpty()) {
+            txtBirthPlace.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthPlace", true, null);
+        } else if (txtAge.getText().isEmpty()) {
+            txtAge.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtBirthDay.getText().isEmpty()) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthDay", true, null);
+        } else if (txtPhoneNumber.getText().isEmpty()) {
+            txtPhoneNumber.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
+        } else if (cumpleCalendar.compareTo(today) > 0) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.errorDayBith", true, null);
         } else {
             return true;
         }
@@ -349,6 +371,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
+        }
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
