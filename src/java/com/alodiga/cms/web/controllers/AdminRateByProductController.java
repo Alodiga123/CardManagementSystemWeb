@@ -113,7 +113,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     public void onChange$txtFixedRate() {
         this.clearMessage();
         if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
-            this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
+            this.showMessage("cms.rateByProduct.Validation.fixedRate", false, null);
             btnSave.setDisabled(true);
         } else {
             this.clearMessage();
@@ -124,7 +124,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     public void onChange$txtPercentageRate() {
         this.clearMessage();
         if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
-            this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
+            this.showMessage("cms.rateByProduct.Validation.percentageRate", false, null);
             btnSave.setDisabled(true);
         } else {
             this.clearMessage();
@@ -135,7 +135,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     public void onChange$txtTotalTransactionInitialExempt() {
         this.clearMessage();
         if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
-            this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
+            this.showMessage("cms.rateByProduct.Validation.totalTransactionInitialExempt", false, null);
             btnSave.setDisabled(true);
         } else {
             this.clearMessage();
@@ -146,7 +146,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     public void onChange$txtTotalTransactionExemptPerMonth() {
         this.clearMessage();
         if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
-            this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
+            this.showMessage("cms.rateByProduct.Validation.totalTransactionExemptPerMonth", false, null);
             btnSave.setDisabled(true);
         } else {
             this.clearMessage();
@@ -211,7 +211,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(rateByProductParam);
-                break;
+            break;
             case WebConstants.EVENT_VIEW:
                 loadFields(rateByProductParam);
                 txtFixedRate.setDisabled(true);
@@ -221,9 +221,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
                 blockFields();
                 rModificationCardHolderYes.setDisabled(true);
                 rModificationCardHolderNo.setDisabled(true);
-                break;
-            default:
-                break;
+            break;
         }
     }
     
