@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
@@ -66,9 +65,9 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         adminRequest = new AdminRequestController();
-        if (adminRequest.getEventType()!= null) {
-           eventType = adminRequest.getEventType();
-           switch (eventType) {
+        if (adminRequest.getEventType() != null) {
+            eventType = adminRequest.getEventType();
+            switch (eventType) {
                 case WebConstants.EVENT_EDIT:
                     if (adminRequest.getRequest().getPersonId() != null) {
                         tabAddress.setDisabled(false);
@@ -84,7 +83,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                     } else {
                         legalPersonParam = null;
                     }
-                break;
+                    break;
                 case WebConstants.EVENT_VIEW:
                     if (adminRequest.getRequest().getPersonId() != null) {
                         tabAddress.setDisabled(false);
@@ -100,14 +99,14 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                     } else {
                         legalPersonParam = null;
                     }
-                break;
+                    break;
                 case WebConstants.EVENT_ADD:
                     legalPersonParam = null;
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
-                break;
-           }
+                    break;
+            }
         }
         initialize();
     }
@@ -124,7 +123,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     public LegalPerson getLegalPerson() {
         return legalPersonParent;
     }
@@ -159,6 +158,8 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             txtWebSite.setValue(legalPerson.getWebSite());
             txtEmail.setValue(legalPerson.getPersonId().getEmail());
             txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
+
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -181,30 +182,40 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     }
 
     public Boolean validateEmpty() {
+        Date today = new Date();
+
         if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.identificationNumber", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.enterpriseName", true, null);
+        } else if (txtTradeName.getText().isEmpty()) {
+            txtTradeName.setFocus(true);
+            this.showMessage("cms.error.field.tradeName", true, null);
         } else if (txtPhoneNumber.getText().isEmpty()) {
             txtPhoneNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.registerNumber", true, null);
         } else if (txtPaidInCapital.getText().isEmpty()) {
             txtPaidInCapital.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.paidInCapital", true, null);
+        } else if (txtWebSite.getText().isEmpty()) {
+            txtWebSite.setFocus(true);
+            this.showMessage("cms.error.field.website", true, null);
+        } else if (txtEmail.getText().isEmpty()) {
+            txtEmail.setFocus(true);
+            this.showMessage("cms.error.field.email", true, null);
+        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.contract.valid", true, null);
         } else {
             return true;
         }
         return false;
 
-    }
-
-    public void onClick$btnCodes() {
-        Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
     }
 
     private void saveLegalPerson(LegalPerson _legalPerson) {
@@ -224,7 +235,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
-            
+
             //Guardar Person
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             person.setEmail(txtEmail.getText());
@@ -232,6 +243,8 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                 person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
                 person.setCreateDate(new Timestamp(new Date().getTime()));
                 person.setPersonClassificationId(personClassification);
+            } else {
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             person = personEJB.savePerson(person);
 
@@ -249,15 +262,17 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             legalPerson = utilsEJB.saveLegalPerson(legalPerson);
             legalPersonParent = legalPerson;
-            
+
             //Actualizar Solicitante en la Solicitud de Tarjeta
             if (adminRequest.getRequest() != null) {
                 Request requestCard = adminRequest.getRequest();
                 requestCard.setPersonId(person);
-                requestEJB.saveRequest(requestCard); 
+                requestEJB.saveRequest(requestCard);
             }
-            
+
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
+
             tabAddress.setDisabled(false);
             tabLegalRepresentatives.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
@@ -337,6 +352,11 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson());
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
+        }
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {

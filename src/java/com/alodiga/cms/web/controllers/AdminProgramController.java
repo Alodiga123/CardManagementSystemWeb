@@ -32,7 +32,6 @@ import org.zkoss.zul.Textbox;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.LegalPerson;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Radio;

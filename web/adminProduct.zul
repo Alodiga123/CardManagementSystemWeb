@@ -43,7 +43,7 @@
                                                             <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbProgramType" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbProgram" width="270px" mold="rounded" readonly="true" />
-                                                       </row>
+                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.issuer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
@@ -54,14 +54,17 @@
                                                             <label id="lblProductType" width="260px"/>
                                                             <label id="lblBinSponsor" width="260px"/>
                                                         </row>
-                                                         <row>
+                                                        <row>
                                                             <label value="${c:l('cms.common.bin.Number')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.kindCard')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblBinNumber" width="270px"/>
-                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                            <hlayout>
+                                                                <textbox id="txtName" width="270px" maxlength="60"/> 
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <combobox id="cmbKindCard" width="270px" mold="rounded" readonly="true" />
                                                         </row>
                                                         <row>
@@ -82,8 +85,8 @@
                                                         <row>
                                                             <combobox id="cmbInternationalCurrency" width="270px" mold="rounded" readonly="true" />
                                                             <hbox>
-                                                            <radiogroup id="ValidityMonths" onCheck="value = self.selectedItem.label"/>
-                                                                 <grid>
+                                                                <radiogroup id="ValidityMonths" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="r24Months" label="${c:l('cms.crud.product.24Month')}" radiogroup="ValidityMonths" />
@@ -91,7 +94,8 @@
                                                                             <radio id="r48Months" label="${c:l('cms.crud.product.48Month')}" radiogroup="ValidityMonths" />
                                                                         </row>
                                                                     </rows>
-                                                                 </grid>
+                                                                </grid>
+                                                                <label value="*" sclass="lblreq" />
                                                             </hbox>
                                                             <combobox id="cmbStorageMedio" width="270px" mold="rounded" readonly="true" />                                                            
                                                         </row>
@@ -101,9 +105,18 @@
                                                             <label value="${c:l('cms.common.daysToActivate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtDaysBeforeExpiration" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtDaysToInactivate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <textbox id="txtDaysToActivate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                            <hlayout>
+                                                                <textbox id="txtDaysBeforeExpiration" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtDaysToInactivate" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtDaysToActivate" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.daysToUse')}" sclass="lblbold"/>
@@ -111,19 +124,31 @@
                                                             <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtDaysToUse" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtDaysToWithdrawCard" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <datebox id="dtbBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
+                                                            <hlayout>
+                                                                <textbox id="txtDaysToUse" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtDaysToWithdrawCard" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <datebox id="dtbBeginDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>                                                            
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="dtbEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
-                                                            <combobox id="cmbSegmentMarketing" width="270px" mold="rounded" readonly="true" />
+                                                            <hlayout>
+                                                                <datebox id="dtbEndDateValidity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <combobox id="cmbSegmentMarketing" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
-                                                  </rows>
+                                                    </rows>
                                                 </grid>
                                             </vlayout>
                                         </div>
