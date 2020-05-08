@@ -95,10 +95,19 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     public Boolean validateEmpty() {
         if (txtFullName.getText().isEmpty()) {
             txtFullName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.fullName", true, null);
         } else if (txtFullLastName.getText().isEmpty()) {
             txtFullLastName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.lastName", true, null);
+        } else if (txtCity.getText().isEmpty()) {
+            txtCity.setFocus(true);
+            this.showMessage("cms.error.field.city", true, null);
+        } else if (txtCellPhone.getText().isEmpty()) {
+            txtCellPhone.setFocus(true);
+            this.showMessage("cms.error.field.cellPhone", true, null);
+        } else if (txtLocalPhone.getText().isEmpty()) {
+            txtLocalPhone.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
         } else {
             return true;
         }
@@ -138,7 +147,6 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
                     if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
                         naturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
                     }
-
                 }
             } else {
                 naturalPerson = null;
@@ -158,8 +166,11 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
                 familyReferences.setNaturalCustomerId(naturalCustomer);
             }
             familyReferences = personEJB.saveFamilyReferences(familyReferences);
+
             familyReferencesParam = familyReferences;
             this.showMessage("sp.common.save.success", false, null);
+            
+            btnSave.setVisible(false);
             EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);

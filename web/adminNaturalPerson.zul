@@ -95,8 +95,8 @@
                                                             <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtFamilyResponsibilities" value="" width="250px" maxlength="2"/>
-                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60"/>
+                                                            <textbox id="txtFamilyResponsibilities" value="" width="250px" maxlength="2" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
