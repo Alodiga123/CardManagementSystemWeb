@@ -32,7 +32,7 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbYear" width="200px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtAccountsNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <intbox id="intAccountsNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
                                                             <textbox id="txtActiveCardNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                         </row>
                                                         <row>

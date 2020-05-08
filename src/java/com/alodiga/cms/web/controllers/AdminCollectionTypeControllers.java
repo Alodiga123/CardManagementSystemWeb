@@ -35,7 +35,6 @@ public class AdminCollectionTypeControllers extends GenericAbstractAdminControll
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-//        collectionTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
             collectionTypeParam = null;
@@ -114,6 +113,7 @@ public class AdminCollectionTypeControllers extends GenericAbstractAdminControll
             collectionType = requestEJB.saveCollectionType(collectionType);
             collectionTypeParam = collectionType;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
