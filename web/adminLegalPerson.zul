@@ -64,7 +64,7 @@
                                                         <row>
                                                             <textbox id="txtPaidInCapital" value="" width="250px" maxlength="60"/>
                                                             <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>
-                                                            <textbox id="txtEmail" value="" width="250px" maxlength="45" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="45" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
