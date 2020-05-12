@@ -21,6 +21,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 
@@ -40,7 +42,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Textbox txtEnterpriseName;
     private Textbox txtPhoneNumber;
     private Textbox txtRegistryNumber;
-    private Textbox txtPaidInCapital;
+    private Doublebox dbxPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
     private Tab tabAddress;
@@ -60,10 +62,13 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Integer eventType;
     private AdminRequestController adminRequest = null;
     public static LegalPerson legalPersonParent = null;
+    private List<LegalPerson> legalPersonList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+        utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         adminRequest = new AdminRequestController();
         if (adminRequest.getEventType() != null) {
             eventType = adminRequest.getEventType();
@@ -78,11 +83,6 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                     }
-                    if (adminRequest.getRequest().getPersonId() != null) {
-                        legalPersonParam = adminRequest.getRequest().getPersonId().getLegalPerson();
-                    } else {
-                        legalPersonParam = null;
-                    }
                     break;
                 case WebConstants.EVENT_VIEW:
                     if (adminRequest.getRequest().getPersonId() != null) {
@@ -94,11 +94,6 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                     }
-                    if (adminRequest.getRequest().getPersonId() != null) {
-                        legalPersonParam = adminRequest.getRequest().getPersonId().getLegalPerson();
-                    } else {
-                        legalPersonParam = null;
-                    }
                     break;
                 case WebConstants.EVENT_ADD:
                     legalPersonParam = null;
@@ -106,6 +101,23 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
                     break;
+            }
+            if (eventType == WebConstants.EVENT_ADD) {
+                legalPersonParam = null;
+            } else { 
+                if (adminRequest.getRequest().getPersonId() != null) {
+                    EJBRequest request1 = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PERSON_KEY, adminRequest.getRequest().getPersonId().getId());
+                    request1.setParams(params);
+                    legalPersonList = utilsEJB.getLegalPersonByPerson(request1);
+                    for (LegalPerson applicantLegaPerson: legalPersonList) {
+                        legalPersonParam = applicantLegaPerson;
+                    }
+                } else {
+                    legalPersonParam = null;
+                }
+                legalPersonList = null;
             }
         }
         initialize();
@@ -115,8 +127,6 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public void initialize() {
         super.initialize();
         try {
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
@@ -140,7 +150,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         txtEnterpriseName.setRawValue(null);
         txtDateInscriptionRegister.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
-        txtPaidInCapital.setRawValue(null);
+        dbxPaidInCapital.setRawValue(null);
         txtPhoneNumber.setRawValue(null);
         txtWebSite.setRawValue(null);
         txtEmail.setRawValue(null);
@@ -149,16 +159,15 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
 
     public void loadFields(LegalPerson legalPerson) {
         try {
+            txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
             txtTradeName.setText(legalPerson.getTradeName());
             txtEnterpriseName.setText(legalPerson.getEnterpriseName());
             txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
             txtRegistryNumber.setText(legalPerson.getRegisterNumber());
-            txtPaidInCapital.setText(legalPerson.getPayedCapital().toString());
+            dbxPaidInCapital.setValue(legalPerson.getPayedCapital());
             txtPhoneNumber.setValue(legalPerson.getEnterprisePhone());
             txtWebSite.setValue(legalPerson.getWebSite());
-            txtEmail.setValue(legalPerson.getPersonId().getEmail());
-            txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
-
+            txtEmail.setValue(legalPerson.getPersonId().getEmail().toString());
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -170,7 +179,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         txtEnterpriseName.setReadonly(true);
         txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
-        txtPaidInCapital.setReadonly(true);
+        dbxPaidInCapital.setReadonly(true);
         txtPhoneNumber.setReadonly(true);
         txtWebSite.setReadonly(true);
         txtEmail.setReadonly(true);
@@ -199,8 +208,8 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("cms.error.field.registerNumber", true, null);
-        } else if (txtPaidInCapital.getText().isEmpty()) {
-            txtPaidInCapital.setFocus(true);
+        } else if (dbxPaidInCapital.getText().isEmpty()) {
+            dbxPaidInCapital.setFocus(true);
             this.showMessage("cms.error.field.paidInCapital", true, null);
         } else if (txtWebSite.getText().isEmpty()) {
             txtWebSite.setFocus(true);
@@ -254,7 +263,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             legalPerson.setEnterpriseName(txtEnterpriseName.getText());
             legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             legalPerson.setRegisterNumber(txtRegistryNumber.getText());
-            legalPerson.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
+            legalPerson.setPayedCapital(dbxPaidInCapital.getValue().floatValue());
             legalPerson.setEnterprisePhone(txtPhoneNumber.getText());
             legalPerson.setWebSite(txtWebSite.getText());
             legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
