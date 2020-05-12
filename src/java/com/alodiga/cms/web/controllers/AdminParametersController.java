@@ -26,6 +26,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Tab;
@@ -40,10 +41,10 @@ public class AdminParametersController extends GenericAbstractAdminController {
     private Label lblTitle;
     private Combobox cmbChannel;
     private Combobox cmbTransaction;
-    private Textbox txtTotal;
-    private Textbox txtTotalMaximumTransactions;
-    private Textbox txtTotalAmountDaily;
-    private Textbox txtTotalAmountMonthly;
+    private Doublebox txtTotal;
+    private Doublebox txtTotalMaximumTransactions;
+    private Doublebox txtTotalAmountDaily;
+    private Doublebox txtTotalAmountMonthly;
     private Radio rBonificationYes;
     private Radio rBonificationNo;
     private Tab tabCommerce;
@@ -211,6 +212,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 rBonificationNo.setDisabled(false);
             }
         }
+        btnSave.setVisible(true);
     }
 
     public void blockFields() {
@@ -263,7 +265,8 @@ public class AdminParametersController extends GenericAbstractAdminController {
                     default:
                     break;
                 }
-            } 
+            }
+            btnSave.setVisible(false);
 
         } catch (Exception ex) {
             showError(ex);
@@ -281,6 +284,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
                     tabCommerce.setDisabled(true);
                 }
             }
+            btnSave.setVisible(false);
             EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
         }
     }
@@ -298,13 +302,13 @@ public class AdminParametersController extends GenericAbstractAdminController {
         programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
         programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
         if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-            programLoyaltyTransaction.setTotalPointsValue(Float.parseFloat(txtTotal.getText()));
+            programLoyaltyTransaction.setTotalPointsValue(txtTotal.getValue().floatValue());
         } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
-            programLoyaltyTransaction.setTotalBonificationValue(Float.parseFloat(txtTotal.getText()));
+            programLoyaltyTransaction.setTotalBonificationValue(txtTotal.getValue().floatValue());
         }
-        programLoyaltyTransaction.setTotalMaximumTransactions(Float.parseFloat(txtTotalMaximumTransactions.getText()));
-        programLoyaltyTransaction.setTotalAmountDaily(Float.parseFloat(txtTotalAmountDaily.getText()));
-        programLoyaltyTransaction.setTotalAmountMonthly(Float.parseFloat(txtTotalAmountMonthly.getText()));
+        programLoyaltyTransaction.setTotalMaximumTransactions(txtTotalMaximumTransactions.getValue().floatValue());
+        programLoyaltyTransaction.setTotalAmountDaily(txtTotalAmountDaily.getValue().floatValue());
+        programLoyaltyTransaction.setTotalAmountMonthly(txtTotalAmountMonthly.getValue().floatValue());
         programLoyaltyTransaction.setIndBonificationFixed(IndBonificationFixed);
     }
 
