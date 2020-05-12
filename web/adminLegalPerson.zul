@@ -62,7 +62,7 @@
                                                             <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtPaidInCapital" value="" width="250px" maxlength="60"/>
+                                                            <doublebox id="dbxPaidInCapital" width="250px" constraint="no negative"  format="#,##0.##" maxlength="40"/>                                                           
                                                             <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>
                                                             <textbox id="txtEmail" value="" width="250px" maxlength="45" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                         </row>

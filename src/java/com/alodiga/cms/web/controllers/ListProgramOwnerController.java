@@ -102,12 +102,10 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
                     item.appendChild(new Listcell(simpleDateFormat.format(person.getCreateDate())));
                     if (person.getPersonTypeId().getIndNaturalPerson() == true) {
                         adminPage = "TabProgramOwnerNaturalPerson.zul";
-
                         StringBuilder OwnerName = new StringBuilder(person.getNaturalPerson().getFirstNames());
                         OwnerName.append(" ");
                         OwnerName.append(person.getNaturalPerson().getLastNames());
                         item.appendChild(new Listcell(OwnerName.toString()));
-
                         EJBRequest request1 = new EJBRequest();
                         Map params = new HashMap();
                         params.put(Constants.PERSON_KEY, person.getId());
@@ -116,14 +114,12 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
                         for (NaturalPerson n : naturalPersonList) {
                             programOwnerNatural = n;
                         }
-
                         item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, programOwnerNatural) : new Listcell());
                         item.appendChild(permissionRead ? new ListcellViewButton(adminPage, programOwnerNatural) : new Listcell());
                     } else {
                         ownerNameLegal = person.getLegalPerson().getEnterpriseName();
                         item.appendChild(new Listcell(ownerNameLegal));
                         adminPage = "TabProgramOwnerLegalPerson.zul";
-
                         EJBRequest request1 = new EJBRequest();
                         Map params = new HashMap();
                         params.put(Constants.PERSON_KEY, person.getId());
@@ -132,7 +128,6 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
                         for (LegalPerson n : legalPersonList) {
                             programOwnerLegal = n;
                         }
-
                         item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, programOwnerLegal) : new Listcell());
                         item.appendChild(permissionRead ? new ListcellViewButton(adminPage, programOwnerLegal) : new Listcell());
                     }
@@ -159,7 +154,7 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
             Map params = new HashMap();
             params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_PROGRAM_OWNER);
             request1.setParams(params);
-            persons = personEJB.getPersonByCustommer(request1);
+            persons = personEJB.getPersonByClassification(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
