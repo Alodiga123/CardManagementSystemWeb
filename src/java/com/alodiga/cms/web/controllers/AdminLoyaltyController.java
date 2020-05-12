@@ -31,10 +31,12 @@ import com.cms.commons.models.ProgramLoyaltyType;
 import com.cms.commons.models.StatusProgramLoyalty;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.QueryConstants;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbarbutton;
@@ -45,7 +47,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     private Label txtStatus = null;
     private Textbox txtDescription;
     private Textbox txtObservations;
-    private Textbox txtConversionRatePoints;
+    private Doublebox txtConversionRatePoints;
     private Datebox dtbStarDate;
     private Datebox dtbEndDate;
     private Combobox cmbProgram;
@@ -132,7 +134,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         txtObservations.setRawValue(null);
         txtConversionRatePoints.setRawValue(null);
     }
-    
+
     public void onChange$cmbProgram() {
         cmbProduct.setVisible(true);
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
@@ -152,6 +154,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             txtObservations.setText(programLoyalty.getObservations());
             txtConversionRatePoints.setText(programLoyalty.getConversionRatePoints().toString());
             programLoyaltyParent = programLoyalty;
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -202,17 +205,31 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         cbxFriday.setDisabled(true);
         cbxSaturday.setDisabled(true);
         cbxSunday.setDisabled(true);
-        
+
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
+        Date today = new Date();
+
         if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.description", true, null);
+        } else if (dtbStarDate.getText().isEmpty()) {
+            dtbStarDate.setFocus(true);
+            this.showMessage("cms.error.field.beginDate", true, null);
+        } else if (dtbEndDate.getText().isEmpty()) {
+            dtbEndDate.setFocus(true);
+            this.showMessage("cms.error.field.endDate", true, null);
         } else if (txtConversionRatePoints.getText().isEmpty()) {
             txtConversionRatePoints.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (today.compareTo(dtbStarDate.getValue()) > 0) {
+            dtbStarDate.setFocus(true);
+            this.showMessage("cms.error.date.contract.valid", true, null);
+        } else if (today.compareTo(dtbEndDate.getValue()) > 0) {
+            dtbEndDate.setFocus(true);
+            this.showMessage("cms.error.date.starDate", true, null);
         } else {
             return true;
         }
@@ -245,7 +262,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             programLoyalty.setStartDate(dtbStarDate.getValue());
             programLoyalty.setEndDate(dtbEndDate.getValue());
             programLoyalty.setProgramLoyaltyTypeId((ProgramLoyaltyType) cmbProgramLoyaltyType.getSelectedItem().getValue());
-            programLoyalty.setConversionRatePoints(Float.parseFloat(txtConversionRatePoints.getText()));
+            programLoyalty.setConversionRatePoints(txtConversionRatePoints.getValue().floatValue());
             if (eventType == WebConstants.EVENT_ADD) {
                 programLoyalty.setStatusProgramLoyaltyId(statusPending);
             } else {
@@ -321,6 +338,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
                     break;
             }
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
 
         } catch (WrongValueException ex) {
             showError(ex);
@@ -360,7 +378,6 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         } catch (GeneralException ex) {
             Logger.getLogger(AdminLoyaltyController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public void onClick$btnSave() {
@@ -427,7 +444,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     private void loadCmbProduct(Integer evenInteger, long programId) {
         EJBRequest request1 = new EJBRequest();
         cmbProduct.getItems().clear();

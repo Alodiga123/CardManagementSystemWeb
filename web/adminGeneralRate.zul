@@ -37,7 +37,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
-                                                             <label value="${c:l('cms.common.channel')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.channel')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true"/>
@@ -47,27 +47,45 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.transaction')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.percentageRate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbTransaction" width="250px" mold="rounded" readonly="true"/>
-                                                            <textbox id="txtFixedRate" width="250px"/>
-                                                            <textbox id="txtPercentageRate" width="250px"/>
+                                                            <hbox>
+                                                                <radiogroup id="fixedRate" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rFixedRateYes" label="${c:l('cms.commom.Yes')}" radiogroup="fixedRate" />
+                                                                            <radio id="rFixedRateNo" label="${c:l('cms.commom.No')} " radiogroup="fixedRate" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
+                                                            <doublebox id="txtFixedRate" width="250px" constraint="no negative" format="#,##0.##" maxlength="48"/>
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.percentageRate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.totalTransactionInitialExempt')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtTotalTransactionInitialExempt" width="250px"/>
-                                                            <textbox id="txtTotalTransactionExemptPerMonth" width="250px"/>
-                                                            <combobox id="cmbRateApplicationType" width="250px" mold="rounded" readonly="true"/>
+                                                            <doublebox id="txtPercentageRate" width="250px" constraint="no negative" format="#,##0.##" maxlength="48"/>
+                                                            <hlayout>
+                                                                <intbox id="txtTotalTransactionInitialExempt" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="11"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <intbox id="txtTotalTransactionExemptPerMonth" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="11"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.indModificationCardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <combobox id="cmbRateApplicationType" width="250px" mold="rounded" readonly="true"/>
                                                             <hbox>
                                                                 <radiogroup id="indModificationCardHolder" onCheck="value = self.selectedItem.label" />
                                                                 <grid>

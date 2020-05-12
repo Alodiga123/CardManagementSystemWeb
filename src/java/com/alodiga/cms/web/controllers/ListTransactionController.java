@@ -1,6 +1,6 @@
 package com.alodiga.cms.web.controllers;
+
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -23,7 +23,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
 
 public class ListTransactionController extends GenericAbstractListController<Transaction> {
 
@@ -56,9 +55,9 @@ public class ListTransactionController extends GenericAbstractListController<Tra
             showError(ex);
         }
     }
-    
-   public void getData() {
-    transactionList = new ArrayList<Transaction>();
+
+    public void getData() {
+        transactionList = new ArrayList<Transaction>();
         try {
             request.setFirst(0);
             request.setLimit(null);
@@ -71,14 +70,13 @@ public class ListTransactionController extends GenericAbstractListController<Tra
         }
     }
 
-   public void onClick$btnAdd() throws InterruptedException {
+    public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
     }
-    
-       
-   public void onClick$btnDownload() throws InterruptedException {
+
+    public void onClick$btnDownload() throws InterruptedException {
         try {
             Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
         } catch (Exception ex) {
@@ -91,7 +89,7 @@ public class ListTransactionController extends GenericAbstractListController<Tra
     }
 
     public void loadDataList(List<Transaction> list) {
-          try {
+        try {
             String indMonetaryType = null;
             String indTransactionPurchase = null;
             String indVariationRateChannel = null;
@@ -123,7 +121,7 @@ public class ListTransactionController extends GenericAbstractListController<Tra
                     item.appendChild(new Listcell(indTransactionPurchase));
                     item.appendChild(new Listcell(indVariationRateChannel));
                     item.appendChild(new ListcellEditButton(adminPage, transaction));
-                    item.appendChild(new ListcellViewButton(adminPage, transaction,true));
+                    item.appendChild(new ListcellViewButton(adminPage, transaction, true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -141,9 +139,7 @@ public class ListTransactionController extends GenericAbstractListController<Tra
         } catch (Exception ex) {
             showError(ex);
         }
-}
-    
-    
+    }
 
     @Override
     public List<Transaction> getFilterList(String filter) {
