@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
@@ -48,7 +49,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Textbox txtMarriedLastName;
     private Textbox txtBirthPlace;
     private Textbox txtPhoneNumber;
-    private Textbox txtFamilyResponsibilities;
+    private Intbox txtFamilyResponsibilities;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -326,7 +327,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setGender(indGender);
             applicantNaturalPerson.setPlaceBirth(txtBirthPlace.getText());
             applicantNaturalPerson.setDateBirth(txtBirthDay.getValue());
-            applicantNaturalPerson.setFamilyResponsibilities(Integer.parseInt(txtFamilyResponsibilities.getText()));
+            applicantNaturalPerson.setFamilyResponsibilities(txtFamilyResponsibilities.getValue());
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
             if (eventType == WebConstants.EVENT_ADD) {

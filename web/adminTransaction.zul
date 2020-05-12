@@ -25,13 +25,10 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('cms.common.transactions')}" onClick='Executions.sendRedirect(&quot;listTransaction.zul&quot;)'/> 
-                                                 |                        
+                                                |                        
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.transactions.add')}"/>
-                                                 |  
-                                                <toolbarbutton id="tbbCurrentAction" />                     
-                                                 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -59,22 +56,22 @@
                                                             <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.indMonetaryType')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row>    
-                                                            <hlayout>
-                                                                <textbox id="txtCodeTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                        <row>
+                                                            <hbox>
+                                                                <textbox id="txtCodeTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="3"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>    
-                                                            <hlayout>    
-                                                                <textbox id="txtDescriptionTransaction" width="290px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                            </hbox> 
+                                                            <hbox>
+                                                                <textbox id="txtDescriptionTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>    
+                                                            </hbox>  
                                                             <hbox>
                                                                 <radiogroup id="monetaryType" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="rMonetaryTypeYes" label="${c:l('cms.commom.Yes')}" radiogroup="monetaryType" />
-                                                                            <radio id="rMonetaryTypeNo" label="${c:l('cms.commom.No')} " radiogroup="monetaryType" />
+                                                                            <radio id="rMonetaryTypeYes" label="${c:l('cms.commom.Yes')}" radiogroup="monetaryType"/>
+                                                                            <radio id="rMonetaryTypeNo" label="${c:l('cms.commom.No')}" radiogroup="monetaryType"/>
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
@@ -90,19 +87,19 @@
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="rTransactionPurchaseYes" label="${c:l('cms.commom.Yes')}" radiogroup="transactionPurchase" />
-                                                                            <radio id="rTransactionPurchaseNo" label="${c:l('cms.commom.No')} " radiogroup="transactionPurchase" />
+                                                                            <radio id="rTransactionPurchaseYes" label="${c:l('cms.commom.Yes')}" radiogroup="transactionPurchase"/>
+                                                                            <radio id="rTransactionPurchaseNo" label="${c:l('cms.commom.No')}" radiogroup="transactionPurchase"/>
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
                                                             </hbox> 
                                                             <hbox>
-                                                                 <radiogroup id="variationRateChannel" onCheck="value = self.selectedItem.label"/>
+                                                                <radiogroup id="variationRateChannel" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="rVariationRateChannelYes" label="${c:l('cms.commom.Yes')}" radiogroup="variationRateChannel" />
-                                                                            <radio id="rVariationRateChannelNo" label="${c:l('cms.commom.No')} " radiogroup="variationRateChannel" />
+                                                                            <radio id="rVariationRateChannelYes" label="${c:l('cms.commom.Yes')}" radiogroup="variationRateChannel"/>
+                                                                            <radio id="rVariationRateChannelNo" label="${c:l('cms.commom.No')}" radiogroup="variationRateChannel"/>
                                                                         </row>
                                                                     </rows>
                                                                 </grid>

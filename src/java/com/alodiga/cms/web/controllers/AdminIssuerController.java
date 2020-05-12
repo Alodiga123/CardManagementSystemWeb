@@ -12,8 +12,6 @@ import com.cms.commons.models.Issuer;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -34,6 +32,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -43,7 +42,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     private Textbox txtIdentificationNumber;
     private Textbox txtName;
     private Textbox txtIssuerEmail;
-    private Textbox txtBinNumber;
+    private Intbox txtBinNumber;
     private Textbox txtSwiftCode;
     private Textbox txtAbaCode;
     private Textbox txtContractNumber;
@@ -141,6 +140,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             } else {
                 rActiveNo.setChecked(true);
             }
+            btnSave.setVisible(true);
         
         } catch (Exception ex) {
             showError(ex);
@@ -159,7 +159,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         txtFaxNumber.setReadonly(true);
         txtPersonContactName.setReadonly(true);
         txtEmailPersonContact.setReadonly(true);
-        txtIdentificationNumber.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -196,7 +195,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             
             //Guarda el Emisor
             issuer.setName(txtName.getText());
-            issuer.setBinNumber(Integer.parseInt(txtBinNumber.getText()));
+            issuer.setBinNumber(txtBinNumber.getValue());
             issuer.setSwiftCode(txtSwiftCode.getText());
             issuer.setAbaCode(txtAbaCode.getText());
             issuer.setContractNumber(txtContractNumber.getText());
@@ -212,6 +211,8 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             issuer = personEJB.saveIssuer(issuer);
             issuerParam =issuer;
             this.showMessage("sp.common.save.success", false, null);
+            
+            btnSave.setVisible(false);
         } catch (WrongValueException ex) {
             showError(ex);
         }
@@ -299,7 +300,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             default:
                 break;
         }
-    
     }    
     
     private void loadCmbPersonType(Integer evenInteger, Integer countryId) {
@@ -315,7 +315,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private void loadCmbDocumentsPersonType(Integer evenInteger, Integer documentPersonTypeId) {
@@ -335,7 +334,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private void loadCmbIssuerType(Integer evenInteger) {
