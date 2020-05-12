@@ -32,9 +32,12 @@
                                                             <label value="${c:l('cms.tab.loyaltyMain')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProgram" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProduct" width="270px" mold="rounded" readonly="true"/>
-                                                            <textbox id="txtDescription" width="265px" maxlength="1490"/>
+                                                            <combobox id="cmbProgram" width="250px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbProduct" width="250px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <textbox id="txtDescription" width="250px" maxlength="1490"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.loyalty.starDate')}" sclass="lblbold"/>
@@ -42,25 +45,37 @@
                                                             <label value="${c:l('cms.crud.loyalty.programType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="dtbStarDate"  width="265px"/>
-                                                            <datebox id="dtbEndDate"  width="265px"/>
-                                                            <combobox id="cmbProgramLoyaltyType" width="270px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <datebox id="dtbStarDate"  width="250px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <datebox id="dtbEndDate"  width="250px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <combobox id="cmbProgramLoyaltyType" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.loyalty.conversionRatePoints')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.loyalty.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtConversionRatePoints" width="265px" maxlength="10"/>
+                                                            <hlayout>
+                                                                <doublebox id="txtConversionRatePoints" width="250px" constraint="no negative" format="#,##0.##" maxlength="10"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <cell colspan="2">
                                                                 <hlayout>
                                                                     <label id="txtStatus" value="" width="250px" style="color:#837E76;"/>
-                                                                    <combobox id="cmbStatusProgramLoyalty" width="270px" mold="rounded" readonly="true"/>
+                                                                    <combobox id="cmbStatusProgramLoyalty" width="250px" mold="rounded" readonly="true"/>
                                                                 </hlayout>
                                                             </cell>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                            <hlayout>
+                                                                <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">
@@ -72,7 +87,10 @@
                                                         </row>                                                                                                                                                                                               
                                                     </rows>
                                                 </grid>
-                                                <label value="${c:l('cms.crud.loyalty.daysApplicationProgram')}" sclass="lblbold"/>
+                                                <hlayout>
+                                                    <label value="${c:l('cms.crud.loyalty.daysApplicationProgram')}" sclass="lblbold"/>
+                                                    <label value="*" sclass="lblreq" />
+                                                </hlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="218px"/>
