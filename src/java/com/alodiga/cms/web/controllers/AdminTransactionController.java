@@ -149,7 +149,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             transaction = productEJB.saveTransaction(transaction);
             transactionParam = transaction;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }

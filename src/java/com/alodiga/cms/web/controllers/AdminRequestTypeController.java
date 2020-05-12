@@ -26,7 +26,6 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-//        requestTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (RequestType) Sessions.getCurrent().getAttribute("object") : null;
         event = (Integer) Sessions.getCurrent().getAttribute("eventType");
         if (eventType == WebConstants.EVENT_ADD) {
             requestTypeParam = null;
@@ -41,13 +40,13 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
         super.initialize();
         switch (event) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.add"));
                 break;
             default:
                 break;

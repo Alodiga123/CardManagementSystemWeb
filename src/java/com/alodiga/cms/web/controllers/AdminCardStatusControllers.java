@@ -1,16 +1,21 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.exception.GeneralException;
+import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.CardStatus;
-import com.cms.commons.models.Currency;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminCardStatusControllers extends GenericAbstractAdminController {
 
@@ -19,29 +24,41 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
     private UtilsEJB utilsEJB = null;
     private CardStatus  cardStatusParam;
     private Button btnSave;
-    private Integer evenType2 = -1;
+    private Integer event;
+    private Toolbarbutton tbbTitle;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        
-        cardStatusParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CardStatus) Sessions.getCurrent().getAttribute("object") : null;
-        evenType2 = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        event = (Integer) Sessions.getCurrent().getAttribute("eventType");
+        if (event == WebConstants.EVENT_ADD) {
+           cardStatusParam = null;                    
+       } else {
+           cardStatusParam = (CardStatus) Sessions.getCurrent().getAttribute("object");            
+       }
         initialize();
-        loadData();
-//      initView(eventType, "sp.crud.requestType");
+        
     }
 
-//    @Override
-//    public void initView(int eventType, String adminView) {
-//        super.initView(eventType, "sp.crud.requestType");
-//    }
+
     @Override
     public void initialize() {
-        super.initialize();
+        super.initialize(); 
+        switch (event) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.status.card.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.status.card.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.status.card.add"));
+                break;    
+        }
+        
         try {
-
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            loadData();
         } catch (Exception ex) {
             showError(ex);
         }
@@ -60,9 +77,8 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
     }
 
     public void blockFields() {
-       
         txtName.setReadonly(true);
-        btnSave.setVisible(false);
+        btnSave.setDisabled(false);
     }
 
     public Boolean validateEmpty() {
@@ -77,28 +93,29 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
     }
 
 
-    private void saveCardStatus(CardStatus cardStatus_) {
+    private void saveCardStatus(CardStatus cardStatus_) throws RegisterNotFoundException, NullParameterException, GeneralException {
         try {
             CardStatus cardStatus = null;
 
             if (cardStatus_ != null) {
                 cardStatus = cardStatus_;
-            } else {//New requestType
+            } else {//New cardStatus
                 cardStatus = new CardStatus();
             }
             cardStatus.setDescription(txtName.getText());
             cardStatus = utilsEJB.saveCardStatus(cardStatus);
             cardStatusParam = cardStatus;
             this.showMessage("sp.common.save.success", false, null);
-        } catch ( Exception ex) {
+            btnSave.setDisabled(true);
+        } catch (WrongValueException ex) {
             showError(ex);
         }
 
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
-            switch (evenType2) {
+            switch (event) {
                 case WebConstants.EVENT_ADD:
                     saveCardStatus(null);
                 break;
@@ -110,7 +127,7 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
     }
 
     public void loadData() {
-        switch (evenType2) {
+        switch (event) {
             case WebConstants.EVENT_EDIT:
                 loadFields(cardStatusParam);
                 break;
@@ -125,7 +142,5 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
         }
     }
 
- 
-    
 
 }

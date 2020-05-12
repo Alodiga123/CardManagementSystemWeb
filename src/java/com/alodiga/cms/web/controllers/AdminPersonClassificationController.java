@@ -26,8 +26,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        personClassificationParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonClassification) Sessions.getCurrent().getAttribute("object") : null;
-        evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+        eventType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
             personClassificationParam = null;
         } else {
@@ -39,20 +38,18 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
 
     @Override
     public void initialize() {
-       super.initialize();
+        super.initialize(); 
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.person.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.classification.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.person.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.classification.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.add"));
-                break;    
-            default:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.person.classification.add"));
                 break;
-        }  
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
@@ -75,7 +72,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
 
     public void blockFields() {
         txtName.setReadonly(true);
-        btnSave.setVisible(false);
+        btnSave.setDisabled(false);
     }
 
     public Boolean validateEmpty() {
@@ -108,7 +105,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
-            switch (evenType) {
+            switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     savePersonClassification(null);
                     break;
@@ -120,7 +117,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     }
 
     public void loadData() {
-        switch (evenType) {
+        switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(personClassificationParam);
                 break;

@@ -322,11 +322,12 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         params.put(QueryConstants.PARAM_DOCUMENT_PERSON_TYPE_ID, documentPersonTypeId);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
-            documentsPersonType = personEJB.getDocumentsPersonType(request1);
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getIssuerPersonId().getPersonTypeId().getId(): 0));
         } catch (EmptyListException ex) {
             showError(ex);
