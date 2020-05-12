@@ -34,8 +34,6 @@ public class ListCardStatusControllers extends GenericAbstractListController<Car
     private User currentUser;
    
 
-    
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -72,7 +70,6 @@ public class ListCardStatusControllers extends GenericAbstractListController<Car
     }
 
 
-
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
@@ -96,10 +93,6 @@ public class ListCardStatusControllers extends GenericAbstractListController<Car
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     public void loadDataList(List<CardStatus> list) {
           try {
@@ -135,10 +128,6 @@ public class ListCardStatusControllers extends GenericAbstractListController<Car
     public List<CardStatus> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-
-
-
-    
+ 
 
 }
