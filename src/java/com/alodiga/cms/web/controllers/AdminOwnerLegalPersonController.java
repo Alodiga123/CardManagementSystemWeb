@@ -183,20 +183,15 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
                 person = new Person();
             }
 
-            //Request
-            EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.REQUEST_ID_LEGAL_PERSON);
-            Request request = requestEJB.loadRequest(request1);
-
             //PersonClassification
-            request1 = new EJBRequest();
+            EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_OWNER);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
             //Guardar Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(request.getPersonTypeId());
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person.setEmail(txtEmail.getText());
             if (eventType == WebConstants.EVENT_ADD) {
                 person.setCreateDate(new Timestamp(new Date().getTime()));
@@ -291,6 +286,7 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_LEGAL_PERSON);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;

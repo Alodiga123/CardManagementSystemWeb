@@ -32,6 +32,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Label;
@@ -53,9 +55,9 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     private Label lblIssuer;
     private Label lblAccountType;
     private Textbox txtIdentifier;
-    private Textbox txtLengthAccount;
-    private Textbox txtMinimunAmount;
-    private Textbox txtMaximunAmount;
+    private Intbox txtLengthAccount;
+    private Doublebox txtMinimunAmount;
+    private Doublebox txtMaximunAmount;
     private Combobox cmbCountry;
     private Combobox cmbProgram;
     private Combobox cmbSubAccountType;
@@ -73,9 +75,9 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-            accountPropertiesParam = null;                    
+            accountPropertiesParam = null;
         } else {
-            accountPropertiesParam = (AccountProperties) Sessions.getCurrent().getAttribute("object");            
+            accountPropertiesParam = (AccountProperties) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
     }
@@ -117,7 +119,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         txtLengthAccount.setRawValue(null);
         txtMinimunAmount.setRawValue(null);
         txtMaximunAmount.setRawValue(null);
-
     }
 
     public AccountProperties getAccountPropertiesParent() {
@@ -130,9 +131,9 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             lblIssuer.setValue(accountProperties.getProgramId().getIssuerId().getName());
             lblAccountType.setValue(accountProperties.getAccountTypeId().getDescription());
             txtIdentifier.setValue(accountProperties.getIdentifier());
-            txtLengthAccount.setValue(accountProperties.getLenghtAccount().toString());
-            txtMinimunAmount.setValue(accountProperties.getMinimunAmount().toString());
-            txtMaximunAmount.setValue(accountProperties.getMaximumAmount().toString());
+            txtLengthAccount.setValue(accountProperties.getLenghtAccount());
+            txtMinimunAmount.setText(accountProperties.getMinimunAmount().toString());
+            txtMaximunAmount.setText(accountProperties.getMaximumAmount().toString());
             if (accountProperties.getIndOverDraft() == true) {
                 rOverdraftYes.setChecked(true);
             } else {
@@ -140,6 +141,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             }
 
             accountPropertiesParent = accountProperties;
+            btnSave.setVisible(true);
 
         } catch (Exception ex) {
             showError(ex);
@@ -155,12 +157,23 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentifier.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbProgram.getSelectedItem() == null) {
+            cmbProgram.setFocus(true);
+            this.showMessage("cms.error.program.notSelected", true, null);
+        } else if (txtIdentifier.getText().isEmpty()) {
             txtIdentifier.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbSubAccountType.getSelectedItem() == null) {
+            cmbSubAccountType.setFocus(true);
+            this.showMessage("cms.error.subAccountType.notSelected", true, null);
         } else if (txtLengthAccount.getText().isEmpty()) {
             txtLengthAccount.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if ((!rOverdraftYes.isChecked()) && (!rOverdraftNo.isChecked())) {
+            this.showMessage("cms.error.field.overdraft", true, null);
         } else if (txtMinimunAmount.getText().isEmpty()) {
             txtMinimunAmount.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
@@ -176,7 +189,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     public void onChange$cmbCountry() {
         cmbProgram.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbProgram(eventType, country.getId());
+//        loadCmbProgram(eventType, country.getId());
     }
 
     public void onChange$cmbProgram() {
@@ -185,6 +198,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             lblProductType.setVisible(true);
             lblAccountType.setVisible(true);
             lblIssuer.setVisible(true);
+
             Program program = (Program) cmbProgram.getSelectedItem().getValue();
             lblProductType.setValue(program.getProductTypeId().getName());
             lblIssuer.setValue(program.getIssuerId().getName());
@@ -233,9 +247,9 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             accountProperties.setAccountTypeId(accountType);
             accountProperties.setSubAccountTypeId((SubAccountType) cmbSubAccountType.getSelectedItem().getValue());
             accountProperties.setIdentifier(txtIdentifier.getValue());
-            accountProperties.setLenghtAccount(Integer.parseInt(txtLengthAccount.getValue()));
-            accountProperties.setMinimunAmount(Float.parseFloat(txtMinimunAmount.getValue()));
-            accountProperties.setMaximumAmount(Float.parseFloat(txtMaximunAmount.getValue()));
+            accountProperties.setLenghtAccount(txtLengthAccount.getValue());
+            accountProperties.setMinimunAmount(txtMinimunAmount.getValue().floatValue());
+            accountProperties.setMaximumAmount(txtMaximunAmount.getValue().floatValue());
             accountProperties.setIndOverDraft(indOverDraft);
             accountProperties = cardEJB.saveAccountProperties(accountProperties);
             accountPropertiesParam = accountProperties;
@@ -243,6 +257,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             accountPropertiesParent = accountProperties;
             tabAccountSegment.setDisabled(false);
             EventQueues.lookup("updateAccountProperties", EventQueues.APPLICATION, true).publish(new Event(""));
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -273,6 +288,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 txtMinimunAmount.setDisabled(false);
                 txtMaximunAmount.setDisabled(false);
                 loadCmbCountry(eventType);
+                loadCmbProgram(eventType);
                 onChange$cmbCountry();
                 onChange$cmbProgram();
                 break;
@@ -291,6 +307,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
+                loadCmbProgram(eventType);
                 onChange$cmbProgram();
                 break;
             default:
@@ -316,7 +333,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         }
     }
 
-    private void loadCmbProgram(Integer evenInteger, int countryId) {
+    private void loadCmbProgram(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Program> programs;
         try {
@@ -354,7 +371,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             showError(ex);
 
         }
-
     }
 
 }

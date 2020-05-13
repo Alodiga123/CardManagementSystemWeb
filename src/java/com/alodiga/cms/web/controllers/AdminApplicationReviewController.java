@@ -36,7 +36,6 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +48,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
@@ -62,7 +62,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private Label txtCommercialAssessorUserCode;
     private Label txtAssessorName;
     private Label txtIdentification;
-    private Textbox txtMaximumRechargeAmount;
+    private Doublebox txtMaximumRechargeAmount;
     private Textbox txtObservations;
     private Datebox txtReviewDate;
     private Combobox cmbProduct;
@@ -278,7 +278,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             //Guarda la revision
             reviewCollectionsRequest.setRequestId(requestCard);
             reviewCollectionsRequest.setReviewDate(txtReviewDate.getValue());
-            reviewCollectionsRequest.setMaximumRechargeAmount(Float.parseFloat(txtMaximumRechargeAmount.getText()));
+            reviewCollectionsRequest.setMaximumRechargeAmount(txtMaximumRechargeAmount.getValue().floatValue());
             reviewCollectionsRequest.setUserId(user);
             reviewCollectionsRequest.setProductId((Product) cmbProduct.getSelectedItem().getValue());
             reviewCollectionsRequest.setObservations(txtObservations.getText());

@@ -13,6 +13,8 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
@@ -40,7 +42,10 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
     private Textbox txtTotalTransactionExemptPerMonth;
     private Button btnSave;
     private Toolbarbutton tbbTitle;
-    public Tabbox tb;
+    private Float fixedRate;
+    private Float percentageRate;
+    private int totalTransactionInitialExempt;
+    private int totalTransactionExemptPerMonth;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -58,16 +63,6 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByCard.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.rateByCard.view"));
-                break;
-            default:
-                break;
-        }
         try {
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             loadData();
@@ -95,7 +90,11 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
             txtFixedRate.setText(rateByCard.getFixedRate().toString());
             txtPercentageRate.setText(rateByCard.getPercentageRate().toString());
             txtTotalTransactionInitialExempt.setText(rateByCard.getTotalInitialTransactionsExempt().toString());
-            txtTotalTransactionExemptPerMonth.setText(rateByCard.getTotalTransactionsExemptPerMonth().toString());            
+            txtTotalTransactionExemptPerMonth.setText(rateByCard.getTotalTransactionsExemptPerMonth().toString()); 
+            fixedRate = rateByCard.getFixedRateCR();
+            percentageRate = rateByCard.getPercentageRateCR();
+            totalTransactionInitialExempt = rateByCard.getTotalInitialTransactionsExemptCR();
+            totalTransactionExemptPerMonth = rateByCard.getTotalTransactionsExemptPerMonthCR();
         } catch (Exception ex) {
             showError(ex);
         }
@@ -103,6 +102,50 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
 
     public void blockFields() {
         btnSave.setVisible(false);
+    }
+    
+    public void onChange$txtFixedRate() {
+        this.clearMessage();
+        if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
+            this.showMessage("cms.rateByCard.Validation.fixedRate", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
+    
+    public void onChange$txtPercentageRate() {
+        this.clearMessage();
+        if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
+            this.showMessage("cms.rateByCard.Validation.percentageRate", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
+    
+    public void onChange$txtTotalTransactionInitialExempt() {
+        this.clearMessage();
+        if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
+            this.showMessage("cms.rateByCard.Validation.totalTransactionInitialExempt", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
+    }
+    
+    public void onChange$txtTotalTransactionExemptPerMonth() {
+        this.clearMessage();
+        if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
+            this.showMessage("cms.rateByCard.Validation.totalTransactionExemptPerMonth", false, null);
+            btnSave.setDisabled(true);
+        } else {
+            this.clearMessage();
+            btnSave.setDisabled(false);
+        }
     }
 
     private void saveRateByCard(RateByCard _rateByCard) {
@@ -112,13 +155,8 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
 
             if (_rateByCard != null) {
                 rateByCard = _rateByCard;
-            } else {//New Request
+            } else {
                 rateByCard = new RateByCard();
-            }
-            
-            //Validar que los valores modificados no sean mayores que las que tienes las tarifas del producto
-            if (Float.parseFloat(txtFixedRate.getText()) > rateByCard.getFixedRate()) {
-                this.showMessage("sp.common.msjValidateRatenAmounts", false, null);
             }
             
             //Guarda las tarifas del producto en la BD
@@ -132,6 +170,7 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
             rateByCard = cardEJB.saveRateByCard(rateByCard);
             rateByCardParam = rateByCard;
             this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updateRateByCard", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }

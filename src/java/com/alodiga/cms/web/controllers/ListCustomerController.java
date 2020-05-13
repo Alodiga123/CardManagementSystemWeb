@@ -146,7 +146,7 @@ public class ListCustomerController extends GenericAbstractListController<Person
             Map params = new HashMap();
             params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_CUSTOMER);
             request1.setParams(params);
-            persons = personEJB.getPersonByCustommer(request1);
+            persons = personEJB.getPersonByClassification(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

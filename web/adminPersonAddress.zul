@@ -62,7 +62,7 @@
                                                             <label value="${c:l('cms.crud.address.addressDelivery')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtFloor" value="" width="250px" maxlength="3" constraint="/^[0-9]{1,9}(?:\\.[0-9]{1,3})?$/"/>
+                                                            <intbox id="txtFloor" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="3"/>
                                                             <combobox id="cmbZipZone" width="250px" mold="rounded" readonly="true"/>
                                                             <hbox>
                                                                 <radiogroup id="addressDelivery" onCheck="value = self.selectedItem.label"/>

@@ -33,6 +33,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -44,7 +45,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Textbox txtNameStreet;
     private Textbox txtNameEdification;
     private Textbox txtTower;
-    private Textbox txtFloor;
+    private Intbox txtFloor;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbState;
@@ -131,7 +132,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             txtNameStreet.setValue(personHasAddress.getAddressId().getNameStreet());
             txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
             txtTower.setValue(personHasAddress.getAddressId().getTower());
-            txtFloor.setValue(personHasAddress.getAddressId().getFloor().toString());
+            txtFloor.setValue(personHasAddress.getAddressId().getFloor());
             if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
                 rAddressDeliveryYes.setChecked(true);
             } else {
@@ -217,7 +218,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
-            address.setFloor(Integer.parseInt(txtFloor.getText()));
+            address.setFloor(txtFloor.getValue());
             address.setStreetTypeId((StreetType) cmbStreetType.getSelectedItem().getValue());
             address.setNameStreet(txtNameStreet.getText());
             address.setUrbanization(txtUbanization.getText());

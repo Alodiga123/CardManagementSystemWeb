@@ -94,7 +94,6 @@ public class ListProfessionController extends GenericAbstractListController<Prof
                     item = new Listitem();
                     item.setValue(profession);
                     item.appendChild(new Listcell(profession.getName()));
-//                    item.appendChild(new Listcell(requestType.getDescription()));
                     item.appendChild( new ListcellEditButton("adminProfession.zul", profession));
                     item.appendChild(new ListcellViewButton("adminProfession.zul", profession,true));
                     item.setParent(lbxRecords);

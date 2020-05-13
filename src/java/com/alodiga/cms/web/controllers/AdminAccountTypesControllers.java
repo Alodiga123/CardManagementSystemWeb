@@ -28,15 +28,14 @@ public class AdminAccountTypesControllers extends GenericAbstractAdminController
         accountTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (AccountType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           accountTypeParam = null;                    
-       } else {
-           accountTypeParam = (AccountType) Sessions.getCurrent().getAttribute("object");            
-       }
+            accountTypeParam = null;
+        } else {
+            accountTypeParam = (AccountType) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
         loadData();
     }
 
-    
     @Override
     public void initialize() {
         super.initialize();
@@ -63,8 +62,8 @@ public class AdminAccountTypesControllers extends GenericAbstractAdminController
     public void clearFields() {
         txtAccount.setRawValue(null);
     }
-    
-     public Boolean validateEmpty() {
+
+    public Boolean validateEmpty() {
         if (txtAccount.getText().isEmpty()) {
             txtAccount.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
@@ -75,8 +74,9 @@ public class AdminAccountTypesControllers extends GenericAbstractAdminController
     }
 
     private void loadFields(AccountType accountType) {
-         try {
+        try {
             txtAccount.setText(accountType.getDescription());
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -102,6 +102,7 @@ public class AdminAccountTypesControllers extends GenericAbstractAdminController
             accountType = cardEJB.saveAccountType(accountType);
             accountTypeParam = accountType;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }

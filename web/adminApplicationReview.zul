@@ -52,7 +52,7 @@
                                                             <label value="${c:l('cms.reviewRequest.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtMaximumRechargeAmount" value="" width="250px" maxlength="40"/>
+                                                            <doublebox id="txtMaximumRechargeAmount" width="250px" constraint="no negative" format="#,##0.##" maxlength="48"/>
                                                             <combobox id="cmbProduct" width="250px" mold="rounded" readonly="true"/>
                                                             <hbox>
                                                                 <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
