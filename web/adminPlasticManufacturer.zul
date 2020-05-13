@@ -28,6 +28,8 @@
                                                 <toolbarbutton label="${c:l('cms.menu.plasticManufacturer')}" onClick='Executions.sendRedirect(&quot;listPlasticManufacturer.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.plastic.manufacturer.add')}"/>
+                                                 |  
+                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>

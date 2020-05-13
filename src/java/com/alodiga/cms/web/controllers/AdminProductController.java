@@ -243,7 +243,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             productParam = product;
             productParent = product;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+            btnSave.setDisabled(false);
 
             tabCommerceCategory.setDisabled(false);
             tabRestrictions.setDisabled(false);
