@@ -53,17 +53,17 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbSubAccountType" width="270px" mold="rounded" readonly="true"/>
-                                                            <textbox id="txtLengthAccount" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <intbox id="txtLengthAccount" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="60"/>
                                                             <hbox>
-                                                            <radiogroup id="Overdraft" onCheck="value = self.selectedItem.label"/>
-                                                                 <grid>
+                                                                <radiogroup id="Overdraft" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rOverdraftYes" label="${c:l('cms.commom.Yes')}" radiogroup="Overdraft" />
                                                                             <radio id="rOverdraftNo" label="${c:l('cms.commom.No')} " radiogroup="Overdraft" />
                                                                         </row>
                                                                     </rows>
-                                                                 </grid>
+                                                                </grid>
                                                             </hbox>
                                                         </row>
                                                         <row>
@@ -71,8 +71,14 @@
                                                             <label value="${c:l('cms.common.maximum.amount')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtMinimunAmount" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtMaximunAmount" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <doublebox id="txtMinimunAmount" width="250px" constraint="no negative" format="#,##0.##" maxlength="48"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout> 
+                                                            <hlayout>
+                                                                <doublebox id="txtMaximunAmount" width="250px" constraint="no negative" format="#,##0.##" maxlength="48"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row> 
                                                     </rows>
                                                 </grid>

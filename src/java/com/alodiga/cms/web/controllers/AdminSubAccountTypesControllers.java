@@ -85,6 +85,7 @@ public class AdminSubAccountTypesControllers extends GenericAbstractAdminControl
     private void loadFields(SubAccountType subAccountType) {
          try {
             txtSubAccount.setText(subAccountType.getName());
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -111,6 +112,7 @@ public class AdminSubAccountTypesControllers extends GenericAbstractAdminControl
             subAccountType = cardEJB.saveSubAccountType(subAccountType);
             subAccountTypeParam = subAccountType;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
