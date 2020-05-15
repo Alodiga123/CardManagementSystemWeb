@@ -86,6 +86,8 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             if (eventType == WebConstants.EVENT_ADD) {
+                Date today = new Date();
+
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(WebConstants.STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING);
                 statusPending = requestEJB.loadStatusPlasticCustomizingRequest(request1);
@@ -96,7 +98,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             showError(ex);
         }
     }
-    
+
     public PlasticCustomizingRequest getPlasticCustomizingRequest() {
         return this.plasticCustomer;
     }
@@ -157,7 +159,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             }
             plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);
             this.showMessage("sp.common.save.success", false, null);
-            
+
             plasticCustomer = plasticCustomizingRequest;
             btnSave.setVisible(false);
         } catch (Exception ex) {
@@ -179,6 +181,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     }
 
     public void loadData() {
+        Date today = new Timestamp(new Date().getTime());
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 txtStatus.setVisible(false);
@@ -199,6 +202,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             case WebConstants.EVENT_ADD:
                 txtStatus.setVisible(true);
                 cmbStatusPlasticRequest.setVisible(false);
+                dtbRequestDate.setValue(today);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 break;

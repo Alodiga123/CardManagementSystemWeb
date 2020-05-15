@@ -59,15 +59,24 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbPermissionGroup" width="250px" mold="rounded" readonly="true"/> 
-                                                            <textbox id="txtAction" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtEntity" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <textbox id="txtAction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtEntity" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row> 
                                                         <row>   
                                                             <label value="${c:l('cms.common.name.permission')}" sclass="lblbold"/> 
                                                             <label value="${c:l('cms.common.indEnabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtNamePermission" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <textbox id="txtNamePermission" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <hbox>
                                                             <radiogroup id="PermissionEnabled" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
