@@ -26,6 +26,10 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                         <row>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
+                                                        </row>
                                                         <row>
                                                             <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.applicantionRiview.agency')}" sclass="lblbold"/>

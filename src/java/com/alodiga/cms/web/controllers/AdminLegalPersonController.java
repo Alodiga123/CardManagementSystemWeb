@@ -21,7 +21,6 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

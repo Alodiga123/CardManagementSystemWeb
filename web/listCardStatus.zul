@@ -27,6 +27,7 @@
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton label="${c:l('cms.common.statusCard')}"/>
+                                                |
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -38,13 +39,7 @@
                                                     <div align="left" width="495px">
                                                         <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
-                                                    <!--Filters button-->
-                                                    <div align="right" width="400px">
-                                                        <button id="btnSearch" label="${c:l('sp.common.actions.search')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.search.filter.tooltip')}"/>
-                                                        <button id="btnClear" label="${c:l('sp.common.actions.cancel')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.cancel.filter.tooltip')}"/>
-                                                    </div>
                                                 </hlayout>
-
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->

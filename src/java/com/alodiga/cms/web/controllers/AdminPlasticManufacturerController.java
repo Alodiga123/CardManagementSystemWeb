@@ -66,7 +66,6 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        plasticManufacturerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PlasticManufacturer) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
            plasticManufacturerParam = null;                    
