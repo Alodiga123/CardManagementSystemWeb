@@ -86,15 +86,18 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
 
     private void loadFields(GeneralRate generalRate) {
         try {
-            txtFixedRate.setText(generalRate.getFixedRate().toString());
-            txtPercentageRate.setText(generalRate.getPercentageRate().toString());
-            txtTotalTransactionInitialExempt.setText(generalRate.getTotalInitialTransactionsExempt().toString());
-            txtTotalTransactionExemptPerMonth.setText(generalRate.getTotalTransactionsExemptPerMonth().toString());
             if (generalRate.getIndCardHolderModification() == true) {
                 rModificationCardHolderYes.setChecked(true);
+                txtFixedRate.setText(generalRate.getFixedRate().toString());
+                rFixedRateYes.setChecked(true);
             } else {
                 rModificationCardHolderNo.setChecked(true);
+                txtPercentageRate.setText(generalRate.getPercentageRate().toString());
+                rFixedRateYes.setChecked(false);
             }
+            txtTotalTransactionInitialExempt.setText(generalRate.getTotalInitialTransactionsExempt().toString());
+            txtTotalTransactionExemptPerMonth.setText(generalRate.getTotalTransactionsExemptPerMonth().toString());
+
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);

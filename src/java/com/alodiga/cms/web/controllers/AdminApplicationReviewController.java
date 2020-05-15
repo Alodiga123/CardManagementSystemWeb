@@ -57,6 +57,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
     private static final long serialVersionUID = -9145887024839938515L;
 
+    private Label txtNumber;
     private Label txtCity;
     private Label txtAgency;
     private Label txtCommercialAssessorUserCode;
@@ -141,6 +142,14 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtMaximumRechargeAmount.setRawValue(null);
         txtReviewDate.setRawValue(null);
         txtObservations.setRawValue(null);
+    }
+    
+    private void loadField(Request request) {
+        try {
+            txtNumber.setValue(request.getRequestNumber());
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void loadUser() {
@@ -661,6 +670,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
                     getReviewCollectionsRequestParam();
+                    loadField(requestCard);
                     if (reviewCollectionsRequestParam != null) {
                         loadFields(reviewCollectionsRequestParam);
                     } else {
@@ -670,6 +680,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     break;
                 case WebConstants.EVENT_VIEW:
                     getReviewCollectionsRequestParam();
+                    loadField(requestCard);
                     if (reviewCollectionsRequestParam != null) {
                         loadFields(reviewCollectionsRequestParam);
                     } else {
@@ -679,6 +690,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
                 case WebConstants.EVENT_ADD:
+                    loadField(requestCard);
                     loadUser();
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
