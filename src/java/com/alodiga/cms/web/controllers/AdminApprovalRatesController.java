@@ -12,6 +12,7 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -20,7 +21,6 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
 
 public class AdminApprovalRatesController extends GenericAbstractAdminController {
@@ -33,8 +33,6 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
     private Label txtAssessorName;
     private Label txtIdentification;
     private Datebox txtApprovalDate;
-    private Radio rApprovedYes;
-    private Radio rApprovedNo;
     private ProductEJB productEJB = null;
     private User user = null;
     private ApprovalGeneralRate approvalGeneralRateParam;
@@ -80,13 +78,8 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
             txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
             txtIdentification.setValue(user.getIdentificationNumber());
             txtApprovalDate.setValue(approvalGeneralRate.getApprovalDate());
-            if (approvalGeneralRate.getIndApproved() != null) {
-                if (approvalGeneralRate.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);    
-                } else {
-                    rApprovedNo.setChecked(true);
-                }
-            }
+            
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -94,8 +87,6 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
 
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
-        rApprovedYes.setDisabled(true);
-        rApprovedNo.setDisabled(true);        
         btnSave.setVisible(false);
     }
 
@@ -111,18 +102,12 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
 
     private void saveApprovalRates(ApprovalGeneralRate _approvalGeneralRate) {
         ApprovalGeneralRate approvalGeneralRate = null;
-        boolean indApproved;
+        boolean indApproved = true;
         try {
             if (_approvalGeneralRate != null) {
                 approvalGeneralRate = _approvalGeneralRate;
             } else {
                 approvalGeneralRate = new ApprovalGeneralRate();
-            }
-            
-            if (rApprovedYes.isChecked()) {
-                indApproved = true;
-            } else {
-                indApproved = false;
             }
             
             //Guarda la aprobación de las tarifas generales
@@ -131,8 +116,10 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
             approvalGeneralRate.setUserId(user);
             approvalGeneralRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalGeneralRate = productEJB.saveApprovalGeneralRate(approvalGeneralRate);
+            
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateApprovalGeneralRate", EventQueues.APPLICATION, true).publish(new Event(""));
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -158,6 +145,7 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
     }
 
     public void loadData() {
+        Date today = new Timestamp(new Date().getTime());
         try {
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
@@ -173,6 +161,7 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
                     txtCommercialAssessorUserCode.setValue(user.getCode());
                     txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
                     txtIdentification.setValue(user.getIdentificationNumber());
+                    txtApprovalDate.setValue(today);
                 break;
             }
         } catch (EmptyListException ex) {

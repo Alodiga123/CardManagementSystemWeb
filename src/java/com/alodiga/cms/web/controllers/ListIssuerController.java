@@ -67,8 +67,6 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
         }
     }
 
-
-
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");

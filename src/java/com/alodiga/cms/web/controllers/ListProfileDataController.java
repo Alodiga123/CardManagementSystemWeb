@@ -8,14 +8,11 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.BinSponsor;
-import com.cms.commons.models.PersonClassification;
-import com.cms.commons.models.User;
+import com.cms.commons.models.ProfileData;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -26,16 +23,13 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-
-public class ListPersonClassificationController extends GenericAbstractListController<PersonClassification> {
+public class ListProfileDataController extends GenericAbstractListController<ProfileData> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtName;
+    private Textbox txtDescription;
     private UtilsEJB utilsEJB = null;
-    private List<PersonClassification> personclassification = null;
-    private User currentUser;
-   
+    private List<ProfileData> profileDataList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -43,30 +37,30 @@ public class ListPersonClassificationController extends GenericAbstractListContr
         initialize();
     }
 
-
     @Override
     public void initialize() {
         super.initialize();
         try {
+            //Evaluar Permisos
             permissionEdit = true;
-            permissionAdd = true; 
+            permissionAdd = true;
             permissionRead = true;
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminPersonClassification.zul";
+            adminPage = "adminProfileData.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(personclassification);
+            loadDataList(profileDataList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-    personclassification = new ArrayList<PersonClassification>();
+    profileDataList = new ArrayList<ProfileData>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            personclassification = utilsEJB.getPersonClassification(request);   
+            profileDataList = utilsEJB.getProfileData(request);
+            
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -75,56 +69,38 @@ public class ListPersonClassificationController extends GenericAbstractListContr
         }
     }
 
-
-
     public void onClick$btnAdd() throws InterruptedException {
-        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-        Executions.getCurrent().sendRedirect(adminPage);
+        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
+        Executions.getCurrent().sendRedirect("adminProfileData.zul");
     }
     
-       
-   public void onClick$btnDownload() throws InterruptedException {
-        try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
-        } catch (Exception ex) {
-            showError(ex);
-        }
-    }
-
-    public void onClick$btnSearch() {
-        String name = txtName.getText();
-        txtName.setText("");
-        this.txtName.setText(personclassification.toString());
-    }
-    
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
-    }
 
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-    public void loadDataList(List<PersonClassification> list) {
+    public void loadDataList(List<ProfileData> list) {
           try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (PersonClassification personclassification : list) {
-
+                for (ProfileData profileData : list) {
                     item = new Listitem();
-                    item.setValue(personclassification);
-                    item.appendChild(new Listcell(personclassification.getDescription()));
-                    item.appendChild( new ListcellEditButton(adminPage, personclassification));
-                    item.appendChild(new ListcellViewButton(adminPage, personclassification,true));
+                    item.setValue(profileData);
+                    item.appendChild(new Listcell(profileData.getProfileId().getName()));
+                    item.appendChild(new Listcell(profileData.getLanguageId().getDescription()));
+                    item.appendChild(new Listcell(profileData.getAlias().toString()));
+                    item.appendChild(new Listcell(profileData.getDescription().toString()));
+                    item.appendChild(new ListcellEditButton(adminPage, profileData));
+                    item.appendChild(new ListcellViewButton(adminPage, profileData,true));
                     item.setParent(lbxRecords);
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -135,10 +111,21 @@ public class ListPersonClassificationController extends GenericAbstractListContr
            showError(ex);
         }
     }
-
-    @Override
-    public List<PersonClassification> getFilterList(String filter) {
+    
+     public void onClick$btnDownload() throws InterruptedException {
+        try {
+            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onClick$btnClear() throws InterruptedException {
+        txtDescription.setText("");
+    }
+    
+    public List<ProfileData> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }   
+    }
 
 }

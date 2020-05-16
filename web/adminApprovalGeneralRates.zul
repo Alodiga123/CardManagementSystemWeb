@@ -44,23 +44,7 @@
                                                             <label id="txtAssessorName" value="" width="250px" style="color:#837E76;"/>
                                                             <label id="txtIdentification" value="" width="250px" style="color:#837E76;"/>
                                                             <datebox id="txtApprovalDate" width="250px"/>
-                                                        </row>                                                        
-                                                        <row>
-                                                            <label value="${c:l('cms.crud.generalRates.indApproved')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <hbox>
-                                                                <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rApprovedYes" label="${c:l('cms.commom.Yes')}" radiogroup="indApproved" />
-                                                                            <radio id="rApprovedNo" label="${c:l('cms.commom.No')} " radiogroup="indApproved" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
-                                                        </row>                                                        
+                                                        </row>                                                
                                                     </rows>
                                                 </grid>
                                             </vlayout>

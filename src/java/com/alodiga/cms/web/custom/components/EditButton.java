@@ -16,7 +16,7 @@ public class EditButton extends Button {
     }
 
     public EditButton(String view, Object obj) {
-        Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_EDIT);
+        Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
         this.setImage("/images/icon-edit.png");
         this.addEventListener("onClick", new ShowAdminViewListener(WebConstants.EVENT_EDIT, view, obj));
     }

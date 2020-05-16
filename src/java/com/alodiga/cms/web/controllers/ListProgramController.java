@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -154,14 +155,35 @@ public class ListProgramController extends GenericAbstractListController<Program
             showError(ex);
         }
     }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    @Override
+    public List<Program> getFilterList(String filter) {
+        List<Program> programAux = new ArrayList<Program>();
+        Program program;
+        try {
+            if (filter != null && !filter.equals("")) {
+                program = programEJB.searchProgram(filter);
+                programAux.add(program);
+            } else {
+                return programs;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListCountryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return programAux;
+    }
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
-
-    @Override
-    public List<Program> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }
