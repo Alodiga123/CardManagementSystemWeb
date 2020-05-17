@@ -13,32 +13,28 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.PersonType;
-import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.PlasticManufacturer;
-import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -47,10 +43,10 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtIdentificationNumber;
+    private Intbox intPhoneManufacturer;
     private Textbox txtName;
     private Textbox txtContractNumber;
     private Textbox txtEmailManufacturer;
-    private Textbox txtPhoneManufacturer;
     private Textbox txtContactPerson;
     private Textbox txtEmailContact;
     private Combobox cmbCountry;
@@ -122,7 +118,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         txtName.setRawValue(null);
         txtContractNumber.setRawValue(null);
         txtEmailManufacturer.setRawValue(null);
-        txtPhoneManufacturer.setRawValue(null);
+        intPhoneManufacturer.setRawValue(null);
         txtContactPerson.setRawValue(null);
         txtEmailContact.setRawValue(null);
     }
@@ -133,7 +129,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             txtName.setText(plasticManufacturer.getName());
             txtContractNumber.setValue(plasticManufacturer.getContractNumber());
             txtEmailManufacturer.setText(plasticManufacturer.getPersonId().getEmail());
-            txtPhoneManufacturer.setText(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone());
+            intPhoneManufacturer.setText(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone());
             txtContactPerson.setText(plasticManufacturer.getContactPerson());
             txtEmailContact.setText(plasticManufacturer.getEmailContactPerson());
             if (plasticManufacturer.getIndStatus()== true) {
@@ -151,10 +147,9 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         txtName.setReadonly(true);
         txtContractNumber.setDisabled(true);
         txtEmailManufacturer.setReadonly(true);
-        txtPhoneManufacturer.setReadonly(true);
+        intPhoneManufacturer.setReadonly(true);
         txtContactPerson.setReadonly(true);
         txtEmailContact.setReadonly(true);
-        txtIdentificationNumber.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -171,17 +166,14 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         } else if (txtEmailManufacturer.getText().isEmpty()) {
             txtEmailManufacturer.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneManufacturer.getText().isEmpty()) {
-            txtPhoneManufacturer.setFocus(true);
+        } else if (intPhoneManufacturer.getText().isEmpty()) {
+            intPhoneManufacturer.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtContactPerson.getText().isEmpty()) {
             txtContactPerson.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);    
         } else if (txtEmailContact.getText().isEmpty()) {
             txtEmailContact.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtIdentificationNumber.getText().isEmpty()) {
-            txtIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);    
         } else {
             return true;
@@ -237,7 +229,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             }
             phonePerson.setPersonId(person);
             phonePerson.setPhoneTypeId(phoneType);
-            phonePerson.setNumberPhone(txtPhoneManufacturer.getValue());
+            phonePerson.setNumberPhone(intPhoneManufacturer.getValue().toString());
             phonePerson = personEJB.savePhonePerson(phonePerson);
 
             //Guarda el Fabricante de Plastico

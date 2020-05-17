@@ -3,6 +3,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -17,6 +18,8 @@ import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -41,6 +44,10 @@ public class ListPersonClassificationController extends GenericAbstractListContr
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+    }
+    
+     public void startListener() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 
@@ -90,21 +97,39 @@ public class ListPersonClassificationController extends GenericAbstractListContr
             showError(ex);
         }
     }
-
-    public void onClick$btnSearch() {
-        String name = txtName.getText();
-        txtName.setText("");
-        this.txtName.setText(personclassification.toString());
-    }
     
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
-
-    public void startListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
+    @Override
+    public List<PersonClassification> getFilterList(String filter) {
+        List<PersonClassification> personclassificationaux = new ArrayList<PersonClassification>();
+        PersonClassification personclassifications;
+        try {
+            if (filter != null && !filter.equals("")) {
+                personclassifications = utilsEJB.searchPersonClassification(filter);
+                personclassificationaux.add(personclassifications);
+            } else {
+                return personclassification;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListPersonClassificationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return personclassificationaux;
+    }
+
+   
 
     public void loadDataList(List<PersonClassification> list) {
           try {
@@ -135,10 +160,8 @@ public class ListPersonClassificationController extends GenericAbstractListContr
            showError(ex);
         }
     }
-
-    @Override
-    public List<PersonClassification> getFilterList(String filter) {
+    public void loadList(List<PersonClassification> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }   
-
+    }
+     
 }

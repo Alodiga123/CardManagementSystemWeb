@@ -12,8 +12,6 @@ import com.cms.commons.models.Issuer;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -34,21 +32,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
 
 public class AdminIssuerController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtIdentificationNumber;
     private Textbox txtName;
     private Textbox txtIssuerEmail;
-    private Textbox txtBinNumber;
+    private Textbox txtIdentificationNumber;
+    private Intbox intBinNumber;
+    private Intbox intFaxNumber;
     private Textbox txtSwiftCode;
     private Textbox txtAbaCode;
     private Textbox txtContractNumber;
     private Textbox txtWebSite;
-    private Textbox txtFaxNumber;
     private Textbox txtPersonContactName;
     private Textbox txtEmailPersonContact;
     private Combobox cmbCountry;
@@ -104,12 +103,12 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         txtIdentificationNumber.setRawValue(null);
         txtName.setRawValue(null);
         txtIssuerEmail.setRawValue(null);
-        txtBinNumber.setRawValue(null);
+        intBinNumber.setRawValue(null);
         txtSwiftCode.setRawValue(null);
         txtAbaCode.setRawValue(null);
         txtContractNumber.setRawValue(null);
         txtWebSite.setRawValue(null);
-        txtFaxNumber.setRawValue(null);
+        intFaxNumber.setRawValue(null);
         txtPersonContactName.setRawValue(null);
         txtEmailPersonContact.setRawValue(null);
     } 
@@ -120,15 +119,13 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             txtIdentificationNumber.setText(issuer.getDocumentIdentification());
             txtName.setText(issuer.getName());
             txtIssuerEmail.setText(issuer.getIssuerPersonId().getEmail());
-            txtBinNumber.setText(issuer.getBinNumber().toString());
+            intBinNumber.setValue(issuer.getBinNumber());
             txtSwiftCode.setText(issuer.getSwiftCode());
             txtAbaCode.setText(issuer.getAbaCode());
             txtContractNumber.setValue(issuer.getContractNumber());
+            intFaxNumber.setText(issuer.getFaxNumber());
             if (issuer.getWebSite() != null) {
                 txtWebSite.setText(issuer.getWebSite());
-            }
-            if (issuer.getFaxNumber() != null) {
-                txtFaxNumber.setValue(issuer.getFaxNumber().toString());
             }
             if (issuer.getPersonContactName() != null) {
                 txtPersonContactName.setText(issuer.getPersonContactName());
@@ -141,6 +138,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             } else {
                 rActiveNo.setChecked(true);
             }
+            btnSave.setVisible(true);
         
         } catch (Exception ex) {
             showError(ex);
@@ -151,15 +149,14 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         txtIdentificationNumber.setReadonly(true);
         txtName.setReadonly(true);
         txtIssuerEmail.setReadonly(true);
-        txtBinNumber.setReadonly(true);
+        intBinNumber.setReadonly(true);
         txtSwiftCode.setReadonly(true);
         txtAbaCode.setReadonly(true);
         txtContractNumber.setReadonly(true);
         txtWebSite.setReadonly(true);
-        txtFaxNumber.setReadonly(true);
+        intFaxNumber.setReadonly(true);
         txtPersonContactName.setReadonly(true);
         txtEmailPersonContact.setReadonly(true);
-        txtIdentificationNumber.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -196,11 +193,11 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             
             //Guarda el Emisor
             issuer.setName(txtName.getText());
-            issuer.setBinNumber(Integer.parseInt(txtBinNumber.getText()));
+            issuer.setBinNumber(intBinNumber.getValue());
             issuer.setSwiftCode(txtSwiftCode.getText());
             issuer.setAbaCode(txtAbaCode.getText());
             issuer.setContractNumber(txtContractNumber.getText());
-            issuer.setFaxNumber(txtFaxNumber.getValue());
+            issuer.setFaxNumber(intFaxNumber.getText());
             issuer.setPersonContactName(txtPersonContactName.getText());
             issuer.setEmailPersonContact(txtEmailPersonContact.getText());
             issuer.setStatusActive(indActive);
@@ -212,6 +209,8 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             issuer = personEJB.saveIssuer(issuer);
             issuerParam =issuer;
             this.showMessage("sp.common.save.success", false, null);
+            
+            btnSave.setVisible(false);
         } catch (WrongValueException ex) {
             showError(ex);
         }
@@ -226,9 +225,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtIssuerEmail.getText().isEmpty()) {
             txtIssuerEmail.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtBinNumber.getText().isEmpty()) {
-            txtBinNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtSwiftCode.getText().isEmpty()) {
             txtSwiftCode.setFocus(true);
@@ -299,14 +295,33 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             default:
                 break;
         }
-    
     }    
     
+     private void loadCmbCountry(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<Country> country;
+        try {
+            country = utilsEJB.getCountries(request1);
+            loadGenericCombobox(country, cmbCountry, "name", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getCountryId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+    }
+     
     private void loadCmbPersonType(Integer evenInteger, Integer countryId) {
         EJBRequest request1 = new EJBRequest();
+        cmbPersonType.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        request1.setParams(params);
         List<PersonType> personType;
         try {
-            personType = personEJB.getPersonType(request1);
+            personType = utilsEJB.getPersonTypeByCountry(request1);
             loadGenericCombobox(personType, cmbPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getIssuerPersonId().getPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -315,19 +330,18 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
-    private void loadCmbDocumentsPersonType(Integer evenInteger, Integer documentPersonTypeId) {
+    private void loadCmbDocumentsPersonType(Integer evenInteger, Integer documentsPersonTypeId) {
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
-        params.put(QueryConstants.PARAM_DOCUMENT_PERSON_TYPE_ID, documentPersonTypeId);
+        params.put(QueryConstants.PARAM_DOCUMENTS_PERSON_TYPE_ID, documentsPersonTypeId);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
+            documentsPersonType = personEJB.getDocumentsPersonType(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getIssuerPersonId().getPersonTypeId().getId(): 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -336,7 +350,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
 
     private void loadCmbIssuerType(Integer evenInteger) {
@@ -354,20 +367,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         }
     }
     
-    private void loadCmbCountry(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<Country> country;
-        try {
-            country = utilsEJB.getCountries(request1);
-            loadGenericCombobox(country, cmbCountry, "name", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getCountryId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-        } catch (GeneralException ex) {
-            showError(ex);
-        } catch (NullParameterException ex) {
-            showError(ex);
-        }
-    }
 
     private Object getSelectedItem() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

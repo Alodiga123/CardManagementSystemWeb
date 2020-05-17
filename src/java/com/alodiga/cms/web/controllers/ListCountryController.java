@@ -4,6 +4,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -14,6 +15,8 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -27,7 +30,7 @@ public class ListCountryController extends GenericAbstractListController<Country
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtAlias;
+    private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private List<Country> countries = null;
 
@@ -132,12 +135,34 @@ public class ListCountryController extends GenericAbstractListController<Country
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtAlias.setText("");
+        txtName.setText("");
+    }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     @Override
     public List<Country> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Country> countriesaux = new ArrayList<Country>();
+        Country country;
+        try {
+            if (filter != null && !filter.equals("")) {
+                country = utilsEJB.searchCountry(filter);
+                countriesaux.add(country);
+            } else {
+                return countries;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListCountryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return countriesaux;
     }
 
     @Override

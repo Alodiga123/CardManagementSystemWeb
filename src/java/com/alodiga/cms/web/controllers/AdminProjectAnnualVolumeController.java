@@ -24,6 +24,8 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -33,10 +35,10 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Combobox cmbYear;
-    private Textbox txtAccountsNumber;
-    private Textbox txtActiveCardNumber;
-    private Textbox txtAverageLoad;
-    private Textbox txtAverageCardBalance;
+    private Intbox intAccountsNumber;
+    private Intbox intActiveCardNumber;
+    private Doublebox dbxAverageLoad;
+    private Doublebox dbxAverageCardBalance;
     private ProgramEJB programEJB = null;
     private ProjectAnnualVolume projectAnnualVolumeParam;
     private Button btnSave;
@@ -47,7 +49,6 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        projectAnnualVolumeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (ProjectAnnualVolume) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
            projectAnnualVolumeParam = null;                    
@@ -82,18 +83,18 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     }
 
     public void clearFields() {
-        txtAccountsNumber.setRawValue(null);
-        txtActiveCardNumber.setRawValue(null);
-        txtAverageLoad.setRawValue(null);
-        txtAverageCardBalance.setRawValue(null);
+        intAccountsNumber.setRawValue(null);
+        intActiveCardNumber.setRawValue(null);
+        dbxAverageLoad.setRawValue(null);
+        dbxAverageCardBalance.setRawValue(null);
     }
     
     private void loadFields(ProjectAnnualVolume projectAnnualVolume) {
     try {
-            txtAccountsNumber.setValue(projectAnnualVolume.getAccountsNumber().toString());
-            txtActiveCardNumber.setValue(projectAnnualVolume.getActiveCardNumber().toString());
-            txtAverageLoad.setValue(projectAnnualVolume.getAverageLoad().toString());
-            txtAverageCardBalance.setValue(projectAnnualVolume.getAverageCardBalance().toString());  
+            intAccountsNumber.setValue(projectAnnualVolume.getAccountsNumber());
+            intActiveCardNumber.setText(projectAnnualVolume.getActiveCardNumber().toString());
+            dbxAverageLoad.setValue(projectAnnualVolume.getAverageLoad().floatValue());
+            dbxAverageCardBalance.setValue(projectAnnualVolume.getAverageCardBalance().floatValue());  
                  
         } catch (Exception ex) {
             showError(ex);
@@ -101,26 +102,26 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     }
 
     public void blockFields() {
-        txtAccountsNumber.setReadonly(true);
-        txtActiveCardNumber.setReadonly(true);
-        txtAverageLoad.setReadonly(true);
-        txtAverageCardBalance.setReadonly(true);
+        intAccountsNumber.setReadonly(true);
+        intActiveCardNumber.setReadonly(true);
+        dbxAverageLoad.setReadonly(true);
+        dbxAverageCardBalance.setReadonly(true);
         btnSave.setVisible(false);
         cmbYear.setDisabled(true);
     }
     
     public Boolean validateEmpty() {
-        if (txtAccountsNumber.getText().isEmpty()) {
-            txtAccountsNumber.setFocus(true);
+        if (intAccountsNumber.getText().isEmpty()) {
+            intAccountsNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtActiveCardNumber.getText().isEmpty()) {
-            txtActiveCardNumber.setFocus(true);
+        } else if (intActiveCardNumber.getText().isEmpty()) {
+            intActiveCardNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtAverageLoad.getText().isEmpty()) {
-            txtAverageLoad.setFocus(true);
+        } else if (dbxAverageLoad.getText().isEmpty()) {
+            dbxAverageLoad.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtAverageCardBalance.getText().isEmpty()) {
-            txtAverageCardBalance.setFocus(true);
+        } else if (dbxAverageCardBalance.getText().isEmpty()) {
+            dbxAverageCardBalance.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -177,10 +178,10 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     public ProjectAnnualVolume CreateProjectAnnualVolume(Program program, ProjectAnnualVolume projectAnnualVolume) {
         projectAnnualVolume.setProgramId(program);
         projectAnnualVolume.setYear(Integer.parseInt(cmbYear.getSelectedItem().getValue().toString()));
-        projectAnnualVolume.setAccountsNumber(Integer.parseInt(txtAccountsNumber.getText()));
-        projectAnnualVolume.setActiveCardNumber(Integer.parseInt(txtActiveCardNumber.getText()));
-        projectAnnualVolume.setAverageLoad(Float.parseFloat(txtAverageLoad.getValue()));
-        projectAnnualVolume.setAverageCardBalance(Float.parseFloat(txtAverageCardBalance.getValue()));
+        projectAnnualVolume.setAccountsNumber(intAccountsNumber.getValue());
+        projectAnnualVolume.setActiveCardNumber(intActiveCardNumber.getValue());
+        projectAnnualVolume.setAverageLoad(dbxAverageLoad.getValue().floatValue());
+        projectAnnualVolume.setAverageCardBalance(dbxAverageCardBalance.getValue().floatValue());
         return projectAnnualVolume;
     }
 
@@ -211,10 +212,10 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(projectAnnualVolumeParam);
-                txtAccountsNumber.setDisabled(true);
-                txtActiveCardNumber.setDisabled(true);
-                txtAverageLoad.setDisabled(true);
-                txtAverageCardBalance.setDisabled(true);
+                intAccountsNumber.setDisabled(true);
+                intActiveCardNumber.setDisabled(true);
+                dbxAverageLoad.setDisabled(true);
+                dbxAverageCardBalance.setDisabled(true);
                 loadCmbYear(eventType);
                 blockFields();
                 break;
