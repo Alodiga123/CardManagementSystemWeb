@@ -63,6 +63,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     private RequestEJB requestEJB = null;
     private CardEJB cardEJB = null;
     private List<Card> plasticCard = null;
+    private List<PlastiCustomizingRequestHasCard> plasticCustomerCard = null;
     private PlasticCustomizingRequest plastiCustomerParam;
     private Product product = null;
 
@@ -194,6 +195,38 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
 
         } catch (Exception ex) {
             showError(ex);
+        }
+    }
+
+    public void getDataPlastic() {
+        plasticCustomerCard = new ArrayList<PlastiCustomizingRequestHasCard>();
+
+        try {
+            EJBRequest statusId = new EJBRequest();
+            statusId = new EJBRequest();
+            statusId.setParam(Constants.STATUS_CARDS_REQUESTED);
+            CardStatus cardsRequested = utilsEJB.loadCardStatus(statusId);
+
+            EJBRequest productId = new EJBRequest();
+            Map params = new HashMap();
+            params.put(QueryConstants.PARAM_PROGRAM_ID, productId);
+
+            EJBRequest request2 = new EJBRequest();
+            params = new HashMap();
+            params.put(QueryConstants.PARAM_PROGRAM_ID, plastiCustomerParam.getProgramId().getId());
+            params.put(Constants.PRODUCT_KEY, ((Product) cmbProduct.getSelectedItem().getValue()).getId());
+            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, cardsRequested.getId());
+            request2.setParams(params);
+            
+            plasticCustomerCard = requestEJB.getPlastiCustomizingRequestHasCard(request2);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListPlasticCardControllers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (EmptyListException ex) {
+            Logger.getLogger(ListPlasticCardControllers.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
