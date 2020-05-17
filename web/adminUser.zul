@@ -60,8 +60,8 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="270px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                       </row>
+                                                            <intbox id="intIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
+                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.user.first.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.user.last.name')}" sclass="lblbold"/>

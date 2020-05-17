@@ -106,15 +106,15 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtDaysBeforeExpiration" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <intbox id="intDaysBeforeExpiration" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtDaysToInactivate" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <intbox id="intDaysToInactivate" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtDaysToActivate" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <intbox id="intDaysToActivate" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
@@ -125,11 +125,11 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtDaysToUse" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <intbox id="intDaysToUse" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtDaysToWithdrawCard" width="270px" maxlength="4" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <intbox id="intDaysToWithdrawCard" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
