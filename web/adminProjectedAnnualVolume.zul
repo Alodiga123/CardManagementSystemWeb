@@ -33,15 +33,15 @@
                                                         <row>
                                                             <combobox id="cmbYear" width="200px" mold="rounded" readonly="true" />
                                                             <intbox id="intAccountsNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
-                                                            <textbox id="txtActiveCardNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <intbox id="intActiveCardNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.average.load')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.average.card.balance')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtAverageLoad" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtAverageCardBalance" width="240px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <doublebox id="dbxAverageLoad" width="240px" constraint="no negative"  format="#,##0.##" maxlength="25"/>
+                                                            <doublebox id="dbxAverageCardBalance" width="240px" constraint="no negative"  format="#,##0.##" maxlength="7"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

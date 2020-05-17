@@ -67,7 +67,7 @@
                                                        </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtIdentificationNumber" width="270px" maxlength="40"/>
+                                                                <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
@@ -87,7 +87,7 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <intbox id="txtBinNumber" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="11"/>
+                                                                <intbox id="intBinNumber" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
@@ -128,7 +128,7 @@
                                                         </row>
                                                         <row>
                                                             <textbox id="txtWebSite" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
-                                                            <textbox id="txtFaxNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="40"/> 
+                                                            <intbox id="intFaxNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="20"/> 
                                                             <textbox id="txtPersonContactName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                         </row>
                                                         <row>

@@ -4,6 +4,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -17,11 +18,12 @@ import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -31,7 +33,7 @@ public class ListRequestTypeController extends GenericAbstractListController<Req
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtName;
+    private Textbox txtDescription;
     private UtilsEJB utilsEJB = null;
     private List<RequestType> requestTypes = null;
     private User currentUser;
@@ -71,17 +73,6 @@ public class ListRequestTypeController extends GenericAbstractListController<Req
         }
     }
 
-    public List<RequestType> getFilteredList(String filter) {
-        List<RequestType> requestTypeAux = new ArrayList<RequestType>();
-        for (Iterator<RequestType> i = requestTypes.iterator(); i.hasNext();) {
-            RequestType tmp = i.next();
-            String field = tmp.getDescription();
-            if (field.indexOf(filter.trim().toLowerCase()) >= 0) {
-                requestTypeAux.add(tmp);
-            }
-        }
-        return requestTypeAux;
-    }
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
@@ -97,16 +88,40 @@ public class ListRequestTypeController extends GenericAbstractListController<Req
             showError(ex);
         }
     }
-
+   
     public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
+        txtDescription.setText("");
     }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtDescription.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    @Override
+    public List<RequestType> getFilterList(String filter) {
+        List<RequestType> requestTypeaux = new ArrayList<RequestType>();
+        RequestType requestType;
+        try {
+            if (filter != null && !filter.equals("")) {
+                requestType = utilsEJB.searchRequestType(filter);
+                requestTypeaux.add(requestType);
+            } else {
+                return requestTypes;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListRequestTypeController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return requestTypeaux;
+    }
+
 
     public void startListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public List<RequestType> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -139,5 +154,7 @@ public class ListRequestTypeController extends GenericAbstractListController<Req
            showError(ex);
         }
     }
-
+    public void loadList(List<RequestType> list) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
