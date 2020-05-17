@@ -3,6 +3,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -14,6 +15,8 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -27,7 +30,7 @@ public class ListStateController extends GenericAbstractListController<State> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtAlias;
+    private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private List<State> state = null;
 
@@ -74,7 +77,7 @@ public class ListStateController extends GenericAbstractListController<State> {
                 for (State state : list) {
                     item = new Listitem();
                     item.setValue(state);
-                    item.appendChild(new Listcell(state.getName()));
+                    item.appendChild(new Listcell(state.getName().toString()));
                     item.appendChild(new Listcell(state.getCountryId().getName()));               
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, state) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, state) : new Listcell());
@@ -129,13 +132,33 @@ public class ListStateController extends GenericAbstractListController<State> {
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtAlias.setText("");
+        txtName.setText("");
     }
 
-
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
     @Override
     public List<State> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         List<State> stateaux = new ArrayList<State>();
+        State states;
+        try {
+            if (filter != null && !filter.equals("")) {
+                states = utilsEJB.searchState(filter);
+                stateaux.add(states);
+            } else {
+                return state; 
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListStateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return stateaux;
     }
 
     @Override

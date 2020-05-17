@@ -4,6 +4,7 @@ import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -15,6 +16,8 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -28,7 +31,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtDescription;
+    private Textbox txtName;
     private RequestEJB requestEJB = null;
     private List<CollectionsRequest> collectionsRequest = null;
 
@@ -133,18 +136,37 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtDescription.setText("");
+        txtName.setText("");
     }
 
-//    public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilteredList(txtAlias.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
+public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
+    @Override
     public List<CollectionsRequest> getFilterList(String filter) {
+        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
+        CollectionsRequest collectionsRequests;
+        try {
+            if (filter != null && !filter.equals("")) {
+                collectionsRequests = requestEJB.searchCollectionsRequest(filter);
+                collectionsRequestaux.add(collectionsRequests);
+            } else {
+                return collectionsRequest;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListCollectionsRequestsController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return collectionsRequestaux;
+    }
+    
+    public void loadList(List<CollectionsRequest> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
