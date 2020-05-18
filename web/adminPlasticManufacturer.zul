@@ -69,7 +69,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="40"/>
+                                                                <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
@@ -91,7 +91,7 @@
                                                                 <textbox id="txtEmailManufacturer" width="270px" maxlength="40" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <textbox id="txtPhoneManufacturer" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <intbox id="intPhoneManufacturer" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
                                                             <textbox id="txtContactPerson" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
                                                         </row>
                                                         <row>

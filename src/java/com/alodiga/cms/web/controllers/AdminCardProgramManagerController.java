@@ -32,6 +32,8 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbarbutton;
@@ -39,12 +41,12 @@ import org.zkoss.zul.Toolbarbutton;
 public class AdminCardProgramManagerController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtIdentificationNumber;
+    private Intbox intIdentificationNumber;
+    private Intbox intPhoneNumber;
+    private Doublebox dbxPaidInCapital;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
-    private Textbox txtPhoneNumber;
     private Textbox txtRegistryNumber;
-    private Textbox txtPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
     private Tab tabAddressCardProgramManager;
@@ -128,11 +130,11 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         txtEnterpriseName.setRawValue(null);
         txtDateInscriptionRegister.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
-        txtPaidInCapital.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
         txtWebSite.setRawValue(null);
         txtEmail.setRawValue(null);
-        txtIdentificationNumber.setRawValue(null);
+        dbxPaidInCapital.setRawValue(null);
+        intPhoneNumber.setRawValue(null);
+        intIdentificationNumber.setRawValue(null);
     }
 
     public void loadFields(LegalPerson legalPerson) {
@@ -141,8 +143,8 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             txtEnterpriseName.setText(legalPerson.getEnterpriseName());
             txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
             txtRegistryNumber.setText(legalPerson.getRegisterNumber());
-            txtPaidInCapital.setText(legalPerson.getPayedCapital().toString());
-            txtPhoneNumber.setValue(legalPerson.getEnterprisePhone());
+            dbxPaidInCapital.setValue(legalPerson.getPayedCapital().floatValue());
+            intPhoneNumber.setText(legalPerson.getEnterprisePhone());
             txtWebSite.setValue(legalPerson.getWebSite());
             if (txtEmail != null) {
                 EJBRequest request1 = new EJBRequest();
@@ -153,7 +155,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
                 txtEmail.setValue(legalPerson.getPersonId().getEmail());
             }
             txtEmail.setValue(legalPerson.getPersonId().getEmail());
-            txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
+            intIdentificationNumber.setText(legalPerson.getIdentificationNumber());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -164,32 +166,32 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         txtEnterpriseName.setReadonly(true);
         txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
-        txtPaidInCapital.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
+        dbxPaidInCapital.setReadonly(true);
+        intPhoneNumber.setReadonly(true);
+        intIdentificationNumber.setReadonly(true);
         txtWebSite.setReadonly(true);
         txtEmail.setReadonly(true);
         cmbEconomicActivity.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
-        txtIdentificationNumber.setReadonly(true);
         cmbCountry.setDisabled(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentificationNumber.getText().isEmpty()) {
-            txtIdentificationNumber.setFocus(true);
+        if (intIdentificationNumber.getText().isEmpty()) {
+            intIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
+        } else if (intPhoneNumber.getText().isEmpty()) {
+            intPhoneNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPaidInCapital.getText().isEmpty()) {
-            txtPaidInCapital.setFocus(true);
+        } else if (dbxPaidInCapital.getText().isEmpty()) {
+            dbxPaidInCapital.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -234,12 +236,12 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             legalPerson.setEnterpriseName(txtEnterpriseName.getText());
             legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             legalPerson.setRegisterNumber(txtRegistryNumber.getText());
-            legalPerson.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
-            legalPerson.setEnterprisePhone(txtPhoneNumber.getText());
+            legalPerson.setPayedCapital(dbxPaidInCapital.getValue().floatValue());
+            legalPerson.setEnterprisePhone(intPhoneNumber.getValue().toString());
             legalPerson.setWebSite(txtWebSite.getText());
             legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
             legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
+            legalPerson.setIdentificationNumber(intIdentificationNumber.getValue().toString());
             legalPerson = utilsEJB.saveLegalPerson(legalPerson);
             cardProgramManager = legalPerson;
             

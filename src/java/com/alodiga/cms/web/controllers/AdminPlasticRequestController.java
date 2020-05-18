@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -32,6 +33,8 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Tab;
+import org.zkoss.zul.Window;
 
 public class AdminPlasticRequestController extends GenericAbstractAdminController {
 
@@ -47,10 +50,14 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     private ProgramEJB programEJB = null;
     private PersonEJB personEJB = null;
     private Button btnSave;
-    private Integer eventType;
+    public static Integer eventType;
     private Toolbarbutton tbbTitle;
     private StatusPlasticCustomizingRequest statusPending;
     public static PlasticCustomizingRequest plasticCustomer = null;
+    private Program program = null;
+    private Tab tabPlasticCard;
+    private Tab tabFile;
+    public String adminPage = "";
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -70,16 +77,22 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 tbbTitle.setLabel(Labels.getLabel("cms.common.plasticRequest.edit"));
+                tabPlasticCard.setDisabled(false);
+                tabFile.setDisabled(false);
                 break;
             case WebConstants.EVENT_VIEW:
                 tbbTitle.setLabel(Labels.getLabel("cms.common.plasticRequest.view"));
+                tabPlasticCard.setDisabled(false);
+                tabFile.setDisabled(false);
                 break;
             case WebConstants.EVENT_ADD:
+                tabPlasticCard.setDisabled(true);
+                tabFile.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.common.plasticRequest.add"));
                 break;
             default:
                 break;
-        }
+        }            
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
@@ -161,11 +174,13 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             } else {
                 plasticCustomizingRequest.setUpdateDate(new Timestamp(new Date().getTime()));
             }
-            plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);
+            plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);         
             this.showMessage("sp.common.save.success", false, null);
-
             plasticCustomer = plasticCustomizingRequest;
             btnSave.setVisible(false);
+            tabPlasticCard.setDisabled(false);
+            tabFile.setDisabled(false);
+            Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
         } catch (Exception ex) {
             showError(ex);
         }
