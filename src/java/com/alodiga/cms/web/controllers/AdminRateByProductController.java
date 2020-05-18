@@ -7,7 +7,6 @@ import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.RateByProgram;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -16,7 +15,6 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 
 import org.zkoss.zul.Toolbarbutton;

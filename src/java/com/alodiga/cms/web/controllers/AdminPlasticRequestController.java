@@ -102,6 +102,10 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     public PlasticCustomizingRequest getPlasticCustomizingRequest() {
         return this.plasticCustomer;
     }
+    
+    public Integer getEventType() {
+        return this.eventType;
+    }
 
     public void clearFields() {
         dtbRequestDate.setRawValue(null);
