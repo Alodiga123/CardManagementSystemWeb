@@ -28,7 +28,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Window;
 
-public class AdminAddNetworkController extends GenericAbstractAdminController {
+public class AdminProgramHasNetworkController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Combobox cmbCountry;
@@ -38,7 +38,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     private ProgramHasNetwork programHasNetworksParam;
     private Button btnSave;
     private Button btnAdd;
-    public Window winAddNetwork;
+    public Window winProgramHasNetwork;
     private Integer eventType;
     Map params = null;
 
@@ -192,7 +192,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnBack() {
-        winAddNetwork.detach();
+        winProgramHasNetwork.detach();
     }
 
     public void loadData() {
