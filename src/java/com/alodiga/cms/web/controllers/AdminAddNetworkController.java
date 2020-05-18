@@ -45,6 +45,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");
@@ -56,12 +57,12 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
                 programHasNetworksParam = null;
                 break;
         }
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        if (eventType == WebConstants.EVENT_ADD) {
-            programHasNetworksParam = null;
-        } else {
-            programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");
-        }
+//        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+//        if (eventType == WebConstants.EVENT_ADD) {
+//            programHasNetworksParam = null;
+//        } else {
+//            programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");
+//        }
         initialize();
     }
 
