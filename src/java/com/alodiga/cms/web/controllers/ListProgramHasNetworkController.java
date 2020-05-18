@@ -1,6 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -8,12 +8,11 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.AccountProperties;
-import com.cms.commons.models.AccountSegment;
+import com.cms.commons.models.Program;
+import com.cms.commons.models.ProgramHasNetwork;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -31,13 +31,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListAccountSegmentController extends GenericAbstractListController<AccountSegment> {
+public class ListProgramHasNetworkController extends GenericAbstractListController<ProgramHasNetwork> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private CardEJB cardEJB = null;
-    private List<AccountSegment> accountSegmentList = null;
-    private Button btnSave;
+    private Textbox txtName;
+    private UtilsEJB utilsEJB = null;
+    private List<ProgramHasNetwork> programHasNetworkList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -47,12 +47,12 @@ public class ListAccountSegmentController extends GenericAbstractListController<
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateAccountSegment", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(accountSegmentList);
+                loadDataList(programHasNetworkList);
             }
         });
     }
@@ -65,11 +65,11 @@ public class ListAccountSegmentController extends GenericAbstractListController<
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminAccountSegment.zul";
-            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            adminPage = "/adminProgramHasNetwork.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            if (accountSegmentList != null) {
-               loadDataList(accountSegmentList);
+            if (programHasNetworkList != null) {
+               loadDataList(programHasNetworkList);
             }
         } catch (Exception ex) {
             showError(ex);
@@ -81,7 +81,7 @@ public class ListAccountSegmentController extends GenericAbstractListController<
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", accountSegmentList);
+            paramsPass.put("object", programHasNetworkList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -89,25 +89,29 @@ public class ListAccountSegmentController extends GenericAbstractListController<
         }
     }
 
-    public void loadDataList(List<AccountSegment> list) {
+    public void onClick$btnDelete() {
+    }
+
+    public void loadDataList(List<ProgramHasNetwork> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (AccountSegment accountSegment : list) {
+                //btnDownload.setVisible(true);
+                for (ProgramHasNetwork programHasNetwork : list) {
                     item = new Listitem();
-                    item.setValue(accountSegment);
-                    item.appendChild(new Listcell(accountSegment.getAccountPropertiesId().getIdentifier().toString()));
-                    item.appendChild(new Listcell(accountSegment.getDescription()));
-                    item.appendChild(new Listcell(accountSegment.getLenghtSegment().toString()));
-                    item.appendChild(createButtonEditModal(accountSegment));
-                    item.appendChild(createButtonViewModal(accountSegment));
+                    item.setValue(programHasNetwork);
+                    item.appendChild(new Listcell(programHasNetwork.getNetworkId().getCountryId().getName()));
+                    item.appendChild(new Listcell(programHasNetwork.getNetworkId().getName()));
+                    item.appendChild(createButtonEditModal(programHasNetwork));
+                    item.appendChild(createButtonViewModal(programHasNetwork));
                     item.setParent(lbxRecords);
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -170,20 +174,18 @@ public class ListAccountSegmentController extends GenericAbstractListController<
     }
 
     public void getData() {
-        accountSegmentList = new ArrayList<AccountSegment>();
-        AccountProperties accountProperties = null;
-        AccountSegment accountSegment = null;
-        //Propiedades Cuenta
+        Program program = null;
         try {
-            AdminAccountPropertiesController adminAccountProperties = new AdminAccountPropertiesController();
-            if (adminAccountProperties.getAccountPropertiesParent() != null) {
-                accountProperties = adminAccountProperties.getAccountPropertiesParent();
+             //Programa principal
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.ACCOUNT_PROPERTIES_KEY, accountProperties.getId());
+            params.put(Constants.PROGRAM_KEY, program.getId());
             request.setParams(params);
-            accountSegmentList = cardEJB.getAccountSegmentByAccountProperties(request);
+            programHasNetworkList = utilsEJB.getProgramHasNetworkByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -191,12 +193,13 @@ public class ListAccountSegmentController extends GenericAbstractListController<
         } catch (GeneralException ex) {
             showError(ex);
         }
-    
-    }    
+    }
 
     private void showEmptyList() {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.setParent(lbxRecords);
@@ -204,18 +207,20 @@ public class ListAccountSegmentController extends GenericAbstractListController<
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.network.list"));
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public List<AccountSegment> getFilterList(String filter) {
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
+
+    @Override
+    public List<ProgramHasNetwork> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
-
-    
-
-

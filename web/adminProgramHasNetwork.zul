@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAddNetwork" title="${c:l('cms.tab.NetworkProgramMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminAddNetworkController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winProgramHasNetwork" title="${c:l('cms.tab.NetworkProgramMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminProgramHasNetworkController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">

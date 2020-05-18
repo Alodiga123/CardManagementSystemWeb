@@ -8,12 +8,9 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Issuer;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -25,10 +22,8 @@ import com.cms.commons.models.ComercialAgency;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.Employee;
-import com.cms.commons.models.IssuerType;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
-import com.cms.commons.models.PersonType;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -37,7 +32,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import static org.apache.commons.codec.digest.DigestUtils.md5;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Comboitem;
@@ -158,11 +152,12 @@ public class AdminUserController extends GenericAbstractAdminController {
                 }
                 lblAuthorizeExtAlodiga.setValue(phonePersonEmployeeAuthorize.getExtensionPhoneNumber());
             }
-//            if (user.getEnabled() == true) {
-//                rEnabledYes.setChecked(true);
-//            } else {
-//                rEnabledNo.setChecked(true);
-//            }
+            if (user.getEnabled() == true) {
+                rEnabledYes.setChecked(true);
+            } else {
+                rEnabledNo.setChecked(true);
+            }
+            btnSave.setVisible(true);
         
         } catch (Exception ex) {
             showError(ex);
@@ -274,6 +269,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             user = personEJB.saveUser(user);
             userParam =user;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (WrongValueException ex) {
             showError(ex);
         }
@@ -310,10 +306,10 @@ public class AdminUserController extends GenericAbstractAdminController {
                 txtLogin.setReadonly(true);
                 txtPassword.setReadonly(true);
                 loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 loadCmbEmployee(eventType);
                 loadCmbComercialAgency(eventType);
                 loadCmbAuthorizeEmployee(eventType);
-                onChange$cmbCountry();
                 onChange$cmbEmployee();
                 onChange$cmbAuthorizeEmployee();
                 break;
@@ -344,7 +340,6 @@ public class AdminUserController extends GenericAbstractAdminController {
             default:
                 break;
         }
-    
     }    
     
     private void loadCmbCountry(Integer evenInteger) {
@@ -367,7 +362,12 @@ public class AdminUserController extends GenericAbstractAdminController {
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, userParam.getDocumentsPersonTypeId().getId());
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, userParam.getDocumentsPersonTypeId().getId());
+        }
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
@@ -380,7 +380,6 @@ public class AdminUserController extends GenericAbstractAdminController {
         } catch (NullParameterException ex) {
             showError(ex);
         }
-
     }
     
     private void loadCmbEmployee(Integer evenInteger) {

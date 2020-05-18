@@ -54,7 +54,10 @@
                                                             <label value="${c:l('cms.menu.accountType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtAccount" constraint="no empty" maxlength="40" width="650px"/>
+                                                            <hlayout>
+                                                                <textbox id="txtAccount" constraint="no empty" maxlength="40" width="650px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>

@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -11,8 +10,6 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.AccountType;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -78,7 +75,7 @@ public class ListAccountTypesControllers extends GenericAbstractListController<A
        
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.accountType.list"));
         } catch (Exception ex) {
             showError(ex);
         }

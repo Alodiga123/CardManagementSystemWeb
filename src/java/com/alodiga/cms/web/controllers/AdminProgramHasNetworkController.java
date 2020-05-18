@@ -26,10 +26,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
-public class AdminAddNetworkController extends GenericAbstractAdminController {
+public class AdminProgramHasNetworkController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Combobox cmbCountry;
@@ -38,7 +37,8 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     private ProgramEJB programEJB = null;
     private ProgramHasNetwork programHasNetworksParam;
     private Button btnSave;
-    public Window winAddNetwork;
+    private Button btnAdd;
+    public Window winProgramHasNetwork;
     private Integer eventType;
     Map params = null;
 
@@ -90,11 +90,13 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     }
 
     private void loadFields(ProgramHasNetwork programHasNetwork) {
+        btnAdd.setVisible(false);
     }
 
     public void blockFields() {
         cmbCountry.setDisabled(true);
         btnSave.setVisible(false);
+        btnAdd.setVisible(false);
     }
 
     public Boolean validateEmpty() {
@@ -190,7 +192,7 @@ public class AdminAddNetworkController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnBack() {
-        winAddNetwork.detach();
+        winProgramHasNetwork.detach();
     }
 
     public void loadData() {

@@ -1,28 +1,16 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.RequestEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.ApprovalGeneralRate;
-import com.cms.commons.models.Request;
-import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.User;
-import com.cms.commons.models.StatusApplicant;
-import com.cms.commons.models.StatusRequest;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.net.URL;
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,11 +28,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ListApprovalGeneralRateController extends GenericAbstractListController<ApprovalGeneralRate> {
 

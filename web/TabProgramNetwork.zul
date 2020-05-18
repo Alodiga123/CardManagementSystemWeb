@@ -38,7 +38,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.programMain')}" />
-                                                        <tab id="tabNetwork" label="${c:l('cms.common.netWork')}"/>
+                                                        <tab id="tabNetwork" label="${c:l('cms.common.program.network')}"/>
                                                         <tab id="tabProjectedAnnualVolume" label="${c:l('cms.common.projected.annual.volume')}"/>
                                                     </tabs>
                                                     <tabpanels>
@@ -46,7 +46,7 @@
                                                             <include src="adminProgram.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listNetwork.zul"/>
+                                                            <include src="listProgramHasNetwork.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listProjectedAnnualVolume.zul"/>
