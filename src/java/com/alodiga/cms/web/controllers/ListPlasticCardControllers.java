@@ -19,6 +19,8 @@ import com.cms.commons.models.PlastiCustomizingRequestHasCard;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.ResultPlasticCustomizingRequest;
+import com.cms.commons.models.StatusResultPlasticCustomizing;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -119,8 +121,14 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
                 loadDataList(plasticCard);
             }
         } else {
-            getDataPlastic();
-            loadDataPlasticList(plasticCustomerCard);
+            if (plastiCustomerParam.getPlastiCustomizingRequestHasCard() != null) {
+                getDataPlastic();
+                loadDataPlasticList(plasticCustomerCard);
+            } else {
+                product = (Product) cmbProduct.getSelectedItem().getValue();
+                getData();
+                loadDataList(plasticCard);
+            }
         }
     }
 
@@ -143,16 +151,31 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
             plastiCustomerParam = adminPlasticRequest.getPlasticCustomizingRequest();
         }
         if (eventType == WebConstants.EVENT_ADD) {
-            loadCmbProgram(eventType);
-            loadCmbProduct(WebConstants.EVENT_ADD, plastiCustomerParam.getProgramId().getId());
             lblProgram.setVisible(false);
             lblProduct.setVisible(false);
+            loadCmbProgram(eventType);
+            loadCmbProduct(WebConstants.EVENT_ADD, plastiCustomerParam.getProgramId().getId());
+            onChange$cmbProgram();
         } else {
-            lblProgram.setValue(plastiCustomerParam.getProgramId().getName());
-            lblProduct.setValue(plastiCustomerParam.getPlastiCustomizingRequestHasCard().getCardId().getProductId().getName());
-            cmbProduct.setVisible(false);
-            cmbProgram.setVisible(false);
+            if (plastiCustomerParam.getPlastiCustomizingRequestHasCard() != null) {
+                cmbProduct.setVisible(false);
+                cmbProgram.setVisible(false);
+                lblProgram.setValue(plastiCustomerParam.getProgramId().getName());
+                lblProduct.setValue(plastiCustomerParam.getPlastiCustomizingRequestHasCard().getCardId().getProductId().getName());
+            } else {
+                lblProgram.setVisible(false);
+                lblProduct.setVisible(false);
+                loadCmbProgram(eventType);
+                loadCmbProduct(WebConstants.EVENT_ADD, plastiCustomerParam.getProgramId().getId());
+                onChange$cmbProgram();
+            }
         }
+    }
+
+    public void onChange$cmbProgram() {
+        cmbProduct.setVisible(true);
+        Program program = (Program) cmbProgram.getSelectedItem().getValue();
+        loadCmbProduct(eventType, program.getId());
     }
 
     public void getData() {
@@ -183,7 +206,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
         } catch (RegisterNotFoundException ex) {
             Logger.getLogger(ListPlasticCardControllers.class.getName()).log(Level.SEVERE, null, ex);
         } catch (EmptyListException ex) {
-            Logger.getLogger(ListPlasticCardControllers.class.getName()).log(Level.SEVERE, null, ex);
+            showEmptyList();
         }
     }
 
@@ -250,10 +273,10 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
         } catch (GeneralException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-            Logger.getLogger(ListPlasticCardControllers.class.getName()).log(Level.SEVERE, null, ex);
+            showEmptyList();
         }
     }
-    
+
     public void loadDataPlasticList(List<PlastiCustomizingRequestHasCard> list) {
         try {
             lbxRecords.getItems().clear();
@@ -347,8 +370,9 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
         }
     }
 
-    private void saveCard(List<Card> list) {
+    private void saveCard(List<Card> list) throws RegisterNotFoundException {
         PlastiCustomizingRequestHasCard plastiCustomizingRequestHasCard = null;
+        StatusResultPlasticCustomizing statusResult = null;
         try {
             if (list != null && !list.isEmpty()) {
                 for (Card plasticCard : list) {
@@ -357,6 +381,8 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
                     plastiCustomizingRequestHasCard.setPlasticCustomizingRequestId(plastiCustomerParam);
                     plastiCustomizingRequestHasCard.setCreateDate(new Timestamp(new Date().getTime()));
                     plastiCustomizingRequestHasCard = requestEJB.savePlastiCustomizingRequestHasCard(plastiCustomizingRequestHasCard);
+                    
+                    updateStatusCardDelivered(plasticCard);
                 }
                 this.showMessage("cms.common.msj.assignPlasticCard", false, null);
             }
@@ -365,6 +391,35 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
         } catch (NullParameterException ex) {
             Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void updateStatusCardDelivered(Card card) {
+        CardStatus cardStatus = null;
+        boolean indDelivery = true;
+        try {
+            //Estatus de la tarjeta Entregada
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(Constants.STATUS_CARDS_PERSONALIZED);
+            cardStatus = utilsEJB.loadCardStatus(request1);
+
+            card.setCardStatusId(cardStatus);
+            card = cardEJB.saveCard(card);
+            
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    private void showEmptyList() {
+        Listitem item = new Listitem();
+        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);
     }
 
     private void loadCmbProduct(Integer evenInteger, Long programId) {
