@@ -244,6 +244,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell24.setParent(item24);
         item24.setParent(lbxPermissions);
         
+         //Opción User
+        Listitem item25 = new Listitem();
+        Listcell listCell25 = new Listcell();
+        listCell25.setLabel(Labels.getLabel("cms.menu.user"));
+        listCell25.addEventListener("onClick", new RedirectListener("listUser.zul"));
+        listCell25.setParent(item25);
+        item25.setParent(lbxPermissions);
+        
         //Opción Card Assignment
         Listitem item26 = new Listitem();
         Listcell listCell26 = new Listcell();
@@ -251,14 +259,6 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell26.addEventListener("onClick", new RedirectListener("listCardAssigment.zul"));
         listCell26.setParent(item26);
         item26.setParent(lbxPermissions);
-        
-        //Opción User
-        Listitem item25 = new Listitem();
-        Listcell listCell25 = new Listcell();
-        listCell25.setLabel(Labels.getLabel("cms.menu.user"));
-        listCell25.addEventListener("onClick", new RedirectListener("listUser.zul"));
-        listCell25.setParent(item25);
-        item25.setParent(lbxPermissions);
         
         //Opción Program Owner
         Listitem item27 = new Listitem();
@@ -379,7 +379,15 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell49.setLabel(Labels.getLabel("cms.menu.profile.data"));
         listCell49.addEventListener("onClick", new RedirectListener("listProfileData.zul"));
         listCell49.setParent(item49);
-        item49.setParent(lbxPermissions); 
+        item49.setParent(lbxPermissions);
+        
+        //Opción Network 
+        Listitem item50 = new Listitem();
+        Listcell listCell50 = new Listcell();
+        listCell50.setLabel(Labels.getLabel("cms.menu.network"));
+        listCell50.addEventListener("onClick", new RedirectListener("listNetwork.zul"));
+        listCell50.setParent(item50);
+        item50.setParent(lbxPermissions);
     }
 }
 
