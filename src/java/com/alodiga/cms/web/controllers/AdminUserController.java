@@ -35,6 +35,7 @@ import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
@@ -42,7 +43,7 @@ import org.zkoss.zul.Toolbarbutton;
 public class AdminUserController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtIdentificationNumber;
+    private Intbox  intIdentificationNumber;
     private Textbox txtFirstName;
     private Textbox txtLastName;
     private Textbox txtUserEmail;
@@ -102,7 +103,7 @@ public class AdminUserController extends GenericAbstractAdminController {
     
     
     public void clearFields() {
-        txtIdentificationNumber.setRawValue(null);
+        intIdentificationNumber.setRawValue(null);
         txtFirstName.setRawValue(null);
         txtLastName.setRawValue(null);
         txtUserEmail.setRawValue(null);
@@ -120,7 +121,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         List<PhonePerson> phonePersonEmployeeAuthorizeList = null;
         PhonePerson phonePersonEmployeeAuthorize = null;
         try {
-            txtIdentificationNumber.setText(user.getIdentificationNumber());
+            intIdentificationNumber.setText(user.getIdentificationNumber());
             txtFirstName.setText(user.getFirstNames());
             txtLastName.setText(user.getLastNames());
             txtUserEmail.setText(user.getPersonId().getEmail());
@@ -164,7 +165,7 @@ public class AdminUserController extends GenericAbstractAdminController {
     }     
 
     public void blockFields() {
-        txtIdentificationNumber.setReadonly(true);
+        intIdentificationNumber.setReadonly(true);
         txtFirstName.setReadonly(true);
         txtLastName.setReadonly(true);
         txtUserEmail.setReadonly(true);
@@ -177,8 +178,8 @@ public class AdminUserController extends GenericAbstractAdminController {
         if (txtFirstName.getText().isEmpty()) {
             txtFirstName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtIdentificationNumber.getText().isEmpty()) {
-            txtIdentificationNumber.setFocus(true);
+        } else if (intIdentificationNumber.getText().isEmpty()) {
+            intIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtLastName.getText().isEmpty()) {
             txtLastName.setFocus(true);
@@ -257,8 +258,8 @@ public class AdminUserController extends GenericAbstractAdminController {
             user.setPassword(txtPassword.getText());
             user.setPersonId(person);
             user.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
-            user.setIdentificationNumber(txtIdentificationNumber.getText().toString());
-            user.setCode(txtIdentificationNumber.getText().toString());
+            user.setIdentificationNumber(intIdentificationNumber.getText().toString());
+            user.setCode(intIdentificationNumber.getText().toString());
             user.setFirstNames(txtFirstName.getText());
             user.setLastNames(txtLastName.getText());
             user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());            
@@ -298,7 +299,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(userParam);
-                txtIdentificationNumber.setReadonly(true);
+                intIdentificationNumber.setReadonly(true);
                 txtFirstName.setReadonly(true);
                 txtLastName.setReadonly(true);
                 txtUserEmail.setReadonly(true);
@@ -314,7 +315,7 @@ public class AdminUserController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(userParam);
-                txtIdentificationNumber.setReadonly(true);
+                intIdentificationNumber.setReadonly(true);
                 txtFirstName.setReadonly(true);
                 txtLastName.setReadonly(true);
                 txtUserEmail.setReadonly(true);

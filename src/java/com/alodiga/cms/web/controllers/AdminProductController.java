@@ -37,6 +37,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
@@ -49,11 +50,11 @@ public class AdminProductController extends GenericAbstractAdminController {
     private ProgramEJB programEJB = null;
     private Product productParam;
     private Textbox txtName;
-    private Textbox txtDaysBeforeExpiration;
-    private Textbox txtDaysToInactivate;
-    private Textbox txtDaysToActivate;
-    private Textbox txtDaysToUse;
-    private Textbox txtDaysToWithdrawCard;
+    private Intbox  intDaysBeforeExpiration;
+    private Intbox  intDaysToInactivate;
+    private Intbox  intDaysToActivate;
+    private Intbox  intDaysToUse;
+    private Intbox  intDaysToWithdrawCard;
     private Datebox dtbBeginDateValidity;
     private Datebox dtbEndDateValidity;
     private Combobox cmbCountry;
@@ -123,11 +124,11 @@ public class AdminProductController extends GenericAbstractAdminController {
 
     public void clearFields() {
         txtName.setRawValue(null);
-        txtDaysBeforeExpiration.setRawValue(null);
-        txtDaysToInactivate.setRawValue(null);
-        txtDaysToActivate.setRawValue(null);
-        txtDaysToUse.setRawValue(null);
-        txtDaysToWithdrawCard.setRawValue(null);
+        intDaysBeforeExpiration.setRawValue(null);
+        intDaysToInactivate.setRawValue(null);
+        intDaysToActivate.setRawValue(null);
+        intDaysToUse.setRawValue(null);
+        intDaysToWithdrawCard.setRawValue(null);
         dtbBeginDateValidity.setRawValue(null);
         dtbEndDateValidity.setRawValue(null);
     }
@@ -143,11 +144,11 @@ public class AdminProductController extends GenericAbstractAdminController {
     private void loadFields(Product product) {
         try {
             txtName.setText(product.getName());
-            txtDaysBeforeExpiration.setValue(product.getDaysBeforeExpiration().toString());
-            txtDaysToInactivate.setValue(product.getDaysToInactivate().toString());
-            txtDaysToActivate.setValue(product.getDaysToActivate().toString());
-            txtDaysToUse.setValue(product.getDaysToUse().toString());
-            txtDaysToWithdrawCard.setValue(product.getDaysToWithdrawCard().toString());
+            intDaysBeforeExpiration.setValue(product.getDaysBeforeExpiration().intValue());
+            intDaysToInactivate.setValue(product.getDaysToInactivate().intValue());
+            intDaysToActivate.setValue(product.getDaysToActivate().intValue());
+            intDaysToUse.setValue(product.getDaysToUse().intValue());
+            intDaysToWithdrawCard.setValue(product.getDaysToWithdrawCard().intValue());
             dtbBeginDateValidity.setValue(product.getBeginDateValidity());
             dtbEndDateValidity.setValue(product.getEndDateValidity());
             switch (product.getValidityMonths()) {
@@ -222,11 +223,11 @@ public class AdminProductController extends GenericAbstractAdminController {
                 product.setInternationalCurrencyId((Currency) cmbInternationalCurrency.getSelectedItem().getValue());
             }
             product.setStorageMedioid((StorageMedio) cmbStorageMedio.getSelectedItem().getValue());
-            product.setDaysBeforeExpiration((Integer.parseInt(txtDaysBeforeExpiration.getText())));
-            product.setDaysToInactivate((Integer.parseInt(txtDaysToInactivate.getText())));
-            product.setDaysToActivate((Integer.parseInt(txtDaysToActivate.getText())));
-            product.setDaysToUse((Integer.parseInt(txtDaysToUse.getText())));
-            product.setDaysToWithdrawCard((Integer.parseInt(txtDaysToWithdrawCard.getText())));
+            product.setDaysBeforeExpiration(intDaysBeforeExpiration.getValue());
+            product.setDaysToInactivate(intDaysToInactivate.getValue());
+            product.setDaysToActivate(intDaysToActivate.getValue());
+            product.setDaysToUse(intDaysToUse.getValue());
+            product.setDaysToWithdrawCard(intDaysToWithdrawCard.getValue());
             product.setBeginDateValidity((dtbBeginDateValidity.getValue()));
             product.setEndDateValidity((dtbEndDateValidity.getValue()));
             product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
@@ -271,20 +272,20 @@ public class AdminProductController extends GenericAbstractAdminController {
         } else if (today.compareTo(dtbEndDateValidity.getValue()) > 0) {
             dtbEndDateValidity.setFocus(true);
             this.showMessage("cms.error.date.endDateValidity", true, null);
-        } else if (txtDaysBeforeExpiration.getText().isEmpty()) {
-            txtDaysBeforeExpiration.setFocus(true);
+        } else if (intDaysBeforeExpiration.getText().isEmpty()) {
+            intDaysBeforeExpiration.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtDaysToActivate.getText().isEmpty()) {
-            txtDaysToActivate.setFocus(true);
+        } else if (intDaysToActivate.getText().isEmpty()) {
+            intDaysToActivate.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtDaysToInactivate.getText().isEmpty()) {
-            txtDaysToInactivate.setFocus(true);
+        } else if (intDaysToInactivate.getText().isEmpty()) {
+            intDaysToInactivate.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtDaysToWithdrawCard.getText().isEmpty()) {
-            txtDaysToWithdrawCard.setFocus(true);
+        } else if (intDaysToWithdrawCard.getText().isEmpty()) {
+            intDaysToWithdrawCard.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtDaysToUse.getText().isEmpty()) {
-            txtDaysToUse.setFocus(true);
+        } else if (intDaysToUse.getText().isEmpty()) {
+            intDaysToUse.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -374,11 +375,11 @@ public class AdminProductController extends GenericAbstractAdminController {
                 r24Months.setDisabled(true);
                 r36Months.setDisabled(true);
                 r48Months.setDisabled(true);
-                txtDaysBeforeExpiration.setReadonly(true);
-                txtDaysToInactivate.setReadonly(true);
-                txtDaysToActivate.setReadonly(true);
-                txtDaysToUse.setReadonly(true);
-                txtDaysToWithdrawCard.setReadonly(true);
+                intDaysBeforeExpiration.setReadonly(true);
+                intDaysToInactivate.setReadonly(true);
+                intDaysToActivate.setReadonly(true);
+                intDaysToUse.setReadonly(true);
+                intDaysToWithdrawCard.setReadonly(true);
                 dtbBeginDateValidity.setReadonly(true);
                 dtbEndDateValidity.setReadonly(true);
                 blockFields();

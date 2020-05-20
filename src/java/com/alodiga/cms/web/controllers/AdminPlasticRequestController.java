@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -34,7 +33,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Window;
 
 public class AdminPlasticRequestController extends GenericAbstractAdminController {
 

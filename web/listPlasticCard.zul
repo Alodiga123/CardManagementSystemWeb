@@ -54,7 +54,6 @@
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
-
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Download button-->
