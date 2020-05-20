@@ -100,7 +100,6 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             if (eventType == WebConstants.EVENT_ADD) {
                 Date today = new Date();
-
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(WebConstants.STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING);
                 statusPending = requestEJB.loadStatusPlasticCustomizingRequest(request1);
@@ -180,7 +179,6 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             btnSave.setVisible(false);
             tabPlasticCard.setDisabled(false);
             tabFile.setDisabled(false);
-            Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
         } catch (Exception ex) {
             showError(ex);
         }

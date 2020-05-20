@@ -20,9 +20,9 @@
                                             <!--Filters for Searching-->
                                             <grid fixedLayout="true">
                                                 <columns>
-                                                    <column label="" width="330px"/>
-                                                    <column label="" width="330px"/>
-                                                    <column label="" width="180x"/>
+                                                    <column label="" width="290px"/>
+                                                    <column label="" width="290px"/>
+                                                    <column label="" width="250px"/>
                                                 </columns>
                                                 <rows>
                                                     <row>
@@ -30,9 +30,15 @@
                                                         <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                     </row>
                                                     <row>
-                                                        <combobox id="cmbProgram" width="280px" mold="rounded" readonly="true"/>
-                                                        <combobox id="cmbProduct" width="280px" mold="rounded" readonly="true"/>
-                                                        <button id="btnViewCard" label="${c:l('cms.menu.product.list')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                        <hlayout>
+                                                            <label id="lblProgram" value="" width="230px" style="color:#837E76;"/>
+                                                            <combobox id="cmbProgram" width="230px" mold="rounded" readonly="true"/>
+                                                        </hlayout>
+                                                        <hlayout>
+                                                            <label id="lblProduct" value="" width="230px" style="color:#837E76;"/>
+                                                            <combobox id="cmbProduct" width="230px" mold="rounded" readonly="true"/>
+                                                        </hlayout>
+                                                        <button id="btnViewCard" label="${c:l('cms.menu.product.list')}" width="160px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </row>
                                                 </rows>   
                                             </grid>
