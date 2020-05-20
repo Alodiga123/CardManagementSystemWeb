@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -34,7 +33,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Window;
 
 public class AdminPlasticRequestController extends GenericAbstractAdminController {
 
@@ -100,7 +98,6 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             if (eventType == WebConstants.EVENT_ADD) {
                 Date today = new Date();
-
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(WebConstants.STATUS_PLASTIC_CUSTOMIZING_REQUEST_PENDING);
                 statusPending = requestEJB.loadStatusPlasticCustomizingRequest(request1);
@@ -180,7 +177,6 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             btnSave.setVisible(false);
             tabPlasticCard.setDisabled(false);
             tabFile.setDisabled(false);
-            Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
         } catch (Exception ex) {
             showError(ex);
         }
