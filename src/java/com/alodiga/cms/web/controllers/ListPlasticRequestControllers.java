@@ -70,7 +70,6 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
-        Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
     }
     
