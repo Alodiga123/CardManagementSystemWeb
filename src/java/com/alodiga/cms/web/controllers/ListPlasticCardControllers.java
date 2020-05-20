@@ -155,13 +155,20 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
             lblProduct.setVisible(false);
             loadCmbProgram(eventType);
         } else {
-            cmbProduct.setVisible(false);
-            cmbProgram.setVisible(false);
-            lblProgram.setValue(plasticCustomizingRequestParam.getProgramId().getName());
-            lblProduct.setValue(plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard().getCardId().getProductId().getName());
-            getDataPlastic();
-            loadDataPlasticList(plasticCustomerCard);
-            btnViewCard.setVisible(false);
+            if (plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard() != null) {
+                cmbProduct.setVisible(false);
+                cmbProgram.setVisible(false);
+                lblProgram.setValue(plasticCustomizingRequestParam.getProgramId().getName());
+                lblProduct.setValue(plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard().getCardId().getProductId().getName());
+                getDataPlastic();
+                loadDataPlasticList(plasticCustomerCard);
+                btnViewCard.setVisible(false);
+            } else {
+                lblProgram.setVisible(false);
+                lblProduct.setVisible(false);
+                loadCmbProgram(eventType);
+                onChange$cmbProgram();
+            }
         }
     }
 
