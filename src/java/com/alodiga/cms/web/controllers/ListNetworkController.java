@@ -137,39 +137,37 @@ public class ListNetworkController extends GenericAbstractListController<Network
     }
 
     public void onClick$btnSearch() throws InterruptedException {
-//        try {
-//            loadList(getFilterList(txtName.getText()));
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
+        try {
+            loadList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
-//    @Override
-//    public List<Network> getFilterList(String filter) {
-//         List<State> stateaux = new ArrayList<State>();
-//        State states;
-//        try {
-//            if (filter != null && !filter.equals("")) {
-//                states = utilsEJB.searchState(filter);
-//                stateaux.add(states);
-//            } else {
-//                return state; 
-//            }
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListNetworkController.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//        return stateaux;
-//    }
+    @Override
+    public List<Network> getFilterList(String filter) {
+         List<Network> networkaux = new ArrayList<Network>();
+        Network networks;
+        try {
+            if (filter != null && !filter.equals("")) {
+                networks = utilsEJB.searchNetwork(filter);
+                networkaux.add(networks);
+            } else {
+                return network; 
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListNetworkController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return networkaux;
+    }
 
     @Override
     public void loadDataList(List<Network> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public List<Network> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+  
     
 
 }
