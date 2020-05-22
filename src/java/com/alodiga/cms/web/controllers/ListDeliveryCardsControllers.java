@@ -70,7 +70,7 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
             EJBRequest request2 = new EJBRequest();
             Map params = new HashMap();
             params = new HashMap();
-            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.STATUS_CARDS_PERSONALIZED);
+            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.CARD_STATUS_PENDING_CUSTOMIZING);
             request2.setParams(params);
 
             card = cardEJB.getCardByStatus(request2);
