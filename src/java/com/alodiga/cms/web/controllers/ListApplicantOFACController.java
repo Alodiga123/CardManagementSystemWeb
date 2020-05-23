@@ -9,21 +9,15 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.alodiga.ws.remittance.services.WSOFACMethodProxy;
-import com.alodiga.ws.remittance.services.WsExcludeListResponse;
-import com.alodiga.ws.remittance.services.WsLoginResponse;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Request;
-import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.User;
 import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,11 +34,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ListApplicantOFACController extends GenericAbstractListController<ApplicantNaturalPerson> {
 
@@ -249,6 +240,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         try {    
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
@@ -273,6 +265,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         try {    
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

@@ -3,21 +3,18 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.models.Country;
 import com.cms.commons.models.Network;
-import com.cms.commons.models.State;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -31,9 +28,11 @@ public class ListNetworkController extends GenericAbstractListController<Network
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtName;
+    private Textbox txtNetwork;
+    private Textbox txtCountry;
     private UtilsEJB utilsEJB = null;
     private List<Network> network = null;
+    private int optionFilter = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -133,22 +132,67 @@ public class ListNetworkController extends GenericAbstractListController<Network
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
+        txtNetwork.setText("");
+        txtCountry.setText("");
+    }
+    
+    public void onFocus$txtNetwork() {
+        txtCountry.setText("");
+    }
+    
+    public void onFocus$txtCountry() {
+        txtNetwork.setText("");
     }
 
     public void onClick$btnSearch() throws InterruptedException {
+        String txtFilter = "";
         try {
-            loadList(getFilterList(txtName.getText()));
+            if (txtNetwork.getText() != "") {
+                txtFilter = txtNetwork.getText();
+                optionFilter = 1;
+            }
+            else if (txtCountry.getText() != "") {
+                txtFilter = txtCountry.getText();
+                optionFilter = 2;
+            }   
+            loadList(getFilterList(txtFilter));
         } catch (Exception ex) {
             showError(ex);
         }
     }
     @Override
     public List<Network> getFilterList(String filter) {
-         List<Network> networkaux = new ArrayList<Network>();
+        List<Network> networkaux = new ArrayList<Network>();
+        Network networks = null;
+        List<Network> networkList = null;
+        try {
+            if (filter != null && !filter.equals("")) {  
+                if (optionFilter == 1) {
+                    networks = utilsEJB.searchNetwork(filter);
+                    networkaux.add(networks);
+                } else {
+                    networkList = utilsEJB.searchNetworkByCountry(filter);
+                    for (Network n: networkList) {
+                        networkaux.add(n);
+                    }
+                }
+            } else {
+                return network; 
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListNetworkController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return networkaux;
+    }
+    
+    public List<Network> getFilterList(String filter,int optionFilter) {
+        List<Network> networkaux = new ArrayList<Network>();
         Network networks;
         try {
             if (filter != null && !filter.equals("")) {
+                
                 networks = utilsEJB.searchNetwork(filter);
                 networkaux.add(networks);
             } else {
@@ -161,7 +205,7 @@ public class ListNetworkController extends GenericAbstractListController<Network
         }
         return networkaux;
     }
-
+    
     @Override
     public void loadDataList(List<Network> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

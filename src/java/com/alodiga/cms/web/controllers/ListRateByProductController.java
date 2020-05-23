@@ -6,9 +6,6 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import static com.alodiga.cms.web.controllers.ListRateByProgramController.program;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
@@ -295,6 +292,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         try {    
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
@@ -319,6 +317,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         try {    
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

@@ -68,6 +68,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
         try {
             txtSimbol.setText(currency.getSymbol());
             txtName.setText(currency.getName());
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -83,8 +84,7 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        }
-        if (txtSimbol.getText().isEmpty()) {
+        } else if (txtSimbol.getText().isEmpty()) {
             txtSimbol.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
@@ -107,10 +107,10 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
             currency = utilsEJB.saveCurrency(currency);
             currencyParam = currency;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
-
     }
 
     public void onClick$btnSave() {
@@ -141,5 +141,4 @@ public class AdminCurrencyController extends GenericAbstractAdminController {
                 break;
         }
     }
-
 }

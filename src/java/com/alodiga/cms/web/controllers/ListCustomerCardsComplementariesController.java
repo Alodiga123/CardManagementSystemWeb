@@ -9,7 +9,6 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.NaturalCustomer;
-import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -29,7 +28,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -47,7 +45,7 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
         initialize();
         startListener();
     }
-    
+
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateCustomerCardComplementaries", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
@@ -95,7 +93,7 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
         } catch (GeneralException ex) {
             showError(ex);
         }
-    }  
+    }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
@@ -107,8 +105,8 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
-    }    
-    
+    }
+
     public void loadDataList(List<NaturalCustomer> list) {
         try {
             lbxRecords.getItems().clear();
@@ -119,7 +117,7 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
                     item.setValue(naturalCustomer);
                     StringBuilder builder = new StringBuilder(naturalCustomer.getFirstNames());
                     builder.append(" ");
-                    builder.append(naturalCustomer.getLastNames());                    
+                    builder.append(naturalCustomer.getLastNames());
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(naturalCustomer.getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(naturalCustomer.getIdentificationNumber()));
@@ -142,22 +140,23 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
             showError(ex);
         }
     }
-    
+
     public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
+        Listcell listcellEditModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
             });
             button.setParent(listcellEditModal);
@@ -166,8 +165,34 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
         }
         return listcellEditModal;
     }
-    
-       public void onClick$btnAdd() throws InterruptedException {
+
+    public Listcell createButtonViewModal(final Object obg) {
+        Listcell listcellViewModal = new Listcell();
+        try {
+            Button button = new Button();
+            button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
+            button.setClass("open orange");
+            button.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
+                }
+
+            });
+            button.setParent(listcellViewModal);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listcellViewModal;
+    }
+
+    public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
@@ -177,31 +202,6 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
         } catch (Exception ex) {
             this.showMessage("sp.error.general", true, ex);
         }
-    }
-    
-    public Listcell createButtonViewModal(final Object obg) {
-       Listcell listcellViewModal = new Listcell();
-        try {    
-            Button button = new Button();
-            button.setImage("/images/icon-invoice.png");
-            button.setClass("open orange");
-            button.addEventListener("onClick", new EventListener() {
-                @Override
-                public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
-                }
-
-            });
-            button.setParent(listcellViewModal);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return listcellViewModal;
     }
 
     @Override
