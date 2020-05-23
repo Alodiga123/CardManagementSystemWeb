@@ -90,17 +90,14 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
 
         try {
             // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura comoda
-            archivo = new File("/home/usuario/Documentos/archivo_prueba.csv");
+            archivo = new File("/opt/cms/files/archivo_prueba.csv");
             fr = new FileReader(archivo);
             br = new BufferedReader(fr);
             readList = new ArrayList<String[]>();
 
             // Lectura del fichero  
-//            System.out.println("Leyendo el contendio del archivo.txt");
             String linea;
             while ((linea = br.readLine()) != null) {
-
-//                System.out.println(linea);
                 String[] datos = linea.split(";");
                 readList.add(datos);
             }
