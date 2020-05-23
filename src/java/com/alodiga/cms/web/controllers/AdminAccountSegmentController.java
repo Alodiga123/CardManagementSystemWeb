@@ -95,15 +95,13 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
         AdminAccountPropertiesController adminAccountProperties = new AdminAccountPropertiesController();
         if (adminAccountProperties.getAccountPropertiesParent().getId() != null) {
             accountProperties = adminAccountProperties.getAccountPropertiesParent();
-        }
-        
-        if (txtAccountDescription.getText().isEmpty()) {
+        } else if (txtAccountDescription.getText().isEmpty()) {
             txtAccountDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtLengthSegment.getText().isEmpty()) {
             txtLengthSegment.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if(Integer.parseInt(txtLengthSegment.getText()) > (Integer.parseInt(accountProperties.getLenghtAccount().toString()))){
+        } else if (Integer.parseInt(txtLengthSegment.getText()) > (Integer.parseInt(accountProperties.getLenghtAccount().toString()))) {
             txtLengthSegment.setFocus(true);
             this.showMessage("cms.error.lengthSegment", true, null);
         } else {
@@ -144,18 +142,18 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
         } finally {
             try {
 //                if ((accountSegmentList == null) || (_accountSegment != null)) {
-                    //Guardar AccountSegment
-                    if (eventType == 1) {
-                        accountSegment = new AccountSegment();
-                    }
-                    accountSegment.setAccountPropertiesId(accountProperties);
-                    accountSegment.setDescription(txtAccountDescription.getValue());
-                    accountSegment.setLenghtSegment(txtLengthSegment.getValue());
-                    accountSegment = cardEJB.saveAccountSegment(accountSegment);
-                    accountSegmentParam = accountSegment;
+                //Guardar AccountSegment
+                if (eventType == 1) {
+                    accountSegment = new AccountSegment();
+                }
+                accountSegment.setAccountPropertiesId(accountProperties);
+                accountSegment.setDescription(txtAccountDescription.getValue());
+                accountSegment.setLenghtSegment(txtLengthSegment.getValue());
+                accountSegment = cardEJB.saveAccountSegment(accountSegment);
+                accountSegmentParam = accountSegment;
 
-                    this.showMessage("sp.common.save.success", false, null);
-                    btnSave.setVisible(false);
+                this.showMessage("sp.common.save.success", false, null);
+                btnSave.setVisible(false);
 //                }
                 EventQueues.lookup("updateAccountSegment", EventQueues.APPLICATION, true).publish(new Event(""));
             } catch (RegisterNotFoundException ex) {
