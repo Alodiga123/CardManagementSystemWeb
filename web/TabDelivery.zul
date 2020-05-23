@@ -39,6 +39,7 @@
                                                     <tabs>
                                                         <tab id="tabDeliveryRequest" label="${c:l('cms.tab.deliveryRequest')}" />
                                                         <tab id="tabListDeliveryCard" label="${c:l('cms.tab.listdeliveryCard')}"/>
+                                                        <tab id="tabListInventoryCard" label="${c:l('cms.menu.cardInventory')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
@@ -46,6 +47,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listDeliveryCards.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listCardInventory.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
