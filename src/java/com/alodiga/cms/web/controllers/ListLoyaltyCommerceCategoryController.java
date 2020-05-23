@@ -5,7 +5,6 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import com.alodiga.cms.web.controllers.AdminParametersController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -131,6 +130,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
         try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
@@ -155,6 +155,7 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
         try {
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

@@ -1,6 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -8,12 +8,11 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasChannelHasTransaction;
+import com.cms.commons.models.Program;
+import com.cms.commons.models.ProgramHasNetwork;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +31,13 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListLimitAndRestrictionsController extends GenericAbstractListController<ProductHasChannelHasTransaction> {
+public class ListProgramHasNetworkController extends GenericAbstractListController<ProgramHasNetwork> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private ProductEJB productEJB = null;
-    private List<ProductHasChannelHasTransaction> productHasChannelHasTransaction = null;
+    private UtilsEJB utilsEJB = null;
+    private List<ProgramHasNetwork> programHasNetworkList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -48,12 +47,12 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateLimitAndRestrictions", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(productHasChannelHasTransaction);
+                loadDataList(programHasNetworkList);
             }
         });
     }
@@ -66,20 +65,23 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminLimitAndRestrictions.zul";
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            adminPage = "/adminProgramHasNetwork.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(productHasChannelHasTransaction);
+            if (programHasNetworkList != null) {
+               loadDataList(programHasNetworkList);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
+
     public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", productHasChannelHasTransaction);
+            paramsPass.put("object", programHasNetworkList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -87,21 +89,22 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         }
     }
 
-    public void loadDataList(List<ProductHasChannelHasTransaction> list) {
+    public void onClick$btnDelete() {
+    }
+
+    public void loadDataList(List<ProgramHasNetwork> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 //btnDownload.setVisible(true);
-                for (ProductHasChannelHasTransaction productHasChannelHasTransaction : list) {
+                for (ProgramHasNetwork programHasNetwork : list) {
                     item = new Listitem();
-                    item.setValue(productHasChannelHasTransaction);
-                    item.appendChild(new Listcell(productHasChannelHasTransaction.getChannelId().getName()));
-                    item.appendChild(new Listcell(productHasChannelHasTransaction.getProductId().getName()));
-                    item.appendChild(new Listcell(productHasChannelHasTransaction.getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(productHasChannelHasTransaction.getProductUseId().getDescription()));
-                    item.appendChild(createButtonEditModal(productHasChannelHasTransaction));
-                    item.appendChild(createButtonViewModal(productHasChannelHasTransaction));
+                    item.setValue(programHasNetwork);
+                    item.appendChild(new Listcell(programHasNetwork.getNetworkId().getCountryId().getName()));
+                    item.appendChild(new Listcell(programHasNetwork.getNetworkId().getName()));
+                    item.appendChild(createButtonEditModal(programHasNetwork));
+                    item.appendChild(createButtonViewModal(programHasNetwork));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -111,8 +114,10 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
             showError(ex);
         }
@@ -135,6 +140,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
                     final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                     window.doModal();
                 }
+
             });
             button.setParent(listcellEditModal);
         } catch (Exception ex) {
@@ -160,6 +166,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
                     final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                     window.doModal();
                 }
+
             });
             button.setParent(listcellViewModal);
         } catch (Exception ex) {
@@ -169,18 +176,18 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     }
 
     public void getData() {
-        productHasChannelHasTransaction = new ArrayList<ProductHasChannelHasTransaction>();
-        Product product = null;
+        Program program = null;
         try {
-            AdminProductController adminProduct = new AdminProductController();
-            if (adminProduct.getProductParent().getId() != null) {
-                product = adminProduct.getProductParent();
+             //Programa principal
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
             }
-            EJBRequest request1 = new EJBRequest();
+            EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PRODUCT_KEY, product.getId());
-            request1.setParams(params);
-            productHasChannelHasTransaction = productEJB.getProductHasChannelHasTransactionByProduct(request1);
+            params.put(Constants.PROGRAM_KEY, program.getId());
+            request.setParams(params);
+            programHasNetworkList = utilsEJB.getProgramHasNetworkByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -196,12 +203,13 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
         item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.network.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -211,8 +219,10 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
         txtName.setText("");
     }
 
+
     @Override
-    public List<ProductHasChannelHasTransaction> getFilterList(String filter) {
+    public List<ProgramHasNetwork> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }
