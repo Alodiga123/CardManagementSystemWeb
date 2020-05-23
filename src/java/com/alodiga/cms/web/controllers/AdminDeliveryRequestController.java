@@ -98,6 +98,10 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
     public DeliveryRequest getDeliveryRequest() {
         return this.deliveryRequestCard;
     }
+    
+    public Integer getEventType() {
+        return this.eventType;
+    }
 
     public void clearFields() {
     }
@@ -106,6 +110,8 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
         try {
             txtStatus.setValue(deliveryRequest.getStatusDeliveryRequestId().getDescription());
             dtbRequestDate.setValue(deliveryRequest.getRequestDate());
+            
+            deliveryRequestCard = deliveryRequest;
         } catch (Exception ex) {
             showError(ex);
         }

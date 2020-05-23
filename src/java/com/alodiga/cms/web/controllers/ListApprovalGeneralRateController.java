@@ -155,6 +155,7 @@ public class ListApprovalGeneralRateController extends GenericAbstractListContro
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
@@ -178,6 +179,7 @@ public class ListApprovalGeneralRateController extends GenericAbstractListContro
         try {    
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

@@ -65,6 +65,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
     private void loadFields(PersonClassification personClassification) {
         try {
             txtName.setText(personClassification.getDescription().toString());
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -72,7 +73,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
 
     public void blockFields() {
         txtName.setReadonly(true);
-        btnSave.setDisabled(false);
+        btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
@@ -97,7 +98,7 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
             personClassification = utilsEJB.savePersonClassification(personClassification);
             personClassificationParam = personClassification;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(true);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -123,7 +124,6 @@ public class AdminPersonClassificationController extends GenericAbstractAdminCon
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(personClassificationParam);
-                txtName.setReadonly(true);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:

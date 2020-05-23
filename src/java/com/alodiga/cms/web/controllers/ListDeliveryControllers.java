@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
