@@ -6,9 +6,6 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import static com.alodiga.cms.web.controllers.ListCardAssigmentControllers.indRequestOption;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
@@ -17,7 +14,6 @@ import com.cms.commons.models.GeneralRate;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByProgram;
-import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -42,7 +38,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class ListRateByProgramController extends GenericAbstractListController<RateByProgram> {
@@ -288,6 +283,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         try {    
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
@@ -312,6 +308,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         try {    
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

@@ -37,7 +37,6 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
            cardStatusParam = (CardStatus) Sessions.getCurrent().getAttribute("object");            
        }
         initialize();
-        
     }
 
 
@@ -55,7 +54,6 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.status.card.add"));
                 break;    
         }
-        
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
@@ -65,12 +63,12 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
     }
 
     public void clearFields() {
-    
         txtName.setRawValue(null);
     }
 
     private void loadFields(CardStatus cardStatus) {
         try {txtName.setText(cardStatus.getDescription());
+        btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -78,7 +76,7 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
 
     public void blockFields() {
         txtName.setReadonly(true);
-        btnSave.setDisabled(false);
+        btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
@@ -87,9 +85,7 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
             this.showMessage("sp.error.field.cannotNull", true, null);
             return  false;
         }
-         
         return true;
-
     }
 
 
@@ -106,11 +102,10 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
             cardStatus = utilsEJB.saveCardStatus(cardStatus);
             cardStatusParam = cardStatus;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(true);
+            btnSave.setVisible(false);
         } catch (WrongValueException ex) {
             showError(ex);
         }
-
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
@@ -141,6 +136,4 @@ public class AdminCardStatusControllers extends GenericAbstractAdminController {
                 break;
         }
     }
-
-
 }
