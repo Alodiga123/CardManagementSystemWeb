@@ -69,7 +69,7 @@ public class ListCardRenewalControllers extends GenericAbstractListController<Ca
             EJBRequest request2 = new EJBRequest();
             Map params = new HashMap();
             params = new HashMap();
-            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.STATUS_CARDS_RENEWAL);
+            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.CARD_STATUS_RENEWAL);
             request2.setParams(params);
 
             card = cardEJB.getCardByStatus(request2);
