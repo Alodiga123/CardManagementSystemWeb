@@ -40,9 +40,9 @@ public class AdminCountryController extends GenericAbstractAdminController {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-            countryParam = null;                    
+            countryParam = null;
         } else {
-            countryParam = (Country) Sessions.getCurrent().getAttribute("object");            
+            countryParam = (Country) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
     }
@@ -84,7 +84,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
             txtShortName.setText(country.getCodeIso2());
             txtCode.setText(country.getCode());
             txtAlternativeName1.setText(country.getCodeIso3());
-
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -140,6 +140,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
             country = utilsEJB.saveCountry(country);
             countryParam = country;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -168,10 +169,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(countryParam);
-                txtName.setDisabled(true);
-                txtShortName.setDisabled(true);
-                txtCode.setDisabled(true);
-                txtAlternativeName1.setDisabled(true);
+                blockFields();
                 loadCmbCurrency(eventType);
                 break;
             case WebConstants.EVENT_ADD:
@@ -188,7 +186,7 @@ public class AdminCountryController extends GenericAbstractAdminController {
         List<Currency> currencies;
         try {
             currencies = utilsEJB.getCurrency(request1);
-            loadGenericCombobox(currencies,cmbCurrency, "name",evenInteger,Long.valueOf(countryParam != null? countryParam.getCurrencyId().getId(): 0));            
+            loadGenericCombobox(currencies, cmbCurrency, "name", evenInteger, Long.valueOf(countryParam != null ? countryParam.getCurrencyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {

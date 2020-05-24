@@ -4,6 +4,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -16,11 +17,12 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -71,22 +73,6 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
         }
     }
 
-
-
-//    public List<RequestType> getFilteredList(String filter) {
-//        System.out.println("filter " + filter);
-//        List<RequestType> requestTypesAux = new ArrayList<RequestType>();
-//        for (Iterator<RequestType> i = requestTypes.iterator(); i.hasNext();) {
-//            RequestType tmp = i.next();
-//            String field = tmp.getDescription();
-//            System.out.println("field " + field);
-//            if (field.indexOf(filter.trim().toLowerCase()) >= 0) {
-//                requestTypesAux.add(tmp);
-//            }
-//        }
-//        return requestTypesAux;
-//    }
-
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
@@ -106,14 +92,38 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
+    
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
+    @Override
+    public List<Currency> getFilterList(String filter) {
+        List<Currency> currencyaux = new ArrayList<Currency>();
+        Currency currency;
+        try {
+            if (filter != null && !filter.equals("")) {
+                currency = utilsEJB.searchCurrency(filter);
+                currencyaux.add(currency);
+            } else {
+                return currencies;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListCurrencyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return currencyaux;
+    }
+    
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    public List<RequestType> getFilterList(String filter) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     public void loadDataList(List<Currency> list) {
           try {
@@ -145,15 +155,9 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
            showError(ex);
         }
     }
-
-    @Override
-    public List<Currency> getFilterList(String filter) {
+    public void loadList(List<Currency> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-
-
-
     
 
 }

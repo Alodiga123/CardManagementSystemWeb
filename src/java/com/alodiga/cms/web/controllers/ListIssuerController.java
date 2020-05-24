@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -23,7 +22,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
 
 public class ListIssuerController extends GenericAbstractListController<Issuer> {
 
@@ -66,8 +64,6 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
             showError(ex);
         }
     }
-
-
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);

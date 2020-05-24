@@ -1,28 +1,19 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.RequestEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.web.custom.components.ListcellEditButton;
-import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.GeneralRate;
 import com.cms.commons.models.Request;
-import com.cms.commons.models.RequestType;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
@@ -163,6 +154,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
         try {    
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override
@@ -199,6 +191,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
         try {    
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

@@ -23,7 +23,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -133,6 +132,7 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
@@ -158,6 +158,7 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
         try {    
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
+            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
             button.setClass("open orange");
             button.addEventListener("onClick", new EventListener() {
                 @Override

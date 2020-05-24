@@ -28,7 +28,7 @@
                                                 <toolbarbutton label="${c:l('cms.menu.plasticManufacturer')}" onClick='Executions.sendRedirect(&quot;listPlasticManufacturer.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.plastic.manufacturer.add')}"/>
-                                                |  
+                                                 |  
                                                 <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
@@ -68,27 +68,38 @@
                                                             <label value="${c:l('cms.common.contract.number')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtContractNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
+                                                            <hlayout>
+                                                                <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="20"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtContractNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="40"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                        </row>
                                                          <row>
                                                             <label value="${c:l('cms.common.email.manufacturer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.phone')}" sclass="lblbold"/> 
                                                             <label value="${c:l('cms.common.contact.person')}" sclass="lblbold"/>
-                                                            
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEmailManufacturer" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtPhoneManufacturer" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtContactPerson" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                          
+                                                            <hlayout>
+                                                                <textbox id="txtEmailManufacturer" width="270px" maxlength="40" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <intbox id="intPhoneManufacturer" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
+                                                            <textbox id="txtContactPerson" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.email.contact')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEmailContact" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtEmailContact" width="270px" maxlength="40" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                             <hbox>
                                                             <radiogroup id="PlasticManuActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>

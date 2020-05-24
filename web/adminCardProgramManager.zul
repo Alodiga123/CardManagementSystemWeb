@@ -34,7 +34,7 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
+                                                            <intbox id="intIdentificationNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.comercialDesignation')}" sclass="lblbold"/>
@@ -44,7 +44,7 @@
                                                         <row>                                                            
                                                             <textbox id="txtTradeName" value="" width="250px" maxlength="60"/>
                                                             <textbox id="txtEnterpriseName" value="" width="250px" maxlength="45"/>
-                                                            <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45"/>
+                                                            <intbox id="intPhoneNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.economicActivity')}" sclass="lblbold"/>
@@ -62,7 +62,7 @@
                                                             <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtPaidInCapital" value="" width="250px" maxlength="60"/>
+                                                            <doublebox id="dbxPaidInCapital" width="250px" constraint="no negative"  format="#,##0.##" maxlength="7"/>
                                                             <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>
                                                             <textbox id="txtEmail" value="" width="250px" maxlength="45"/>
                                                         </row>

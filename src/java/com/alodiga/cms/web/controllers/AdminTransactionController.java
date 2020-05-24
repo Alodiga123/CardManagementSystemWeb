@@ -32,7 +32,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
-        
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -40,10 +40,10 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         transactionParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Transaction) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           transactionParam = null;                    
-       } else {
-           transactionParam = (Transaction) Sessions.getCurrent().getAttribute("object");            
-       }
+            transactionParam = null;
+        } else {
+            transactionParam = (Transaction) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -72,7 +72,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         txtCodeTransaction.setRawValue(null);
         txtDescriptionTransaction.setRawValue(null);
     }
-    
+
     private void loadFields(Transaction transaction) {
         try {
             txtCodeTransaction.setText(transaction.getCode().toString());
@@ -92,10 +92,11 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             } else {
                 rVariationRateChannelNo.setChecked(true);
             }
-             } catch (Exception ex) {
+            btnSave.setVisible(true);
+        } catch (Exception ex) {
             showError(ex);
-        }    
-       
+        }
+
     }
 
     public void blockFields() {
@@ -106,6 +107,9 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         if (txtCodeTransaction.getText().isEmpty()) {
             txtCodeTransaction.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtDescriptionTransaction.getText().isEmpty()) {
+            txtDescriptionTransaction.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -125,7 +129,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             } else {
                 transaction = new Transaction();
             }
-            
+
             if (rMonetaryTypeYes.isChecked()) {
                 indMonetaryType = true;
             } else {
@@ -149,7 +153,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
             transaction = productEJB.saveTransaction(transaction);
             transactionParam = transaction;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+            btnSave.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -195,5 +199,4 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         }
     }
 
-    
 }

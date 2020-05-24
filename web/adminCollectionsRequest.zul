@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.bread.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.collectionsRequest.requirementData')}"/>
+                                                <toolbarbutton id="tbbTitle" label=""/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -43,7 +43,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.tab.collectionsRequest')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -56,18 +56,33 @@
                                                             <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row> 
-                                                            <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                        <row>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.collectionsRequest.requirement')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbCollectionType" width="200px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbCollectionType" width="200px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>

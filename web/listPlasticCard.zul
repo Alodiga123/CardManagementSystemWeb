@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListPlasticCardControllers" class="general-window">
+    <window id="winListPlasticCard" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListPlasticCardControllers" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -20,9 +20,9 @@
                                             <!--Filters for Searching-->
                                             <grid fixedLayout="true">
                                                 <columns>
-                                                    <column label="" width="330px"/>
-                                                    <column label="" width="330px"/>
-                                                    <column label="" width="180x"/>
+                                                    <column label="" width="290px"/>
+                                                    <column label="" width="290px"/>
+                                                    <column label="" width="250px"/>
                                                 </columns>
                                                 <rows>
                                                     <row>
@@ -30,9 +30,15 @@
                                                         <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                     </row>
                                                     <row>
-                                                        <label id="lblProgram" value="" width="280px" style="color:#837E76;"/>
-                                                        <combobox id="cmbProduct" width="280px" mold="rounded" readonly="true"/>
-                                                        <button id="btnViewCard" label="${c:l('cms.menu.product.list')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                        <hlayout>
+                                                            <label id="lblProgram" value="" width="230px" style="color:#837E76;"/>
+                                                            <combobox id="cmbProgram" width="230px" mold="rounded" readonly="true"/>
+                                                        </hlayout>
+                                                        <hlayout>
+                                                            <label id="lblProduct" value="" width="230px" style="color:#837E76;"/>
+                                                            <combobox id="cmbProduct" width="230px" mold="rounded" readonly="true"/>
+                                                        </hlayout>
+                                                        <button id="btnViewCard" label="${c:l('cms.menu.product.list')}" width="160px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </row>
                                                 </rows>   
                                             </grid>
@@ -48,7 +54,6 @@
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
-
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Download button-->
