@@ -240,8 +240,14 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         today.add(Calendar.YEAR, -18);
         Calendar cumpleCalendar = Calendar.getInstance();
         cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
-        
-        if (txtIdentificationNumber.getText().isEmpty()) {
+
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("cms.error.field.identificationNumber", true, null);
         } else if (txtFullName.getText().isEmpty()) {
@@ -250,12 +256,17 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (txtFullLastName.getText().isEmpty()) {
             txtFullLastName.setFocus(true);
             this.showMessage("cms.error.field.lastName", true, null);
-        } else if (txtBirthDay.getText().isEmpty()) {
-            txtBirthDay.setFocus(true);
-            this.showMessage("cms.error.field.txtBirthDay", true, null);
         } else if (txtBirthPlace.getText().isEmpty()) {
             txtBirthPlace.setFocus(true);
             this.showMessage("cms.error.field.txtBirthPlace", true, null);
+        } else if (txtBirthDay.getText().isEmpty()) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthDay", true, null);
+        } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
+            this.showMessage("cms.error.field.gener", true, null);
+        } else if (cmbPhoneType.getSelectedItem() == null) {
+            cmbPhoneType.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
         } else if (txtPhoneNumber.getText().isEmpty()) {
             txtPhoneNumber.setFocus(true);
             this.showMessage("cms.error.field.phoneNumber", true, null);
