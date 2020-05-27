@@ -395,6 +395,15 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell50.addEventListener("onClick", new RedirectListener("listNetwork.zul"));
         listCell50.setParent(item50);
         item50.setParent(lbxPermissions);
+        
+              
+        //Opción UserHasProfile 
+        Listitem item90 = new Listitem();
+        Listcell listCell90 = new Listcell();
+        listCell90.setLabel(Labels.getLabel("cms.crud.userHasProfile.list"));
+        listCell90.addEventListener("onClick", new RedirectListener("listUserHasProfile.zul"));
+        listCell90.setParent(item90);
+        item90.setParent(lbxPermissions);
     }
 }
 
