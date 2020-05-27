@@ -396,6 +396,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell50.setParent(item50);
         item50.setParent(lbxPermissions);
         
+         //Opción VIRTUAL ACCOUNT CANCELLATION 
+        Listitem item51 = new Listitem();
+        Listcell listCell51 = new Listcell();
+        listCell51.setLabel(Labels.getLabel("cms.menu.virtual.account.cancellation"));
+        listCell51.addEventListener("onClick", new RedirectListener("listVirtualAccountCancellation.zul"));
+        listCell51.setParent(item51);
+        item51.setParent(lbxPermissions);
+        
               
         //Opción UserHasProfile 
         Listitem item90 = new Listitem();
