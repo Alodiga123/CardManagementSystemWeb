@@ -117,9 +117,9 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
     }
 
     public void blockFields() {
+        btnSave.setVisible(false);
         textUser.setReadonly(true);
         textRole.setReadonly(true);
-        btnSave.setVisible(false);
     }
 
     /*public Boolean validateEmpty() {
@@ -204,9 +204,9 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(UserHasProfileParam);
-                blockFields();
-                 loadCmbUser(eventType);
+                loadCmbUser(eventType);
                 loadCmbRole(eventType);
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbUser(eventType);
