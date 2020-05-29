@@ -155,8 +155,11 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
 
             if (_userHasProfile != null) {
                 userHasProfile = _userHasProfile;
+                userHasProfile.setUpdateDate(new Timestamp(new Date().getTime()));
             } else {//New country
                 userHasProfile = new UserHasProfile();
+                userHasProfile.setCreateDate(new Timestamp(new Date().getTime()));
+                userHasProfile.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             
             if (rEnabledYes.isChecked()) {
@@ -167,8 +170,7 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
             
             userHasProfile.setUserId((User) cmbUser.getSelectedItem().getValue());
             userHasProfile.setProfileId((Profile) cmbRole.getSelectedItem().getValue());
-            userHasProfile.setEnabled(indEnabled);
-            userHasProfile.setCreateDate(new Timestamp(new Date().getTime()));
+            userHasProfile.setEnabled(indEnabled); 
             userHasProfile = utilsEJB.saveUserHasProfile(userHasProfile);
             UserHasProfileParam = userHasProfile;
             this.showMessage("sp.common.save.success", false, null);
