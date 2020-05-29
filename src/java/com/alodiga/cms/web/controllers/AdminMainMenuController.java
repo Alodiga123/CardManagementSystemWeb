@@ -403,6 +403,15 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell51.addEventListener("onClick", new RedirectListener("listVirtualAccountCancellation.zul"));
         listCell51.setParent(item51);
         item51.setParent(lbxPermissions);
+        
+              
+        //Opción UserHasProfile 
+        Listitem item90 = new Listitem();
+        Listcell listCell90 = new Listcell();
+        listCell90.setLabel(Labels.getLabel("cms.crud.userHasProfile.list"));
+        listCell90.addEventListener("onClick", new RedirectListener("listUserHasProfile.zul"));
+        listCell90.setParent(item90);
+        item90.setParent(lbxPermissions);
     }
 }
 
