@@ -2,7 +2,6 @@ package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
-import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -53,12 +52,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         eventType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (adminDeliveryRequest.getDeliveryRequest() != null) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
-//            eventType = adminDeliveryRequest.getEventType();
-//        }
-//        if (eventType == WebConstants.EVENT_ADD) {
-//            cardParam = null;
         } else {
-//            cardParam = (Card) Sessions.getCurrent().getAttribute("object");
             cardParam = null;
         }
         initialize();
@@ -93,7 +87,6 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
 
     private void loadFields(Card card) {
         try {
-
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
