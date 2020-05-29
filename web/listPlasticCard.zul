@@ -20,16 +20,16 @@
                                             <!--Filters for Searching-->
                                             <grid fixedLayout="true">
                                                 <columns>
-                                                    <column label="" width="300px"/>
-                                                    <column label="" width="300px"/>
-                                                    <column label="" width="200x"/>
+                                                    <column label="" width="290px"/>
+                                                    <column label="" width="290px"/>
+                                                    <column label="" width="250px"/>
                                                 </columns>
                                                 <rows>
                                                     <row>
                                                         <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
                                                         <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                     </row>
-                                                    <row> 
+                                                    <row>
                                                         <hlayout>
                                                             <label id="lblProgram" value="" width="230px" style="color:#837E76;"/>
                                                             <combobox id="cmbProgram" width="230px" mold="rounded" readonly="true"/>

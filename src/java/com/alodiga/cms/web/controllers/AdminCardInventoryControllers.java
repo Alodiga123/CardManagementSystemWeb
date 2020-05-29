@@ -4,9 +4,12 @@ import com.alodiga.cms.commons.ejb.CardEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardDeliveryRegister;
+import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.DeliveryRequest;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
@@ -49,12 +52,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         eventType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (adminDeliveryRequest.getDeliveryRequest() != null) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
-//            eventType = adminDeliveryRequest.getEventType();
-//        }
-//        if (eventType == WebConstants.EVENT_ADD) {
-//            cardParam = null;
         } else {
-//            cardParam = (Card) Sessions.getCurrent().getAttribute("object");
             cardParam = null;
         }
         initialize();
@@ -89,7 +87,6 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
 
     private void loadFields(Card card) {
         try {
-
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -128,6 +125,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
     }
 
     private void saveCardStatus(Card _card) {
+        CardStatus cardStatus = null;
         try {
             Card card = null;
 
@@ -139,10 +137,21 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
 
             if (rDeliveryYes.isChecked()) {
                 //se actualiza el estatus de la tarjeta a INVENTARIO OK
+                EJBRequest request1 = new EJBRequest();
+                request1.setParam(Constants.CARD_STATUS_INVENTORY);
+                cardStatus = utilsEJB.loadCardStatus(request1);
+
+                updateStatusCardInventory(card, cardStatus);
+
             } else {
                 //se actualiza el estatus de la tarjeta a INVENTARIO ERROR PERSONALIZACION
+                EJBRequest request1 = new EJBRequest();
+                request1.setParam(Constants.CARD_STATUS_ERROR);
+                cardStatus = utilsEJB.loadCardStatus(request1);
+
+                updateStatusCardInventory(card, cardStatus);
             }
-            
+
             saveCardInvetory(card);
 
             this.showMessage("sp.common.save.success", false, null);
@@ -153,30 +162,41 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         }
     }
 
-    private void saveCardInvetory(Card _card) {
+    public void updateStatusCardInventory(Card card, CardStatus status) {
+        boolean indDelivery = true;
+        try {
+            card.setCardStatusId(status);
+            card = cardEJB.saveCard(card);
+
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    private void saveCardInvetory(Card card) {
         CardDeliveryRegister cardDeliveryRegister = new CardDeliveryRegister();
         boolean indDelivery;
+        try {
 
-        if (rDeliveryYes.isChecked()) {
-            indDelivery = true;
-        } else {
-            indDelivery = false;
-        }
+            if (rDeliveryYes.isChecked()) {
+                indDelivery = true;
+            } else {
+                indDelivery = false;
+            }
 
-        cardDeliveryRegister.setNumberDeliveryAttempts(txtCardNumberAttemps.intValue());
-        cardDeliveryRegister.setDeliveryDate(txtDaliveryDate.getValue());
-        cardDeliveryRegister.setReceiverFirstName(txtReceiverFirstName.getValue());
-        cardDeliveryRegister.setReceiverLastName(txtReceiverLastName.getValue());
-        cardDeliveryRegister.setDeliveryObservations(txtObservations.getValue());
-        cardDeliveryRegister.setIndDelivery(indDelivery);
-        if (eventType == 1) {
+            cardDeliveryRegister.setNumberDeliveryAttempts(txtCardNumberAttemps.intValue());
+            cardDeliveryRegister.setDeliveryDate(txtDaliveryDate.getValue());
+            cardDeliveryRegister.setReceiverFirstName(txtReceiverFirstName.getValue());
+            cardDeliveryRegister.setReceiverLastName(txtReceiverLastName.getValue());
+            cardDeliveryRegister.setDeliveryObservations(txtObservations.getValue());
+            cardDeliveryRegister.setIndDelivery(indDelivery);
             cardDeliveryRegister.setCreateDate(new Timestamp(new Date().getTime()));
-        } else {
-            cardDeliveryRegister.setUpdateDate(new Timestamp(new Date().getTime()));
-        }
+            cardDeliveryRegister.setDeliveryRequetsHasCardId(adminDeliveryRequest.getDeliveryRequest().getDeliveryRequetsHasCard());
+            cardDeliveryRegister = cardEJB.saveCardDeliveryRegister(cardDeliveryRegister);
 
-        txtReceiverFirstName.setReadonly(true);
-        txtReceiverLastName.setReadonly(true);
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     public void onClick$btnSave() {
