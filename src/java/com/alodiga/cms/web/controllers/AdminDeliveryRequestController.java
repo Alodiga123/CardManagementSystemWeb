@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
@@ -43,6 +44,7 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
     private Datebox dtbRequestDate;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
+    private PersonEJB personEJB = null;
     private CardEJB cardEJB = null;
     private Button btnSave;
     private Integer eventType;
@@ -83,6 +85,7 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             if (eventType == WebConstants.EVENT_ADD) {
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(WebConstants.STATUS_DELIVERY_REQUEST_PENDING);
@@ -232,12 +235,12 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
     private void loadCmbShippingCompany(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
-        params.put(QueryConstants.PARAM_ECONOMIC_ACTIVITY_ID, Constants.ECONOMIC_ACTIVITY);
+        params.put(QueryConstants.PARAM_PERSON_CLASSIFICATION_ID, Constants.CLASSIFICATION_PERSON_SHIPPING_COMPANY);
         request1.setParams(params);
         List<LegalPerson> shippingCompany;
 
         try {
-            shippingCompany = programEJB.getLegalPersonByDelivery(request1);
+            shippingCompany = personEJB.getLegalPersonByPersonClassification(request1);
             loadGenericCombobox(shippingCompany, cmbShippingCompany, "enterpriseName", evenInteger, Long.valueOf(deliveryRequestParam != null ? deliveryRequestParam.getShippingCompanyId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
