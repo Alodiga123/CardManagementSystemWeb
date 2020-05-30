@@ -109,11 +109,9 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
                     item = new Listitem();
                     item.setValue(card);
                     item.appendChild(new Listcell(card.getCardNumber()));
-                    item.appendChild(new Listcell(card.getProgramId().getName()));
                     item.appendChild(new Listcell(card.getProductId().getName()));
                     item.appendChild(new Listcell(card.getCardHolder()));
                     item.appendChild(new Listcell(card.getCardStatusId().getDescription()));
-
                     tmpCell = new Listcell();
                     Checkbox chkRequired = new Checkbox();
                     chkRequired.setParent(tmpCell);
@@ -142,20 +140,6 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
     }
 
     private void saveCard(List<Card> list) {
-//        int countRecords = lbxRecords.getChildren().size();
-//        for (int i = 0; i <= countRecords; i++) {
-//            List<Listcell> listCells = ((Listitem) lbxRecords.getItems().get(i)).getChildren();
-//            for (Listcell l : listCells) {
-//                if (l.getChildren().get(5) instanceof Checkbox) {
-//                    if (((Checkbox) l.getChildren().get(5)).isChecked()) {
-//
-//                        Card card = new Card();
-//                        card = (Card) ((Listitem) lbxRecords.getItems().get(i)).getValue();
-//                    }
-//                }
-//            }
-//        }
-
         int countRecords = list.size();
         DeliveryRequetsHasCard deliveryRequetsHasCard = null;
         DeliveryRequest deliveryRequest = null;
@@ -189,7 +173,7 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
                     }
                 }
                 
-                this.showMessage("cms.common.msj.assignPlasticCard", false, null);
+                this.showMessage("cms.msj.assignCardToDeliveryRequest", false, null);
             }
         } catch (GeneralException ex) {
             Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
