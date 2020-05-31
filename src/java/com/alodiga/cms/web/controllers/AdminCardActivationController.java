@@ -146,7 +146,7 @@ public class AdminCardActivationController extends GenericAbstractAdminControlle
         btnActivation.setVisible(false);
     }
 
-    private void saveCardActivation(Card _card) {
+    private void ActivateCard(Card _card) {
         CardStatus cardStatus = null;
         try {
             Card card = null;
@@ -185,7 +185,7 @@ public class AdminCardActivationController extends GenericAbstractAdminControlle
                     LegalCustomer legalCustomer = new LegalCustomer();
                     legalCustomer = personEJB.validateQuestionLegal(cardParam.getPersonCustomerId().getLegalCustomer().getPersonId().getId(), rOneIdentificationNumber.getText(), rThreeDateBirth.getValue());
                 }
-                saveCardActivation(cardParam);
+                ActivateCard(cardParam);
             } catch (RegisterNotFoundException ex) {
                 this.showMessage("cms.crud.securityQuestions", true, null);
             } catch (NullParameterException ex) {
