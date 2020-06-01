@@ -12,7 +12,6 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Network;
-import com.cms.commons.models.State;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -164,6 +163,7 @@ public class ListNetworkController extends GenericAbstractListController<Network
             showError(ex);
         }
     }
+    
     @Override
     public List<Network> getFilterList(String filter) {
         List<Network> networkaux = new ArrayList<Network>();
@@ -183,8 +183,6 @@ public class ListNetworkController extends GenericAbstractListController<Network
             } else {
                 return network; 
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListNetworkController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -202,8 +200,6 @@ public class ListNetworkController extends GenericAbstractListController<Network
             } else {
                 return network; 
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListNetworkController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }

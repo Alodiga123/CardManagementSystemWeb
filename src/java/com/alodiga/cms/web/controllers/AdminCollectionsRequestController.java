@@ -22,10 +22,12 @@ import com.cms.commons.util.QueryConstants;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminCollectionsRequestController extends GenericAbstractAdminController {
 
@@ -42,6 +44,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     private Combobox cmbCollectionType;
     private Button btnSave;
     private Integer eventType;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -51,13 +54,26 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             collectionsRequestParam = null;
         } else {
             collectionsRequestParam = (CollectionsRequest) Sessions.getCurrent().getAttribute("object");
-        }      
+        }
         initialize();
     }
 
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.collectionsRequest.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.collectionsRequest.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.collectionsRequest.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
@@ -70,9 +86,11 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
     }
 
     public void clearFields() {
+        btnSave.setVisible(false);
     }
 
     private void loadFields(CollectionsRequest collectionsRequest) {
+        btnSave.setVisible(true);
     }
 
     public void onChange$cmbCountry() {
@@ -107,20 +125,42 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         } catch (Exception ex) {
             showError(ex);
         }
-
+    }
+    
+    public Boolean validateEmpty() {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbProductType.getSelectedItem() == null) {
+            cmbProductType.setFocus(true);
+            this.showMessage("cms.error.producto.notSelected", true, null);
+        } else if (cmbPrograms.getText().isEmpty()) {
+            cmbPrograms.setFocus(true);
+            this.showMessage("cms.error.program.notSelected", true, null);
+        } else if (cmbPersonType.getSelectedItem() == null) {
+            cmbPersonType.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbCollectionType.getText().isEmpty()) {
+            cmbCollectionType.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else {
+            return true;
+        }
+        return false;
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveCollectionsRequest(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveCollectionsRequest(collectionsRequestParam);
-                break;
-            default:
-                break;
-
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveCollectionsRequest(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveCollectionsRequest(collectionsRequestParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -136,6 +176,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(collectionsRequestParam);
+                blockFields();
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbPrograms(eventType);

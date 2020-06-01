@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCollectionsRequest" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCollectionsRequestController" class="general-window">
+    <window id="winAdminAccountCard" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminAccountCardController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -13,7 +13,6 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
-                        <div></div>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
                                 <div>
@@ -25,10 +24,9 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton label="${c:l('cms.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton id="tbbTitle" label=""/>
+                                                 |
+                                                <toolbarbutton label="${c:l('cms.crud.account.card')}" onClick='Executions.sendRedirect(&quot;listAccountCard.zul&quot;)'/>
+                                                 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -43,7 +41,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('cms.tab.collectionsRequest')}" sclass="lblbold"/>
+                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -52,37 +50,45 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.card.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.card.holder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.expiration.date')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <label id="lblCardNumber" width="270px"/>
+                                                            <label id="lblCardHolder" width="270px"/> 
+                                                            <label id="lblExpirationDate" width="270px"/>
+                                                       </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.account.number')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status.account')}" sclass="lblbold"/>
+                                                            
+                                                       </row>
+                                                        <row>
+                                                            <label id="lblAccountNumber" width="270px"/>
+                                                            <label id="lblStatusAccount" width="270px"/>
+                                                       </row>
+                                                         <row>
+                                                            <label value="${c:l('cms.common.reason.cancellation')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user.cancellation.account')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cancellation.date')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.collectionsRequest.requirement')}" sclass="lblbold"/>
+                                                            <cell colspan="2">
+                                                                <hlayout>
+                                                                    <textbox id="txtReasonCancellation" multiline="true" rows="2" width="850px" maxlength="1490"/>
+                                                                    <label value="*" sclass="lblreq" />
+                                                                </hlayout>   
+                                                            </cell>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbCollectionType" width="200px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <label id="lblUserCancellationAccount" width="270px"/>
+                                                        </row>
+                                                        <row>
+                                                        <hlayout>
+                                                             <datebox id="dtbCancellationDate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                        </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -92,20 +98,15 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listAccountCard.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
-                                <div></div>
                             </hlayout>
                         </div>
-                        <div></div>
                     </hlayout>
                 </div>
             </center>
-            <south border="none" size="40px">
-                <include src="adminFooter.zul"/>
-            </south>
         </borderlayout>
     </window>
 </zk>
