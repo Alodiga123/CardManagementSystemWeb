@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListVirtualAccountCancellationController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListAccountCardController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,9 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.VirtualAccountCancellationlist')}" />
-                                                |
-                                                <toolbarbutton id="tbbTitle" label=""/> 
+                                                <toolbarbutton label="${c:l('cms.common.AccountCard.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -49,7 +47,7 @@
                                                         <row>
                                                             <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbProgram" width="200px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbProduct" width="200px" mold="rounded" readonly="true" />
                                                             <button id="btnViewAccounts" label="${c:l('cms.common.actions.viewAccount')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                        </row>
                                                     </rows>   
