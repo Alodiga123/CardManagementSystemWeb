@@ -238,14 +238,14 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             plasticManufacturer.setIdentificationNumber(txtIdentificationNumber.getText());
             plasticManufacturer.setName(txtName.getText());
             plasticManufacturer.setContractNumber(txtContractNumber.getValue());
-            plasticManufacturer.setContactPerson(txtContactPerson.getText());
-            plasticManufacturer.setEmailContactPerson(txtEmailContact.getValue());
+            plasticManufacturer.setContactPerson(txtContactPerson.getText().toString());
+            plasticManufacturer.setEmailContactPerson(txtEmailContact.getValue().toString());
             plasticManufacturer.setIndStatus(indStatus);
             plasticManufacturer = personEJB.savePlasticManufacturer(plasticManufacturer);
             plasticManufacturerParam = plasticManufacturer;
             this.showMessage("sp.common.save.success", false, null);
             
-        EventQueues.lookup("updateAccountProperties", EventQueues.APPLICATION, true).publish(new Event(""));
+        EventQueues.lookup("updatePlasticManufacturer", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
