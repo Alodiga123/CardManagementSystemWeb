@@ -15,6 +15,7 @@ import com.cms.commons.models.Card;
 import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.SecurityQuestion;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -146,7 +147,7 @@ public class AdminCardActivationController extends GenericAbstractAdminControlle
         btnActivation.setVisible(false);
     }
 
-    private void saveCardActivation(Card _card) {
+    private void ActivateCard(Card _card) {
         CardStatus cardStatus = null;
         try {
             Card card = null;
@@ -166,6 +167,7 @@ public class AdminCardActivationController extends GenericAbstractAdminControlle
             card.setCardStatusId(cardStatus);
             card = cardEJB.saveCard(card);
 
+            this.showMessage("cms.common.save.success.activation", false, null);
             btnActivation.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
@@ -176,7 +178,9 @@ public class AdminCardActivationController extends GenericAbstractAdminControlle
         if (validateEmpty()) {
             try {
                 Card card = new Card();
+                PhonePerson phonePerson = new PhonePerson();
                 card = cardEJB.validateQuestionCard(cardParam.getId(), rFiveExpirationDate.getValue(), rFourDateOfIssue.getValue(), rSixCVV.getText());
+//                phonePerson = personEJB.validatePhoneQuestion(cardParam.getPersonCustomerId().getNaturalCustomer().getPersonId().getId(), rTwoNumberPhone.getText());
 
                 if (cardParam.getPersonCustomerId().getPersonTypeId().getIndNaturalPerson() == true) {
                     NaturalCustomer naturalCustomer = new NaturalCustomer();
@@ -185,7 +189,7 @@ public class AdminCardActivationController extends GenericAbstractAdminControlle
                     LegalCustomer legalCustomer = new LegalCustomer();
                     legalCustomer = personEJB.validateQuestionLegal(cardParam.getPersonCustomerId().getLegalCustomer().getPersonId().getId(), rOneIdentificationNumber.getText(), rThreeDateBirth.getValue());
                 }
-                saveCardActivation(cardParam);
+                ActivateCard(cardParam);
             } catch (RegisterNotFoundException ex) {
                 this.showMessage("cms.crud.securityQuestions", true, null);
             } catch (NullParameterException ex) {
