@@ -42,8 +42,8 @@
                                                         </row>
                                                         <row>
                                                             <datebox id="dtbRequestDate" width="270px"/>
-                                                            <combobox id="cmbPlasticManufacturer" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbPlasticManufacturer" width="270px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbPrograms" width="270px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
@@ -51,7 +51,7 @@
                                                         <row> 
                                                             <cell colspan="2">
                                                                 <hlayout>
-                                                                    <label id="txtStatus" value="" width="250px" style="color:#837E76;"/>
+                                                                    <label id="txtStatus" value="" width="270px" style="color:#837E76;"/>
                                                                     <combobox id="cmbStatusPlasticRequest" width="270px" mold="rounded" readonly="true"/>
                                                                 </hlayout>
                                                             </cell>
