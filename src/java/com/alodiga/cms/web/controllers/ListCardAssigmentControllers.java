@@ -239,7 +239,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         List<NaturalCustomer> cardComplementaryList = null;
         List<CardRequestNaturalPerson> cardRequestList = null;
         CardNumberCredential cardNumber = null;
-        Long countCardComplementary = 0L;
+        Long countCardComplementary = 0L;       
         int i = 0;
 
         try {
@@ -395,7 +395,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             if (cardNumberCredentialList == null) {
                 this.showMessage("cms.msj.notCardNumbersAvailable", false, null);
             }
-            this.showMessage("cms.common.msj.assignCard", false, null);
+            if (i > 0) {
+                this.showMessage("cms.common.msj.assignCard", false, null);
+            }            
         }
     }
     
