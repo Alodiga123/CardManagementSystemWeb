@@ -41,7 +41,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     private Textbox txtNameEdification;
     private Textbox txtTower;
     private Textbox txtFloor;
-    private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbState;
     private Combobox cmbCity;
@@ -122,7 +121,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         txtNameEdification.setRawValue(null);
         txtTower.setRawValue(null);
         txtFloor.setRawValue(null);
-        txtEmail.setRawValue(null);
     }
 
     private void loadFields(Address address) {
@@ -144,7 +142,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         txtNameEdification.setReadonly(true);
         txtTower.setReadonly(true);
         txtFloor.setReadonly(true);
-        txtEmail.setReadonly(true);
         cmbCountry.setDisabled(true);
         cmbState.setDisabled(true);
         cmbCity.setDisabled(true);
@@ -167,10 +164,7 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             this.showMessage("cms.error.field.tower", true, null);
         } else if (txtFloor.getText().isEmpty()) {
             txtFloor.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtEmail.getText().isEmpty()) {
-            txtEmail.setFocus(true);
-            this.showMessage("cms.error.field.email", true, null);
+            this.showMessage("sp.error.field.floor", true, null);
         } else {
             return true;
         }
