@@ -42,8 +42,8 @@
                                                         </row>
                                                         <row>
                                                             <datebox id="dtbRequestDate" width="270px"/>
-                                                            <combobox id="cmbShippingCompany" width="200px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbShippingCompany" width="280px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbPrograms" width="280px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.delivery.status')}" sclass="lblbold"/>
