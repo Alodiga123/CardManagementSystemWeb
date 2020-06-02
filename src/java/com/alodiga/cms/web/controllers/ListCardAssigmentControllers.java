@@ -258,9 +258,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                 params.put(Constants.USE_KEY, Constants.USE_NUMBER_CARD);
                 request2.setParams(params);
                 cardNumberCredentialList = cardEJB.getCardNumberCredentialByUse(request2);
-                cardNumber = cardNumberCredentialList.get(i);
+                cardNumber = cardNumberCredentialList.get(i);           
 
-                //Se asignan las tarjetas a las solictudes aprobadas
+                //Se asignan las tarjetas a las solicitudes aprobadas
                 for (Request r : list) {
                     //Se busca el producto por medio de ReviewRequest
                     EJBRequest request3 = new EJBRequest();
@@ -288,6 +288,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         card = saveCard(card);
                         updateCardNumberAssigned(cardNumber);
                         createAccount(card,r);
+                        //Actualiza el estatus de la solicitud
+                        updateStatusRequest(r);
                         i++;                        
 
                         //Se verifica si hay solicitantes complementarios
@@ -348,6 +350,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         card = saveCard(card);
                         updateCardNumberAssigned(cardNumber);
                         createAccount(card,r);
+                        //Actualiza el estatus de la solicitud
+                        updateStatusRequest(r);
                         i++;
 
                         if (cardRequestList != null) {
@@ -381,19 +385,35 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             }
                         }
                     }
-                    //Actualiza el estatus de la solicitud
-                    request1 = new EJBRequest();
-                    request1.setParam(Constants.STATUS_REQUEST_CUSTOMER_ASSIGNED_CARD);
-                    StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
-                    r.setStatusRequestId(statusRequest);
-                    r = requestEJB.saveRequest(r);
                 }
-                this.showMessage("cms.common.msj.assignCard", false, null);
             }
 
         } catch (Exception ex) {
             showError(ex);
         }
+        finally {
+            if (cardNumberCredentialList == null) {
+                this.showMessage("cms.msj.notCardNumbersAvailable", false, null);
+            }
+            this.showMessage("cms.common.msj.assignCard", false, null);
+        }
+    }
+    
+    public void updateStatusRequest(Request cardRequest) {
+        try {
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(Constants.STATUS_REQUEST_CUSTOMER_ASSIGNED_CARD);
+            StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
+            cardRequest.setStatusRequestId(statusRequest);
+            cardRequest = requestEJB.saveRequest(cardRequest);
+        } catch (RegisterNotFoundException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex); 
+        } catch (GeneralException ex) {
+            showError(ex);
+        }
+        
     }
     
     public Card saveCard(Card card) {
@@ -403,6 +423,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             card = cardEJB.saveCard(card);
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            this.showMessage("cms.msj.errorSaveCard", false, null);
         }
         return card;
     }
