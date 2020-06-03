@@ -50,7 +50,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Download button-->
                                         <div align="right">
-                                            <button id="btnLoadData" width="150px" label="${c:l('cms.common.flie.loadData')}" class="open orange"/>
+                                            <button id="btnUpdateStatusCard" width="150px" label="${c:l('cms.button.UpdateStatusCard')}" class="open orange"/>
                                         </div>
                                     </vlayout>
                                 </div>
