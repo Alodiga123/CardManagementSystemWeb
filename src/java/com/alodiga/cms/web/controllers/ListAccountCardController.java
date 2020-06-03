@@ -136,13 +136,13 @@ public class ListAccountCardController extends GenericAbstractListController<Acc
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (AccountCard ac : accountCardList) {
+                for (AccountCard accountCard : accountCardList) {
                     item = new Listitem();
                     item.setValue(accountCard);
-                    item.appendChild(new Listcell(ac.getCardId().getCardNumber().toString()));
-                    item.appendChild(new Listcell(ac.getCardId().getCardHolder().toString()));
-                    item.appendChild(new Listcell(ac.getAccountNumber().toString()));
-                    item.appendChild(new Listcell(ac.getStatusAccountId().getDescription()));
+                    item.appendChild(new Listcell(accountCard.getCardId().getCardNumber().toString()));
+                    item.appendChild(new Listcell(accountCard.getCardId().getCardHolder().toString()));
+                    item.appendChild(new Listcell(accountCard.getAccountNumber().toString()));
+                    item.appendChild(new Listcell(accountCard.getStatusAccountId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, accountCard));
                     item.appendChild(new ListcellViewButton(adminPage, accountCard,true));
                     item.setParent(lbxRecords);   
