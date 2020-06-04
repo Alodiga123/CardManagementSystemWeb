@@ -1,17 +1,29 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.exception.EmptyListException;
+import com.alodiga.cms.commons.exception.GeneralException;
+import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
+import com.cms.commons.models.LegalCustomer;
+import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
@@ -35,6 +47,8 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Label lblCity;
     private Label lblIdentificationCardHolder;
     private Label lblComercial;
+    
+    
 
     
 
@@ -45,6 +59,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     
     private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
+    private PersonEJB personEJB = null;
     private ProgramEJB programEJB = null;
     private ProductEJB productEJB = null;
     private Card cardParam;
@@ -72,6 +87,8 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+
         } catch (Exception ex) {
             showError(ex);
         }
@@ -86,17 +103,31 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             User user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            //lblIdentificationCardHolder.setValue(card.getCardHolder().);
+            NaturalCustomer naturalCustomer;
+            LegalCustomer legalCustomer;
+            
+            switch(card.getPersonCustomerId().getPersonTypeId().getId()){
+                case WebConstants.NATURAL_CUSTOMER:
+                    naturalCustomer = getCardHolderNaturalInfo(card.getPersonCustomerId().getId());
+                    lblIdentificationCardHolder.setValue(naturalCustomer.getIdentificationNumber());
+                    break;
+                case WebConstants.LEGAL_CUSTOMER:
+                    legalCustomer = getCardHolderLegalInfo(card.getPersonCustomerId().getId());
+                    lblIdentificationCardHolder.setValue(legalCustomer.getIdentificationNumber());
+                    break;
+                default:
+                    naturalCustomer = getCardHolderNaturalInfo(card.getPersonCustomerId().getId());
+                    lblIdentificationCardHolder.setValue(naturalCustomer.getIdentificationNumber());
+            }
+            
             lblCarHolder.setValue(card.getCardHolder());
             lblTypeProduct.setValue(card.getProgramId().getProductTypeId().getName());
-            //lblProduct.setValue(card.getProductId().getName());
-            //lblCardNumber.setValue(card.getCardNumber());
-            //lblExpirationDate.setValue(simpleDateFormat.format(card.getExpirationDate()));
             lblDateOfIssue.setValue(simpleDateFormat.format(card.getIssueDate()));
             lblComercial.setValue(user.getComercialAgencyId().getName());
             lblUser.setValue(user.getLogin());
             lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
             lblIdentification.setValue(user.getIdentificationNumber());
+            
         } catch (Exception ex) {
             showError(ex);
         }
@@ -154,6 +185,64 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             default:
                 break;
         }
+    }
+    
+    
+    public LegalCustomer getCardHolderLegalInfo(long personId){
+    List<LegalCustomer> legalCustomerList = null;
+       
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, personId);
+            EJBRequest request1 = new EJBRequest();
+            request1.setParams(params);
+            LegalCustomer legalCustomer = null;
+            
+        try {
+
+                legalCustomerList = personEJB.getLegalCustomerByPerson(request1);
+      
+            
+        } catch (EmptyListException ex) {
+            Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (LegalCustomer n : legalCustomerList) {
+                legalCustomer = n;
+        }
+    
+        return  legalCustomer;
+    }
+    
+     public NaturalCustomer getCardHolderNaturalInfo(long personId){
+    
+       List<NaturalCustomer> naturalCustomerList = null;
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, personId);
+            EJBRequest request1 = new EJBRequest();
+            request1.setParams(params);
+            NaturalCustomer naturalCustomer = null;
+            
+        try {
+         
+                naturalCustomerList = personEJB.getNaturalCustomerByPerson(request1);
+   
+        } catch (EmptyListException ex) {
+            Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for (NaturalCustomer n : naturalCustomerList) {
+                naturalCustomer = n;
+        }
+    
+        return  naturalCustomer;
     }
 
 }
