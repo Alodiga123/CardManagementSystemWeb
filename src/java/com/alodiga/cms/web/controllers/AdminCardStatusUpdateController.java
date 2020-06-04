@@ -34,6 +34,11 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Label lblUser;
     private Label lblCity;
     private Label lblIdentificationCardHolder;
+    private Label lblComercial;
+
+    
+
+    
 
     
 
@@ -81,14 +86,17 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             User user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            //lblCarHolder.setValue(card.getCardHolder());
-            //lblProgram.setValue(card.getProgramId().getName());
+            //lblIdentificationCardHolder.setValue(card.getCardHolder().);
+            lblCarHolder.setValue(card.getCardHolder());
+            lblTypeProduct.setValue(card.getProgramId().getProductTypeId().getName());
             //lblProduct.setValue(card.getProductId().getName());
             //lblCardNumber.setValue(card.getCardNumber());
             //lblExpirationDate.setValue(simpleDateFormat.format(card.getExpirationDate()));
-            //lblDateOfIssue.setValue(simpleDateFormat.format(card.getIssueDate()));
-            //lblStatus.setValue(card.getCardStatusId().getDescription());
-            //lblResponsibleChange.setValue(user.getLogin());
+            lblDateOfIssue.setValue(simpleDateFormat.format(card.getIssueDate()));
+            lblComercial.setValue(user.getComercialAgencyId().getName());
+            lblUser.setValue(user.getLogin());
+            lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
+            lblIdentification.setValue(user.getIdentificationNumber());
         } catch (Exception ex) {
             showError(ex);
         }

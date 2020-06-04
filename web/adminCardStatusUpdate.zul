@@ -115,9 +115,9 @@
                             </hlayout>
                         </div>
                          <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardManager.zul&quot;)"/>
-                                        </div>
+                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
+                             <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardManager.zul&quot;)"/>
+                         </div>
                         <div></div>
                     </hlayout>
                 </div>
