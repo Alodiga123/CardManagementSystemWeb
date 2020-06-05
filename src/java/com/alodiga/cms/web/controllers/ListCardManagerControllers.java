@@ -13,6 +13,7 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
+import com.cms.commons.models.Country;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -38,6 +39,7 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
+    private Combobox cmbCountry;
     private Combobox cmbProgram;
     private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
@@ -61,13 +63,19 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
-            loadCmbProgram(WebConstants.EVENT_ADD);
-//            getData();
-            loadDataList(card);
+            loadCmbCountry(WebConstants.EVENT_ADD);
         } catch (Exception ex) {
             showError(ex);
         }
     }
+    
+    
+    public void onChange$cmbCountry() {
+        cmbProgram.setValue("");
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        loadCmbProgram (WebConstants.EVENT_ADD, country.getId());
+    }
+    
 
     public void onClick$btnSearch() throws InterruptedException {
         if (validateEmpty()) {
@@ -89,11 +97,6 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
         return false;
     }
 
-//    public void onChange$cmbProgram() {
-//        program = (Program) cmbProgram.getSelectedItem().getValue();
-//        Sessions.getCurrent().setAttribute(WebConstants.PROGRAM, program);
-//        getData(program.getId());
-//    }
 
     public void getData(Long programId) {
         try {
@@ -178,12 +181,36 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
         item.appendChild(new Listcell());
         item.setParent(lbxRecords);
     }
-
-    private void loadCmbProgram(Integer evenInteger) {
+    
+    
+    private void loadCmbCountry(Integer evenInteger) {
+        cmbCountry.getItems().clear();
         EJBRequest request1 = new EJBRequest();
+        List<Country> countries;
+        try {
+            countries = utilsEJB.getCountries(request1);
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    private void loadCmbProgram(Integer evenInteger, int countryId) {
+        EJBRequest request1 = new EJBRequest();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        request1.setParams(params);
         List<Program> programs;
         try {
-            programs = programEJB.getProgram(request1);
+            programs = programEJB.getProgramByCountry(request1);
             loadGenericCombobox(programs, cmbProgram, "name", evenInteger, Long.valueOf(0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -196,7 +223,8 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
             ex.printStackTrace();
         }
     }
-
+    
+   
     @Override
     public List<Card> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
