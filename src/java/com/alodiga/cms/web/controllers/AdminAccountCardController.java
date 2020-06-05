@@ -206,7 +206,8 @@ public class AdminAccountCardController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 loadFields(accountCardParam);
                 txtReasonCancellation.setReadonly(true);
-                dtbCancellationDate.setReadonly(true);
+                blockFields();
+                dtbCancellationDate.setDisabled(false);
                 break;
             default:
                 break;
