@@ -12,8 +12,12 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
+import com.cms.commons.models.CardStatus;
+import com.cms.commons.models.CardStatusHasUpdateReason;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.Profile;
+import com.cms.commons.models.StatusUpdateReason;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -71,7 +75,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         super.doAfterCompose(comp);
         evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
-            cardParam = null;
+            cardParam = null;            
         } else {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
         }
@@ -128,6 +132,8 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
             lblIdentification.setValue(user.getIdentificationNumber());
             
+            
+            
         } catch (Exception ex) {
             showError(ex);
         }
@@ -175,9 +181,11 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(cardParam);
+                loadCmbReasonChange(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(cardParam);
+                loadCmbReasonChange(eventType);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
@@ -245,4 +253,49 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         return  naturalCustomer;
     }
 
+         private void loadCmbReasonChange(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<StatusUpdateReason> statusUpdateReason;
+        try {
+            statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
+            loadGenericCombobox(statusUpdateReason, cmbReasonChange, "description", evenInteger,  Long.valueOf(4));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+    }
+     
+         
+     public void onChange$cmbReasonChange() {
+        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbReasonChange.getSelectedItem().getValue();
+        loadcmbNewStatus(eventType,statusUpdateReason.getId());
+     }     
+     
+        private void loadcmbNewStatus(Integer evenInteger, int statusUpdateReasonId) {
+            
+        //EJBRequest request1 = new EJBRequest();
+        //Map params = new HashMap();
+        //params.put(Constants.STATUS_UPDATE_REASON_KEY, statusUpdateReasonId);
+        //request1.setParams(params);
+                    
+        List<CardStatus> cardStatus;
+        try {
+            String id= Integer.toString(statusUpdateReasonId);
+            cardStatus = cardEJB.getStatusCardByStatusUpdateReasonId(id);
+            
+            
+            
+            //cardStatusHasUpdateReason.get(0).getCardStatusId();
+            loadGenericCombobox(cardStatus, cmbNewStatus, "description", evenInteger,  Long.valueOf(0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+    }
 }
