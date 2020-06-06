@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 
 public class AdminCardStatusUpdateController extends GenericAbstractAdminController {
@@ -44,22 +45,13 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Label lblStatus;
     private Label lblExpirationDate;
     private Label lblDateOfIssue;
-    private Combobox cmbNewStatus;
-    private Combobox cmbReasonChange;
+    private Combobox cmbCardStatus;
+    private Combobox cmbStatusUpdateReason;
 
     private Label lblUser;
     private Label lblCity;
     private Label lblIdentificationCardHolder;
     private Label lblComercial;
-    
-    
-
-    
-
-    
-
-    
-
     
     private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
@@ -74,10 +66,11 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
-        if (eventType == WebConstants.EVENT_ADD) {
-            cardParam = null;            
-        } else {
+        if (eventType != WebConstants.EVENT_ADD) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
+            if (cardParam.getStatusUpdateReasonId() == null) {
+                cardParam = null; 
+            }
         }
         initialize();
         loadData();
@@ -130,10 +123,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             lblComercial.setValue(user.getComercialAgencyId().getName());
             lblUser.setValue(user.getLogin());
             lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
-            lblIdentification.setValue(user.getIdentificationNumber());
-            
-            
-            
+            lblIdentification.setValue(user.getIdentificationNumber());                       
         } catch (Exception ex) {
             showError(ex);
         }
@@ -181,11 +171,11 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         switch (evenType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(cardParam);
-                loadCmbReasonChange(eventType);
+                loadCmbStatusUpdateReason(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(cardParam);
-                loadCmbReasonChange(eventType);
+                loadCmbStatusUpdateReason(eventType);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
@@ -197,68 +187,58 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     
     
     public LegalCustomer getCardHolderLegalInfo(long personId){
-    List<LegalCustomer> legalCustomerList = null;
+        List<LegalCustomer> legalCustomerList = null;
        
-            Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, personId);
-            EJBRequest request1 = new EJBRequest();
-            request1.setParams(params);
-            LegalCustomer legalCustomer = null;
-            
+        Map params = new HashMap();
+        params.put(Constants.PERSON_KEY, personId);
+        EJBRequest request1 = new EJBRequest();
+        request1.setParams(params);
+        LegalCustomer legalCustomer = null;            
         try {
-
-                legalCustomerList = personEJB.getLegalCustomerByPerson(request1);
-      
-            
+            legalCustomerList = personEJB.getLegalCustomerByPerson(request1);          
         } catch (EmptyListException ex) {
             Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
             Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NullParameterException ex) {
             Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        }        
         for (LegalCustomer n : legalCustomerList) {
-                legalCustomer = n;
-        }
-    
+            legalCustomer = n;
+        }    
         return  legalCustomer;
     }
     
-     public NaturalCustomer getCardHolderNaturalInfo(long personId){
-    
-       List<NaturalCustomer> naturalCustomerList = null;
-            Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, personId);
-            EJBRequest request1 = new EJBRequest();
-            request1.setParams(params);
-            NaturalCustomer naturalCustomer = null;
+     public NaturalCustomer getCardHolderNaturalInfo(long personId){    
+        List<NaturalCustomer> naturalCustomerList = null;
+        Map params = new HashMap();
+        params.put(Constants.PERSON_KEY, personId);
+        EJBRequest request1 = new EJBRequest();
+        request1.setParams(params);
+        NaturalCustomer naturalCustomer = null;
             
-        try {
-         
-                naturalCustomerList = personEJB.getNaturalCustomerByPerson(request1);
-   
+        try {         
+            naturalCustomerList = personEJB.getNaturalCustomerByPerson(request1);   
+           
+            for (NaturalCustomer n : naturalCustomerList) {
+                    naturalCustomer = n;
+            }
         } catch (EmptyListException ex) {
             Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
             Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NullParameterException ex) {
             Logger.getLogger(AdminCardStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        for (NaturalCustomer n : naturalCustomerList) {
-                naturalCustomer = n;
-        }
-    
+        }     
         return  naturalCustomer;
     }
 
-         private void loadCmbReasonChange(Integer evenInteger) {
+    private void loadCmbStatusUpdateReason(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<StatusUpdateReason> statusUpdateReason;
         try {
             statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
-            loadGenericCombobox(statusUpdateReason, cmbReasonChange, "description", evenInteger,  Long.valueOf(4));
+            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(cardParam != null ? cardParam.getStatusUpdateReasonId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -269,27 +249,33 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     }
      
          
-     public void onChange$cmbReasonChange() {
-        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbReasonChange.getSelectedItem().getValue();
-        loadcmbNewStatus(eventType,statusUpdateReason.getId());
-     }     
+    public void onChange$cmbStatusUpdateReason() {
+        cmbCardStatus.setValue("");
+        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
+        loadCmbCardStatus(eventType,statusUpdateReason.getId());
+    }     
      
-        private void loadcmbNewStatus(Integer evenInteger, int statusUpdateReasonId) {
-            
-        //EJBRequest request1 = new EJBRequest();
-        //Map params = new HashMap();
-        //params.put(Constants.STATUS_UPDATE_REASON_KEY, statusUpdateReasonId);
-        //request1.setParams(params);
-                    
-        List<CardStatus> cardStatus;
+    private void loadCmbCardStatus(Integer evenInteger, int statusUpdateReasonId) {  
+        cmbCardStatus.getItems().clear();
+        EJBRequest request1 = new EJBRequest();
+        Map params = new HashMap();
+        params.put(Constants.STATUS_UPDATE_REASON_KEY, statusUpdateReasonId);
+        request1.setParams(params);                    
+        List<CardStatusHasUpdateReason> cardStatusList;
         try {
-            String id= Integer.toString(statusUpdateReasonId);
-            cardStatus = cardEJB.getStatusCardByStatusUpdateReasonId(id);
-            
-            
-            
-            //cardStatusHasUpdateReason.get(0).getCardStatusId();
-            loadGenericCombobox(cardStatus, cmbNewStatus, "description", evenInteger,  Long.valueOf(0));
+            cardStatusList = cardEJB.getCardStatusByUpdateReason(request1);
+            for (int i = 0; i < cardStatusList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(cardStatusList.get(i));
+                item.setLabel(cardStatusList.get(i).getCardStatusId().getDescription());
+                item.setParent(cmbCardStatus);
+                if (cardParam != null && cardStatusList.get(i).getId().equals(cardParam.getCardStatusId().getId())) {
+                    cmbCardStatus.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbCardStatus.setDisabled(true);
+            }   
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
