@@ -53,6 +53,8 @@ public class WebConstants {
     public static final String MAIN_APPLICANT = "Solicitante Principal";
     public static final int MAIN_CUSTOMER = 1;
     public static final int COMPLEMENTARY_CUSTOMER = 2;
+    public static final int NATURAL_CUSTOMER = 1;
+    public static final int LEGAL_CUSTOMER = 2;
     
     
     public static final String MENU_SECURITY = "menu.security";

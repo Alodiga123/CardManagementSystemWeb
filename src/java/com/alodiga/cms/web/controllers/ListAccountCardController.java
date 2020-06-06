@@ -7,7 +7,6 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -19,35 +18,21 @@ import com.cms.commons.models.AccountProperties;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
-import com.cms.commons.models.RateByProduct;
-import com.cms.commons.models.RateByCard;
-import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Window;
 
 public class ListAccountCardController extends GenericAbstractListController<AccountCard> {
 
@@ -136,13 +121,13 @@ public class ListAccountCardController extends GenericAbstractListController<Acc
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (AccountCard ac : accountCardList) {
+                for (AccountCard accountCard : accountCardList) {
                     item = new Listitem();
                     item.setValue(accountCard);
-                    item.appendChild(new Listcell(ac.getCardId().getCardNumber().toString()));
-                    item.appendChild(new Listcell(ac.getCardId().getCardHolder().toString()));
-                    item.appendChild(new Listcell(ac.getAccountNumber().toString()));
-                    item.appendChild(new Listcell(ac.getStatusAccountId().getDescription()));
+                    item.appendChild(new Listcell(accountCard.getCardId().getCardNumber().toString()));
+                    item.appendChild(new Listcell(accountCard.getCardId().getCardHolder().toString()));
+                    item.appendChild(new Listcell(accountCard.getAccountNumber().toString()));
+                    item.appendChild(new Listcell(accountCard.getStatusAccountId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, accountCard));
                     item.appendChild(new ListcellViewButton(adminPage, accountCard,true));
                     item.setParent(lbxRecords);   

@@ -92,10 +92,7 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
     }
 
     public Boolean validateEmpty() {
-        AdminAccountPropertiesController adminAccountProperties = new AdminAccountPropertiesController();
-        if (adminAccountProperties.getAccountPropertiesParent().getId() != null) {
-            accountProperties = adminAccountProperties.getAccountPropertiesParent();
-        } else if (txtAccountDescription.getText().isEmpty()) {
+        if (txtAccountDescription.getText().isEmpty()) {
             txtAccountDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtLengthSegment.getText().isEmpty()) {
