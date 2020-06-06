@@ -412,6 +412,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell51.setParent(item51);
         item51.setParent(lbxPermissions);
         
+        
         //Opción BINSPONSOR 
         Listitem item55 = new Listitem();
         Listcell listCell55 = new Listcell();
