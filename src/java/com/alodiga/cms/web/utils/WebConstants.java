@@ -11,6 +11,7 @@ public class WebConstants {
     public static final int EVENT_ADD_DESCENDANT = 5;
     public static final String EVENTYPE = "eventType";
     public static final String OPTION_MENU = "optionMenu";
+    public static final String OPTION_LIST = "optionList";
     public static final String PROGRAM = "program";
     public static final String PRODUCT = "product";
     public static final String CARD = "card";
@@ -52,6 +53,8 @@ public class WebConstants {
     public static final String MAIN_APPLICANT = "Solicitante Principal";
     public static final int MAIN_CUSTOMER = 1;
     public static final int COMPLEMENTARY_CUSTOMER = 2;
+    public static final int NATURAL_CUSTOMER = 1;
+    public static final int LEGAL_CUSTOMER = 2;
     
     
     public static final String MENU_SECURITY = "menu.security";

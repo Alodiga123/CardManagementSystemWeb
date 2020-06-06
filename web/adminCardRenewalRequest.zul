@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPlasticCard" title="${c:l('cms.tab.plasticCard')}" width="950px" height="450px" apply="com.alodiga.cms.web.controllers.AdminPlasticCardController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminCardRenewalRequest" title="${c:l('cms.tab.cardRenewalMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminCardRenewalRequestControllers" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -18,16 +18,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.card')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -36,25 +27,38 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label id="lblCardRequestRenewal" value="" width="200px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label id="lblProgram" value="" width="280px" style="color:#837E76;"/>
-                                                            <label id="lblPlasticManufacturer" value="" width="280px" style="color:#837E76;"/>
-                                                            <label id="lblCardNumber" value="" width="280px" style="color:#837E76;"/>
+                                                            <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.create.date')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblCardNumber" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblCardHolder" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblCreateDate" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.Program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label id="lblExpirationDate" value="" width="280px" style="color:#837E76;"/>
-                                                            <label id="lblCardHolder" value="" width="280px" style="color:#837E76;"/>
-                                                            <combobox id="cmbCardStatus" width="270px" mold="rounded" readonly="true"/>
+                                                            <label id="lblExpirationDate" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblCardProgram" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblCardProduct" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hlayout>
+                                                                <combobox id="cmbCardStatus" width="230px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>                                                       
                                                     </rows>
                                                 </grid>
                                             </vlayout>

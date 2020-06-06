@@ -9,57 +9,50 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
+import com.cms.commons.models.CardRenewalRequestHasCard;
 import com.cms.commons.models.CardStatus;
-import com.cms.commons.models.PlastiCustomizingRequestHasCard;
-import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
-public class AdminPlasticCardController extends GenericAbstractAdminController {
+public class AdminCardRenewalRequestControllers extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Label lblProgram;
-    private Label lblPlasticManufacturer;
+    private Label lblCardRequestRenewal;
     private Label lblCardNumber;
-    private Label lblExpirationDate;
     private Label lblCardHolder;
+    private Label lblCardProgram;
+    private Label lblCardProduct;
+    private Label lblCreateDate;
+    private Label lblExpirationDate;
     private Combobox cmbCardStatus;
-    private PlasticCustomizingRequest plastiCustomerParam;
-    private Card cardParam;
-    private PlastiCustomizingRequestHasCard plastiCustomizingRequestHasCardParam;
     private CardEJB cardEJB = null;
     private UtilsEJB utilsEJB = null;
+    private CardRenewalRequestHasCard cardRenewalParam;
+    public Window winAdminCardRenewalRequest;
     private Button btnSave;
     private Integer eventType;
-    public Window winAdminPlasticCard;
-    public static PlasticCustomizingRequest plasticCustomer = null;
-    public int optionList = 0;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        optionList = (Integer) Sessions.getCurrent().getAttribute(WebConstants.OPTION_LIST);
+        eventType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType == WebConstants.EVENT_ADD) {
-            cardParam = null;
+            cardRenewalParam = null;
         } else {
-            if (optionList == 1) {
-                cardParam = (Card) Sessions.getCurrent().getAttribute("object");
-            } else {
-                plastiCustomizingRequestHasCardParam = (PlastiCustomizingRequestHasCard) Sessions.getCurrent().getAttribute("object");
-                cardParam = plastiCustomizingRequestHasCardParam.getCardId();
-            }            
+            cardRenewalParam = (CardRenewalRequestHasCard) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
+        loadData();
     }
 
     @Override
@@ -68,7 +61,6 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
         try {
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            loadData();
         } catch (Exception ex) {
             showError(ex);
         }
@@ -77,76 +69,92 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
     public void clearFields() {
 
     }
-    
-    public void onClick$btnBack() {
-        winAdminPlasticCard.detach();
-    }
 
-    private void loadFields(Card card) {
+    private void loadFields(CardRenewalRequestHasCard cardRenawal) {
         try {
-            AdminPlasticRequestController adminPlasticRequest = new AdminPlasticRequestController();
-            if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {
-                plastiCustomerParam = adminPlasticRequest.getPlasticCustomizingRequest();
-            }
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            lblCardRequestRenewal.setValue(cardRenawal.getCardRenewalRequestId().getRequestNumber());
+            lblCardNumber.setValue(cardRenawal.getCardId().getCardNumber());
+            lblCardHolder.setValue(cardRenawal.getCardId().getCardHolder());
+            lblCardProgram.setValue(cardRenawal.getCardId().getProgramId().getName());
+            lblCardProduct.setValue(cardRenawal.getCardId().getProductId().getName());
+            lblCreateDate.setValue(simpleDateFormat.format(cardRenawal.getCardId().getIssueDate()));
+            lblExpirationDate.setValue(simpleDateFormat.format(cardRenawal.getCardId().getExpirationDate()));
 
-            lblProgram.setValue(plastiCustomerParam.getProgramId().getName());
-            lblPlasticManufacturer.setValue(plastiCustomerParam.getPlasticManufacturerId().getName());
-            lblCardNumber.setValue(card.getCardNumber());
-            lblExpirationDate.setValue(card.getExpirationDate().toString());
-            lblCardHolder.setValue(card.getCardHolder());
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
     }
+    
 
     public void blockFields() {
+        cmbCardStatus.setReadonly(true);
         btnSave.setVisible(false);
     }
 
+    public Boolean validateEmpty() {
+        if (cmbCardStatus.getSelectedItem() == null) {
+            cmbCardStatus.setFocus(true);
+            this.showMessage("cms.error.statusCard.notSelected", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
     private void saveCard(Card _card) {
-        String numberRequest = "";
         try {
+            CardRenewalRequestHasCard cardRenawalHasCard = null;
             Card card = null;
 
             if (_card != null) {
                 card = _card;
-
-            } else {//New collectionsRequest
+            } else {//New card
                 card = new Card();
             }
 
             card.setCardStatusId((CardStatus) cmbCardStatus.getSelectedItem().getValue());
             card = cardEJB.saveCard(card);
+
             this.showMessage("sp.common.save.success", false, null);
-            
-            EventQueues.lookup("updatePlasticCard", EventQueues.APPLICATION, true).publish(new Event(""));
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }
     }
+    
+    public void onClick$btnBack() {
+        winAdminCardRenewalRequest.detach();
+    }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveCard(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveCard(cardParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveCard(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveCard(cardRenewalParam.getCardId());
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(cardParam);
+                loadFields(cardRenewalParam);
                 loadCmbCardStatus(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(cardParam);
+                loadFields(cardRenewalParam);
                 loadCmbCardStatus(eventType);
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCardStatus(eventType);
@@ -155,14 +163,14 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
                 break;
         }
     }
-
+    
     private void loadCmbCardStatus(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<CardStatus> cardStatus;
 
         try {
             cardStatus = utilsEJB.getCardStatus(request1);
-            loadGenericCombobox(cardStatus, cmbCardStatus, "description", evenInteger, Long.valueOf(cardParam != null ? cardParam.getCardStatusId().getId() : 0));
+            loadGenericCombobox(cardStatus, cmbCardStatus, "description", evenInteger, Long.valueOf(cardRenewalParam != null ? cardRenewalParam.getCardId().getCardStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
