@@ -10,6 +10,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardStatus;
+import com.cms.commons.models.PlastiCustomizingRequestHasCard;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -34,21 +35,29 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
     private Combobox cmbCardStatus;
     private PlasticCustomizingRequest plastiCustomerParam;
     private Card cardParam;
+    private PlastiCustomizingRequestHasCard plastiCustomizingRequestHasCardParam;
     private CardEJB cardEJB = null;
     private UtilsEJB utilsEJB = null;
     private Button btnSave;
     private Integer eventType;
     public Window winAdminPlasticCard;
     public static PlasticCustomizingRequest plasticCustomer = null;
+    public int optionList = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        optionList = (Integer) Sessions.getCurrent().getAttribute(WebConstants.OPTION_LIST);
         if (eventType == WebConstants.EVENT_ADD) {
             cardParam = null;
         } else {
-            cardParam = (Card) Sessions.getCurrent().getAttribute("object");
+            if (optionList == 1) {
+                cardParam = (Card) Sessions.getCurrent().getAttribute("object");
+            } else {
+                plastiCustomizingRequestHasCardParam = (PlastiCustomizingRequestHasCard) Sessions.getCurrent().getAttribute("object");
+                cardParam = plastiCustomizingRequestHasCardParam.getCardId();
+            }            
         }
         initialize();
     }
