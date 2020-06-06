@@ -93,8 +93,8 @@
 
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbReasonChange" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbNewStatus" width="250px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbStatusUpdateReason" width="250px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbCardStatus" width="250px" mold="rounded" readonly="true" />
 
                                                         </row>
                                                         
