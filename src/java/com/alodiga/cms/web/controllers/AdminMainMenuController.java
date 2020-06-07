@@ -420,6 +420,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell90.addEventListener("onClick", new RedirectListener("listUserHasProfile.zul"));
         listCell90.setParent(item90);
         item90.setParent(lbxPermissions);
+        
+        //Opción CardRenewalRequest
+        Listitem item91 = new Listitem();
+        Listcell listCell91 = new Listcell();
+        listCell91.setLabel(Labels.getLabel("cms.menu.cardRenewal"));
+        listCell91.addEventListener("onClick", new RedirectListener("listCardRenewalRequest.zul"));
+        listCell91.setParent(item91);
+        item91.setParent(lbxPermissions);
     }
 }
 

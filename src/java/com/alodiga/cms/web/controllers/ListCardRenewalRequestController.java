@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -8,7 +9,10 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Card;
+import com.cms.commons.models.CardRenewalRequest;
 import com.cms.commons.models.CardRenewalRequestHasCard;
+import com.cms.commons.models.CardStatus;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -36,12 +40,16 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     private Listbox lbxRecords;
     private Textbox txtName;
     private CardEJB cardEJB = null;
+    private UtilsEJB utilsEJB = null;
     private List<CardRenewalRequestHasCard> cardRenewalRequest = null;
+    private List<CardRenewalRequest> CardRenewalRequestList = null;
+    private List cardByIssuerList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        
 //        startListener();
     }
 
@@ -66,6 +74,17 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             permissionRead = true;
             adminPage = "/adminCardRenewalRequest.zul";
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            
+            //Se obtiene el estatus de la tarjeta ACTIVA
+            EJBRequest request1 = new EJBRequest();
+            request1.setParam(Constants.CARD_STATUS_ACTIVE);
+            CardStatus cardStatus = utilsEJB.loadCardStatus(request1);
+            
+            //Se llama al servicio que obtiene la lista de las solicitudes de renovación de tarjetas del día actual.
+            CardRenewalRequestList = cardEJB.createCardRenewalRequestByIssuer(cardStatus.getId());
+            
+            //Se obtiene la lista de solicitudes de renovación de tarjeta
             getData();
             loadDataList(cardRenewalRequest);
         } catch (Exception ex) {
@@ -163,7 +182,6 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     public void getData() {
         CardRenewalRequestHasCard cardRenewal = null;
         cardRenewalRequest = new ArrayList<CardRenewalRequestHasCard>();
-
         try {
 
             AdminCardRenewalControllers adminCardRenewal = new AdminCardRenewalControllers();
