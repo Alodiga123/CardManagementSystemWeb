@@ -9,7 +9,6 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Card;
 import com.cms.commons.models.CardRenewalRequest;
 import com.cms.commons.models.CardRenewalRequestHasCard;
 import com.cms.commons.models.CardStatus;
@@ -34,7 +33,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListCardRenewalRequestController extends GenericAbstractListController<CardRenewalRequestHasCard> {
+public class ListCardRenewalRequestController extends GenericAbstractListController<CardRenewalRequest> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
@@ -43,25 +42,18 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     private UtilsEJB utilsEJB = null;
     private List<CardRenewalRequestHasCard> cardRenewalRequest = null;
     private List<CardRenewalRequest> CardRenewalRequestList = null;
+    private List<CardRenewalRequest> cardRenewalRequestAllList = null;
     private List cardByIssuerList = null;
+    CardStatus cardStatus = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
-        
-//        startListener();
     }
 
     public void startListener() {
-//        EventQueue que = EventQueues.lookup("updateCardRenewalRequest", EventQueues.APPLICATION, true);
-//        que.subscribe(new EventListener() {
-//
-//            public void onEvent(Event evt) {
-//                getData();
-//                loadDataList(cardRenewalRequest);
-//            }
-//        });
+
     }
 
     @Override
@@ -79,39 +71,46 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             //Se obtiene el estatus de la tarjeta ACTIVA
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CARD_STATUS_ACTIVE);
-            CardStatus cardStatus = utilsEJB.loadCardStatus(request1);
+            cardStatus = utilsEJB.loadCardStatus(request1);
             
-            //Se llama al servicio que obtiene la lista de las solicitudes de renovación de tarjetas del día actual.
-            CardRenewalRequestList = cardEJB.createCardRenewalRequestByIssuer(cardStatus.getId());
-            
-            //Se obtiene la lista de solicitudes de renovación de tarjeta
-            getData();
-            loadDataList(cardRenewalRequest);
+            //Verificar si en la fecha actual se crearon solicitudes de renovación
+            CardRenewalRequestList = cardEJB.getCardRenewalRequestByCurrentDate(cardStatus.getId());
+               
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            try {
+                if (CardRenewalRequestList == null) {
+                    //Se llama al servicio que genera las solicitudes de renovación de tarjetas del día actual.
+                    CardRenewalRequestList = cardEJB.createCardRenewalRequestByIssuer(cardStatus.getId());
+                }                 
+                getData();
+                loadDataList(cardRenewalRequestAllList);
+            } catch (Exception ex) {
+                showError(ex);
+            }    
         }
     }
 
     public void onClick$btnDelete() {
     }
 
-    public void loadDataList(List<CardRenewalRequestHasCard> list) {
+    public void loadDataList(List<CardRenewalRequest> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (CardRenewalRequestHasCard cardRenewalRequestHasCard : list) {
+                for (CardRenewalRequest cardRenewalRequest : list) {
                     item = new Listitem();
-                    item.setValue(cardRenewalRequestHasCard);
+                    item.setValue(cardRenewalRequest);
 
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(cardRenewalRequestHasCard.getCardId().getCardNumber()));
-                    item.appendChild(new Listcell(cardRenewalRequestHasCard.getCardId().getCardHolder()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(cardRenewalRequestHasCard.getCardId().getExpirationDate())));
-                    item.appendChild(new Listcell(cardRenewalRequestHasCard.getCardId().getCardStatusId().getDescription()));
-                    item.appendChild(createButtonEditModal(cardRenewalRequestHasCard));
-                    item.appendChild(createButtonViewModal(cardRenewalRequestHasCard));
+                    item.appendChild(new Listcell(cardRenewalRequest.getRequestNumber()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(cardRenewalRequest.getRequestDate())));
+                    item.appendChild(new Listcell(cardRenewalRequest.getIssuerId().getName()));
+                    item.appendChild(createButtonEditModal(cardRenewalRequest));
+                    item.appendChild(createButtonViewModal(cardRenewalRequest));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -180,20 +179,11 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     }
 
     public void getData() {
-        CardRenewalRequestHasCard cardRenewal = null;
-        cardRenewalRequest = new ArrayList<CardRenewalRequestHasCard>();
+        cardRenewalRequestAllList = new ArrayList<CardRenewalRequest>();
         try {
-
-            AdminCardRenewalControllers adminCardRenewal = new AdminCardRenewalControllers();
-            if (adminCardRenewal.getCardRenewalRequestHasCard()!= null) {
-                cardRenewal = adminCardRenewal.getCardRenewalRequestHasCard();
-            }
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.REQUESTS_NUMBER_KEY, cardRenewal.getId());
-            request1.setParams(params);
-            cardRenewalRequest = cardEJB.getCardRenewalRequestHasCardByRequest(request1);
-
+            request.setFirst(0);
+            request.setLimit(null);
+            cardRenewalRequestAllList = cardEJB.getCardRenewalRequest(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -225,7 +215,7 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     }
 
     @Override
-    public List<CardRenewalRequestHasCard> getFilterList(String filter) {
+    public List<CardRenewalRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
