@@ -47,7 +47,7 @@
                                                             </hlayout>
                                                             <hlayout style="text-align:center">
                                                                 <label value="${c:l('cms.common.countryFilter')}" width="80px" sclass="lblbold"/>
-                                                                <textbox id="txtCountry" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
+                                                                <textbox id="txtCountry" value="" width="200px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                             </hlayout>
                                                             <!--Filters button-->
                                                             <div align="center" width="250px">
