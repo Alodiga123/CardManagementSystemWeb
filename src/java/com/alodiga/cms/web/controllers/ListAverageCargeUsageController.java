@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,14 +8,12 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.CardRenewalRequest;
-import com.cms.commons.models.CardRenewalRequestHasCard;
-import com.cms.commons.models.CardStatus;
+import com.cms.commons.models.AverageCargeUsage;
+import com.cms.commons.models.Program;
+import com.cms.commons.models.ProjectAnnualVolume;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,30 +27,34 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListCardRenewalRequestController extends GenericAbstractListController<CardRenewalRequest> {
+public class ListAverageCargeUsageController extends GenericAbstractListController<AverageCargeUsage> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private CardEJB cardEJB = null;
-    private UtilsEJB utilsEJB = null;
-    private List<CardRenewalRequestHasCard> cardRenewalRequest = null;
-    private List<CardRenewalRequest> CardRenewalRequestList = null;
-    private List<CardRenewalRequest> cardRenewalRequestAllList = null;
-    private List cardByIssuerList = null;
-    CardStatus cardStatus = null;
+    private ProgramEJB programEJB = null;
+    private List<AverageCargeUsage> averageCargeUsage = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
     }
 
     public void startListener() {
-
+        EventQueue que = EventQueues.lookup("updateAverageCargeUsage", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(averageCargeUsage);
+            }
+        });
     }
 
     @Override
@@ -64,59 +65,52 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminCardRenewalRequest.zul";
-            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            
-            //Se obtiene el estatus de la tarjeta ACTIVA
-            EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.CARD_STATUS_ACTIVE);
-            cardStatus = utilsEJB.loadCardStatus(request1);
-            
-            //Verificar si en la fecha actual se crearon solicitudes de renovación
-            CardRenewalRequestList = cardEJB.getCardRenewalRequestByCurrentDate(cardStatus.getId());
-               
+            adminPage = "/adminAverageCargeUsage.zul";
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            getData();
+            if (averageCargeUsage != null) {
+                loadDataList(averageCargeUsage);
+            }
         } catch (Exception ex) {
             showError(ex);
-        } finally {
-            try {
-                if (CardRenewalRequestList.size() == 0) {
-                    //Se llama al servicio que genera las solicitudes de renovación de tarjetas del día actual.
-                    CardRenewalRequestList = cardEJB.createCardRenewalRequestByIssuer(cardStatus.getId());
-                }                 
-                getData();
-                loadDataList(cardRenewalRequestAllList);
-            } catch (Exception ex) {
-                showError(ex);
-            }    
         }
     }
 
-    public void onClick$btnDelete() {
+    public void onClick$btnAdd() throws InterruptedException {
+        try {
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", averageCargeUsage);
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+            window.doModal();
+        } catch (Exception ex) {
+            this.showMessage("sp.error.general", true, ex);
+        }
     }
 
-    public void loadDataList(List<CardRenewalRequest> list) {
+    public void loadDataList(List<AverageCargeUsage> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (CardRenewalRequest cardRenewalRequest : list) {
+                btnDownload.setVisible(true);
+                for (AverageCargeUsage averageCargeUsage : list) {
                     item = new Listitem();
-                    item.setValue(cardRenewalRequest);
-
-                    String pattern = "yyyy-MM-dd";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(cardRenewalRequest.getRequestNumber()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(cardRenewalRequest.getRequestDate())));
-                    item.appendChild(new Listcell(cardRenewalRequest.getIssuerId().getName()));
-                    item.appendChild(createButtonEditModal(cardRenewalRequest));
-                    item.appendChild(createButtonViewModal(cardRenewalRequest));
+                    item.setValue(averageCargeUsage);
+                    item.appendChild(new Listcell(averageCargeUsage.getYear().toString()));
+                    item.appendChild(new Listcell(averageCargeUsage.getAverageLoadMonth().toString()));
+                    item.appendChild(new Listcell(averageCargeUsage.getAverageSpendMonth().toString()));
+                    item.appendChild(createButtonEditModal(averageCargeUsage));
+                    item.appendChild(createButtonViewModal(averageCargeUsage));
                     item.setParent(lbxRecords);
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -145,6 +139,7 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
                     final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                     window.doModal();
                 }
+
             });
             button.setParent(listcellEditModal);
         } catch (Exception ex) {
@@ -170,6 +165,7 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
                     final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
                     window.doModal();
                 }
+
             });
             button.setParent(listcellViewModal);
         } catch (Exception ex) {
@@ -179,11 +175,18 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     }
 
     public void getData() {
-        cardRenewalRequestAllList = new ArrayList<CardRenewalRequest>();
+        Program program = null;
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            cardRenewalRequestAllList = cardEJB.getCardRenewalRequest(request);
+            //Programa principal
+            AdminProgramController adminProgram = new AdminProgramController();
+            if (adminProgram.getProgramParent().getId() != null) {
+                program = adminProgram.getProgramParent();
+            }
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PROGRAM_KEY, program.getId());
+            request.setParams(params);
+            averageCargeUsage = programEJB.getAverageCargeUsageByProgram(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -199,12 +202,13 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
         item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.average.carge.usage.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -215,7 +219,8 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     }
 
     @Override
-    public List<CardRenewalRequest> getFilterList(String filter) {
+    public List<AverageCargeUsage> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }
