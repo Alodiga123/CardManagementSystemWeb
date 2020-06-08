@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCardRenewalRequest" title="${c:l('cms.tab.cardRenewalMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminCardRenewalRequestControllers" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminCardRenewalRequest" title="${c:l('cms.tab.cardRenewalMain')}" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminCardRenewalRequestControllers" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -51,13 +51,20 @@
                                                             <label id="lblCardProduct" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.menu.cardRenewal.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <combobox id="cmbCardStatus" width="230px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <hbox>
+                                                                <radiogroup id="indRenewal" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rRenewalYes" label="${c:l('cms.commom.Yes')}" radiogroup="indRenewal" />
+                                                                            <radio id="rRenewalNo" label="${c:l('cms.commom.No')} " radiogroup="indRenewal" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
                                                         </row>                                                       
                                                     </rows>
                                                 </grid>

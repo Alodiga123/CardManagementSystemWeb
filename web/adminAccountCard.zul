@@ -27,6 +27,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.crud.account.card')}" onClick='Executions.sendRedirect(&quot;listAccountCard.zul&quot;)'/>
                                                  
+                                                <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -69,27 +70,30 @@
                                                             <label id="lblStatusAccount" width="270px"/>
                                                        </row>
                                                          <row>
-                                                            <label value="${c:l('cms.common.reason.cancellation')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.cancellation.account')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cancellation.date')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.reason.cancellation')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <cell colspan="2">
+                                                            <cell colspan="3">
                                                                 <hlayout>
-                                                                    <textbox id="txtReasonCancellation" multiline="true" rows="2" width="850px" maxlength="1490"/>
+                                                                    <textbox id="txtReasonCancellation" multiline="true" rows="3" width="850px" maxlength="1490"/>
                                                                     <label value="*" sclass="lblreq" />
                                                                 </hlayout>   
                                                             </cell>
                                                         </row>
                                                         <row>
-                                                            <label id="lblUserCancellationAccount" width="270px"/>
+                                                            <label value="${c:l('cms.common.cancellation.date')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.user.cancellation.account')}" sclass="lblbold"/>  
                                                         </row>
                                                         <row>
                                                         <hlayout>
                                                              <datebox id="dtbCancellationDate" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                              <label value="*" sclass="lblreq" />
                                                         </hlayout>
+                                                        <label id="lblUserCancellationAccount" width="270px"/>
                                                         </row>
+                                                        <!--row>
+                                                           <label id="lblUserCancellationAccount" width="270px"/>
+                                                        </row-->
                                                     </rows>
                                                 </grid>
                                             </vlayout>
