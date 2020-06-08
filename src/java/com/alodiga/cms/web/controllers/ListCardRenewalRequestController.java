@@ -80,7 +80,7 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             showError(ex);
         } finally {
             try {
-                if (CardRenewalRequestList == null) {
+                if (CardRenewalRequestList.size() == 0) {
                     //Se llama al servicio que genera las solicitudes de renovación de tarjetas del día actual.
                     CardRenewalRequestList = cardEJB.createCardRenewalRequestByIssuer(cardStatus.getId());
                 }                 
