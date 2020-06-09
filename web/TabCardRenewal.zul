@@ -43,7 +43,7 @@
                                                             <include src="adminCardRenewal.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listCardRenewalRequest.zul"/>
+                                                            <include src="listCardByRenewal.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

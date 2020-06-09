@@ -21,11 +21,12 @@ public class AdminCardRenewalControllers extends GenericAbstractAdminController 
     private Label lblNumberRequest;
     private Label lblDate;
     private Label lblStatus;
+    private Label lblIssuer;
     private Textbox txtObservations;
     private CardEJB cardEJB = null;
     private Card cardParam;
-    private CardRenewalRequestHasCard cardRenewalParam;
-    public static CardRenewalRequestHasCard cardRenewalRequestHasCardParent = null;
+    private CardRenewalRequest cardRenewalParam;
+    public static CardRenewalRequest cardRenewalRequestHasCardParent = null;
     private Button btnSave;
     private Integer eventType;
 
@@ -36,7 +37,7 @@ public class AdminCardRenewalControllers extends GenericAbstractAdminController 
         if (eventType == WebConstants.EVENT_ADD) {
             cardRenewalParam = null;
         } else {
-            cardRenewalParam = (CardRenewalRequestHasCard) Sessions.getCurrent().getAttribute("object");
+            cardRenewalParam = (CardRenewalRequest) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
         loadData();
@@ -52,7 +53,7 @@ public class AdminCardRenewalControllers extends GenericAbstractAdminController 
         }
     }
     
-    public CardRenewalRequestHasCard getCardRenewalRequestHasCard() {
+    public CardRenewalRequest getCardRenewalRequestHasCard() {
         return cardRenewalRequestHasCardParent;
     }
 
@@ -60,16 +61,17 @@ public class AdminCardRenewalControllers extends GenericAbstractAdminController 
         txtObservations.setRawValue(null);
     }
 
-    private void loadFields(CardRenewalRequestHasCard cardRenawal) {
+    private void loadFields(CardRenewalRequest cardRenawal) {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-            lblNumberRequest.setValue(cardRenawal.getCardRenewalRequestId().getRequestNumber());
-            lblDate.setValue(simpleDateFormat.format(cardRenawal.getCardRenewalRequestId().getRequestDate()));
-            lblStatus.setValue(cardRenawal.getCardRenewalRequestId().getStatusCardRenewalRequestId().getDescription());
-            if (cardRenawal.getCardRenewalRequestId() != null) {
-                txtObservations.setText(cardRenawal.getCardRenewalRequestId().getObservations());
+            lblNumberRequest.setValue(cardRenawal.getRequestNumber());
+            lblDate.setValue(simpleDateFormat.format(cardRenawal.getRequestDate()));
+            lblStatus.setValue(cardRenawal.getStatusCardRenewalRequestId().getDescription());
+            lblIssuer.setValue(cardRenawal.getIssuerId().getName());
+            if (cardRenawal.getObservations() != null) {
+                txtObservations.setText(cardRenawal.getObservations());
             }
             cardRenewalRequestHasCardParent = cardRenawal;
             btnSave.setVisible(true);
@@ -122,7 +124,7 @@ public class AdminCardRenewalControllers extends GenericAbstractAdminController 
                     saveCardRenewal(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveCardRenewal(cardRenewalParam.getCardRenewalRequestId());
+                    saveCardRenewal(cardRenewalParam);
                     cardRenewalRequestHasCardParent = cardRenewalParam;
                     break;
                 default:

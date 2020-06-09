@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -10,7 +9,6 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardRenewalRequestHasCard;
-import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.CardStatusHasUpdateReason;
 import com.cms.commons.models.StatusUpdateReason;
 import com.cms.commons.util.Constants;
@@ -28,12 +26,11 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
-public class AdminCardRenewalRequestControllers extends GenericAbstractAdminController {
+public class AdminCardByRenewalControllers extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblCardRequestRenewal;
@@ -43,15 +40,12 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
     private Label lblCardProduct;
     private Label lblCreateDate;
     private Label lblExpirationDate;
-    private Textbox txtReason;
-//    private Radio rRenewalYes;
-//    private Radio rRenewalNo;
     private Combobox cmbStatusUpdateReason;
     private Combobox cmbCardStatus;
+    private Textbox txtReason;
     private CardEJB cardEJB = null;
-    private UtilsEJB utilsEJB = null;
     private CardRenewalRequestHasCard cardRenewalParam;
-//    public Window winAdminCardRenewalRequest;
+    public Window winAdminCardByRenewal;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -74,20 +68,17 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
         super.initialize();
         try {
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         } catch (Exception ex) {
             showError(ex);
         }
     }
+    
+    public void onClick$btnBack() {
+        winAdminCardByRenewal.detach();
+    }
 
     public void clearFields() {
 
-    }
-
-    public void onChange$cmbStatusUpdateReason() {
-        cmbCardStatus.setValue("");
-        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
-        loadCmbCardStatus(eventType, statusUpdateReason.getId());
     }
 
     private void loadFields(CardRenewalRequestHasCard cardRenawal) {
@@ -112,14 +103,19 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
     public void blockFields() {
         cmbStatusUpdateReason.setReadonly(true);
         cmbCardStatus.setReadonly(true);
-        txtReason.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
         if (cmbStatusUpdateReason.getSelectedItem() == null) {
             cmbStatusUpdateReason.setFocus(true);
-            this.showMessage("cms.error.country.notSelected", true, null);
+            this.showMessage("cms.error.reasonCard.notSelected", true, null);
+        } else if (cmbCardStatus.getSelectedItem() == null) {
+            cmbCardStatus.setFocus(true);
+            this.showMessage("cms.error.statusCard.notSelected", true, null);
+        } else if (txtReason.getText().isEmpty()) {
+            txtReason.setFocus(true);
+            this.showMessage("cms.error.renewal.observations", true, null);
         } else {
             return true;
         }
@@ -127,7 +123,6 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
     }
 
     private void saveCard(Card _card) {
-        CardStatus cardStatus = null;
         boolean indRenewal;
         try {
             CardRenewalRequestHasCard cardRenawalHasCard = null;
@@ -138,26 +133,21 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
             } else {//New card
                 card = new Card();
             }
-
-//            if (rRenewalYes.isChecked()) {
-//                //se actualiza el estatus de la tarjeta a APROBADA
-//                EJBRequest request1 = new EJBRequest();
-//                request1.setParam(Constants.STATUS_REQUEST_APPROVED);
-//                cardStatus = utilsEJB.loadCardStatus(request1);
-//                
-//                indRenewal = true;
-//            } else {
-//                //se actualiza el estatus de la tarjeta a ANULADA
-//                EJBRequest request1 = new EJBRequest();
-//                request1.setParam(Constants.CARD_STATUS_CANCELED);
-//                cardStatus = utilsEJB.loadCardStatus(request1);
-//                
-//                indRenewal = false;
-//            }
+            
+            CardStatusHasUpdateReason cardStatusUpdateReason = (CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue();
+            int status = cardStatusUpdateReason.getCardStatusId().getId();
+            
+            if (status == 9 || status == 10 ){
+                indRenewal = false;
+            }else{
+                indRenewal = true;
+            }
+            
             card.setUpdateDate(new Timestamp(new Date().getTime()));
-//            card.setIndRenewal(indRenewal);
-            card.setStatusUpdateReasonId((StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue());
-            card.setObservations(txtReason.toString());
+            card.setIndRenewal(indRenewal);
+            card.setCardStatusId(((CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue()).getCardStatusId());
+            card.setStatusUpdateReasonId ((StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue());
+            card.setStatusUpdateReasonDate(new Timestamp(new Date().getTime()));
             card = cardEJB.saveCard(card);
 
             this.showMessage("sp.common.save.success", false, null);
@@ -166,10 +156,6 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
             showError(ex);
         }
     }
-
-//    public void onClick$btnBack() {
-//        winAdminCardRenewalRequest.detach();
-//    }
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
@@ -210,7 +196,8 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
         List<StatusUpdateReason> statusUpdateReason;
         try {
             statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
-            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger, Long.valueOf(cardRenewalParam != null ? cardRenewalParam.getCardId().getStatusUpdateReasonId().getId() : 0));
+            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger, Long.valueOf(cardRenewalParam.getCardId().getStatusUpdateReasonId() != null ? cardRenewalParam.getCardId().getStatusUpdateReasonId().getId() : 0));
+
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -218,6 +205,12 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
         } catch (NullParameterException ex) {
             showError(ex);
         }
+    }
+
+    public void onChange$cmbStatusUpdateReason() {
+        cmbCardStatus.setValue("");
+        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
+        loadCmbCardStatus(eventType, statusUpdateReason.getId());
     }
 
     private void loadCmbCardStatus(Integer evenInteger, int statusUpdateReasonId) {
@@ -249,4 +242,5 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
             showError(ex);
         }
     }
+
 }
