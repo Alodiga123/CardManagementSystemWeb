@@ -61,6 +61,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Card cardParam;
     private Button btnSave;
     private Integer evenType;
+    private boolean NotStatusUpdateReasonId;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -69,7 +70,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         if (eventType != WebConstants.EVENT_ADD) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
             if (cardParam.getStatusUpdateReasonId() == null) {
-                cardParam = null; 
+                NotStatusUpdateReasonId = false; 
             }
         }
         initialize();
@@ -238,7 +239,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         List<StatusUpdateReason> statusUpdateReason;
         try {
             statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
-            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(cardParam != null ? cardParam.getStatusUpdateReasonId().getId() : 0));
+            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(NotStatusUpdateReasonId == true ? cardParam.getStatusUpdateReasonId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
