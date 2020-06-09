@@ -47,7 +47,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.name.network')}" sclass="lblbold"/>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="2700px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
+                                                                <textbox id="txtName" width="260px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
