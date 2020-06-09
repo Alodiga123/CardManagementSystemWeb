@@ -5,6 +5,8 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.web.custom.components.ListcellEditButton;
+import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
@@ -64,7 +66,7 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminCardRenewalRequest.zul";
+            adminPage = "TabCardRenewal.zul";
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             
@@ -109,8 +111,10 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
                     item.appendChild(new Listcell(cardRenewalRequest.getRequestNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(cardRenewalRequest.getRequestDate())));
                     item.appendChild(new Listcell(cardRenewalRequest.getIssuerId().getName()));
-                    item.appendChild(createButtonEditModal(cardRenewalRequest));
-                    item.appendChild(createButtonViewModal(cardRenewalRequest));
+                    item.appendChild(new ListcellEditButton(adminPage, cardRenewalRequest));
+                    item.appendChild(new ListcellViewButton(adminPage, cardRenewalRequest, true));
+//                    item.appendChild(createButtonEditModal(cardRenewalRequest));
+//                    item.appendChild(createButtonViewModal(cardRenewalRequest));
                     item.setParent(lbxRecords);
                 }
             } else {

@@ -11,19 +11,25 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardRenewalRequestHasCard;
 import com.cms.commons.models.CardStatus;
+import com.cms.commons.models.CardStatusHasUpdateReason;
+import com.cms.commons.models.StatusUpdateReason;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
@@ -37,13 +43,15 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
     private Label lblCardProduct;
     private Label lblCreateDate;
     private Label lblExpirationDate;
-    private Radio rRenewalYes;
-    private Radio rRenewalNo;
-//    private Combobox cmbCardStatus;
+    private Textbox txtReason;
+//    private Radio rRenewalYes;
+//    private Radio rRenewalNo;
+    private Combobox cmbStatusUpdateReason;
+    private Combobox cmbCardStatus;
     private CardEJB cardEJB = null;
     private UtilsEJB utilsEJB = null;
     private CardRenewalRequestHasCard cardRenewalParam;
-    public Window winAdminCardRenewalRequest;
+//    public Window winAdminCardRenewalRequest;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -76,11 +84,17 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
 
     }
 
+    public void onChange$cmbStatusUpdateReason() {
+        cmbCardStatus.setValue("");
+        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
+        loadCmbCardStatus(eventType, statusUpdateReason.getId());
+    }
+
     private void loadFields(CardRenewalRequestHasCard cardRenawal) {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             lblCardRequestRenewal.setValue(cardRenawal.getCardRenewalRequestId().getRequestNumber());
             lblCardNumber.setValue(cardRenawal.getCardId().getCardNumber());
             lblCardHolder.setValue(cardRenawal.getCardId().getCardHolder());
@@ -94,17 +108,18 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
             showError(ex);
         }
     }
-    
 
     public void blockFields() {
-//        cmbCardStatus.setReadonly(true);
+        cmbStatusUpdateReason.setReadonly(true);
+        cmbCardStatus.setReadonly(true);
+        txtReason.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if ((!rRenewalYes.isChecked()) && (!rRenewalNo.isChecked())) {
-            rRenewalYes.setFocus(true);
-            this.showMessage("cms.error.field.renewal", true, null);
+        if (cmbStatusUpdateReason.getSelectedItem() == null) {
+            cmbStatusUpdateReason.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
         } else {
             return true;
         }
@@ -123,26 +138,26 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
             } else {//New card
                 card = new Card();
             }
-            
-            if (rRenewalYes.isChecked()) {
-                //se actualiza el estatus de la tarjeta a APROBADA
-                EJBRequest request1 = new EJBRequest();
-                request1.setParam(Constants.STATUS_REQUEST_APPROVED);
-                cardStatus = utilsEJB.loadCardStatus(request1);
-                
-                indRenewal = true;
-            } else {
-                //se actualiza el estatus de la tarjeta a ANULADA
-                EJBRequest request1 = new EJBRequest();
-                request1.setParam(Constants.CARD_STATUS_CANCELED);
-                cardStatus = utilsEJB.loadCardStatus(request1);
-                
-                indRenewal = false;
-            }
 
+//            if (rRenewalYes.isChecked()) {
+//                //se actualiza el estatus de la tarjeta a APROBADA
+//                EJBRequest request1 = new EJBRequest();
+//                request1.setParam(Constants.STATUS_REQUEST_APPROVED);
+//                cardStatus = utilsEJB.loadCardStatus(request1);
+//                
+//                indRenewal = true;
+//            } else {
+//                //se actualiza el estatus de la tarjeta a ANULADA
+//                EJBRequest request1 = new EJBRequest();
+//                request1.setParam(Constants.CARD_STATUS_CANCELED);
+//                cardStatus = utilsEJB.loadCardStatus(request1);
+//                
+//                indRenewal = false;
+//            }
             card.setUpdateDate(new Timestamp(new Date().getTime()));
-            card.setIndRenewal(indRenewal);
-            card.setCardStatusId(cardStatus);
+//            card.setIndRenewal(indRenewal);
+            card.setStatusUpdateReasonId((StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue());
+            card.setObservations(txtReason.toString());
             card = cardEJB.saveCard(card);
 
             this.showMessage("sp.common.save.success", false, null);
@@ -151,10 +166,10 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
             showError(ex);
         }
     }
-    
-    public void onClick$btnBack() {
-        winAdminCardRenewalRequest.detach();
-    }
+
+//    public void onClick$btnBack() {
+//        winAdminCardRenewalRequest.detach();
+//    }
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
@@ -175,38 +190,63 @@ public class AdminCardRenewalRequestControllers extends GenericAbstractAdminCont
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(cardRenewalParam);
-//                loadCmbCardStatus(eventType);
+                loadCmbStatusUpdateReason(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(cardRenewalParam);
-//                loadCmbCardStatus(eventType);
+                loadCmbStatusUpdateReason(eventType);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
-//                loadCmbCardStatus(eventType);
+                loadCmbStatusUpdateReason(eventType);
                 break;
             default:
                 break;
         }
     }
-    
-//    private void loadCmbCardStatus(Integer evenInteger) {
-//        EJBRequest request1 = new EJBRequest();
-//        List<CardStatus> cardStatus;
-//
-//        try {
-//            cardStatus = utilsEJB.getCardStatus(request1);
-//            loadGenericCombobox(cardStatus, cmbCardStatus, "description", evenInteger, Long.valueOf(cardRenewalParam != null ? cardRenewalParam.getCardId().getCardStatusId().getId() : 0));
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        }
-//    }
 
+    private void loadCmbStatusUpdateReason(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<StatusUpdateReason> statusUpdateReason;
+        try {
+            statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
+            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger, Long.valueOf(cardRenewalParam != null ? cardRenewalParam.getCardId().getStatusUpdateReasonId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+    }
+
+    private void loadCmbCardStatus(Integer evenInteger, int statusUpdateReasonId) {
+        cmbCardStatus.getItems().clear();
+        EJBRequest request1 = new EJBRequest();
+        Map params = new HashMap();
+        params.put(Constants.STATUS_UPDATE_REASON_KEY, statusUpdateReasonId);
+        request1.setParams(params);
+        List<CardStatusHasUpdateReason> cardStatusList;
+        try {
+            cardStatusList = cardEJB.getCardStatusByUpdateReason(request1);
+            for (int i = 0; i < cardStatusList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(cardStatusList.get(i));
+                item.setLabel(cardStatusList.get(i).getCardStatusId().getDescription());
+                item.setParent(cmbCardStatus);
+                if (cardRenewalParam != null && cardStatusList.get(i).getId().equals(cardRenewalParam.getCardId().getCardStatusId().getId())) {
+                    cmbCardStatus.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbCardStatus.setDisabled(true);
+            }
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }
+    }
 }
