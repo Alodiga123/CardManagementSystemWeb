@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,144 +8,92 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Card;
-import com.cms.commons.models.User;
+import com.cms.commons.models.CardRenewalRequest;
+import com.cms.commons.models.CardRenewalRequestHasCard;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import com.cms.commons.util.QueryConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
-public class ListCardInventoryControllers extends GenericAbstractListController<Card> {
+public class ListCardByRenewalControllers extends GenericAbstractListController<CardRenewalRequestHasCard> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
-    private List<Card> card = null;
-    private User currentUser;
+    private List<CardRenewalRequestHasCard> cardRenewalRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
-        startListener();
+//        startListener();
     }
-    
-     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateCardInventory", EventQueues.APPLICATION, true);
-        que.subscribe(new EventListener() {
 
-            public void onEvent(Event evt) {
-                getData();
-                loadDataList(card);
-            }
-        });
+    public void startListener() {
+//        EventQueue que = EventQueues.lookup("updateCardRenewalRequest", EventQueues.APPLICATION, true);
+//        que.subscribe(new EventListener() {
+//
+//            public void onEvent(Event evt) {
+//                getData();
+//                loadDataList(cardRenewalRequest);
+//            }
+//        });
     }
 
     @Override
     public void initialize() {
         super.initialize();
         try {
+            //Evaluar Permisos
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminCardInventory.zul";
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            adminPage = "/adminCardByRenewal.zul";
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             getData();
-            loadDataList(card);
+            loadDataList(cardRenewalRequest);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void getData() {
-        card = new ArrayList<Card>();
-        try {
-
-            EJBRequest request2 = new EJBRequest();
-            Map params = new HashMap();
-            params = new HashMap();
-//            pendiente para validar la constante porque se trae el estatus 2            
-//            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.STATUS_CARDS_PERSONALIZED);
-            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, 2);
-            request2.setParams(params);
-
-            card = cardEJB.getCardByStatus(request2);
-
-        } catch (NullParameterException ex) {
-            showError(ex);
-        } catch (EmptyListException ex) {
-            showEmptyList();
-        } catch (GeneralException ex) {
-            showError(ex);
-        }
+    public void onClick$btnDelete() {
     }
 
-    public void onClick$btnAdd() throws InterruptedException {
-        try {
-            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-            Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", card);
-            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-            window.doModal();
-        } catch (Exception ex) {
-            this.showMessage("sp.error.general", true, ex);
-        }
-    }
-
-    public void onClick$btnDownload() throws InterruptedException {
-        try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
-        } catch (Exception ex) {
-            showError(ex);
-        }
-    }
-
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
-    }
-
-    public void loadDataList(List<Card> list) {
-        Listcell tmpCell = new Listcell();
+    public void loadDataList(List<CardRenewalRequestHasCard> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                btnDownload.setVisible(true);
-                for (Card card : list) {
-
+                for (CardRenewalRequestHasCard cardRenewalRequestHasCard : list) {
                     item = new Listitem();
-                    item.setValue(card);
+                    item.setValue(cardRenewalRequestHasCard);
+
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(card.getCardNumber()));
-                    item.appendChild(new Listcell(card.getCardHolder()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(card.getExpirationDate())));
-                    item.appendChild(new Listcell(card.getCardStatusId().getDescription()));
-                    item.appendChild(createButtonEditModal(card));
-                    item.appendChild(createButtonViewModal(card));
+                    item.appendChild(new Listcell(cardRenewalRequestHasCard.getCardId().getCardNumber()));
+                    item.appendChild(new Listcell(cardRenewalRequestHasCard.getCardId().getCardHolder()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(cardRenewalRequestHasCard.getCardId().getExpirationDate())));
+                    item.appendChild(new Listcell(cardRenewalRequestHasCard.getCardId().getCardStatusId().getDescription()));
+                    item.appendChild(createButtonEditModal(cardRenewalRequestHasCard));
+                    item.appendChild(createButtonViewModal(cardRenewalRequestHasCard));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -158,12 +105,13 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
             }
+
         } catch (Exception ex) {
             showError(ex);
         }
     }
-    
-        public Listcell createButtonEditModal(final Object obg) {
+
+    public Listcell createButtonEditModal(final Object obg) {
         Listcell listcellEditModal = new Listcell();
         try {
             Button button = new Button();
@@ -213,6 +161,31 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
         return listcellViewModal;
     }
 
+    public void getData() {
+        CardRenewalRequest cardRenewal = null;
+        cardRenewalRequest = new ArrayList<CardRenewalRequestHasCard>();
+
+        try {
+
+            AdminCardRenewalControllers adminCardRenewal = new AdminCardRenewalControllers();
+            if (adminCardRenewal.getCardRenewalRequestHasCard()!= null) {
+                cardRenewal = adminCardRenewal.getCardRenewalRequestHasCard();
+            }
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.REQUESTS_NUMBER_KEY, cardRenewal.getId());
+            request1.setParams(params);
+            cardRenewalRequest = cardEJB.getCardRenewalRequestHasCardByRequest(request1);
+
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {
+            showEmptyList();
+        } catch (GeneralException ex) {
+            showError(ex);
+        }
+    }
+
     private void showEmptyList() {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
@@ -222,8 +195,20 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
         item.setParent(lbxRecords);
     }
 
+    public void onClick$btnDownload() throws InterruptedException {
+        try {
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
     @Override
-    public List<Card> getFilterList(String filter) {
+    public List<CardRenewalRequestHasCard> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

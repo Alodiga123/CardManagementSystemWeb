@@ -74,6 +74,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Program programParam;
     private Tab tabNetwork;
     private Tab tabProjectedAnnualVolume;
+    private Tab tabAverageCargeUsage;
     private Button btnSave;
     private Button btnAddNetWork;
     private Integer eventType;
@@ -105,6 +106,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             case WebConstants.EVENT_ADD:
                 tabNetwork.setDisabled(true);
                 tabProjectedAnnualVolume.setDisabled(true);
+                tabAverageCargeUsage.setDisabled(true);
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.program.add"));
                 break;
             default:

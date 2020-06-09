@@ -86,7 +86,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
     }
 
     private void loadFields(Card card) {
-        try {
+        try { 
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
