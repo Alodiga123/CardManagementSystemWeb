@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCardRenewalRequest" title="${c:l('cms.tab.cardRenewalMain')}" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminCardRenewalRequestControllers" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window title="${c:l('cms.tab.cardRenewalMain')}" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminCardRenewalRequestControllers" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -50,22 +50,26 @@
                                                             <label id="lblCardProgram" value="" width="250px" style="color:#837E76;"/>
                                                             <label id="lblCardProduct" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.menu.cardRenewal.status')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <hbox>
-                                                                <radiogroup id="indRenewal" onCheck="value = self.selectedItem.label"/>
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rRenewalYes" label="${c:l('cms.commom.Yes')}" radiogroup="indRenewal" />
-                                                                            <radio id="rRenewalNo" label="${c:l('cms.commom.No')} " radiogroup="indRenewal" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
-                                                        </row>                                                       
+                                                        <!--<rows>
+                                                            <row>
+                                                                <label value="${c:l('cms.common.reason.change.status')}" sclass="lblbold"/>
+                                                                <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
+                                                            </row>
+                                                            <row>
+                                                                <combobox id="cmbStatusUpdateReason" width="250px" mold="rounded" readonly="true" />
+                                                                <combobox id="cmbCardStatus" width="250px" mold="rounded" readonly="true" />
+                                                            </row>
+                                                            <row>
+                                                                <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
+                                                            </row>
+                                                            <row>
+                                                                <cell colspan="3">
+                                                                    <hlayout>
+                                                                        <textbox id="txtReason" multiline="true" rows="3" width="850px" maxlength="1470" constraint="no empty: ${c:l('error.field.required')}"/>
+                                                                    </hlayout>   
+                                                                </cell>
+                                                            </row>  
+                                                        </rows>  -->                                                    
                                                     </rows>
                                                 </grid>
                                             </vlayout>
