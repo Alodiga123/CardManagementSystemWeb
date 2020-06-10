@@ -13,7 +13,6 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
-import com.cms.commons.models.CardDeliveryRegister;
 import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.DeliveryRequest;
 import com.cms.commons.models.DeliveryRequetsHasCard;
@@ -47,19 +46,28 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ListCardInventoryControllers extends GenericAbstractListController<Card> {
+public class ListCardInventoryControllers extends GenericAbstractListController<DeliveryRequetsHasCard> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
-    private List<Card> card = null;
+    private List<DeliveryRequetsHasCard> cardList = null;
     private User currentUser;
+    private AdminDeliveryRequestController adminDeliveryRequest = null;
+    private DeliveryRequest deliveryRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (eventType != WebConstants.EVENT_ADD) {
+            AdminDeliveryRequestController adminDeliveryRequest = new AdminDeliveryRequestController();
+            if (adminDeliveryRequest.getDeliveryRequest().getId() != null) {
+                deliveryRequest = adminDeliveryRequest.getDeliveryRequest();
+            }
+        }    
         initialize();
         startListener();
     }
@@ -69,8 +77,8 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
-                getData();
-                loadDataList(card);
+                getDataDeliveryRequetsHasCard();
+                loadDataList(cardList);
             }
         });
     }
@@ -86,27 +94,27 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
             adminPage = "adminCardInventory.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
-            getData();
-            loadDataList(card);
+            getDataDeliveryRequetsHasCard();
+            loadDataList(cardList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-    public void getData() {
-        card = new ArrayList<Card>();
-        try {
-
+    
+    public List<DeliveryRequetsHasCard> getDataDeliveryRequetsHasCard() {
+        cardList = new ArrayList<DeliveryRequetsHasCard>();
+        try { 
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            AdminDeliveryRequestController adminDeliveryRequest = new AdminDeliveryRequestController();
+            if (adminDeliveryRequest.getDeliveryRequest().getId() != null) {
+                deliveryRequest = adminDeliveryRequest.getDeliveryRequest();
+            }
             EJBRequest request2 = new EJBRequest();
             Map params = new HashMap();
             params = new HashMap();
-//            pendiente para validar la constante porque se trae el estatus 2            
-//            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.STATUS_CARDS_PERSONALIZED);
-            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, 2);
+            params.put(QueryConstants.PARAM_DELIVERY_REQUEST_ID, deliveryRequest.getId());
             request2.setParams(params);
-
-            card = cardEJB.getCardByStatus(request2);
-
+            cardList = cardEJB.getCardByDeliveryRequest(request2);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -114,18 +122,7 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
         } catch (GeneralException ex) {
             showError(ex);
         }
-    }
-
-    public void onClick$btnAdd() throws InterruptedException {
-        try {
-            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
-            Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", card);
-            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-            window.doModal();
-        } catch (Exception ex) {
-            this.showMessage("sp.error.general", true, ex);
-        }
+        return cardList;
     }
 
     public void onClick$btnDownload() throws InterruptedException {
@@ -140,31 +137,33 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
         txtName.setText("");
     }
 
-    public void loadDataList(List<Card> list) {
-        Listcell tmpCell = new Listcell();
+    public void loadDataList(List<DeliveryRequetsHasCard> list) {
         try {
-            lbxRecords.getItems().clear();
+            if (lbxRecords != null) {
+                lbxRecords.getItems().clear();
+            }
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                btnDownload.setVisible(true);
-                for (Card card : list) {
-
+                if (btnDownload != null) {
+                   btnDownload.setVisible(true);
+                } 
+                for (DeliveryRequetsHasCard card : list) {
                     item = new Listitem();
                     item.setValue(card);
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(card.getCardNumber()));
-                    item.appendChild(new Listcell(card.getCardHolder()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(card.getExpirationDate())));
-                    item.appendChild(new Listcell(card.getCardStatusId().getDescription()));
-//                    item.appendChild(new ListcellEditButton(adminPage, card));
-//                    item.appendChild(new ListcellViewButton(adminPage, card, true));
+                    item.appendChild(new Listcell(card.getCardId().getCardNumber()));
+                    item.appendChild(new Listcell(card.getCardId().getCardHolder()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(card.getCardId().getExpirationDate())));
+                    item.appendChild(new Listcell(card.getCardId().getCardStatusId().getDescription()));
                     item.appendChild(createButtonEditModal(card));
                     item.appendChild(createButtonViewModal(card));
                     item.setParent(lbxRecords);
                 }
             } else {
-                btnDownload.setVisible(false);
+                if (btnDownload != null) {
+                    btnDownload.setVisible(false);
+                }
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
@@ -237,7 +236,12 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
     }
 
     @Override
-    public List<Card> getFilterList(String filter) {
+    public List<DeliveryRequetsHasCard> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    public void getData() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
