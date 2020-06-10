@@ -36,9 +36,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.CardRenewalRequest.request')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.CardRenewalRequest.date')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.CardRenewalRequest.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardRenewalRequestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardRenewalRequestDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardRenewalRequestStatus')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblNumberRequest" value="" width="230px" style="color:#837E76;"/>
@@ -46,12 +46,14 @@
                                                             <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.cardRenewalRequestIssuer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <cell colspan="3">
+                                                            <label id="lblIssuer" value="" width="230px" style="color:#837E76;"/>
+                                                            <cell colspan="2">
                                                                 <hlayout>
-                                                                    <textbox id="txtObservations" multiline="true" rows="2" width="830px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1490"/>
+                                                                    <textbox id="txtObservations" multiline="true" rows="2" width="580px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1490"/>
                                                                     <label value="*" sclass="lblreq" />
                                                                 </hlayout>   
                                                             </cell>
@@ -64,7 +66,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardRenewal.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardRenewalRequest.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
