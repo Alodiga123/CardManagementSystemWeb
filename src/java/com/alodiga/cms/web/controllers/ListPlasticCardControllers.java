@@ -81,8 +81,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType != WebConstants.EVENT_ADD) {
             adminPlasticRequest = new AdminPlasticRequestController();
-            if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {
-                
+            if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {                
                 plasticCustomizingRequestParam = adminPlasticRequest.getPlasticCustomizingRequest();
             }
         }        
