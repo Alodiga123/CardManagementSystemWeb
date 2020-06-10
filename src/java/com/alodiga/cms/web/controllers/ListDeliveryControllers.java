@@ -53,8 +53,7 @@ public class ListDeliveryControllers extends GenericAbstractListController<Deliv
         deliveryRequests = new ArrayList<DeliveryRequest>();
         try {
             request.setFirst(0);
-            request.setLimit(null);
-            
+            request.setLimit(null);            
             deliveryRequests = cardEJB.getDeliveryRequest(request);
         } catch (NullParameterException ex) {
             showError(ex);
