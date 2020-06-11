@@ -8,8 +8,6 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Country;
-import com.cms.commons.models.Currency;
 import com.cms.commons.models.Profile;
 import com.cms.commons.models.User;
 import com.cms.commons.models.UserHasProfile;
@@ -18,6 +16,8 @@ import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -39,7 +39,6 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
 
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
-    private Combobox cmbCurrency;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -51,9 +50,6 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
     private Textbox textRole;
     private Combobox cmbUser;
     private Combobox cmbRole;
-
-
-
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -99,11 +95,7 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
     }
 
     private void loadFields(UserHasProfile userHasProfile) {
-        try {
-          
-            //textUser.setText(userHasProfile.getUserId().getFirstNames().concat(" ").concat(userHasProfile.getUserId().getLastNames()));
-            //textRole.setText(userHasProfile.getProfileId().getName());
-          
+        try {         
             if (userHasProfile.getEnabled() == true) {
                 rEnabledYes.setChecked(true);
             } else {
@@ -120,24 +112,30 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
         btnSave.setVisible(false);
         textUser.setReadonly(true);
         textRole.setReadonly(true);
+        cmbUser.setDisabled(true);
+        cmbRole.setDisabled(true);
     }
 
-    /*public Boolean validateEmpty() {
-        if (txtName.getText().isEmpty()) {
-            txtName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtShortName.getText().isEmpty()) {
-            txtShortName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtCode.getText().isEmpty()) {
-            txtCode.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else {
-            return true;
+    public Boolean validateUserHasProfile(UserHasProfile userHasProfile) {
+        List<UserHasProfile> userHasProfileList;
+        try {
+            userHasProfileList= (List<UserHasProfile>) utilsEJB.getUserHasProfileByUser(userHasProfile);
+            
+            boolean isEmpty = userHasProfileList.isEmpty();
+            
+            if (isEmpty) {
+                return true;
+            }
+
+        } catch (EmptyListException ex) {
+            Logger.getLogger(AdminUserHasProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralException ex) {
+            Logger.getLogger(AdminUserHasProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullParameterException ex) {
+            Logger.getLogger(AdminUserHasProfileController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
-
-    }*/
+    }
 
     public void onClick$btnCodes() {
         Executions.getCurrent().sendRedirect("/docs/T-SP-E.164D-2009-PDF-S.pdf", "_blank");
@@ -171,19 +169,24 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
             userHasProfile.setUserId((User) cmbUser.getSelectedItem().getValue());
             userHasProfile.setProfileId((Profile) cmbRole.getSelectedItem().getValue());
             userHasProfile.setEnabled(indEnabled); 
+            
+            if (!validateUserHasProfile(userHasProfile)) {
+            this.showMessage("cms.common.programLoyaltyTransactionExist", true, null);
+            }else{
             userHasProfile = utilsEJB.saveUserHasProfile(userHasProfile);
             UserHasProfileParam = userHasProfile;
             this.showMessage("sp.common.save.success", false, null);
-            
-        
             btnSave.setVisible(false);
+            }
+
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void onClick$btnSave() {
-       // if (validateEmpty()) {
+
+        if (rEnabledNo.isChecked() || rEnabledNo.isChecked()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveUserHasProfile(null);
@@ -194,7 +197,9 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
                 default:
                     break;
             }
-        //}
+        }else{
+         this.showMessage("sp.common.field.required.full", true, null);
+        }
     }
 
     public void loadData() {
