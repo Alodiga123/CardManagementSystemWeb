@@ -420,6 +420,13 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell51.setParent(item51);
         item51.setParent(lbxPermissions);
         
+        //Opción PASSWORD CHANGE REQUEST 
+        Listitem item52 = new Listitem();
+        Listcell listCell52 = new Listcell();
+        listCell52.setLabel(Labels.getLabel("cms.menu.password.change.request"));
+        listCell52.addEventListener("onClick", new RedirectListener("listPasswordChangeRequest.zul"));
+        listCell52.setParent(item52);
+        item52.setParent(lbxPermissions);
         
         //Opción BINSPONSOR 
         Listitem item55 = new Listitem();
