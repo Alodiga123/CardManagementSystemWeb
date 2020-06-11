@@ -40,6 +40,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
+import static sun.misc.MessageUtils.where;
 
 public class AdminPasswordChangeRequestController extends GenericAbstractAdminController {
 
@@ -120,7 +121,6 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             dtbRequestDate.setValue(passwordChangeRequest.getRequestDate());
             lblIdentificationNumber.setValue(passwordChangeRequest.getUserid().getIdentificationNumber());
             lblUser.setValue(passwordChangeRequest.getUserid().getFirstNames());
-//            + " " + passwordChangeRequest.getUserid().getLastNames());
             lblComercialAgency.setValue(passwordChangeRequest.getUserid().getComercialAgencyId().getName());
             txtCurrentPassword.setText(passwordChangeRequest.getCurrentPassword());
             txtNewPassword.setText(passwordChangeRequest.getNewPassword());
@@ -133,23 +133,10 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
               if (passwordChangeRequest.getCurrentPassword() == null) {
                     txtCurrentPassword.setValue(passwordChangeRequest.getNewPassword());
               } 
-//              if (passwordChangeRequest.getCurrentPassword() != null) {
-//                    txtCurrentPassword.setValue(passwordChangeRequest.getNewPassword());
-//                }
-//            if (user.getAuthorizedEmployeeId() != null) {
-//                EJBRequest request = new EJBRequest(); 
-//                HashMap params = new HashMap();
-//                params.put(Constants.PERSON_KEY, user.getAuthorizedEmployeeId().getPersonId().getId());
-//                request.setParams(params);
-//                phonePersonEmployeeAuthorizeList = personEJB.getPhoneByPerson(request);
-//                for (PhonePerson phoneEmployeeAuthorize : phonePersonEmployeeAuthorizeList) {
-//                    phonePersonEmployeeAuthorize = phoneEmployeeAuthorize;
-//                }
-//                lblAuthorizeExtAlodiga.setValue(phonePersonEmployeeAuthorize.getExtensionPhoneNumber());
-//            }
-            if (passwordChangeRequest.getIndApproved() == true) {
+                
+              if (passwordChangeRequest.getIndApproved() == true) {
                 rApprovedYes.setChecked(true);
-            } else {
+             } else {
                 rApprovedNo.setChecked(true);
             }
             btnSave.setVisible(true);
@@ -216,14 +203,18 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             params.put(Constants.CURRENT_PASSWORD, txtCurrentPassword.getValue());
             request1.setParams(params);
             List<User> userList = personEJB.validatePassword(request1); 
+            if (user.getId().equals(lblUser.getValue()) && user.getPassword().equals(txtCurrentPassword)) {
+               txtCurrentPassword.setValue(passwordChangeRequest.getCurrentPassword());
+            }
             
             if (userList.size() > 0) {
                 //Guardar la Solicitud de Cambio de Contraseña en la BD
                 passwordChangeRequest.setRequestNumber(numberRequest);
-                passwordChangeRequest.setRequestDate(dateRequest);
+                passwordChangeRequest.setRequestDate((dtbRequestDate.getValue()));
                 passwordChangeRequest.setUserid(user);
                 passwordChangeRequest.setCurrentPassword(txtCurrentPassword.getText());
                 passwordChangeRequest.setNewPassword(txtNewPassword.getText());
+                passwordChangeRequest.setNewPassword(txtRepeatNewPassword.getText());
                 passwordChangeRequest.setIndApproved(indApproved);
 
                 if (eventType == WebConstants.EVENT_ADD) {
@@ -239,15 +230,13 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 btnSave.setVisible(false);
             }
              
-
         } catch (WrongValueException ex) {
             showError(ex);
         } finally {
             this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", false, null);
         }
     }  
-    
-    
+      
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException, EmptyListException {
         if (validateEmpty()) {
             switch (eventType) {
@@ -294,7 +283,6 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 break;
         }
     }    
-
 
     private Object getSelectedItem() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
