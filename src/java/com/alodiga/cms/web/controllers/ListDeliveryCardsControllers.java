@@ -34,6 +34,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 public class ListDeliveryCardsControllers extends GenericAbstractListController<Card> {
 
@@ -57,22 +58,21 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
         try {
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            getData();
+            getDataCard();
             loadDataList(card);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public void getData() {
+    public List<Card> getDataCard() {
         card = new ArrayList<Card>();
         try {
             EJBRequest request2 = new EJBRequest();
             Map params = new HashMap();
             params = new HashMap();
-            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.CARD_STATUS_PENDING_CUSTOMIZING);
+            params.put(QueryConstants.PARAM_CARDS_STATUS_ID, Constants.CARD_STATUS_CUSTOMIZING);
             request2.setParams(params);
-
             card = cardEJB.getCardByStatus(request2);
         } catch (NullParameterException ex) {
             showError(ex);
@@ -81,6 +81,7 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
         } catch (GeneralException ex) {
             showError(ex);
         }
+        return card;
     }
 
     public void onClick$btnAdd() throws InterruptedException {
@@ -134,6 +135,11 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
     public void onClick$btnAssigment() throws InterruptedException {
         try {
             saveCard(card);
+            getDataCard();
+            loadDataList(card);
+            ListCardInventoryControllers listCardInventory = new ListCardInventoryControllers();
+//            listCardInventory.doAfterCompose(self);
+//            listCardInventory.loadDataList(listCardInventory.getDataDeliveryRequetsHasCard());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -171,8 +177,7 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
                             }
                         }
                     }
-                }
-                
+                }                
                 this.showMessage("cms.msj.assignCardToDeliveryRequest", false, null);
             }
         } catch (GeneralException ex) {
@@ -190,7 +195,7 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
         try {
             //Estatus de la tarjeta Entregada
             EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.CARD_STATUS_DELIVERED);
+            request1.setParam(Constants.CARD_STATUS_PENDING_DELIVERY);
             cardStatus = utilsEJB.loadCardStatus(request1);
 
             card.setCardStatusId(cardStatus);
@@ -204,6 +209,10 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
 
     @Override
     public List<Card> getFilterList(String filter) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void getData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
