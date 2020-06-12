@@ -275,10 +275,29 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
 
     private void loadCmbStatusUpdateReason(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<StatusUpdateReason> statusUpdateReason;
-        try {
-            statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
-            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(NotStatusUpdateReasonId == true ? cardParam.getStatusUpdateReasonId().getId() : 0));
+            List<CardStatusHasUpdateReason> cardStatusList;        
+            //List<StatusUpdateReason> statusUpdateReasonList;        
+
+            try {
+            //statusUpdateReasonList = cardEJB.getStatusUpdateReasonByStatus(cardParam.getCardStatusId().getId().toString());
+
+            cardStatusList = cardEJB.getUpdateReasonByCardStatus(cardParam.getCardStatusId().getId().toString());
+            for (int i = 0; i < cardStatusList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(cardStatusList.get(i));
+                item.setLabel(cardStatusList.get(i).getStatusUpdateReasonId().getDescription());
+                //item.setLabel(cardStatusList.get(i).getStatusUpdateReasonId().getCreateDate().toString());
+                //item.setLabel(cardStatusList.get(i).getStatusUpdateReasonId().getUpdateDate().toString());
+                item.setParent(cmbStatusUpdateReason);
+                //if (cardParam != null && cardStatusHasUpdateReasonList.get(i).getId().equals(cardParam.getCardStatusId().getId())) {
+                //    cmbStatusUpdateReason.setSelectedItem(item);
+                //}
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbStatusUpdateReason.setDisabled(true);
+            }  
+
+//loadGenericCombobox(statusUpdateReasonList, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(NotStatusUpdateReasonId == true ? cardParam.getStatusUpdateReasonId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
