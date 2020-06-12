@@ -22,7 +22,9 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +157,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
             CardStatusHasUpdateReason cardStatusHasUpdateReason = (CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue();
             CardStatus cardStatus= cardStatusHasUpdateReason.getCardStatusId();
-          
+            cardParam.setStatusUpdateReasonDate(new Timestamp(new Date().getTime()));
             cardParam.setUserResponsibleStatusUpdateId(user);
             cardParam.setStatusUpdateReasonId(statusUpdateReason);
             cardParam.setCardStatusId(cardStatus);
@@ -175,10 +177,12 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             } else {//New requestType
                 card = new Card();
             }
-            int result= cardEJB.updateCardStatus(card);
-            if(result>0){
+            Card result = result= cardEJB.saveCard(card);
+            if(card!=null){
                this.showMessage("sp.common.save.success", false, null);
                 blockFields();
+            }else{
+            this.showMessage("cms.msj.errorUpdateCard", true, null);
             }
             
         } catch (Exception ex) {
@@ -271,10 +275,29 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
 
     private void loadCmbStatusUpdateReason(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<StatusUpdateReason> statusUpdateReason;
-        try {
-            statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
-            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(NotStatusUpdateReasonId == true ? cardParam.getStatusUpdateReasonId().getId() : 0));
+            List<CardStatusHasUpdateReason> cardStatusList;        
+            //List<StatusUpdateReason> statusUpdateReasonList;        
+
+            try {
+            //statusUpdateReasonList = cardEJB.getStatusUpdateReasonByStatus(cardParam.getCardStatusId().getId().toString());
+
+            cardStatusList = cardEJB.getUpdateReasonByCardStatus(cardParam.getCardStatusId().getId().toString());
+            for (int i = 0; i < cardStatusList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(cardStatusList.get(i));
+                item.setLabel(cardStatusList.get(i).getStatusUpdateReasonId().getDescription());
+                //item.setLabel(cardStatusList.get(i).getStatusUpdateReasonId().getCreateDate().toString());
+                //item.setLabel(cardStatusList.get(i).getStatusUpdateReasonId().getUpdateDate().toString());
+                item.setParent(cmbStatusUpdateReason);
+                //if (cardParam != null && cardStatusHasUpdateReasonList.get(i).getId().equals(cardParam.getCardStatusId().getId())) {
+                //    cmbStatusUpdateReason.setSelectedItem(item);
+                //}
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbStatusUpdateReason.setDisabled(true);
+            }  
+
+//loadGenericCombobox(statusUpdateReasonList, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(NotStatusUpdateReasonId == true ? cardParam.getStatusUpdateReasonId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
