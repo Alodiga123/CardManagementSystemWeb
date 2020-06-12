@@ -61,6 +61,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     private User user;
+    int attempts = 0;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -91,6 +92,8 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             default:
                 break;
         }
+        rApprovedYes.setVisible(false);
+        rApprovedNo.setVisible(false);
         try {
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
@@ -99,6 +102,10 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void onFocus$txtCurrentPassword() {
+        this.clearMessage();
     }
     
     public void clearFields() {
@@ -112,16 +119,14 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         lblComercialAgency.setValue(null);
     } 
     
-        
     private void loadFields(PasswordChangeRequest passwordChangeRequest) {
 
         try {
             lblRequestNumber.setValue(passwordChangeRequest.getRequestNumber().toString());
             dtbRequestDate.setValue(passwordChangeRequest.getRequestDate());
-            lblIdentificationNumber.setValue(passwordChangeRequest.getUserid().getIdentificationNumber());
-            lblUser.setValue(passwordChangeRequest.getUserid().getFirstNames());
-//            + " " + passwordChangeRequest.getUserid().getLastNames());
-            lblComercialAgency.setValue(passwordChangeRequest.getUserid().getComercialAgencyId().getName());
+            lblIdentificationNumber.setValue(passwordChangeRequest.getUserId().getIdentificationNumber());
+            lblUser.setValue(passwordChangeRequest.getUserId().getFirstNames());
+            lblComercialAgency.setValue(passwordChangeRequest.getUserId().getComercialAgencyId().getName());
             txtCurrentPassword.setText(passwordChangeRequest.getCurrentPassword());
             txtNewPassword.setText(passwordChangeRequest.getNewPassword());
             txtRepeatNewPassword.setText(passwordChangeRequest.getNewPassword());
@@ -133,23 +138,10 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
               if (passwordChangeRequest.getCurrentPassword() == null) {
                     txtCurrentPassword.setValue(passwordChangeRequest.getNewPassword());
               } 
-//              if (passwordChangeRequest.getCurrentPassword() != null) {
-//                    txtCurrentPassword.setValue(passwordChangeRequest.getNewPassword());
-//                }
-//            if (user.getAuthorizedEmployeeId() != null) {
-//                EJBRequest request = new EJBRequest(); 
-//                HashMap params = new HashMap();
-//                params.put(Constants.PERSON_KEY, user.getAuthorizedEmployeeId().getPersonId().getId());
-//                request.setParams(params);
-//                phonePersonEmployeeAuthorizeList = personEJB.getPhoneByPerson(request);
-//                for (PhonePerson phoneEmployeeAuthorize : phonePersonEmployeeAuthorizeList) {
-//                    phonePersonEmployeeAuthorize = phoneEmployeeAuthorize;
-//                }
-//                lblAuthorizeExtAlodiga.setValue(phonePersonEmployeeAuthorize.getExtensionPhoneNumber());
-//            }
+                
             if (passwordChangeRequest.getIndApproved() == true) {
                 rApprovedYes.setChecked(true);
-            } else {
+             } else {
                 rApprovedNo.setChecked(true);
             }
             btnSave.setVisible(true);
@@ -187,9 +179,10 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         EJBRequest request1 = new EJBRequest();
         String numberRequest = "";
         Date dateRequest = null;
+        List<User> userList = null;
+        PasswordChangeRequest passwordChangeRequest = null;
+        
         try {
-            PasswordChangeRequest passwordChangeRequest = null;
-
             if (_passwordChangeRequest != null) {
                 passwordChangeRequest = _passwordChangeRequest;
             } else {
@@ -214,40 +207,82 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             //Valida si la contraseña actual es correcta
             params = new HashMap();
             params.put(Constants.CURRENT_PASSWORD, txtCurrentPassword.getValue());
+            params.put(Constants.USER_KEY,user.getId());
             request1.setParams(params);
-            List<User> userList = personEJB.validatePassword(request1); 
+            userList = personEJB.validatePassword(request1);  
             
             if (userList.size() > 0) {
-                //Guardar la Solicitud de Cambio de Contraseña en la BD
-                passwordChangeRequest.setRequestNumber(numberRequest);
-                passwordChangeRequest.setRequestDate(dateRequest);
-                passwordChangeRequest.setUserid(user);
-                passwordChangeRequest.setCurrentPassword(txtCurrentPassword.getText());
-                passwordChangeRequest.setNewPassword(txtNewPassword.getText());
-                passwordChangeRequest.setIndApproved(indApproved);
-
-                if (eventType == WebConstants.EVENT_ADD) {
-                    passwordChangeRequest.setCreateDate(new Timestamp(new Date().getTime()));
-                } else {
-                    passwordChangeRequest.setUpdateDate(new Timestamp(new Date().getTime()));
-                }
-
+                //Se aprueba la solicitud automaticamente
+                indApproved = true;                
+                //Se crea el objeto passwordChangeRequest
+                createPasswordChangeRequest(passwordChangeRequest, numberRequest, indApproved); 
+                
+                //Guardar la solicitud de cambio de contraseña en la BD
                 passwordChangeRequest = personEJB.savePasswordChangeRequest(passwordChangeRequest);
                 passwordChangeRequestParam = passwordChangeRequest;
-
-                this.showMessage("sp.common.save.success", false, null);
+                
+                rApprovedYes.setVisible(true);
+                rApprovedNo.setVisible(true);                
+                if (passwordChangeRequest.getIndApproved() == true) {
+                    rApprovedYes.setChecked(true);
+                } else {
+                    rApprovedNo.setChecked(true);
+                }                
+                rApprovedYes.setDisabled(true);
+                rApprovedNo.setDisabled(true);               
+                
+                this.showMessage("cms.msj.passwordChangedRequestApproved", false, null);
                 btnSave.setVisible(false);
-            }
-             
-
+            }             
         } catch (WrongValueException ex) {
             showError(ex);
+        } catch (EmptyListException ex) {
+            showError(ex);
         } finally {
-            this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", false, null);
+            if (userList == null) {
+                attempts++;
+                if (attempts != 3) {
+                    this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", false, null);
+                }
+            }
+            if (attempts == 3) {
+                //Se rechaza la solicitud automaticamente
+                indApproved = false;
+                //Se crea el objeto passwordChangeRequest
+                createPasswordChangeRequest(passwordChangeRequest, numberRequest, indApproved); 
+
+                //Guardar la solicitud de cambio de contraseña en la BD
+                passwordChangeRequest = personEJB.savePasswordChangeRequest(passwordChangeRequest);
+                passwordChangeRequestParam = passwordChangeRequest;
+                
+                rApprovedYes.setVisible(true);
+                rApprovedNo.setVisible(true);                
+                if (passwordChangeRequest.getIndApproved() == true) {
+                    rApprovedYes.setChecked(true);
+                } else {
+                    rApprovedNo.setChecked(true);
+                }                
+                rApprovedYes.setDisabled(true);
+                rApprovedNo.setDisabled(true);
+
+                this.showMessage("cms.msj.passwordChangedRequestRejected", false, null);
+                btnSave.setVisible(false);
+            }
+                    
         }
     }  
     
-    
+    public void createPasswordChangeRequest(PasswordChangeRequest passwordChangeRequest, String numberRequest, boolean indApproved) {
+        passwordChangeRequest.setRequestNumber(numberRequest);
+        passwordChangeRequest.setRequestDate((dtbRequestDate.getValue()));
+        passwordChangeRequest.setUserId(user);
+        passwordChangeRequest.setCurrentPassword(txtCurrentPassword.getText());
+        passwordChangeRequest.setNewPassword(txtNewPassword.getText());
+        passwordChangeRequest.setNewPassword(txtRepeatNewPassword.getText());
+        passwordChangeRequest.setIndApproved(indApproved);
+        passwordChangeRequest.setCreateDate(new Timestamp(new Date().getTime()));
+    }
+      
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException, EmptyListException {
         if (validateEmpty()) {
             switch (eventType) {
@@ -293,9 +328,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             default:
                 break;
         }
-    }    
 
-
+      }
+     
     private Object getSelectedItem() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
