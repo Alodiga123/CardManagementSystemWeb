@@ -26,10 +26,25 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                        <group label="${c:l('cms.basicDataDeliveryRequest')}"/> 
                                                         <row>
                                                             <label value="${c:l('cms.common.deliveryNumber')}" sclass="lblbold"/>
-                                                            <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
+                                                            <label value="${c:l('cms.common.deliveryRequest.requestDate')}" sclass="lblbold"/>
                                                         </row>
+                                                        <row>
+                                                            <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
+                                                            <label id="datDeliveryRequestDate" value="" width="200px" style="color:#837E76;"/>
+                                                        </row>
+                                                    </rows> 
+                                                </grid> 
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('cms.delivererRegister')}"/>                                                   
                                                         <row>
                                                             <label value="${c:l('cms.menu.cardNumberAttemps')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.daliveryDate')}" sclass="lblbold"/>
@@ -37,7 +52,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <intbox id="txtCardNumberAttemps" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="2"/>
+                                                                <intbox id="intCardNumberAttemps" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="2"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>

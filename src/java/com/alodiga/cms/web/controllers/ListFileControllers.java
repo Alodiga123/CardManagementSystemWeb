@@ -240,7 +240,6 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.CARDNUMBER_KEY, resultPlastic.getCardNumber());
-            params.put(Constants.PLASTIC_CARD_STATUS_KEY, Constants.CARD_STATUS_PENDING_CUSTOMIZING);
             request1.setParams(params);
             cardList = cardEJB.getCardByCardNumber(request1);
 

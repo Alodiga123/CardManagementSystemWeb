@@ -6,9 +6,9 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
-import com.cms.commons.models.CardDeliveryRegister;
 import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.DeliveryRequest;
+import com.cms.commons.models.DeliveryRequetsHasCard;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -30,7 +30,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Label txtNumber;
-    private Intbox txtCardNumberAttemps;
+    private Intbox intCardNumberAttemps;
     private Textbox txtReceiverFirstName;
     private Textbox txtReceiverLastName;
     private Textbox txtObservations;
@@ -39,7 +39,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
     private Radio rDeliveryNo;
     private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
-    private Card cardParam;
+    private DeliveryRequetsHasCard cardParam;
     public Window winAdminCardInventory;
     private Button btnSave;
     private Integer eventType;
@@ -51,7 +51,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         adminDeliveryRequest = new AdminDeliveryRequestController();
         eventType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (adminDeliveryRequest.getDeliveryRequest() != null) {
-            cardParam = (Card) Sessions.getCurrent().getAttribute("object");
+            cardParam = (DeliveryRequetsHasCard) Sessions.getCurrent().getAttribute("object");
         } else {
             cardParam = null;
         }
@@ -85,8 +85,18 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         }
     }
 
-    private void loadFields(Card card) {
-        try { 
+    private void loadFields(DeliveryRequetsHasCard card) {
+        try {
+            intCardNumberAttemps.setValue(card.getNumberDeliveryAttempts());
+            txtReceiverFirstName.setValue(card.getReceiverFirstName());
+            txtReceiverLastName.setValue(card.getReceiverLastName());
+            txtObservations.setValue(card.getDeliveryObservations());
+            txtDaliveryDate.setValue(card.getDeliveryDate());
+            if (card.getIndDelivery() == true) {
+                rDeliveryYes.setChecked(true);
+            } else {
+                rDeliveryNo.setChecked(true);
+            }
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -94,7 +104,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
     }
 
     public void blockFields() {
-        txtCardNumberAttemps.setReadonly(true);
+        intCardNumberAttemps.setReadonly(true);
         txtDaliveryDate.setReadonly(true);
         txtReceiverFirstName.setReadonly(true);
         txtReceiverLastName.setReadonly(true);
@@ -103,8 +113,8 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
     }
 
     public Boolean validateEmpty() {
-        if (txtCardNumberAttemps.getText().isEmpty()) {
-            txtCardNumberAttemps.setFocus(true);
+        if (intCardNumberAttemps.getText().isEmpty()) {
+            intCardNumberAttemps.setFocus(true);
             this.showMessage("cms.error.field.identificationNumber", true, null);
         } else if (txtDaliveryDate.getText().isEmpty()) {
             txtDaliveryDate.setFocus(true);
@@ -124,32 +134,29 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         return false;
     }
 
-    private void saveCardStatus(Card _card) {
+    private void saveCardStatus(DeliveryRequetsHasCard _card) {
         CardStatus cardStatus = null;
         try {
-            Card card = null;
+            DeliveryRequetsHasCard card = null;
 
             if (_card != null) {
                 card = _card;
-            } else {//New requestType
-                card = new Card();
+            } else {
+                card = new DeliveryRequetsHasCard();
             }
 
             if (rDeliveryYes.isChecked()) {
-                //se actualiza el estatus de la tarjeta a INVENTARIO OK
+                //se actualiza el estatus de la tarjeta a ENTREGADA
                 EJBRequest request1 = new EJBRequest();
-                request1.setParam(Constants.CARD_STATUS_INVENTORY);
+                request1.setParam(Constants.CARD_STATUS_DELIVERED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
-
-                updateStatusCardInventory(card, cardStatus);
-
+                updateStatusCardInventory(card.getCardId(), cardStatus);
             } else {
-                //se actualiza el estatus de la tarjeta a INVENTARIO ERROR PERSONALIZACION
+                //se actualiza el estatus de la tarjeta a NO ENTREGADA
                 EJBRequest request1 = new EJBRequest();
-                request1.setParam(Constants.CARD_STATUS_ERROR);
+                request1.setParam(Constants.CARD_STATUS_NOT_DELIVERED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
-
-                updateStatusCardInventory(card, cardStatus);
+                updateStatusCardInventory(card.getCardId(), cardStatus);
             }
 
             saveCardInvetory(card);
@@ -173,8 +180,7 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
         }
     }
 
-    private void saveCardInvetory(Card card) {
-        CardDeliveryRegister cardDeliveryRegister = new CardDeliveryRegister();
+    private void saveCardInvetory(DeliveryRequetsHasCard card) {
         boolean indDelivery;
         try {
 
@@ -184,15 +190,15 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
                 indDelivery = false;
             }
 
-            cardDeliveryRegister.setNumberDeliveryAttempts(txtCardNumberAttemps.intValue());
-            cardDeliveryRegister.setDeliveryDate(txtDaliveryDate.getValue());
-            cardDeliveryRegister.setReceiverFirstName(txtReceiverFirstName.getValue());
-            cardDeliveryRegister.setReceiverLastName(txtReceiverLastName.getValue());
-            cardDeliveryRegister.setDeliveryObservations(txtObservations.getValue());
-            cardDeliveryRegister.setIndDelivery(indDelivery);
-            cardDeliveryRegister.setCreateDate(new Timestamp(new Date().getTime()));
-            cardDeliveryRegister.setDeliveryRequetsHasCardId(adminDeliveryRequest.getDeliveryRequest().getDeliveryRequetsHasCard());
-            cardDeliveryRegister = cardEJB.saveCardDeliveryRegister(cardDeliveryRegister);
+            //Se actualiza el objeto DeliveryRequetsHasCard
+            card.setNumberDeliveryAttempts(intCardNumberAttemps.intValue());
+            card.setDeliveryDate(txtDaliveryDate.getValue());
+            card.setReceiverFirstName(txtReceiverFirstName.getValue());
+            card.setReceiverLastName(txtReceiverLastName.getValue());
+            card.setDeliveryObservations(txtObservations.getValue());
+            card.setIndDelivery(indDelivery);
+            card.setUpdateDate(new Timestamp(new Date().getTime()));
+            card = cardEJB.saveDeliveryRequestHasCard(card);
 
         } catch (Exception ex) {
             showError(ex);
