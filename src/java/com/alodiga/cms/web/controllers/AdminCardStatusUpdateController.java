@@ -145,27 +145,14 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         btnSave.setVisible(false);
     }
 
-    public Boolean validateEmpty() {
-        
+    public Boolean validateEmpty() {        
         if (cmbStatusUpdateReason.getSelectedItem() == null || cmbCardStatus.getSelectedItem() == null
-                || txtReason.getText() == null) 
-        {
+                || txtReason.getText() == null) {
          this.showMessage("sp.common.field.required.full", true, null);
-         return false;
-         
-        } else {
-            StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
-            CardStatusHasUpdateReason cardStatusHasUpdateReason = (CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue();
-            CardStatus cardStatus= cardStatusHasUpdateReason.getCardStatusId();
-            cardParam.setStatusUpdateReasonDate(new Timestamp(new Date().getTime()));
-            cardParam.setUserResponsibleStatusUpdateId(user);
-            cardParam.setStatusUpdateReasonId(statusUpdateReason);
-            cardParam.setCardStatusId(cardStatus);
-            cardParam.setObservations(txtReason.getText());
+         } else {
             return true;
         }
-        
-        
+        return false;      
     }
 
     private void saveCardStatus(Card _card) {
@@ -174,32 +161,36 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
 
             if (_card != null) {
                 card = _card;
-            } else {//New requestType
+            } else {
                 card = new Card();
             }
-            Card result = result= cardEJB.saveCard(card);
-            if(card!=null){
+            
+            //Se actualiza el estatus de la tarjeta
+            card.setStatusUpdateReasonDate(new Timestamp(new Date().getTime()));
+            card.setUserResponsibleStatusUpdateId(user);
+            card.setStatusUpdateReasonId(((CardStatusHasUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue()).getStatusUpdateReasonId());
+            card.setCardStatusId(((CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue()).getCardStatusId());
+            card.setObservations(txtReason.getText());            
+            card = cardEJB.saveCard(card);
+            
+            if (card != null) {
                this.showMessage("sp.common.save.success", false, null);
                 blockFields();
-            }else{
-            this.showMessage("cms.msj.errorUpdateCard", true, null);
+                btnSave.setVisible(false);
+            } else {
+                this.showMessage("cms.msj.errorUpdateCard", true, null);
             }
             
         } catch (Exception ex) {
             this.showMessage("cms.msj.errorUpdateCard", true, null);
-
             showError(ex);
             ex.printStackTrace();
         }
-
     }
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
             switch (evenType) {
-                case WebConstants.EVENT_ADD:
-                    //saveCardStatus(null);
-                    break;
                 case WebConstants.EVENT_EDIT:
                     saveCardStatus(cardParam);
                     break;
@@ -274,11 +265,25 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     }
 
     private void loadCmbStatusUpdateReason(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<StatusUpdateReason> statusUpdateReason;
+        EJBRequest request1 = new EJBRequest();       
+        List<CardStatusHasUpdateReason> statusUpdateReasonList;        
+
         try {
-            statusUpdateReason = cardEJB.getStatusUpdateReason(request1);
-            loadGenericCombobox(statusUpdateReason, cmbStatusUpdateReason, "description", evenInteger,  Long.valueOf(NotStatusUpdateReasonId == true ? cardParam.getStatusUpdateReasonId().getId() : 0));
+            statusUpdateReasonList = cardEJB.getUpdateReasonByCardStatus(cardParam.getCardStatusId().getId().toString());
+            
+            //Se llena el combo de Motivos filtrado por el estatus de la tarjeta
+            for (int i = 0; i < statusUpdateReasonList.size(); i++) {
+                Comboitem item = new Comboitem();
+                item.setValue(statusUpdateReasonList.get(i));
+                item.setLabel(statusUpdateReasonList.get(i).getStatusUpdateReasonId().getDescription());
+                item.setParent(cmbStatusUpdateReason);
+                if (cardParam.getStatusUpdateReasonId() != null && statusUpdateReasonList.get(i).getStatusUpdateReasonId().getId().equals(cardParam.getStatusUpdateReasonId().getId())) {
+                    cmbStatusUpdateReason.setSelectedItem(item);
+                }
+            }
+            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
+                cmbStatusUpdateReason.setDisabled(true);
+            }  
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -291,25 +296,28 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
          
     public void onChange$cmbStatusUpdateReason() {
         cmbCardStatus.setValue("");
-        StatusUpdateReason statusUpdateReason = (StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
-        loadCmbCardStatus(eventType,statusUpdateReason.getId());
+        CardStatusHasUpdateReason cardStatusHasUpdateReason = (CardStatusHasUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
+        loadCmbCardStatus(eventType,cardStatusHasUpdateReason.getStatusUpdateReasonId().getId());
     }     
      
     private void loadCmbCardStatus(Integer evenInteger, int statusUpdateReasonId) {  
         cmbCardStatus.getItems().clear();
-        EJBRequest request1 = new EJBRequest();
-        Map params = new HashMap();
-        params.put(Constants.STATUS_UPDATE_REASON_KEY, statusUpdateReasonId);
-        request1.setParams(params);                    
+        EJBRequest request1 = new EJBRequest();                  
         List<CardStatusHasUpdateReason> cardStatusList;
+        
         try {
+            Map params = new HashMap();
+            params.put(Constants.STATUS_UPDATE_REASON_KEY, statusUpdateReasonId);
+            request1.setParams(params);  
             cardStatusList = cardEJB.getCardStatusByUpdateReason(request1);
+            
+            //Se llena el combo de CardStatus filtrado por el motivo seleccionado
             for (int i = 0; i < cardStatusList.size(); i++) {
                 Comboitem item = new Comboitem();
                 item.setValue(cardStatusList.get(i));
                 item.setLabel(cardStatusList.get(i).getCardStatusId().getDescription());
                 item.setParent(cmbCardStatus);
-                if (cardParam != null && cardStatusList.get(i).getId().equals(cardParam.getCardStatusId().getId())) {
+                if (cardParam != null && cardStatusList.get(i).getCardStatusId().getId().equals(cardParam.getCardStatusId().getId())) {
                     cmbCardStatus.setSelectedItem(item);
                 }
             }

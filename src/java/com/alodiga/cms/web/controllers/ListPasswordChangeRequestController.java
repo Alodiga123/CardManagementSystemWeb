@@ -64,7 +64,7 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
         try {
             request.setFirst(0);
             request.setLimit(null);
-            userList = personEJB.getUser(request);
+            passwordChangeRequestList = personEJB.getPasswordChangeRequest(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -106,10 +106,10 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
                     item.setValue(passwordChangeRequest);
                     item.appendChild(new Listcell(passwordChangeRequest.getRequestNumber()));
                     item.appendChild(new Listcell(passwordChangeRequest.getRequestDate().toString()));
-                    item.appendChild(new Listcell(passwordChangeRequest.getUserid().getCode().toString()));
-                    StringBuilder userName = new StringBuilder(passwordChangeRequest.getUserid().getFirstNames());
+                    item.appendChild(new Listcell(passwordChangeRequest.getUserId().getCode().toString()));
+                    StringBuilder userName = new StringBuilder(passwordChangeRequest.getUserId().getFirstNames());
                     userName.append(" ");
-                    userName.append(passwordChangeRequest.getUserid().getLastNames());
+                    userName.append(passwordChangeRequest.getUserId().getLastNames());
                     item.appendChild(new Listcell(userName.toString()));
                     if (passwordChangeRequest.getIndApproved() == true) {
                         indApproved = "Yes";
