@@ -24,6 +24,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -73,11 +74,6 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType != WebConstants.EVENT_ADD) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
-            if (cardParam.getStatusUpdateReasonId() != null) {
-                cardParam = (Card) Sessions.getCurrent().getAttribute("object");
-            } else {
-                cardParam = null;
-            }
         }
         initialize();
     }
@@ -130,7 +126,11 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             lblComercial.setValue(user.getComercialAgencyId().getName());
             lblUser.setValue(user.getLogin());
             lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
-            lblIdentification.setValue(user.getIdentificationNumber());  
+            lblIdentification.setValue(user.getIdentificationNumber());
+            lblCardNumber.setValue(card.getCardNumber());
+            lblStatus.setValue(card.getCardStatusId().getDescription());
+
+            
             
             
         } catch (Exception ex) {
@@ -296,9 +296,46 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     public void onChange$cmbStatusUpdateReason() {
         cmbCardStatus.setValue("");
         CardStatusHasUpdateReason cardStatusHasUpdateReason = (CardStatusHasUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue();
-        loadCmbCardStatus(eventType,cardStatusHasUpdateReason.getStatusUpdateReasonId().getId());
+        if(cardStatusHasUpdateReason.getStatusUpdateReasonId().getId().equals(WebConstants.REASON_FOUND)){
+            if (validateDateActivate()) {
+             loadCmbCardStatus(eventType,cardStatusHasUpdateReason.getStatusUpdateReasonId().getId());   
+            }else{
+                this.showMessage("cms.msj.errorChangeReasonForTime", true, null);
+            }
+        }else{
+            loadCmbCardStatus(eventType,cardStatusHasUpdateReason.getStatusUpdateReasonId().getId());
+        }
+          
+        
+        
+        
     }     
-     
+    
+    private boolean validateDateActivate(){
+
+        int dias = cardParam.getProductId().getMaximunDeactivationTimeBlocking();
+        Date fecha = cardParam.getStatusUpdateReasonDate();
+        
+        Date date_aux = sumarDiasAFecha(fecha,dias);
+        Date date = new Timestamp(new Date().getTime());
+        
+        if(date.compareTo(date_aux) <= 0){
+            return true;
+        }
+        
+    return false;
+        
+    }
+    
+ public Date sumarDiasAFecha(Date fecha, int dias){
+      if (dias==0) return fecha;
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(fecha); 
+      calendar.add(Calendar.DAY_OF_YEAR, dias);  
+      return calendar.getTime(); 
+}
+    
+    
     private void loadCmbCardStatus(Integer evenInteger, int statusUpdateReasonId) {  
         cmbCardStatus.getItems().clear();
         EJBRequest request1 = new EJBRequest();                  
