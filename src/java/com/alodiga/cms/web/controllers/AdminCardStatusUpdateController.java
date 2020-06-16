@@ -189,17 +189,18 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     }
 
     public void onClick$btnSave() {
+       
+        if (isErrorValidateForTime) {
+                this.showMessage("cms.msj.errorChangeReasonForTime", true, null);    
+        }else{
         if (validateEmpty()) {
             switch (evenType) {
                 case WebConstants.EVENT_EDIT:
-                    if (isErrorValidateForTime) {
-                    this.showMessage("cms.msj.errorChangeReasonForTime", true, null);
-                    }else{
-                    saveCardStatus(cardParam);
-                    }
-                    
+                    saveCardStatus(cardParam);            
                     break;
             }
+          }
+                    
         }
     }
 
