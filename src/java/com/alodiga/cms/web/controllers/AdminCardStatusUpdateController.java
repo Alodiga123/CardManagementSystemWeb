@@ -37,6 +37,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.api.Textbox;
 
 public class AdminCardStatusUpdateController extends GenericAbstractAdminController {
@@ -68,14 +69,31 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Integer evenType;
     private  User user;
     boolean isErrorValidateForTime=false;
+    
+     private Tab tabCardUpdate;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
+
         if (eventType != WebConstants.EVENT_ADD) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
+            
+           switch(cardParam.getCardStatusId().getId()){
+           
+               case WebConstants.STATUS_ACTIVE:
+               case WebConstants.STATUS_BLOCKED:
+               case WebConstants.STATUS_CUSTOM:    
+                   tabCardUpdate.setDisabled(false);
+                   break;
+               default:
+                    tabCardUpdate.setDisabled(true);
+                    break;
+           } 
+   
         }
+        
         initialize();
     }
 

@@ -9,6 +9,9 @@ public class WebConstants {
     public static final int EVENT_DELETE = 3;
     public static final int EVENT_VIEW = 4;
     public static final int REASON_FOUND = 6;
+    public static final int STATUS_ACTIVE = 8;
+    public static final int STATUS_CUSTOM = 2;
+    public static final int STATUS_BLOCKED = 9;
     public static final int EVENT_ADD_DESCENDANT = 5;
     public static final String EVENTYPE = "eventType";
     public static final String OPTION_MENU = "optionMenu";
