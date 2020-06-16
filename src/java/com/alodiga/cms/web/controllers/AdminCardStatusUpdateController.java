@@ -67,6 +67,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Button btnSave;
     private Integer evenType;
     private  User user;
+    boolean isErrorValidateForTime=false;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -191,7 +192,12 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         if (validateEmpty()) {
             switch (evenType) {
                 case WebConstants.EVENT_EDIT:
+                    if (isErrorValidateForTime) {
+                    this.showMessage("cms.msj.errorChangeReasonForTime", true, null);
+                    }else{
                     saveCardStatus(cardParam);
+                    }
+                    
                     break;
             }
         }
@@ -300,6 +306,7 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             if (validateDateActivate()) {
              loadCmbCardStatus(eventType,cardStatusHasUpdateReason.getStatusUpdateReasonId().getId());   
             }else{
+                isErrorValidateForTime= true;
                 this.showMessage("cms.msj.errorChangeReasonForTime", true, null);
             }
         }else{
