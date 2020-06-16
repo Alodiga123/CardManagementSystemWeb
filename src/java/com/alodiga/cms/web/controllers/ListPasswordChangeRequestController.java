@@ -117,7 +117,7 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
                         indApproved = "No";
                     }
                     item.appendChild(new Listcell(indApproved));
-                    item.appendChild(new ListcellEditButton(adminPage, passwordChangeRequest));
+//                    item.appendChild(new ListcellEditButton(adminPage, passwordChangeRequest));
                     item.appendChild(new ListcellViewButton(adminPage, passwordChangeRequest,true));
                     item.setParent(lbxRecords);
                 }
