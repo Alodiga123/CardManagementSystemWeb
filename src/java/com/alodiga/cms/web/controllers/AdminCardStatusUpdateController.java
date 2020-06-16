@@ -65,7 +65,6 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
     private Card cardParam;
     private Button btnSave;
     private Integer evenType;
-    private boolean NotStatusUpdateReasonId;
     private  User user;
 
     @Override
@@ -74,8 +73,10 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
         evenType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
         if (eventType != WebConstants.EVENT_ADD) {
             cardParam = (Card) Sessions.getCurrent().getAttribute("object");
-            if (cardParam.getStatusUpdateReasonId() == null) {
-                NotStatusUpdateReasonId = false; 
+            if (cardParam.getStatusUpdateReasonId() != null) {
+                cardParam = (Card) Sessions.getCurrent().getAttribute("object");
+            } else {
+                cardParam = null;
             }
         }
         initialize();
@@ -175,8 +176,6 @@ public class AdminCardStatusUpdateController extends GenericAbstractAdminControl
             
             if (card != null) {
                this.showMessage("sp.common.save.success", false, null);
-                blockFields();
-                btnSave.setVisible(false);
             } else {
                 this.showMessage("cms.msj.errorUpdateCard", true, null);
             }
