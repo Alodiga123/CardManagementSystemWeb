@@ -70,9 +70,13 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('sp.common.DateOfIssue')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
                                                         </row>
                                                          <row>
                                                              <label id="lblDateOfIssue" value="" width="230px" style="color:#837E76;"/>
+                                                             <label id="lblCardNumber" value="" width="230px" style="color:#837E76;"/>
+                                                             <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>
                                                          </row>                                                    
                                                                                                            
                                           
@@ -87,6 +91,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                        <group label="${c:l('cms.menu.cardStatusUpdate')}"/> 
                                                         <row>
                                                             <label value="${c:l('cms.common.reason.change.status')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
