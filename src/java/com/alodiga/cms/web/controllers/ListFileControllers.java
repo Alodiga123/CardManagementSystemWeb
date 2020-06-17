@@ -11,6 +11,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.CardStatus;
+import com.cms.commons.models.PlastiCustomizingRequestHasCard;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.models.ResultPlasticCustomizingRequest;
 import com.cms.commons.models.StatusResultPlasticCustomizing;
@@ -29,11 +30,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Window;
 
 public class ListFileControllers extends GenericAbstractListController<ResultPlasticCustomizingRequest> {
 
@@ -166,7 +169,9 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
         List<StatusResultPlasticCustomizing> statusResultList = null;
         StatusResultPlasticCustomizing statusResultPlasticCustomizing = null;
         StatusResultPlasticCustomizing statusResultP = null;
-
+        Card card = null;
+        List<Card> cardList = new ArrayList<Card>();
+ 
         String statusResultFile = "";
         try {
             if (archivo != null && !archivo.isEmpty()) {
@@ -196,12 +201,28 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
                     resultPlasticCustomizingRequest.setStatusResultPlasticCustomizingId(statusResultPlasticCustomizing);
                     resultPlasticCustomizingRequest.setPlasticCustomizingRequestId(plastiCustomerParam);
 
+                    //Actualiza la Tarjeta
+                    card = updateCard(resultPlasticCustomizingRequest, statusResultFile, statusResultPlasticCustomizing);
+                    cardList.add(card);
                     //Guarda la lÍnea del archivo
                     resultPlasticCustomizingRequest = requestEJB.saveResultPlasticCustomizingRequest(resultPlasticCustomizingRequest);
-                    updateCard(resultPlasticCustomizingRequest, statusResultFile, statusResultPlasticCustomizing);
+
                 }
                 this.showMessage("cms.msj.UpdateStatusCard", false, null);
                 btnRead.setVisible(false);
+                ListPlasticCardControllers ListPlasticCard = new ListPlasticCardControllers();
+                PlasticCustomizingRequest plasticCustomizingRequest = ListPlasticCard.getPlasticCustomizingRequest();
+                List<PlastiCustomizingRequestHasCard> listPlasticCard = ListPlasticCard.getDataPlastic(plasticCustomizingRequest);
+                for (PlastiCustomizingRequestHasCard p : listPlasticCard) {
+                    for (Card c : cardList) {
+                        if (c != null) {
+                            if (p.getCardId().getCardNumber().equalsIgnoreCase(c.getCardNumber())) {
+                                p.setCardId(c);
+                            }
+                        }
+                    }
+                }
+                ListPlasticCard.loadDataPlasticList(listPlasticCard);
             }
         } catch (GeneralException ex) {
             Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
@@ -210,7 +231,7 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
         }
     }
 
-    public void updateCard(ResultPlasticCustomizingRequest resultPlastic, String statusResultFile, StatusResultPlasticCustomizing statusResultPlasticCustomizing) {
+    public Card updateCard(ResultPlasticCustomizingRequest resultPlastic, String statusResultFile, StatusResultPlasticCustomizing statusResultPlasticCustomizing) {
         Card card = null;
         CardStatus statusCard = null;
 
@@ -219,7 +240,6 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.CARDNUMBER_KEY, resultPlastic.getCardNumber());
-            params.put(Constants.PLASTIC_CARD_STATUS_KEY, Constants.CARD_STATUS_PENDING_CUSTOMIZING);
             request1.setParams(params);
             cardList = cardEJB.getCardByCardNumber(request1);
 
@@ -237,6 +257,7 @@ public class ListFileControllers extends GenericAbstractListController<ResultPla
         } catch (Exception ex) {
             showError(ex);
         }
+        return card;
     }
 
     @Override

@@ -1,14 +1,18 @@
 package com.alodiga.cms.web.controllers;
-
-import com.alodiga.cms.commons.ejb.CardEJB;
+import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
+import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.DeliveryRequest;
+import com.cms.commons.models.BinSponsor;
+import com.cms.commons.models.PhoneType;
+import com.cms.commons.models.User;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
@@ -22,13 +26,13 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListDeliveryControllers extends GenericAbstractListController<DeliveryRequest> {
+public class ListBinSponsorController extends GenericAbstractListController<BinSponsor> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtName;
-    private CardEJB cardEJB = null;
-    private List<DeliveryRequest> deliveryRequests = null;
+    private UtilsEJB utilsEJB = null;
+    private List<BinSponsor> binSponsorList = null;
+    private User currentUser;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -40,63 +44,68 @@ public class ListDeliveryControllers extends GenericAbstractListController<Deliv
     public void initialize() {
         super.initialize();
         try {
-            adminPage = "TabDelivery.zul";
-            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
+            adminPage = "adminBinSponsor.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(deliveryRequests);
+            loadDataList(binSponsorList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-    public void getData() {
-        deliveryRequests = new ArrayList<DeliveryRequest>();
+    
+   public void getData() {
+    binSponsorList = new ArrayList<BinSponsor>();
         try {
             request.setFirst(0);
-            request.setLimit(null);            
-            deliveryRequests = cardEJB.getDeliveryRequest(request);
+            request.setLimit(null);
+            binSponsorList = utilsEJB.getBinSponsor(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-            showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         }
     }
+
+
 
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
     }
-
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
+    
+       
+   public void onClick$btnDownload() throws InterruptedException {
+        try {
+            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<DeliveryRequest> list) {
-        Listcell tmpCell = new Listcell();
-        try {
+    public void loadDataList(List<BinSponsor> list) {
+          try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (DeliveryRequest deliveryRequest : list) {
+                btnDownload.setVisible(true);
+                for (BinSponsor binSponsor : list) {
 
                     item = new Listitem();
-                    item.setValue(deliveryRequest);
-                    item.appendChild(new Listcell(deliveryRequest.getRequestNumber()));
-                    item.appendChild(new Listcell(deliveryRequest.getShippingCompanyId().getEnterpriseName()));
-                    item.appendChild(new Listcell(deliveryRequest.getProgramId().getName()));
-                    item.appendChild(new Listcell(deliveryRequest.getStatusDeliveryRequestId().getDescription()));
-                    item.appendChild(new ListcellEditButton(adminPage, deliveryRequest));
-                    item.appendChild(new ListcellViewButton(adminPage, deliveryRequest, true));
+                    item.setValue(binSponsor);
+                    item.appendChild(new Listcell(binSponsor.getDescription()));
+                    item.appendChild( new ListcellEditButton(adminPage, binSponsor));
+                    item.appendChild(new ListcellViewButton(adminPage, binSponsor,true));
                     item.setParent(lbxRecords);
                 }
             } else {
+                btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
@@ -106,12 +115,12 @@ public class ListDeliveryControllers extends GenericAbstractListController<Deliv
             }
 
         } catch (Exception ex) {
-            showError(ex);
+           showError(ex);
         }
     }
 
     @Override
-    public List<DeliveryRequest> getFilterList(String filter) {
+    public List<BinSponsor> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

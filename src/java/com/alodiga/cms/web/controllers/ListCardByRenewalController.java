@@ -9,7 +9,6 @@ import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
-import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CardRenewalRequest;
 import com.cms.commons.models.CardRenewalRequestHasCard;
@@ -19,23 +18,15 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Window;
 
-public class ListCardRenewalRequestController extends GenericAbstractListController<CardRenewalRequest> {
+public class ListCardByRenewalController extends GenericAbstractListController<CardRenewalRequest> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
@@ -72,11 +63,11 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             
             //Se obtiene el estatus de la tarjeta ACTIVA
             EJBRequest request1 = new EJBRequest();
-            request1.setParam(Constants.CARD_STATUS_ACTIVE);
+            request1.setParam(Constants.CARD_STATUS_CANCELED);
             cardStatus = utilsEJB.loadCardStatus(request1);
             
             //Verificar si en la fecha actual se crearon solicitudes de renovación
-            CardRenewalRequestList = cardEJB.getCardRenewalRequestByCurrentDate(cardStatus.getId());
+//            CardRenewalRequestList = cardEJB.getCardRenewalRequestByCard(cardStatus.getId());
                
         } catch (Exception ex) {
             showError(ex);
@@ -113,8 +104,6 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
                     item.appendChild(new Listcell(cardRenewalRequest.getIssuerId().getName()));
                     item.appendChild(new ListcellEditButton(adminPage, cardRenewalRequest));
                     item.appendChild(new ListcellViewButton(adminPage, cardRenewalRequest, true));
-//                    item.appendChild(createButtonEditModal(cardRenewalRequest));
-//                    item.appendChild(createButtonViewModal(cardRenewalRequest));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -130,56 +119,6 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-
-    public Listcell createButtonEditModal(final Object obg) {
-        Listcell listcellEditModal = new Listcell();
-        try {
-            Button button = new Button();
-            button.setImage("/images/icon-edit.png");
-            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
-            button.setClass("open orange");
-            button.addEventListener("onClick", new EventListener() {
-                @Override
-                public void onEvent(Event arg0) throws Exception {
-                    Sessions.getCurrent().setAttribute("object", obg);
-                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                    Map<String, Object> paramsPass = new HashMap<String, Object>();
-                    paramsPass.put("object", obg);
-                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                    window.doModal();
-                }
-            });
-            button.setParent(listcellEditModal);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return listcellEditModal;
-    }
-
-    public Listcell createButtonViewModal(final Object obg) {
-        Listcell listcellViewModal = new Listcell();
-        try {
-            Button button = new Button();
-            button.setImage("/images/icon-invoice.png");
-            button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
-            button.setClass("open orange");
-            button.addEventListener("onClick", new EventListener() {
-                @Override
-                public void onEvent(Event arg0) throws Exception {
-                    Sessions.getCurrent().setAttribute("object", obg);
-                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                    Map<String, Object> paramsPass = new HashMap<String, Object>();
-                    paramsPass.put("object", obg);
-                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                    window.doModal();
-                }
-            });
-            button.setParent(listcellViewModal);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return listcellViewModal;
     }
 
     public void getData() {

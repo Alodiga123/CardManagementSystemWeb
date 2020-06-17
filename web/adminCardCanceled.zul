@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminCardRenewal" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCardRenewalControllers" class="general-window">
+    <window id="winAdminCardCanceled" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCardCanceledControllers" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -36,27 +36,38 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestNumber')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestStatus')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.type')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label id="lblNumberRequest" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblCardNumber" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblProgram" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblProduct" value="" width="230px" style="color:#837E76;"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.DateOfIssue')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
                                                             <label id="lblDate" value="" width="230px" style="color:#837E76;"/>
                                                             <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestIssuer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.menu.cardIssuanceRequest.identificationCardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.menu.cardIssuanceRequest.fistLastNameCardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label id="lblIssuer" value="" width="230px" style="color:#837E76;"/>
-                                                            <cell colspan="2">
-                                                                <hlayout>
-                                                                    <textbox id="txtObservations" multiline="true" rows="2" width="580px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1490"/>
-                                                                    <label value="*" sclass="lblreq" />
-                                                                </hlayout>   
-                                                            </cell>
+                                                            <label id="lblIdentificationCardHolder" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblNamesCardHolder" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblEmail" value="" width="230px" style="color:#837E76;"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblPhone" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
@@ -65,8 +76,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardRenewalRequest.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardRenewalByCanceled.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>

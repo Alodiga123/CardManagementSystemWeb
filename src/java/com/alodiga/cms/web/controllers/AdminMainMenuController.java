@@ -316,13 +316,21 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell33.setParent(item33);
         item33.setParent(lbxPermissions);
          
-        //Opción CardRenewal 
+        //Opción CardRenewalRequest 
         Listitem item34 = new Listitem();
         Listcell listCell34 = new Listcell();
         listCell34.setLabel(Labels.getLabel("cms.menu.cardRenewal"));
-        listCell34.addEventListener("onClick", new RedirectListener("listCardRenewal.zul"));
+        listCell34.addEventListener("onClick", new RedirectListener("listCardRenewalRequest.zul"));
         listCell34.setParent(item34);
         item34.setParent(lbxPermissions);
+        
+//        //Opción CardRenewalRequest
+//        Listitem item91 = new Listitem();
+//        Listcell listCell91 = new Listcell();
+//        listCell91.setLabel(Labels.getLabel("cms.menu.cardRenewal"));
+//        listCell91.addEventListener("onClick", new RedirectListener("listCardRenewalRequest.zul"));
+//        listCell91.setParent(item91);
+//        item91.setParent(lbxPermissions);
         
 //        //Opción Card Activation 
 //        Listitem item35 = new Listitem();
@@ -331,6 +339,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
 //        listCell35.addEventListener("onClick", new RedirectListener("listCardActivation.zul"));
 //        listCell35.setParent(item35);
 //        item35.setParent(lbxPermissions);
+        
+         //Opción RenewalByCanceled 
+        Listitem item36 = new Listitem();
+        Listcell listCell36 = new Listcell();
+        listCell36.setLabel(Labels.getLabel("cms.menu.cardRenewalByCancelled"));
+        listCell36.addEventListener("onClick", new RedirectListener("listCardRenewalByCanceled.zul"));
+        listCell36.setParent(item36);
+        item36.setParent(lbxPermissions);
         
         //Opción Profesion 
         Listitem item41 = new Listitem();
@@ -412,6 +428,22 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell51.setParent(item51);
         item51.setParent(lbxPermissions);
         
+        //Opción PASSWORD CHANGE REQUEST 
+        Listitem item52 = new Listitem();
+        Listcell listCell52 = new Listcell();
+        listCell52.setLabel(Labels.getLabel("cms.menu.password.change.request"));
+        listCell52.addEventListener("onClick", new RedirectListener("listPasswordChangeRequest.zul"));
+        listCell52.setParent(item52);
+        item52.setParent(lbxPermissions);
+        
+        //Opción BINSPONSOR 
+        Listitem item55 = new Listitem();
+        Listcell listCell55 = new Listcell();
+        listCell55.setLabel(Labels.getLabel("cms.menu.bin.sponsor"));
+        listCell55.addEventListener("onClick", new RedirectListener("listBinSponsor.zul"));
+        listCell55.setParent(item55);
+        item55.setParent(lbxPermissions);
+        
               
         //Opción UserHasProfile 
         Listitem item90 = new Listitem();
@@ -420,6 +452,8 @@ public class AdminMainMenuController extends GenericForwardComposer {
         listCell90.addEventListener("onClick", new RedirectListener("listUserHasProfile.zul"));
         listCell90.setParent(item90);
         item90.setParent(lbxPermissions);
+        
+        
     }
 }
 
@@ -442,8 +476,6 @@ class RedirectListener implements EventListener {
 
     @Override
     public void onEvent(Event event) throws UiException, InterruptedException {
-
         Executions.sendRedirect(view);
-
     }
 }
