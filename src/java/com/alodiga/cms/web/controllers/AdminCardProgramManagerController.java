@@ -319,6 +319,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_LEGAL_PERSON);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
