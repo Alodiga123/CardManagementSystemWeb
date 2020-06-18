@@ -1,17 +1,15 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.NewCardIssueRequest;
-import com.cms.commons.models.PhonePerson;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import com.cms.commons.util.QueryConstants;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +26,16 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblCardNumber;
     private Label lblNamesCardHolder;
-
     private Label lblRequestNumber;
     private Label lblStatusNewCardIssue;
+    private Label lblNewCardIssueDate;
     private Radio rConfirmationYes;
     private Radio rConfirmationNo;
     private Textbox txtObservations;
     private Datebox txtRequestDate;
     private CardEJB cardEJB = null;
-    private PersonEJB personEJB = null;
     private Card cardCanceledParam;
     private NewCardIssueRequest newCardIssueRequestParam;
-    private List<PhonePerson> phonePersonList = null;
     private List<NewCardIssueRequest> newCardIssueRequestList = null;
     private Button btnActivate;
     private Integer eventType;
@@ -48,8 +44,7 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) (Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE));
-        
-        
+
         if (eventType == WebConstants.EVENT_ADD) {
             cardCanceledParam = null;
         } else {
@@ -64,11 +59,13 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
         super.initialize();
         try {
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
 
-            //Se crar la solicitud de emisión de nueva tarjeta automáticamente
+            newCardIssueRequestList = new ArrayList<NewCardIssueRequest>();
             newCardIssueRequestList = cardEJB.createCardNewCardIssueRequest(cardCanceledParam);
 
+            for (NewCardIssueRequest r : newCardIssueRequestList) {
+                newCardIssueRequestParam = r;
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -88,7 +85,6 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
             lblCardNumber.setValue(cardCanceled.getCardNumber());
             lblNamesCardHolder.setValue(cardCanceled.getCardHolder());
 
-            btnActivate.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -101,12 +97,13 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             lblRequestNumber.setValue(newCardIssueRequest.getRequestNumber());
+            txtRequestDate.setValue(newCardIssueRequest.getRequestDate());
             lblStatusNewCardIssue.setValue(newCardIssueRequest.getStatusNewCardIssueRequestId().getDescription());
+            lblNewCardIssueDate.setValue(simpleDateFormat.format(newCardIssueRequest.getNewCardIssueDate()));
             if (txtObservations != null) {
                 txtRequestDate.setValue(newCardIssueRequest.getRequestDate());
                 txtObservations.setValue(newCardIssueRequest.getObservations());
             }
-
             if (newCardIssueRequest.getIndConfirmation() == true) {
                 rConfirmationYes.setChecked(true);
             } else {
@@ -126,24 +123,22 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
         btnActivate.setVisible(false);
     }
 
-    
     public Boolean validateEmpty() {
-        if (txtObservations.getText().isEmpty()) {
-            txtObservations.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtRequestDate.getText().isEmpty()) {
+        if (txtRequestDate.getText().isEmpty()) {
             txtRequestDate.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if ((!rConfirmationYes.isChecked()) && (!rConfirmationNo.isChecked())) {
+            rConfirmationYes.setFocus(true);
+            this.showMessage("cms.error.field.renewal", true, null);
         } else if (txtObservations.getText().isEmpty()) {
             txtObservations.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.renewal.observations", true, null);
         } else {
             return true;
         }
         return false;
     }
-    
-    
+
     private void saveCardRenewal(NewCardIssueRequest _cardIssuerRequest) {
         boolean indConfirmation;
         try {
@@ -154,7 +149,7 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
             } else {//New country
                 cardIssuerRequest = new NewCardIssueRequest();
             }
-            
+
             if (rConfirmationYes.isChecked()) {
                 indConfirmation = true;
             } else {
@@ -165,6 +160,8 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
             cardIssuerRequest.setObservations(txtObservations.getText());
             cardIssuerRequest.setRequestDate(txtRequestDate.getValue());
             cardIssuerRequest = cardEJB.saveNewCardIssueRequest(cardIssuerRequest);
+            
+            updateIndPendingNewCard(cardIssuerRequest.getCardId(), indConfirmation);
 
             this.showMessage("sp.common.save.success", false, null);
 
@@ -174,16 +171,35 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
         }
     }
 
+    public void updateIndPendingNewCard(Card card, boolean ind) {
+        boolean indPendingNewCardIssue;
+        try {
+            if(ind = true){
+                indPendingNewCardIssue = true;
+            }else{
+                indPendingNewCardIssue = false;
+            }
+            
+            card.setIndPendingNewCardIssue(indPendingNewCardIssue );
+            card = cardEJB.saveCard(card);
+            
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
     public void onClick$btnActivate() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveCardRenewal(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveCardRenewal(newCardIssueRequestParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveCardRenewal(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveCardRenewal(newCardIssueRequestParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
