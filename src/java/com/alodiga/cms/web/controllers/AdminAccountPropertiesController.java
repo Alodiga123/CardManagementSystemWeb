@@ -294,11 +294,12 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(accountPropertiesParam);
-                txtIdentifier.setDisabled(true);
-                txtLengthAccount.setDisabled(true);
-                txtMinimunAmount.setDisabled(true);
-                txtMaximunAmount.setDisabled(true);
+                txtIdentifier.setDisabled(false);
+                txtLengthAccount.setDisabled(false);
+                txtMinimunAmount.setDisabled(false);
+                txtMaximunAmount.setDisabled(false);
                 loadCmbCountry(eventType);
+                loadCmbProgram(eventType);
                 blockFields();
                 onChange$cmbCountry();
                 onChange$cmbProgram();
