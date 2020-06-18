@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminNaturalPersonAddress" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="450px" apply="com.alodiga.cms.web.controllers.AdminPersonAddressController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminNaturalPersonAddress" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="580px" apply="com.alodiga.cms.web.controllers.AdminPersonAddressController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -78,9 +78,21 @@
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.crud.address.addressTypes')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.address.line1')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbAddressTypes" width="250px" mold="rounded" readonly="true"/>
+                                                            <cell colspan="2">
+                                                                <textbox id="txtLine1" multiline="true" rows="1" width="580px" maxlength="250"/>
+                                                            </cell>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.address.line2')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="2">
+                                                                <textbox id="txtLine2" multiline="true" rows="1" width="580px" maxlength="250"/>
+                                                            </cell>
                                                         </row>
                                                     </rows>
                                                 </grid>
