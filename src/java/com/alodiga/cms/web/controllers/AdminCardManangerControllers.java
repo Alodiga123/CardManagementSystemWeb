@@ -92,7 +92,7 @@ public class AdminCardManangerControllers extends GenericAbstractAdminController
 
             if (_card != null) {
                 card = _card;
-            } else {//New requestType
+            } else {
                 card = new Card();
             }
             
