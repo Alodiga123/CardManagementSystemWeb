@@ -80,9 +80,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     public void initialize() {
         super.initialize();
         switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.edit"));
-                break;
+//            case WebConstants.EVENT_EDIT:
+//                tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.edit"));
+//                break;
             case WebConstants.EVENT_VIEW:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.view"));
                 break;
@@ -106,6 +106,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     
     public void onFocus$txtCurrentPassword() {
         this.clearMessage();
+        txtCurrentPassword.setText("");
+        txtNewPassword.setText("");
+        txtRepeatNewPassword.setText("");
     }
     
     public void clearFields() {
@@ -220,6 +223,10 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 //Guardar la solicitud de cambio de contraseña en la BD
                 passwordChangeRequest = personEJB.savePasswordChangeRequest(passwordChangeRequest);
                 passwordChangeRequestParam = passwordChangeRequest;
+
+                //Actualizar la contraseña del usuario en la BD
+                user.setPassword(txtNewPassword.getText());
+                user = personEJB.saveUser(user);
                 
                 rApprovedYes.setVisible(true);
                 rApprovedNo.setVisible(true);                
@@ -253,7 +260,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
 
                 //Guardar la solicitud de cambio de contraseña en la BD
                 passwordChangeRequest = personEJB.savePasswordChangeRequest(passwordChangeRequest);
-                passwordChangeRequestParam = passwordChangeRequest;
+                passwordChangeRequestParam = passwordChangeRequest;                
                 
                 rApprovedYes.setVisible(true);
                 rApprovedNo.setVisible(true);                
@@ -289,9 +296,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 case WebConstants.EVENT_ADD:
                     savePasswordChangeRequest(null);
                     break;
-                case WebConstants.EVENT_EDIT:
-                    savePasswordChangeRequest(passwordChangeRequestParam);
-                    break;
+//                case WebConstants.EVENT_EDIT:
+//                    savePasswordChangeRequest(passwordChangeRequestParam);
+//                    break;
                 default:
                     break;
             }
@@ -304,17 +311,17 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     
     public void loadData() {
         switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                loadFields(passwordChangeRequestParam);
-                txtCurrentPassword.setReadonly(true);
-                txtNewPassword.setReadonly(true);
-                txtRepeatNewPassword.setReadonly(true);
-                break;
+//            case WebConstants.EVENT_EDIT:
+//                loadFields(passwordChangeRequestParam);
+//                txtCurrentPassword.setReadonly(true);
+//                txtNewPassword.setReadonly(true);
+//                txtRepeatNewPassword.setReadonly(true);
+//                break;
             case WebConstants.EVENT_VIEW:
                 loadFields(passwordChangeRequestParam);
                 txtCurrentPassword.setReadonly(true);
                 txtNewPassword.setReadonly(true);
-                txtRepeatNewPassword.setDisabled(true);
+                txtRepeatNewPassword.setDisabled(false);
                 dtbRequestDate.setReadonly(true);
                 blockFields();
                 rApprovedYes.setDisabled(true);
