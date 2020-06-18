@@ -265,7 +265,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());            
             user.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
             user.setAuthorizedEmployeeId((Employee) cmbAuthorizeEmployee.getSelectedItem().getValue());
-//            user.setEnabled(indEnabled);
+            user.setEnabled(indEnabled);
             user = personEJB.saveUser(user);
             userParam =user;
             this.showMessage("sp.common.save.success", false, null);
@@ -362,12 +362,8 @@ public class AdminUserController extends GenericAbstractAdminController {
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, userParam.getDocumentsPersonTypeId().getId());
-        if (eventType == WebConstants.EVENT_ADD) {
-            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
-        } else {
-            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, userParam.getDocumentsPersonTypeId().getId());
-        }
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {

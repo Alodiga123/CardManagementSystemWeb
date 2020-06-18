@@ -87,18 +87,19 @@ public class AdminCardCanceledControllers extends GenericAbstractAdminController
             lblEmail.setValue(cardCanceled.getPersonCustomerId().getEmail());
             if (cardCanceled.getPersonCustomerId().getPersonTypeId().getIndNaturalPerson() == true) {
                 lblIdentificationCardHolder.setValue(cardCanceled.getPersonCustomerId().getNaturalCustomer().getIdentificationNumber());
-
-                params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getNaturalCustomer().getPersonId().getId());
-                request.setParams(params);
-                phonePersonList = personEJB.getPhoneByPerson(request);
+                if (personEJB.havePhonesByPerson(cardCanceled.getPersonCustomerId().getNaturalCustomer().getPersonId().getId()) > 0) {
+                    params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getNaturalCustomer().getPersonId().getId());
+                    request.setParams(params);
+                    phonePersonList = personEJB.getPhoneByPerson(request);
+                }                
             } else {
                 lblIdentificationCardHolder.setValue(cardCanceled.getPersonCustomerId().getLegalCustomer().getIdentificationNumber());
-
-                params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getLegalCustomer().getPersonId().getId());
-                request.setParams(params);
-                phonePersonList = personEJB.getPhoneByPerson(request);
+                if (personEJB.havePhonesByPerson(cardCanceled.getPersonCustomerId().getLegalCustomer().getPersonId().getId()) > 0) {
+                    params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getLegalCustomer().getPersonId().getId());
+                    request.setParams(params);
+                    phonePersonList = personEJB.getPhoneByPerson(request);
+                }                
             }
-
             if (phonePersonList != null) {
                 for (PhonePerson p : phonePersonList) {
                     lblPhone.setValue(p.getNumberPhone());

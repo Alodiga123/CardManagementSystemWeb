@@ -65,7 +65,8 @@ public class AdminRequestCardCanceledControllers extends GenericAbstractAdminCon
         try {
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            
+
+            //Se crar la solicitud de emisión de nueva tarjeta automáticamente
             newCardIssueRequestList = cardEJB.createCardNewCardIssueRequest(cardCanceledParam);
 
         } catch (Exception ex) {
