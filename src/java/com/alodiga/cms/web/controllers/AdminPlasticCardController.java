@@ -14,6 +14,7 @@ import com.cms.commons.models.PlastiCustomizingRequestHasCard;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -27,6 +28,8 @@ import org.zkoss.zul.Window;
 public class AdminPlasticCardController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Label lblProgram;
     private Label lblPlasticManufacturer;
     private Label lblCardNumber;
@@ -57,7 +60,7 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
             } else {
                 plastiCustomizingRequestHasCardParam = (PlastiCustomizingRequestHasCard) Sessions.getCurrent().getAttribute("object");
                 cardParam = plastiCustomizingRequestHasCardParam.getCardId();
-            }            
+            }
         }
         initialize();
     }
@@ -77,20 +80,26 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
     public void clearFields() {
 
     }
-    
+
     public void onClick$btnBack() {
         winAdminPlasticCard.detach();
     }
 
     private void loadFields(Card card) {
         try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
             AdminPlasticRequestController adminPlasticRequest = new AdminPlasticRequestController();
             if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {
                 plastiCustomerParam = adminPlasticRequest.getPlasticCustomizingRequest();
             }
 
+            lblRequestNumber.setValue(plastiCustomerParam.getRequestNumber());
+            lblRequestDate.setValue(simpleDateFormat.format(plastiCustomerParam.getRequestDate()));
             lblProgram.setValue(plastiCustomerParam.getProgramId().getName());
             lblPlasticManufacturer.setValue(plastiCustomerParam.getPlasticManufacturerId().getName());
+
             lblCardNumber.setValue(card.getCardNumber());
             lblExpirationDate.setValue(card.getExpirationDate().toString());
             lblCardHolder.setValue(card.getCardHolder());
@@ -101,6 +110,16 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
 
     public void blockFields() {
         btnSave.setVisible(false);
+    }
+
+    public Boolean validateEmpty() {
+        if (cmbCardStatus.getText().isEmpty()) {
+            cmbCardStatus.setFocus(true);
+            this.showMessage("cms.error.statusCard.notSelected", true, null);
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private void saveCard(Card _card) {
@@ -118,7 +137,7 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
             card.setCardStatusId((CardStatus) cmbCardStatus.getSelectedItem().getValue());
             card = cardEJB.saveCard(card);
             this.showMessage("sp.common.save.success", false, null);
-            
+
             EventQueues.lookup("updatePlasticCard", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
@@ -126,15 +145,17 @@ public class AdminPlasticCardController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveCard(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveCard(cardParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveCard(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveCard(cardParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

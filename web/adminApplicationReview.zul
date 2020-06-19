@@ -18,6 +18,24 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('sp.common.data.request')}"/> 
+                                                        <row>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblRequestNumber" value="" width="200px" style="color:#837E76;"/>
+                                                            <label id="lblRequestDate" value="" width="200px" style="color:#837E76;"/>
+                                                        </row>
+                                                    </rows> 
+                                                </grid>
                                                 <label value="${c:l('cms.tab.applicationReview')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -26,10 +44,6 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                         <row>
-                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
-                                                            <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
-                                                        </row>
                                                         <row>
                                                             <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.applicantionRiview.agency')}" sclass="lblbold"/>

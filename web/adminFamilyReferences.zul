@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminFamilyReferences" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="300px" apply="com.alodiga.cms.web.controllers.AdminFamilyReferencesController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminFamilyReferences" title="${c:l('cms.tab.familyReferencesMain')}" width="950px" height="350px" apply="com.alodiga.cms.web.controllers.AdminFamilyReferencesController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -18,6 +18,24 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('sp.common.data.request')}"/>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblRequestNumber" value="" width="200px" style="color:#837E76;"/>
+                                                            <label id="lblRequestDate" value="" width="200px" style="color:#837E76;"/>
+                                                        </row>
+                                                    </rows> 
+                                                </grid>
                                                 <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
