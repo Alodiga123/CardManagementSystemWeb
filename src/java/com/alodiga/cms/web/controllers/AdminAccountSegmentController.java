@@ -138,20 +138,20 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
             showError(ex);
         } finally {
             try {
-//                if ((accountSegmentList == null) || (_accountSegment != null)) {
+                if ((accountSegmentList == null) || (_accountSegment != null)) {
                 //Guardar AccountSegment
-                if (eventType == 1) {
-                    accountSegment = new AccountSegment();
-                }
-                accountSegment.setAccountPropertiesId(accountProperties);
-                accountSegment.setDescription(txtAccountDescription.getValue());
-                accountSegment.setLenghtSegment(txtLengthSegment.getValue());
-                accountSegment = cardEJB.saveAccountSegment(accountSegment);
-                accountSegmentParam = accountSegment;
+                    if (eventType == 1) {
+                        accountSegment = new AccountSegment();
+                    }
+                    accountSegment.setAccountPropertiesId(accountProperties);
+                    accountSegment.setDescription(txtAccountDescription.getValue());
+                    accountSegment.setLenghtSegment(txtLengthSegment.getValue());
+                    accountSegment = cardEJB.saveAccountSegment(accountSegment);
+                    accountSegmentParam = accountSegment;
 
-                this.showMessage("sp.common.save.success", false, null);
-                btnSave.setVisible(false);
-//                }
+                    this.showMessage("sp.common.save.success", false, null);
+                    btnSave.setVisible(false);
+                }
                 EventQueues.lookup("updateAccountSegment", EventQueues.APPLICATION, true).publish(new Event(""));
             } catch (RegisterNotFoundException ex) {
                 showError(ex);
