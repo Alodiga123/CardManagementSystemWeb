@@ -37,45 +37,38 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.product.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblCardNumber" value="" width="230px" style="color:#837E76;"/>
-                                                            <label id="lblProgram" value="" width="230px" style="color:#837E76;"/>
-                                                            <label id="lblProduct" value="" width="230px" style="color:#837E76;"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.DateOfIssue')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <label id="lblDate" value="" width="230px" style="color:#837E76;"/>
-                                                            <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.menu.cardIssuanceRequest.identificationCardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.menu.cardIssuanceRequest.fistLastNameCardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <label id="lblIdentificationCardHolder" value="" width="230px" style="color:#837E76;"/>
                                                             <label id="lblNamesCardHolder" value="" width="230px" style="color:#837E76;"/>
-                                                            <label id="lblEmail" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardRenewalRequestStatus')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblRequestNumber" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblNewCardIssueDate" value="" width="230px" style="color:#837E76;"/>
+                                                            <label id="lblStatusNewCardIssue" value="" width="230px" style="color:#837E76;"/>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.indActivation')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label id="lblPhone" value="" width="230px" style="color:#837E76;"/>
+                                                            <hlayout>
+                                                                <datebox id="txtRequestDate" width="230px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <hbox>
-                                                                <radiogroup id="indCanceled" onCheck="value = self.selectedItem.label"/>
+                                                                <radiogroup id="indConfirmation" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
                                                                     <rows>
                                                                         <row>
-                                                                            <radio id="rCanceledYes" label="${c:l('cms.commom.Yes')}" radiogroup="indCanceled" />
-                                                                            <radio id="rCanceledNo" label="${c:l('cms.commom.No')} " radiogroup="indCanceled" />
+                                                                            <radio id="rConfirmationYes" label="${c:l('cms.commom.Yes')}" radiogroup="indConfirmation" />
+                                                                            <radio id="rConfirmationNo" label="${c:l('cms.commom.No')} " radiogroup="indConfirmation" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>

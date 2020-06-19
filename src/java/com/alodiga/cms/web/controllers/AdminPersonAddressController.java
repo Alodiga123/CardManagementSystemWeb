@@ -45,6 +45,8 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Textbox txtNameStreet;
     private Textbox txtNameEdification;
     private Textbox txtTower;
+    private Textbox txtLine1;
+    private Textbox txtLine2;
     private Intbox txtFloor;
     private Textbox txtEmail;
     private Combobox cmbCountry;
@@ -128,15 +130,35 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
 
     private void loadFields(PersonHasAddress personHasAddress) {
         try {
-            txtUbanization.setValue(personHasAddress.getAddressId().getUrbanization());
-            txtNameStreet.setValue(personHasAddress.getAddressId().getNameStreet());
-            txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
-            txtTower.setValue(personHasAddress.getAddressId().getTower());
-            txtFloor.setValue(personHasAddress.getAddressId().getFloor());
-            if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
-                rAddressDeliveryYes.setChecked(true);
-            } else {
-                rAddressDeliveryNo.setChecked(true);
+            if (personHasAddress.getAddressId().getUrbanization() != null) {
+                txtUbanization.setValue(personHasAddress.getAddressId().getUrbanization());
+            }
+            if (personHasAddress.getAddressId().getNameStreet() != null) {
+                txtNameStreet.setValue(personHasAddress.getAddressId().getNameStreet());
+            }
+            if (personHasAddress.getAddressId().getNameEdification() != null) {
+                txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
+            }
+            if (personHasAddress.getAddressId().getTower() != null) {
+                txtTower.setValue(personHasAddress.getAddressId().getTower());
+            }
+            if (personHasAddress.getAddressId().getFloor() != null) {
+                txtFloor.setValue(personHasAddress.getAddressId().getFloor());
+            }
+
+            if (personHasAddress.getAddressId().getIndAddressDelivery() != null) {
+                if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
+                    rAddressDeliveryYes.setChecked(true);
+                } else {
+                    rAddressDeliveryNo.setChecked(true);
+                }
+            }
+
+            if (personHasAddress.getAddressId().getAddressLine1() != null) {
+                txtLine1.setValue(personHasAddress.getAddressId().getAddressLine1());
+            }
+            if (personHasAddress.getAddressId().getAddressLine2() != null) {
+                txtLine2.setValue(personHasAddress.getAddressId().getAddressLine2());
             }
         } catch (Exception ex) {
             showError(ex);
@@ -273,8 +295,12 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             case WebConstants.EVENT_EDIT:
                 loadFields(personHasAddressParam);
                 loadCmbCountry(eventType);
-                loadCmbStreetType(eventType);
-                loadCmbEdificationType(eventType);
+                if (personHasAddressParam.getAddressId().getStreetTypeId() != null) {
+                    loadCmbStreetType(eventType);
+                }
+                if (personHasAddressParam.getAddressId().getEdificationTypeId() != null) {
+                    loadCmbEdificationType(eventType);
+                }
                 loadCmbAddressTypes(eventType);
                 onChange$cmbCountry();
                 onChange$cmbState();
