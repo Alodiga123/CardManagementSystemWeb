@@ -19,6 +19,7 @@ import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ import org.zkoss.zul.Window;
 public class AdminRequestCollectionsController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Request requestParam;
     private CollectionsRequest collectionsRequestParam;
     private RequestHasCollectionsRequest requestHasCollectionsRequestParam;
@@ -46,7 +49,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     private Radio rApprovedYes;
     private Radio rApprovedNo;
     private Label lblInfo;
-    private Label txtNumber;
+//    private Label txtNumber;
     private Label txtPrograms;
     private Label txtProductType;
     private Label txtCollectionType;
@@ -118,9 +121,15 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     public void clearFields() {
     }
 
-    private void loadField(Request request) {
+    private void loadField(Request requestData) {
         try {
-            txtNumber.setValue(request.getRequestNumber());
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
         } catch (Exception ex) {
             showError(ex);
         }
