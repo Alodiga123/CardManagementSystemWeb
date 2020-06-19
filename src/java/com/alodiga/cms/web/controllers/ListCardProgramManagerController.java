@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -10,13 +11,16 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -33,6 +37,7 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
     private UtilsEJB utilsEJB = null;
     private List<LegalPerson> legalperson = null;
     private User currentUser;
+    private PersonEJB personEJB = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -54,6 +59,7 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
             adminPage = "TabCardProgramManager.zul";
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(legalperson);
         } catch (Exception ex) {
@@ -101,9 +107,11 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
     public void getData() {
         legalperson = new ArrayList<LegalPerson>();
         try {
-            request.setFirst(0);
-            request.setLimit(null);
-            legalperson = utilsEJB.getLegalPersons(request);
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.CLASSIFICATION_CARD_MANAGEMENT_PROGRAM);
+            request1.setParams(params);
+            legalperson = personEJB.getLegalPersonByPersonClassification(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
