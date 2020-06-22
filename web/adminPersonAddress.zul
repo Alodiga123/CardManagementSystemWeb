@@ -78,11 +78,15 @@
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.crud.address.addressTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.address.line1')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbAddressTypes" width="250px" mold="rounded" readonly="true"/>
-                                                            <cell colspan="2">
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.address.line1')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="3">
                                                                 <textbox id="txtLine1" multiline="true" rows="1" width="580px" maxlength="250"/>
                                                             </cell>
                                                         </row>
@@ -90,7 +94,7 @@
                                                             <label value="${c:l('cms.crud.address.line2')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <cell colspan="2">
+                                                            <cell colspan="3">
                                                                 <textbox id="txtLine2" multiline="true" rows="1" width="580px" maxlength="250"/>
                                                             </cell>
                                                         </row>
