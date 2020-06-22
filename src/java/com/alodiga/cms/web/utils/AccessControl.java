@@ -5,6 +5,8 @@ import com.alodiga.cms.commons.ejb.AccessControlEJB;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Language;
+import com.cms.commons.models.User;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -30,10 +32,7 @@ public class AccessControl {
     static Map<String, Object> params = null;
     static EJBRequest request = null;
 
-    private static boolean needUpdate = true;
-
-    
-   
+    private static boolean needUpdate = true;   
 
     public static boolean hasPermission(String entity, String action) {
         HashMap<String, List<String>> permissionsMap = (HashMap<String, List<String>>) Sessions.getCurrent().getAttribute(WebConstants.SESSION_PERMISSION);
@@ -45,6 +44,19 @@ public class AccessControl {
         }
         return false;
     }
+    
+    public static Long getLanguage() {
+        Locale locale = Locales.getCurrent();
+        if (locale.getLanguage().equals("es")) {
+            return Language.SPANISH;
+        } else {
+            return Language.ENGLISH;
+        }
+    }
+    
+    public static User loadCurrentUser() throws RegisterNotFoundException, GeneralException, Exception {
+        return (User) Sessions.getCurrent().getAttribute(WebConstants.SESSION_USER);
+    }
 
     public static void logout() {
         Sessions.getCurrent().removeAttribute(WebConstants.SESSION_ACCOUNT);
@@ -52,6 +64,4 @@ public class AccessControl {
         Sessions.getCurrent().removeAttribute(WebConstants.SESSION_PERMISSION);
         Sessions.getCurrent().removeAttribute(WebConstants.SESSION_USER);
     }
-
-   
 }
