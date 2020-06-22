@@ -20,6 +20,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,8 @@ import org.zkoss.zul.Toolbarbutton;
 public class AdminDeliveryRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Label txtStatus = null;
     private Combobox cmbShippingCompany;
     private Combobox cmbPrograms;
@@ -111,6 +114,14 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
 
     private void loadFields(DeliveryRequest deliveryRequest) {
         try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (deliveryRequest.getRequestNumber() != null) {
+                lblRequestNumber.setValue(deliveryRequest.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(deliveryRequest.getRequestDate()));
+            }
+            
             txtStatus.setValue(deliveryRequest.getStatusDeliveryRequestId().getDescription());
             dtbRequestDate.setValue(deliveryRequest.getRequestDate());
             
@@ -165,6 +176,8 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
             this.showMessage("sp.common.save.success", false, null);
             
             deliveryRequestCard = deliveryRequest;
+            loadFields(deliveryRequestCard);
+            
             btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
@@ -190,6 +203,7 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
                 txtStatus.setVisible(false);
                 deliveryRequestCard = deliveryRequestParam;
                 loadFields(deliveryRequestParam);
+                loadFields(deliveryRequestParam);
                 loadCmbPrograms(eventType);
                 loadCmbShippingCompany(eventType);
                 loadCmbStatusDeliveryRequest(eventType);
@@ -197,6 +211,7 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
             case WebConstants.EVENT_VIEW:
                 txtStatus.setVisible(false);
                 deliveryRequestCard = deliveryRequestParam;
+                loadFields(deliveryRequestParam);
                 loadFields(deliveryRequestParam);
                 loadCmbPrograms(eventType);
                 loadCmbShippingCompany(eventType);

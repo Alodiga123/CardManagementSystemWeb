@@ -27,6 +27,24 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('sp.common.data.request')}"/> 
+                                                        <row>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblRequestNumber" value="" width="200px" style="color:#837E76;"/>
+                                                            <label id="lblRequestDate" value="" width="200px" style="color:#837E76;"/>
+                                                        </row>
+                                                    </rows> 
+                                                </grid>
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -41,9 +59,9 @@
                                                             <label value="${c:l('cms.common.deliveryRequest.descriptionProgram')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="dtbRequestDate" width="270px"/>
-                                                            <combobox id="cmbShippingCompany" width="280px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbPrograms" width="280px" mold="rounded" readonly="true"/>
+                                                            <datebox id="dtbRequestDate" width="250px"/>
+                                                            <combobox id="cmbShippingCompany" width="250px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbPrograms" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.delivery.status')}" sclass="lblbold"/>
