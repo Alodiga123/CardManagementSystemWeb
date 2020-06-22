@@ -23,6 +23,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 
@@ -40,6 +42,8 @@ import org.zkoss.zul.Toolbarbutton;
 public class AdminRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Request requestParam;
     public static Request requestCard = null;
     private UtilsEJB utilsEJB = null;
@@ -171,7 +175,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbPersonType(eventType, country.getId());
     }
-    
+
     public void onChange$cmbProductType() {
         cmbPrograms.setVisible(true);
         ProductType productType = (ProductType) cmbProductType.getSelectedItem().getValue();
@@ -179,7 +183,21 @@ public class AdminRequestController extends GenericAbstractAdminController {
     }
 
     public void clearFields() {
-        
+
+    }
+
+    private void loadFields(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     public void blockFields() {
@@ -214,9 +232,8 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
                 numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
                 dateRequest = new Date();
-            }          
+            }
 
-            
             //colocar estatus de solicitud "EN PROCESO"
             request1 = new EJBRequest();
             request1.setParam(Constants.STATUS_REQUEST_IN_PROCESS);
@@ -238,6 +255,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
+            
+            loadFields(requestParam);
+            
             tabMain.setDisabled(false);
             requestCard = request;
         } catch (Exception ex) {
@@ -262,6 +282,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 requestCard = requestParam;
+                loadFields(requestParam);
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbRequestType(eventType);
@@ -270,6 +291,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_VIEW:
                 requestCard = requestParam;
+                loadFields(requestParam);
                 loadCmbCountry(eventType);
                 loadCmbProductType(eventType);
                 loadCmbRequestType(eventType);
@@ -353,7 +375,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         } else {
             params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, requestParam.getPersonTypeId().getOriginApplicationId().getId());
-        }        
+        }
         if (evenInteger == 1) {
             params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, indNaturalPerson);
         } else {

@@ -100,11 +100,14 @@ public class AdminMainMenuController extends GenericForwardComposer {
                         case 2://Secutiry Management
                             loadBasicTableManagementGroup(pg);
                             break;
-                        case 3://Configurations Management
-                            //loadConfigurationsManagementGroup(pg);
+                        case 3://Programs Management
+                            loadProgramsManagementGroup(pg);
                             break;
-                        case 4://Configurations Management
-                            //loadConfigurationsPaymentGroup(pg);
+                        case 4://Card Request
+                            loadCardRequestGroup(pg);
+                            break;
+                        case 5://Products Management
+                            loadProductsManagementGroup(pg);
                             break;
                         default:
                             break;
@@ -121,11 +124,34 @@ public class AdminMainMenuController extends GenericForwardComposer {
         Listgroup listgroup = createListGroup(permissionGroup);
         createCell(Constants.LIST_COUNTRY, "listCountry.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_CURRENCY, "listCurrency.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CLASSIFICATION_PERSON, "listClassificationPerson.zul", permissionGroup, listgroup);
     }
     
     private void loadSecurityManagementGroup(PermissionGroup permissionGroup) {
         Listgroup listgroup = createListGroup(permissionGroup);
         createCell(Constants.LIST_USER, "listUser.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_PASSWORD_CHANGE_REQUEST, "listPasswordChangeRequest.zul", permissionGroup, listgroup);    
+    }
+    
+    private void loadProgramsManagementGroup(PermissionGroup permissionGroup) {
+        Listgroup listgroup = createListGroup(permissionGroup);
+        createCell(Constants.LIST_ISSUER, "listIssuer.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CARD_PROGRAM_MANAGER, "listCardProgramManager.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_PROGRAM, "listProgram.zul", permissionGroup, listgroup);
+        
+    }
+    
+    private void loadCardRequestGroup(PermissionGroup permissionGroup) {
+        Listgroup listgroup = createListGroup(permissionGroup);
+        createCell(Constants.LIST_REQUEST_TYPE, "listRequestType.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_COLLECTIONS_REQUEST, "listCollectionRequest.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_COLLECTION_TYPE, "listCollectionTypes.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CARD_REQUEST, "listRequest.zul", permissionGroup, listgroup);     
+    }
+    
+    private void loadProductsManagementGroup(PermissionGroup permissionGroup) {
+        Listgroup listgroup = createListGroup(permissionGroup);
+        createCell(Constants.LIST_PRODUCTS_MANAGEMENT, "listProduct.zul", permissionGroup, listgroup);    
     }
     
     private void createCell(Long permissionId, String view, PermissionGroup permissionGroup, Listgroup listgroup) {
