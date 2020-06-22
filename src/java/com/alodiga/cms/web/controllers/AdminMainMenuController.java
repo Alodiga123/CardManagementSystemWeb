@@ -130,6 +130,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
     private void loadSecurityManagementGroup(PermissionGroup permissionGroup) {
         Listgroup listgroup = createListGroup(permissionGroup);
         createCell(Constants.LIST_USER, "listUser.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_PASSWORD_CHANGE_REQUEST, "listPasswordChangeRequest.zul", permissionGroup, listgroup);    
     }
     
     private void loadProgramsManagementGroup(PermissionGroup permissionGroup) {
