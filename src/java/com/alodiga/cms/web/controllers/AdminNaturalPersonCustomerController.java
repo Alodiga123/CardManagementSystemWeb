@@ -14,6 +14,7 @@ import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.Profession;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -66,7 +67,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-//        naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
         if (eventType == WebConstants.EVENT_ADD) {
             naturalCustomerParam = null;
         } else {
@@ -332,6 +332,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, naturalCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
 

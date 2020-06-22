@@ -254,6 +254,35 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             } else {
                 address.setUpdateDate(new Timestamp(new Date().getTime()));
             }
+
+            if ((txtTower.getText() != null) && (txtNameEdification.getText() != null)) {
+                StringBuilder linea1 = new StringBuilder((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(" ");
+                linea1.append(txtNameStreet.getText());
+                linea1.append(" ");
+                linea1.append(txtUbanization.getText());
+                linea1.append(" ");
+                linea1.append((((EdificationType) cmbEdificationType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(" ");
+                linea1.append(txtNameEdification.getText());
+                linea1.append(" ");
+                linea1.append(txtTower.getText());
+                linea1.append(" ");
+                linea1.append(txtFloor.getText());
+
+                StringBuilder linea2 = new StringBuilder((((Country) cmbCountry.getSelectedItem().getValue()).getName()));
+                linea2.append(" ");
+                linea2.append((((City) cmbCity.getSelectedItem().getValue()).getName()));
+                linea2.append(" ");
+                linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getName()));
+                
+                address.setAddressLine1(linea1.toString());
+                address.setAddressLine2(linea2.toString());
+            } else {
+                address.setAddressLine1(txtLine1.getText());
+                address.setAddressLine2(txtLine2.getText());
+            }
+
             address = utilsEJB.saveAddress(address);
             addressParent = address;
 

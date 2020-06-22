@@ -109,6 +109,12 @@ public class AdminMainMenuController extends GenericForwardComposer {
                         case 5://Products Management
                             loadProductsManagementGroup(pg);
                             break;
+                        case 6://Customer Management
+                            loadCustomerManagementGroup(pg);
+                            break;
+                        case 7://Cards Management
+                            loadCardsManagementGroup(pg);
+                            break;
                         default:
                             break;
                     }
@@ -153,6 +159,17 @@ public class AdminMainMenuController extends GenericForwardComposer {
         Listgroup listgroup = createListGroup(permissionGroup);
         createCell(Constants.LIST_PRODUCTS_MANAGEMENT, "listProduct.zul", permissionGroup, listgroup);    
     }
+    
+    private void loadCustomerManagementGroup(PermissionGroup permissionGroup) {
+        Listgroup listgroup = createListGroup(permissionGroup);
+        createCell(Constants.LIST_CUSTOMER_MANAGEMENT, "listCustomer.zul", permissionGroup, listgroup);    
+    } 
+    
+    private void loadCardsManagementGroup(PermissionGroup permissionGroup) {
+        Listgroup listgroup = createListGroup(permissionGroup);
+        createCell(Constants.CARD_ASSIGMENT, "listCardAssigment.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CARD_MANAGEMENT, "listCardManager.zul", permissionGroup, listgroup);    
+    } 
     
     private void createCell(Long permissionId, String view, PermissionGroup permissionGroup, Listgroup listgroup) {
         Permission permission = loadPermission(permissionId);
