@@ -13,6 +13,7 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -29,7 +30,8 @@ import org.zkoss.zul.Window;
 public class AdminCardInventoryControllers extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Label txtNumber;
+    private Label lblNumber;
+    private Label lblDeliveryRequestDate;
     private Intbox intCardNumberAttemps;
     private Textbox txtReceiverFirstName;
     private Textbox txtReceiverLastName;
@@ -79,7 +81,13 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
 
     private void loadDelivery(DeliveryRequest deliveryRequest) {
         try {
-            txtNumber.setValue(deliveryRequest.getRequestNumber());
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            if (deliveryRequest.getRequestNumber() != null) {
+                lblNumber.setValue(deliveryRequest.getRequestNumber());
+                lblDeliveryRequestDate.setValue(simpleDateFormat.format(deliveryRequest.getRequestDate()));
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -150,15 +158,14 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_DELIVERED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
-                updateStatusCardInventory(card.getCardId(), cardStatus);
             } else {
                 //se actualiza el estatus de la tarjeta a NO ENTREGADA
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_NOT_DELIVERED);
                 cardStatus = utilsEJB.loadCardStatus(request1);
-                updateStatusCardInventory(card.getCardId(), cardStatus);
             }
-
+            
+            updateStatusCardInventory(card.getCardId(), cardStatus);
             saveCardInvetory(card);
 
             this.showMessage("sp.common.save.success", false, null);
@@ -197,7 +204,11 @@ public class AdminCardInventoryControllers extends GenericAbstractAdminControlle
             card.setReceiverLastName(txtReceiverLastName.getValue());
             card.setDeliveryObservations(txtObservations.getValue());
             card.setIndDelivery(indDelivery);
-            card.setUpdateDate(new Timestamp(new Date().getTime()));
+            if (eventType == WebConstants.EVENT_ADD) {
+                card.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                card.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
             card = cardEJB.saveDeliveryRequestHasCard(card);
 
         } catch (Exception ex) {

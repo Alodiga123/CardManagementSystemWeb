@@ -27,6 +27,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
@@ -46,6 +48,8 @@ import org.zkoss.zul.Tabbox;
 public class AdminCardComplementariesController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Textbox txtIdentificationNumber;
     private Textbox txtIdentificationNumberOld;
     private Textbox txtFullName;
@@ -164,6 +168,20 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 }
             }
             btnSave.setVisible(true);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    private void loadFieldR(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -388,6 +406,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFieldR(adminRequest.getRequest());
                 loadFields(applicantNaturalPersonParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -396,6 +415,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 loadCmbRelationship(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                loadFieldR(adminRequest.getRequest());
                 loadFields(applicantNaturalPersonParam);
                 txtIdentificationNumber.setDisabled(true);
                 txtDueDateDocumentIdentification.setDisabled(true);
@@ -412,6 +432,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 loadCmbRelationship(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);

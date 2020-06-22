@@ -13,12 +13,14 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.models.PlasticManufacturer;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.Request;
 import com.cms.commons.models.Sequences;
 import com.cms.commons.models.StatusPlasticCustomizingRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,8 @@ import org.zkoss.zul.Tab;
 public class AdminPlasticRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Label txtStatus = null;
     private Combobox cmbPlasticManufacturer;
     private Combobox cmbPrograms;
@@ -123,6 +127,14 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
 
     private void loadFields(PlasticCustomizingRequest plasticCustomizingRequest) {
         try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (plasticCustomizingRequest.getRequestNumber() != null) {
+                lblRequestNumber.setValue(plasticCustomizingRequest.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(plasticCustomizingRequest.getRequestDate()));
+            }
+            
             txtStatus.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());
             dtbRequestDate.setValue(plasticCustomizingRequest.getRequestDate());
         } catch (Exception ex) {
@@ -173,7 +185,10 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             }
             plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);         
             this.showMessage("sp.common.save.success", false, null);
+            
             plasticCustomer = plasticCustomizingRequest;
+            loadFields(plasticCustomer);
+            
             btnSave.setVisible(false);
             tabPlasticCard.setDisabled(false);
             tabFile.setDisabled(false);
