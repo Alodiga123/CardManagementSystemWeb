@@ -4,6 +4,7 @@ import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -16,6 +17,8 @@ import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -183,9 +186,31 @@ public class ListRequestController extends GenericAbstractListController<Request
         txtRequestNumber.setText("");
     }
 
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadList(getFilterList(txtRequestNumber.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
     @Override
     public List<Request> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Request> requestaux = new ArrayList<Request>();
+        Request request;
+        try {
+            if (filter != null && !filter.equals("")) {
+                request = requestEJB.searchCardRequest(filter);
+                requestaux.add(request);
+            } else {
+                return requests;
+            }
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListRequestController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return requestaux;
     }
 
     @Override

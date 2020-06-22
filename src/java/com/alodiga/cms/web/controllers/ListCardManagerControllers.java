@@ -21,6 +21,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,7 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
 
     public void getData(Long programId) {
         try {
+            card = new ArrayList<Card>();
             EJBRequest prog = new EJBRequest();
             Map params = new HashMap();
             params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
@@ -112,8 +114,7 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
             showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
-        }
-
+        } 
     }
 
     public void onClick$btnAdd() throws InterruptedException {
