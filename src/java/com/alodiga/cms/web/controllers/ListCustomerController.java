@@ -84,16 +84,15 @@ public class ListCustomerController extends GenericAbstractListController<Person
                 for (Person person : list) {
                     item = new Listitem();
                     item.setValue(person);
-                    String pattern = "yyyy-MM-dd";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(person.getCountryId().getName()));
                     item.appendChild(new Listcell(person.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(person.getCreateDate())));
                     if (person.getPersonTypeId().getIndNaturalPerson() == true) {
+                        item.appendChild(new Listcell(person.getNaturalCustomer().getIdentificationNumber()));
                         StringBuilder customerName = new StringBuilder(person.getNaturalCustomer().getFirstNames());
                         customerName.append(" ");
                         customerName.append(person.getNaturalCustomer().getLastNames());
                         item.appendChild(new Listcell(customerName.toString()));
+                        item.appendChild(new Listcell(person.getNaturalCustomer().getStatusCustomerId().getDescription()));
                         adminPage = "TabNaturalPersonCustommer.zul";
                         EJBRequest request1 = new EJBRequest();
                         Map params = new HashMap();
@@ -107,8 +106,10 @@ public class ListCustomerController extends GenericAbstractListController<Person
                         item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, naturalCustomer) : new Listcell());
                         item.appendChild(permissionRead ? new ListcellViewButton(adminPage, naturalCustomer) : new Listcell());
                     } else {
+                        item.appendChild(new Listcell(person.getLegalCustomer().getIdentificationNumber()));
                         customerNameLegal = person.getLegalCustomer().getEnterpriseName();
                         item.appendChild(new Listcell(customerNameLegal));
+                        item.appendChild(new Listcell(person.getLegalCustomer().getStatusCustomerId().getDescription()));
                         adminPage = "TabLegalPersonCustommer.zul";
 
                         EJBRequest request1 = new EJBRequest();
