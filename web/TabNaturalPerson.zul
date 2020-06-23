@@ -15,7 +15,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="1200px" align="left" height="800px">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
@@ -44,7 +44,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <tabbox id="tbxPurchaseTabs" width="900px" height="500px">
+                                                <tabbox id="tbxPurchaseTabs" width="900px" height="600px">
                                                     <tabs>
                                                         <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}"/>
                                                         <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}"/>

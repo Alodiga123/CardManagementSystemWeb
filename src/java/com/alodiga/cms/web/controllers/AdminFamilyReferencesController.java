@@ -6,20 +6,24 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class AdminFamilyReferencesController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
     private Textbox txtCity;
@@ -27,6 +31,8 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     private Textbox txtLocalPhone;
     private PersonEJB personEJB = null;
     private FamilyReferences familyReferencesParam;
+    private AdminRequestController adminRequest = null;
+    private Request requestCard;
     private Button btnSave;
     private Integer eventType;
     public Window winAdminFamilyReferences;
@@ -36,7 +42,11 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        adminRequest = new AdminRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        if (adminRequest.getRequest() != null) {
+            requestCard = adminRequest.getRequest();
+        }
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 familyReferencesParam = (FamilyReferences) Sessions.getCurrent().getAttribute("object");
@@ -69,6 +79,20 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
         txtLocalPhone.setRawValue(null);
         txtCellPhone.setRawValue(null);
         txtFullLastName.setRawValue(null);
+    }
+    
+    private void loadFieldR(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void loadFields(FamilyReferences familyReferences) {
@@ -132,7 +156,6 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
             //Solicitante
             if (optionMenu == 1) {
                 AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-//                naturalPerson = familyReferencesParam.getApplicantNaturalPersonId();
                 if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
                     naturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
                 }
@@ -169,7 +192,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
 
             familyReferencesParam = familyReferences;
             this.showMessage("sp.common.save.success", false, null);
-            
+
             btnSave.setVisible(false);
             EventQueues.lookup("updateFamilyReferences", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
@@ -199,13 +222,16 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFieldR(requestCard);
                 loadFields(familyReferencesParam);
                 break;
             case WebConstants.EVENT_VIEW:
+                loadFieldR(requestCard);
                 loadFields(familyReferencesParam);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
+                loadFieldR(requestCard);
                 break;
             default:
                 break;

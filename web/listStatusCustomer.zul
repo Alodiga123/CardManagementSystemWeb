@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCustomerController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListStatusCustomerController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -25,35 +25,26 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.customer.list')}" />
+                                                |
+                                                <toolbarbutton label="${c:l('cms.common.statusCustomer.list')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <!--Filters for Searching-->
                                             <vlayout>
-                                                <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
-                                                    <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
-                                                </hlayout>
                                                 <hlayout>
-                                                    <!--Filters button-->
-                                                    <div align="right" width="900px">
-                                                        <button id="btnSearch" label="${c:l('sp.common.actions.search')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.search.filter.tooltip')}"/>
-                                                        <button id="btnClear" label="${c:l('sp.common.actions.cancel')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.cancel.filter.tooltip')}"/>
+                                                    <!--Add button-->
+                                                    <div align="left" width="495px">
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
                                                 </hlayout>
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="15" height="480px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="880px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionPersonType')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.customer.identificationNumber')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.customer.name')}" width="255px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.customer.status')}" width="120px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.statusCustomer')}" width="790px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
@@ -74,7 +65,7 @@
             </center>
             <south border="none" size="40px">
                 <include src="adminFooter.zul"/>
-            </south>
+            </south>  
         </borderlayout>
     </window>
 </zk>

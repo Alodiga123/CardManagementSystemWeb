@@ -34,9 +34,7 @@ public class AdminCardCanceledControllers extends GenericAbstractAdminController
     private Label lblPhone;
     private CardEJB cardEJB = null;
     private PersonEJB personEJB = null;
-//    private Card cardParam;
     private Card cardCanceledParam;
-    public static Card cardCanceledParent = null;
     private List<NewCardIssueRequest> newCardIssueRequestList = null;
     private List<PhonePerson> phonePersonList = null;
     private Button btnSave;
@@ -62,15 +60,10 @@ public class AdminCardCanceledControllers extends GenericAbstractAdminController
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             
-            newCardIssueRequestList = cardEJB.createCardNewCardIssueRequest(cardCanceledParam);
             
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-
-    public Card getCardCanceled() {
-        return cardCanceledParent;
     }
 
     public void clearFields() {
@@ -94,69 +87,32 @@ public class AdminCardCanceledControllers extends GenericAbstractAdminController
             lblEmail.setValue(cardCanceled.getPersonCustomerId().getEmail());
             if (cardCanceled.getPersonCustomerId().getPersonTypeId().getIndNaturalPerson() == true) {
                 lblIdentificationCardHolder.setValue(cardCanceled.getPersonCustomerId().getNaturalCustomer().getIdentificationNumber());
-
-                params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getNaturalCustomer().getPersonId().getId());
-                request.setParams(params);
-                phonePersonList = personEJB.getPhoneByPerson(request);
+                if (personEJB.havePhonesByPerson(cardCanceled.getPersonCustomerId().getNaturalCustomer().getPersonId().getId()) > 0) {
+                    params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getNaturalCustomer().getPersonId().getId());
+                    request.setParams(params);
+                    phonePersonList = personEJB.getPhoneByPerson(request);
+                }                
             } else {
                 lblIdentificationCardHolder.setValue(cardCanceled.getPersonCustomerId().getLegalCustomer().getIdentificationNumber());
-
-                params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getLegalCustomer().getPersonId().getId());
-                request.setParams(params);
-                phonePersonList = personEJB.getPhoneByPerson(request);
+                if (personEJB.havePhonesByPerson(cardCanceled.getPersonCustomerId().getLegalCustomer().getPersonId().getId()) > 0) {
+                    params.put(Constants.PERSON_KEY, cardCanceled.getPersonCustomerId().getLegalCustomer().getPersonId().getId());
+                    request.setParams(params);
+                    phonePersonList = personEJB.getPhoneByPerson(request);
+                }                
             }
-
             if (phonePersonList != null) {
                 for (PhonePerson p : phonePersonList) {
                     lblPhone.setValue(p.getNumberPhone());
                 }
             }
-
-            cardCanceledParent = cardCanceled;
-            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        btnSave.setVisible(false);
+
     }
-
-    private void saveCardRenewal(Card _cardRenawal) {
-        try {
-            Card cardCanceled = null;
-
-            if (_cardRenawal != null) {
-                cardCanceled = _cardRenawal;
-            } else {//New country
-                cardCanceled = new Card();
-            }
-
-//            cardCanceled.setObservations(txtObservations.getText());
-            cardCanceled = cardEJB.saveCard(cardCanceled);
-
-            this.showMessage("sp.common.save.success", false, null);
-
-            btnSave.setVisible(false);
-        } catch (Exception ex) {
-            showError(ex);
-        }
-    }
-
-//    public void onClick$btnSave() {
-//        switch (eventType) {
-//            case WebConstants.EVENT_ADD:
-//                saveCardRenewal(null);
-//                break;
-//            case WebConstants.EVENT_EDIT:
-//                saveCardRenewal(cardCanceledParam);
-////                    cardRenewalRequestHasCardParent = cardCanceledParam;
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 
     public void loadData() {
         switch (eventType) {

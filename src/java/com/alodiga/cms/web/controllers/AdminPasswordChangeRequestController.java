@@ -61,7 +61,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     private User user;
-    int attempts = 0;
+    private String numberRequest = "";
+    private int attempts = 0;
+    
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -80,20 +82,17 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     public void initialize() {
         super.initialize();
         switch (eventType) {
-//            case WebConstants.EVENT_EDIT:
-//                tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.edit"));
-//                break;
             case WebConstants.EVENT_VIEW:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.view"));
                 break;
             case WebConstants.EVENT_ADD:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.add"));
+                rApprovedYes.setVisible(false);
+                rApprovedNo.setVisible(false);
                 break;
             default:
                 break;
         }
-        rApprovedYes.setVisible(false);
-        rApprovedNo.setVisible(false);
         try {
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
@@ -159,6 +158,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         txtNewPassword.setReadonly(true);
         txtRepeatNewPassword.setReadonly(true);
         btnSave.setVisible(false);
+        dtbRequestDate.setDisabled(true);
     }
     
     public Boolean validateEmpty() {
@@ -180,7 +180,6 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     private void savePasswordChangeRequest(PasswordChangeRequest _passwordChangeRequest) throws RegisterNotFoundException, NullParameterException, GeneralException, EmptyListException {
         boolean indApproved = true;
         EJBRequest request1 = new EJBRequest();
-        String numberRequest = "";
         Date dateRequest = null;
         List<User> userList = null;
         PasswordChangeRequest passwordChangeRequest = null;
@@ -197,24 +196,20 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             } else {
                 indApproved = false;
             }
-            
-             //Obtiene el numero de secuencia para Solicitud de Cambio de Contraseña
-             Map params = new HashMap();
-             params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_RENEWAL_REQUEST);
-             request1.setParams(params);
-             List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
-             numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
-             dateRequest = new Date();
-             lblRequestNumber.setValue(numberRequest);
                    
             //Valida si la contraseña actual es correcta
-            params = new HashMap();
+            Map params = new HashMap();
             params.put(Constants.CURRENT_PASSWORD, txtCurrentPassword.getValue());
             params.put(Constants.USER_KEY,user.getId());
             request1.setParams(params);
             userList = personEJB.validatePassword(request1);  
             
             if (userList.size() > 0) {
+                //Obtiene el numero de secuencia para Solicitud de Cambio de Contraseña
+                numberRequest = generateNumberSequence();
+                dateRequest = new Date();
+                lblRequestNumber.setValue(numberRequest);
+             
                 //Se aprueba la solicitud automaticamente
                 indApproved = true;                
                 //Se crea el objeto passwordChangeRequest
@@ -253,6 +248,11 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 }
             }
             if (attempts == 3) {
+                //Obtiene el numero de secuencia para Solicitud de Cambio de Contraseña
+                numberRequest = generateNumberSequence();
+                dateRequest = new Date();
+                lblRequestNumber.setValue(numberRequest);
+                 
                 //Se rechaza la solicitud automaticamente
                 indApproved = false;
                 //Se crea el objeto passwordChangeRequest
@@ -277,7 +277,27 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             }
                     
         }
-    }  
+    } 
+    
+    public String generateNumberSequence() {
+        try {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_RENEWAL_REQUEST);
+            request1.setParams(params);
+            List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
+            numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            showError(ex);
+        }        
+        return numberRequest;
+    }
     
     public void createPasswordChangeRequest(PasswordChangeRequest passwordChangeRequest, String numberRequest, boolean indApproved) {
         passwordChangeRequest.setRequestNumber(numberRequest);
@@ -289,16 +309,13 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         passwordChangeRequest.setIndApproved(indApproved);
         passwordChangeRequest.setCreateDate(new Timestamp(new Date().getTime()));
     }
-      
+    
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException, EmptyListException {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     savePasswordChangeRequest(null);
                     break;
-//                case WebConstants.EVENT_EDIT:
-//                    savePasswordChangeRequest(passwordChangeRequestParam);
-//                    break;
                 default:
                     break;
             }
@@ -311,12 +328,6 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     
     public void loadData() {
         switch (eventType) {
-//            case WebConstants.EVENT_EDIT:
-//                loadFields(passwordChangeRequestParam);
-//                txtCurrentPassword.setReadonly(true);
-//                txtNewPassword.setReadonly(true);
-//                txtRepeatNewPassword.setReadonly(true);
-//                break;
             case WebConstants.EVENT_VIEW:
                 loadFields(passwordChangeRequestParam);
                 txtCurrentPassword.setReadonly(true);

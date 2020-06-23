@@ -15,11 +15,13 @@ import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +32,15 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class AdminAdditionalCardsController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Textbox txtIdentificationNumber;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
@@ -96,6 +101,20 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         txtIdentificationNumber.setRawValue(null);
         txtPositionEnterprise.setRawValue(null);
         txtProposedLimit.setRawValue(null);
+    }
+    
+    private void loadFieldR(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void loadFields(CardRequestNaturalPerson cardRequestNaturalPerson) {
@@ -229,11 +248,13 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFieldR(adminRequest.getRequest());
                 loadFields(cardRequestNaturalPersonParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
+                loadFieldR(adminRequest.getRequest());
                 loadFields(cardRequestNaturalPersonParam);
                 txtIdentificationNumber.setDisabled(true);
                 txtFullName.setDisabled(true);
@@ -244,6 +265,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
+                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 break;
             default:

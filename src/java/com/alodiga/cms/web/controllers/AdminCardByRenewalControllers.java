@@ -33,7 +33,9 @@ import org.zkoss.zul.Window;
 public class AdminCardByRenewalControllers extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Label lblCardRequestRenewal;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
+//    private Label lblCardRequestRenewal;
     private Label lblCardNumber;
     private Label lblCardHolder;
     private Label lblCardProgram;
@@ -72,7 +74,7 @@ public class AdminCardByRenewalControllers extends GenericAbstractAdminControlle
             showError(ex);
         }
     }
-    
+
     public void onClick$btnBack() {
         winAdminCardByRenewal.detach();
     }
@@ -86,7 +88,8 @@ public class AdminCardByRenewalControllers extends GenericAbstractAdminControlle
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-            lblCardRequestRenewal.setValue(cardRenawal.getCardRenewalRequestId().getRequestNumber());
+            lblRequestNumber.setValue(cardRenawal.getCardRenewalRequestId().getRequestNumber());
+            lblRequestDate.setValue(simpleDateFormat.format(cardRenawal.getCardRenewalRequestId().getRequestDate()));
             lblCardNumber.setValue(cardRenawal.getCardId().getCardNumber());
             lblCardHolder.setValue(cardRenawal.getCardId().getCardHolder());
             lblCardProgram.setValue(cardRenawal.getCardId().getProgramId().getName());
@@ -133,20 +136,20 @@ public class AdminCardByRenewalControllers extends GenericAbstractAdminControlle
             } else {//New card
                 card = new Card();
             }
-            
+
             CardStatusHasUpdateReason cardStatusUpdateReason = (CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue();
             int status = cardStatusUpdateReason.getCardStatusId().getId();
-            
-            if (status == 9 || status == 10 ){
+
+            if (status == 9 || status == 10) {
                 indRenewal = false;
-            }else{
+            } else {
                 indRenewal = true;
             }
-            
+
             card.setUpdateDate(new Timestamp(new Date().getTime()));
             card.setIndRenewal(indRenewal);
             card.setCardStatusId(((CardStatusHasUpdateReason) cmbCardStatus.getSelectedItem().getValue()).getCardStatusId());
-            card.setStatusUpdateReasonId ((StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue());
+            card.setStatusUpdateReasonId((StatusUpdateReason) cmbStatusUpdateReason.getSelectedItem().getValue());
             card.setStatusUpdateReasonDate(new Timestamp(new Date().getTime()));
             card = cardEJB.saveCard(card);
 

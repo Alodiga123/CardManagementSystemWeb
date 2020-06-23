@@ -37,6 +37,7 @@ import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,8 +57,9 @@ import org.zkoss.zul.Textbox;
 public class AdminApplicationReviewController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-
-    private Label txtNumber;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
+//    private Label txtNumber;
     private Label txtCity;
     private Label txtAgency;
     private Label txtCommercialAssessorUserCode;
@@ -144,9 +146,15 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtObservations.setRawValue(null);
     }
     
-    private void loadField(Request request) {
+    private void loadField(Request requestData) {
         try {
-            txtNumber.setValue(request.getRequestNumber());
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -373,11 +381,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_REQUEST_REJECTED);
             StatusRequest statusRequestRejected = requestEJB.loadStatusRequest(request);
-            
+
             requestCard.setStatusRequestId(statusRequestRejected);
             request.setParam(Constants.REASON_REQUEST_REJECTED_BY_COLLECTIONS);
             ReasonRejectionRequest reasonRejectionRequest = requestEJB.loadReasonRejectionRequest(request);
-            
+
             requestCard.setReasonRejectionRequestId(reasonRejectionRequest);
             requestCard = requestEJB.saveRequest(requestCard);
             this.showMessage("cms.common.requestRejected", false, null);
