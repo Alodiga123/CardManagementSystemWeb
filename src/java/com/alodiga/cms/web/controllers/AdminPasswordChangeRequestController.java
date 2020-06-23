@@ -87,12 +87,12 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 break;
             case WebConstants.EVENT_ADD:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.password.change.request.add"));
+                rApprovedYes.setVisible(false);
+                rApprovedNo.setVisible(false);
                 break;
             default:
                 break;
         }
-        rApprovedYes.setVisible(false);
-        rApprovedNo.setVisible(false);
         try {
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
@@ -158,6 +158,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         txtNewPassword.setReadonly(true);
         txtRepeatNewPassword.setReadonly(true);
         btnSave.setVisible(false);
+        dtbRequestDate.setDisabled(true);
     }
     
     public Boolean validateEmpty() {
