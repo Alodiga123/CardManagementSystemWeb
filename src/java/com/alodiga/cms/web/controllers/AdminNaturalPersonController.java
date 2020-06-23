@@ -25,6 +25,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
@@ -42,6 +44,8 @@ import org.zkoss.zul.Tab;
 public class AdminNaturalPersonController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Textbox txtIdentificationNumber;
     private Textbox txtIdentificationNumberOld;
     private Textbox txtFullName;
@@ -184,6 +188,20 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtFamilyResponsibilities.setRawValue(null);
         txtEmail.setRawValue(null);
         txtPhoneNumber.setRawValue(null);
+    }
+
+    private void loadFieldR(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
@@ -394,6 +412,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 if (applicantNaturalPersonParam != null) {
                     applicantNaturalPersonParent = applicantNaturalPersonParam;
@@ -406,6 +425,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 if (applicantNaturalPersonParam != null) {
                     applicantNaturalPersonParent = applicantNaturalPersonParam;
@@ -419,6 +439,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                loadFieldR(adminRequest.getRequest());
                 applicantNaturalPersonParent = null;
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
