@@ -15,6 +15,7 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.EdificationType;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonHasAddress;
+import com.cms.commons.models.Request;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
@@ -22,6 +23,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -41,6 +44,8 @@ import org.zkoss.zul.Window;
 public class AdminPersonAddressController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Textbox txtUbanization;
     private Textbox txtNameStreet;
     private Textbox txtNameEdification;
@@ -66,6 +71,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Integer eventType;
     public Window winAdminNaturalPersonAddress;
     private AdminRequestController adminRequest = null;
+    private Request requestCard;
     private int optionMenu;
     Map params = null;
 
@@ -73,6 +79,9 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         AdminRequestController adminRequest = new AdminRequestController();
+        if (adminRequest != null) {
+            requestCard = adminRequest.getRequest();
+        }
         AdminNaturalPersonController adminPerson = new AdminNaturalPersonController();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -126,6 +135,21 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         txtTower.setRawValue(null);
         txtFloor.setRawValue(null);
         txtEmail.setRawValue(null);
+    }
+
+    private void loadFieldR(Request requestData) {
+        try {
+
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void loadFields(PersonHasAddress personHasAddress) {
@@ -275,7 +299,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 linea2.append((((City) cmbCity.getSelectedItem().getValue()).getName()));
                 linea2.append(" ");
                 linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getName()));
-                
+
                 address.setAddressLine1(linea1.toString());
                 address.setAddressLine2(linea2.toString());
             } else {
@@ -322,6 +346,9 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                if (requestCard != null) {
+                    loadFieldR(requestCard);
+                }
                 loadFields(personHasAddressParam);
                 loadCmbCountry(eventType);
                 if (personHasAddressParam.getAddressId().getStreetTypeId() != null) {
@@ -336,6 +363,9 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 onChange$cmbCity();
                 break;
             case WebConstants.EVENT_VIEW:
+                if (requestCard != null) {
+                    loadFieldR(requestCard);
+                }
                 loadFields(personHasAddressParam);
                 loadCmbCountry(eventType);
                 loadCmbStreetType(eventType);
@@ -347,6 +377,9 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
+                if (requestCard != null) {
+                    loadFieldR(requestCard);
+                }
                 loadCmbCountry(eventType);
                 loadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);

@@ -21,6 +21,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +31,15 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tab;
 
 public class AdminLegalPersonController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
+    private Label lblRequestNumber;
+    private Label lblRequestDate;
     private Textbox txtIdentificationNumber;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
@@ -156,6 +160,20 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         txtIdentificationNumber.setRawValue(null);
     }
 
+    private void loadFieldR(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
     public void loadFields(LegalPerson legalPerson) {
         try {
             txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
@@ -307,6 +325,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 if (legalPersonParam != null) {
                     legalPersonParent = legalPersonParam;
@@ -316,6 +335,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 if (legalPersonParam != null) {
                     legalPersonParent = legalPersonParam;
@@ -326,6 +346,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                loadFieldR(adminRequest.getRequest());
                 legalPersonParent = null;
                 loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
