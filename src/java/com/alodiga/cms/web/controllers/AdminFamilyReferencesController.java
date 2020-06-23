@@ -156,7 +156,6 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
             //Solicitante
             if (optionMenu == 1) {
                 AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-//                naturalPerson = familyReferencesParam.getApplicantNaturalPersonId();
                 if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
                     naturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
                 }
