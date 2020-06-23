@@ -46,6 +46,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Textbox txtIdentificationNumber;
     private Textbox txtIdentificationNumberOld;
     private Textbox txtFullName;
@@ -229,6 +230,21 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             txtPhoneNumber.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
             applicantNaturalPersonParent = applicantNaturalPerson;
             btnSave.setVisible(true);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    private void loadFieldsRequest(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -417,6 +433,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 if (applicantNaturalPersonParam != null) {
                     applicantNaturalPersonParent = applicantNaturalPersonParam;
                     applicant = applicantNaturalPersonParam.getPersonId();
+                    loadFieldsRequest(adminRequest.getRequest());
                     loadFields(applicantNaturalPersonParam);
                     onChange$cmbCountry();
                 }
@@ -430,6 +447,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 if (applicantNaturalPersonParam != null) {
                     applicantNaturalPersonParent = applicantNaturalPersonParam;
                     applicant = applicantNaturalPersonParam.getPersonId();
+                    loadFieldsRequest(adminRequest.getRequest());
                     loadFields(applicantNaturalPersonParam);
                     blockFields();
                     onChange$cmbCountry();
@@ -441,6 +459,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             case WebConstants.EVENT_ADD:
                 loadFieldR(adminRequest.getRequest());
                 applicantNaturalPersonParent = null;
+                loadFieldsRequest(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);

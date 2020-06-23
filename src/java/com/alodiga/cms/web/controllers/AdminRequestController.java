@@ -44,6 +44,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Request requestParam;
     public static Request requestCard = null;
     private UtilsEJB utilsEJB = null;
@@ -194,6 +195,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
             }
         } catch (Exception ex) {
             showError(ex);
@@ -232,12 +234,16 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
                 numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
                 dateRequest = new Date();
+                lblRequestNumber.setValue(numberRequest);
+                lblRequestDate.setValue(dateRequest.toString());
+                
             }
 
             //colocar estatus de solicitud "EN PROCESO"
             request1 = new EJBRequest();
             request1.setParam(Constants.STATUS_REQUEST_IN_PROCESS);
             StatusRequest statusRequest = requestEJB.loadStatusRequest(request1);
+            lblStatusRequest.setValue(statusRequest.getDescription());
 
             //Guarda la solicitud en la BD
             request.setRequestNumber(numberRequest);
@@ -255,6 +261,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
+            btnSave.setDisabled(true);
             
             loadFields(requestParam);
             
