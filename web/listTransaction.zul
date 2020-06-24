@@ -45,8 +45,8 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.transaction.code')}" width="175px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.transaction.code')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.description')}" width="240px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.indMonetaryType')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.indTransactionPurchase')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.indVariationRateChannel')}" width="150px" sort="auto"/>
