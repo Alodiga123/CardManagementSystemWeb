@@ -93,7 +93,7 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
         try {
 //            String name = !txtName.getText().isEmpty() ? txtName.getText() : null;
 //            loadList(utilsEJB.getSearchCurrency(name));
-            loadDataList(getFilterList(txtName.getText()));
+            loadList(getFilterList(txtName.getText()));
 
         } catch (Exception ex) {
             showError(ex);
