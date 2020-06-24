@@ -27,7 +27,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class AdminProjectAnnualVolumeController extends GenericAbstractAdminController {
@@ -45,16 +44,16 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     public Window winProjectAnnualVolume;
     private Integer eventType;
     private ProjectAnnualVolume projectAnnualVolume = null;
-    
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           projectAnnualVolumeParam = null;                    
-       } else {
-           projectAnnualVolumeParam = (ProjectAnnualVolume) Sessions.getCurrent().getAttribute("object");            
-       }
+            projectAnnualVolumeParam = null;
+        } else {
+            projectAnnualVolumeParam = (ProjectAnnualVolume) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -88,14 +87,15 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
         dbxAverageLoad.setRawValue(null);
         dbxAverageCardBalance.setRawValue(null);
     }
-    
+
     private void loadFields(ProjectAnnualVolume projectAnnualVolume) {
-    try {
+        try {
             intAccountsNumber.setValue(projectAnnualVolume.getAccountsNumber());
             intActiveCardNumber.setText(projectAnnualVolume.getActiveCardNumber().toString());
             dbxAverageLoad.setValue(projectAnnualVolume.getAverageLoad().floatValue());
-            dbxAverageCardBalance.setValue(projectAnnualVolume.getAverageCardBalance().floatValue());  
-                 
+            dbxAverageCardBalance.setValue(projectAnnualVolume.getAverageCardBalance().floatValue());
+            
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -106,23 +106,26 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
         intActiveCardNumber.setReadonly(true);
         dbxAverageLoad.setReadonly(true);
         dbxAverageCardBalance.setReadonly(true);
-        btnSave.setVisible(false);
         cmbYear.setDisabled(true);
+        btnSave.setVisible(false);
     }
-    
+
     public Boolean validateEmpty() {
-        if (intAccountsNumber.getText().isEmpty()) {
+        if (cmbYear.getSelectedItem() == null) {
+            cmbYear.setFocus(true);
+            this.showMessage("cms.error.year.notSelected", true, null);
+        } else if (intAccountsNumber.getText().isEmpty()) {
             intAccountsNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.accountsNumber", true, null);
         } else if (intActiveCardNumber.getText().isEmpty()) {
             intActiveCardNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.activeCardNumber", true, null);
         } else if (dbxAverageLoad.getText().isEmpty()) {
             dbxAverageLoad.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.averageLoad", true, null);
         } else if (dbxAverageCardBalance.getText().isEmpty()) {
             dbxAverageCardBalance.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.averageCardBalance", true, null);
         } else {
             return true;
         }
@@ -131,7 +134,7 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
 
     private void saveProjectAnnualVolume(ProjectAnnualVolume _projectAnnualVolume) throws RegisterNotFoundException, NullParameterException, GeneralException {
         Program program = null;
-        List<ProjectAnnualVolume> projectAnnualVolumeList = null; 
+        List<ProjectAnnualVolume> projectAnnualVolumeList = null;
         int indRegisterExist = 0;
         try {
             if (_projectAnnualVolume != null) {
@@ -139,42 +142,43 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
             } else {//New address
                 projectAnnualVolume = new ProjectAnnualVolume();
             }
-            
+
             //Program
             AdminProgramController adminProgram = new AdminProgramController();
             if (adminProgram.getProgramParent().getId() != null) {
                 program = adminProgram.getProgramParent();
             }
-            
+
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PROGRAM_KEY, program.getId());
             request1.setParams(params);
             projectAnnualVolumeList = programEJB.getProjectAnnualVolumeByProgram(request1);
-            for (ProjectAnnualVolume p: projectAnnualVolumeList) {
+            for (ProjectAnnualVolume p : projectAnnualVolumeList) {
                 if (eventType == 1) {
                     if (p.getYear() == Integer.parseInt(cmbYear.getSelectedItem().getValue().toString())) {
                         indRegisterExist = 1;
                         this.showMessage("sp.common.yearRegisterBD", false, null);
                     }
                 }
-            }     
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showError(ex); 
+            showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         } finally {
             if (indRegisterExist != 1) {
-                CreateProjectAnnualVolume(program,projectAnnualVolume);
+                CreateProjectAnnualVolume(program, projectAnnualVolume);
                 projectAnnualVolume = programEJB.saveProjectAnnualVolume(projectAnnualVolume);
                 this.showMessage("sp.common.save.success", false, null);
                 EventQueues.lookup("updateProjectAnnualVolume", EventQueues.APPLICATION, true).publish(new Event(""));
+                btnSave.setVisible(false);
             }
         }
     }
-    
+
     public ProjectAnnualVolume CreateProjectAnnualVolume(Program program, ProjectAnnualVolume projectAnnualVolume) {
         projectAnnualVolume.setProgramId(program);
         projectAnnualVolume.setYear(Integer.parseInt(cmbYear.getSelectedItem().getValue().toString()));
@@ -187,22 +191,24 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveProjectAnnualVolume(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveProjectAnnualVolume(projectAnnualVolumeParam);
-                break;
-            default:
-                break;
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveProjectAnnualVolume(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveProjectAnnualVolume(projectAnnualVolumeParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
     
-    }    
     public void onClick$btnBack() {
         winProjectAnnualVolume.detach();
     }
+
     
     public void loadData() {
         switch (eventType) {
@@ -212,10 +218,10 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(projectAnnualVolumeParam);
-                intAccountsNumber.setDisabled(true);
-                intActiveCardNumber.setDisabled(true);
-                dbxAverageLoad.setDisabled(true);
-                dbxAverageCardBalance.setDisabled(true);
+//                intAccountsNumber.setDisabled(true);
+//                intActiveCardNumber.setDisabled(true);
+//                dbxAverageLoad.setDisabled(true);
+//                dbxAverageCardBalance.setDisabled(true);
                 loadCmbYear(eventType);
                 blockFields();
                 break;
@@ -229,21 +235,21 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
 
     private void loadCmbYear(Integer evenInteger) {
         ArrayList<Integer> yearProjection = new ArrayList<Integer>();
-        for (int i = 1; i < 6; i++) {  
+        for (int i = 1; i < 6; i++) {
             yearProjection.add(Integer.valueOf(i));
         }
         try {
             Comboitem item = new Comboitem();
-            for (Integer y: yearProjection) {
+            for (Integer y : yearProjection) {
                 item.setValue(y);
-                item.setLabel("Year "+y);
+                item.setLabel("Year " + y);
                 item.setParent(cmbYear);
                 if (eventType != 1) {
-                    if (y ==  Integer.valueOf(projectAnnualVolumeParam.getYear())) {
+                    if (y == Integer.valueOf(projectAnnualVolumeParam.getYear())) {
                         cmbYear.setSelectedItem(item);
                     }
                 }
-                item = new Comboitem(); 
+                item = new Comboitem();
             }
         } catch (Exception ex) {
             showError(ex);

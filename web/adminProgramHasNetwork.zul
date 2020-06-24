@@ -30,8 +30,14 @@
                                                             <label value="${c:l('cms.common.netWork')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbNetwork" width="200px" mold="rounded" readonly="true" />
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbNetwork" width="200px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>

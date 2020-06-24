@@ -170,8 +170,8 @@ public class ListProgramController extends GenericAbstractListController<Program
         Program program;
         try {
             if (filter != null && !filter.equals("")) {
-                program = programEJB.searchProgram(filter);
-                programAux.add(program);
+                programAux = programEJB.searchProgram(filter);
+                //programAux.add(program);
             } else {
                 return programs;
             }

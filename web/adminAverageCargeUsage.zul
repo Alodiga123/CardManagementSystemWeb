@@ -31,9 +31,18 @@
                                                             <label value="${c:l('cms.common.average.spend.month')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbYear" width="200px" mold="rounded" readonly="true" />
-                                                            <doublebox id="dbxAverageLoadMonth" width="240px" constraint="no negative"  format="#,##0.##" maxlength="25"/>
-                                                            <doublebox id="dbxAverageSpendMonth" width="240px" constraint="no negative"  format="#,##0.##" maxlength="7"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbYear" width="200px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <doublebox id="dbxAverageLoadMonth" width="240px" constraint="no negative"  format="#,##0.##" maxlength="25"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <doublebox id="dbxAverageSpendMonth" width="240px" constraint="no negative"  format="#,##0.##" maxlength="7"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>
