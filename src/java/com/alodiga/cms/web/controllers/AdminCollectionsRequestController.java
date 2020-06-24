@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
@@ -14,7 +13,6 @@ import com.cms.commons.models.CollectionType;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.PersonType;
-import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -27,21 +25,22 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Toolbarbutton;
 
 public class AdminCollectionsRequestController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private CollectionsRequest collectionsRequestParam;
+    private Label lblProductType;
     private UtilsEJB utilsEJB = null;
     private RequestEJB requestEJB = null;
     private ProgramEJB programEJB = null;
-    private ProductEJB productEJB = null;
     private Combobox cmbCountry;
     private Combobox cmbPrograms;
     private Combobox cmbPersonType;
-    private Combobox cmbProductType;
     private Combobox cmbCollectionType;
+    public static Program program = null;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -78,7 +77,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -98,6 +96,17 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbCollectionType(eventType, country.getId());
     }
+    
+    public void onChange$cmbPrograms() {
+        
+        program = (Program) cmbPrograms.getSelectedItem().getValue();
+        lblProductType.setVisible(true);
+        loadProgramData(program);
+    }
+    
+    public void loadProgramData(Program program) {
+        lblProductType.setValue(program.getProductTypeId().getName());
+    }
 
     public void blockFields() {
         btnSave.setVisible(false);
@@ -114,7 +123,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             }
 
             collectionsRequest.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            collectionsRequest.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
+            collectionsRequest.setProductTypeId(((Program) cmbPrograms.getSelectedItem().getValue()).getProductTypeId());
             collectionsRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
             collectionsRequest.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
             collectionsRequest.setCollectionTypeId((CollectionType) cmbCollectionType.getSelectedItem().getValue());
@@ -131,9 +140,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
-        } else if (cmbProductType.getSelectedItem() == null) {
-            cmbProductType.setFocus(true);
-            this.showMessage("cms.error.producto.notSelected", true, null);
         } else if (cmbPrograms.getText().isEmpty()) {
             cmbPrograms.setFocus(true);
             this.showMessage("cms.error.program.notSelected", true, null);
@@ -169,26 +175,26 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(collectionsRequestParam);
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 onChange$cmbCountry();
+                onChange$cmbPrograms();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(collectionsRequestParam);
                 blockFields();
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 onChange$cmbCountry();
+                onChange$cmbPrograms();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbProductType(eventType);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 onChange$cmbCountry();
+                onChange$cmbPrograms();
                 break;
             default:
                 break;
@@ -214,23 +220,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         }
     }
 
-    private void loadCmbProductType(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<ProductType> productTypes;
-        try {
-            productTypes = utilsEJB.getProductTypes(request1);
-            loadGenericCombobox(productTypes, cmbProductType, "name", evenInteger, Long.valueOf(collectionsRequestParam != null ? collectionsRequestParam.getProductTypeId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
 
     private void loadCmbPrograms(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
