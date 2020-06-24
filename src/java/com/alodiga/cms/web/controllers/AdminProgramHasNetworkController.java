@@ -57,12 +57,6 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
                 programHasNetworksParam = null;
                 break;
         }
-//        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-//        if (eventType == WebConstants.EVENT_ADD) {
-//            programHasNetworksParam = null;
-//        } else {
-//            programHasNetworksParam = (ProgramHasNetwork) Sessions.getCurrent().getAttribute("object");
-//        }
         initialize();
     }
 
@@ -85,13 +79,14 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
     }
 
     public void onClick$btnAdd() {
+        btnAdd.setVisible(true);
         cmbCountry.setValue("");
         cmbNetwork.setValue("");
         this.clearMessage();
     }
 
     private void loadFields(ProgramHasNetwork programHasNetwork) {
-        btnAdd.setVisible(false);
+        btnAdd.setVisible(true);
     }
 
     public void blockFields() {
@@ -103,10 +98,10 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
     public Boolean validateEmpty() {
         if (cmbCountry.getText().isEmpty()) {
             cmbCountry.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.country.notSelected", true, null);
         } else if (cmbNetwork.getText().isEmpty()) {
             cmbNetwork.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.netwoork.notSelected", true, null);
         } else {
             return true;
         }
