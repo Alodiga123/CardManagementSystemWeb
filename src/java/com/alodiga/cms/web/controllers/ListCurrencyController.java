@@ -91,10 +91,7 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
 
     public void onClick$btnSearch() throws InterruptedException {
         try {
-//            String name = !txtName.getText().isEmpty() ? txtName.getText() : null;
-//            loadList(utilsEJB.getSearchCurrency(name));
             loadList(getFilterList(txtName.getText()));
-
         } catch (Exception ex) {
             showError(ex);
         }
