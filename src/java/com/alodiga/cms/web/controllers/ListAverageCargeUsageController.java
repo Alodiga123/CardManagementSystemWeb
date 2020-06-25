@@ -10,7 +10,6 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AverageCargeUsage;
 import com.cms.commons.models.Program;
-import com.cms.commons.models.ProjectAnnualVolume;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;

@@ -32,9 +32,18 @@
                                                             <label value="${c:l('cms.common.date.Program')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtName" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
-                                                            <textbox id="txtDescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                            
-                                                            <datebox id="dtbContrato"  width="265px"/>
+                                                            <hlayout>
+                                                                <textbox id="txtName" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="250" onChange="self.setValue(self.getValue().toUpperCase().trim());"/> 
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtDescription" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="2000" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <datebox id="dtbContrato"  width="265px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.typeProgram')}" sclass="lblbold"/>
@@ -42,9 +51,18 @@
                                                             <label value="${c:l('cms.common.BinSponsor')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProgramType" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProductType" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbBinSponsor" width="270px" mold="rounded" readonly="true"/>  
+                                                            <hlayout>
+                                                                <combobox id="cmbProgramType" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbProductType" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbBinSponsor" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.Issuer')}" sclass="lblbold"/>
@@ -52,9 +70,18 @@
                                                             <label value="${c:l('cms.common.cardProgramManager')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbIssuer" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbProgramOwner" width="270px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbCardProgramManager" width="270px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbIssuer" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbProgramOwner" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbCardProgramManager" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.cardIssuanceType')}" sclass="lblbold"/>
@@ -62,7 +89,10 @@
                                                             <label value="${c:l('cms.common.reloadable')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCardIssuanceType" width="270px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCardIssuanceType" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <hbox>
                                                                 <radiogroup id="branded" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -92,9 +122,12 @@
                                                             <label value="${c:l('cms.common.Cash.Acces')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbSourceOfFound" width="270px" mold="rounded" readonly="true" />
                                                             <hlayout>
-                                                                <textbox id="txtOtherSourceOfFound" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <combobox id="cmbSourceOfFound" width="265px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtOtherSourceOfFound" width="265px" maxlength="250" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hlayout>
                                                             <hbox>
                                                                 <radiogroup id="cashAcces" onCheck="value = self.selectedItem.label" />
@@ -126,10 +159,13 @@
                                                                 </grid>
                                                             </hbox> 
                                                             <hlayout>
-                                                                <textbox id="txtBinIin" width="265px" maxlength="60" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <textbox id="txtBinIin" width="265px" maxlength="15" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <combobox id="cmbCurrency" width="270px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCurrency" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>  
                                                         <row>
                                                             <label value="${c:l('cms.common.responsibleNetwoork')}" sclass="lblbold"/>
@@ -137,15 +173,27 @@
                                                             <label value="${c:l('cms.common.expectedLaunchDate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbResponsibleNetwoork" width="270px" mold="rounded" readonly="true"/>
-                                                            <textbox id="txtOtheResponsibleNetwoork" width="265px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <datebox id="dtbExpectedLaunchDate"  width="265px"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbResponsibleNetwoork" width="265px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtOtheResponsibleNetwoork" width="265px" maxlength="50" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <datebox id="dtbExpectedLaunchDate" width="265px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>  
                                                         <row>
                                                             <label value="${c:l('cms.common.website')}" sclass="lblbold"/>    
                                                         </row>     
-                                                        <row> 
-                                                            <textbox id="website" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                        <row>
+                                                            <hlayout>
+                                                                <textbox id="website" width="265px" constraint="no empty: ${c:l('error.field.required')}" maxlength="50"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>                                                                                                                                                                                                     
                                                     </rows>
                                                 </grid>

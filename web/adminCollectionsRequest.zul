@@ -53,8 +53,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -62,13 +62,10 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
                                                                 <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
+                                                            <label id="lblProductType" value="" width="200px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>

@@ -172,6 +172,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             }
             txtOtheResponsibleNetwoork.setText(program.getOtherResponsibleNetworkReporting());
             programParent = program;
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -198,12 +199,62 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } else if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (dtbContrato.getText().isEmpty()) {
+            dtbContrato.setFocus(true);
+            this.showMessage("cms.error.date.contrato", true, null);
         } else if (today.compareTo(dtbContrato.getValue()) < 0) {
             dtbContrato.setFocus(true);
-            this.showMessage("cms.error.date.contract.valid", true, null);
+            this.showMessage("cms.error.date.valid", true, null);
+        } else if (cmbProgramType.getSelectedItem() == null) {
+            cmbProgramType.setFocus(true);
+            this.showMessage("cms.error.programType.notSelected", true, null);
+        } else if (cmbProductType.getSelectedItem() == null) {
+            cmbProductType.setFocus(true);
+            this.showMessage("cms.error.productoType.notSelected", true, null);
+        } else if (cmbBinSponsor.getSelectedItem() == null) {
+            cmbBinSponsor.setFocus(true);
+            this.showMessage("cms.error.binSponsor.notSelected", true, null);
+        } else if (cmbIssuer.getSelectedItem() == null) {
+            cmbIssuer.setFocus(true);
+            this.showMessage("cms.error.Issuer.notSelected", true, null);
+        } else if (cmbProgramOwner.getSelectedItem() == null) {
+            cmbProgramOwner.setFocus(true);
+            this.showMessage("cms.error.programOwner.notSelected", true, null);
+        } else if (cmbCardProgramManager.getSelectedItem() == null) {
+            cmbCardProgramManager.setFocus(true);
+            this.showMessage("cms.error.programManager.notSelected", true, null);
+        } else if (cmbCardIssuanceType.getSelectedItem() == null) {
+            cmbCardIssuanceType.setFocus(true);
+            this.showMessage("cms.error.cardIssuanceType.notSelected", true, null);
+        } else if ((!rBrandedYes.isChecked()) && (!rBrandedNo.isChecked())) {
+            this.showMessage("cms.error.field.branded", true, null);
+        } else if ((!rReloadableYes.isChecked()) && (!rReloadableNo.isChecked())) {
+            this.showMessage("cms.error.field.reloadable", true, null);
+        } else if (cmbSourceOfFound.getSelectedItem() == null) {
+            cmbSourceOfFound.setFocus(true);
+            this.showMessage("cms.error.sourceOfFound.notSelected", true, null);
+        } else if ((!rCashAccesYes.isChecked()) && (!rCashAccesNo.isChecked())) {
+            this.showMessage("cms.error.field.cashAcces", true, null);
+        } else if ((!rInternationalYes.isChecked()) && (!rInternationalNo.isChecked())) {
+            this.showMessage("cms.error.field.international", true, null);
+        } else if (txtBinIin.getText().isEmpty()) {
+            txtBinIin.setFocus(true);
+            this.showMessage("cms.error.field.binIin", true, null);
+        } else if (cmbCurrency.getSelectedItem() == null) {
+            cmbCurrency.setFocus(true);
+            this.showMessage("cms.error.currency.notSelected", true, null);
+        } else if (cmbResponsibleNetwoork.getSelectedItem() == null) {
+            cmbResponsibleNetwoork.setFocus(true);
+            this.showMessage("cms.error.responsibleNetwoork.notSelected", true, null);
+        } else if (dtbExpectedLaunchDate.getText().isEmpty()) {
+            dtbExpectedLaunchDate.setFocus(true);
+            this.showMessage("cms.error.date.expectedLaunchDate.empty", true, null);
         } else if (today.compareTo(dtbExpectedLaunchDate.getValue()) > 0) {
             dtbExpectedLaunchDate.setFocus(true);
             this.showMessage("cms.error.date.expectedLaunchDate.valid", true, null);
+        } else if (website.getText().isEmpty()) {
+            website.setFocus(true);
+            this.showMessage("cms.error.field.website", true, null);
         } else {
             return true;
         }
@@ -312,7 +363,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             tabProjectedAnnualVolume.setDisabled(false);
 
             this.showMessage("sp.common.save.success", false, null);
-
+            btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);
         }

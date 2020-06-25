@@ -116,13 +116,10 @@ public class ListPersonClassificationController extends GenericAbstractListContr
         PersonClassification personclassifications;
         try {
             if (filter != null && !filter.equals("")) {
-                personclassifications = utilsEJB.searchPersonClassification(filter);
-                personclassificationaux.add(personclassifications);
+                personclassificationaux = utilsEJB.getSearchPersonClassification(filter);
             } else {
                 return personclassification;
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListPersonClassificationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }
