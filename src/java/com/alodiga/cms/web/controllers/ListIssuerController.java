@@ -22,6 +22,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Textbox;
 
 public class ListIssuerController extends GenericAbstractListController<Issuer> {
 
@@ -30,6 +31,7 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
     private PersonEJB personEJB = null;
     private List<Issuer> issuerList = null;
     private User currentUser;
+    private Textbox txtName;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -119,7 +121,29 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
 
     @Override
     public List<Issuer> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         List<Issuer> issuerList_ = new ArrayList<Issuer>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                issuerList_ = personEJB.searchIssuer(filter);
+            } else {
+                return issuerList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return issuerList_;//To change body of generated methods, choose Tools | Templates.
+     //To change body of generated methods, choose Tools | Templates.
     }
     
+     public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }
