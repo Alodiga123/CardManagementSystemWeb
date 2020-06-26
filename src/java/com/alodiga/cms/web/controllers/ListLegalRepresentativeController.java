@@ -217,7 +217,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.legalRepresentatives.list"));
         } catch (Exception ex) {
             showError(ex);
         }

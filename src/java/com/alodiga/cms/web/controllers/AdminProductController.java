@@ -50,11 +50,11 @@ public class AdminProductController extends GenericAbstractAdminController {
     private ProgramEJB programEJB = null;
     private Product productParam;
     private Textbox txtName;
-    private Intbox  intDaysBeforeExpiration;
-    private Intbox  intDaysToInactivate;
-    private Intbox  intDaysToActivate;
-    private Intbox  intDaysToUse;
-    private Intbox  intDaysToWithdrawCard;
+    private Intbox intDaysBeforeExpiration;
+    private Intbox intDaysToInactivate;
+    private Intbox intDaysToActivate;
+    private Intbox intDaysToUse;
+    private Intbox intDaysToWithdrawCard;
     private Datebox dtbBeginDateValidity;
     private Datebox dtbEndDateValidity;
     private Combobox cmbCountry;
@@ -257,9 +257,50 @@ public class AdminProductController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         Date today = new Date();
 
-        if (txtName.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbProgramType.getSelectedItem() == null) {
+            cmbProgramType.setFocus(true);
+            this.showMessage("cms.error.programType.notSelected", true, null);
+        } else if (cmbProgram.getSelectedItem() == null) {
+            cmbProgram.setFocus(true);
+            this.showMessage("cms.error.program.notSelected", true, null);
+        } else if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("cms.error.field.product", true, null);
+        } else if (cmbKindCard.getSelectedItem() == null) {
+            cmbKindCard.setFocus(true);
+            this.showMessage("cms.error.kindCard.notSelected", true, null);
+        } else if (cmbLevelProduct.getSelectedItem() == null) {
+            cmbLevelProduct.setFocus(true);
+            this.showMessage("cms.error.levelProduct.notSelected", true, null);
+        } else if (cmbProductUse.getSelectedItem() == null) {
+            cmbProductUse.setFocus(true);
+            this.showMessage("cms.error.use.notSelected", true, null);
+        } else if (cmbDomesticCurrency.getSelectedItem() == null) {
+            cmbDomesticCurrency.setFocus(true);
+            this.showMessage("cms.error.domesticCurrency.notSelected", true, null);
+        } else if ((!r24Months.isChecked()) && (!r36Months.isChecked()) && (!r48Months.isChecked())) {
+            this.showMessage("cms.error.validityMonths", true, null);
+        } else if (cmbStorageMedio.getSelectedItem() == null) {
+            cmbStorageMedio.setFocus(true);
+            this.showMessage("cms.error.internationalCurrency.storageMedio", true, null);
+        } else if (intDaysBeforeExpiration.getText().isEmpty()) {
+            intDaysBeforeExpiration.setFocus(true);
+            this.showMessage("cms.error.field.intDaysBeforeExpiration", true, null);
+        } else if (intDaysToInactivate.getText().isEmpty()) {
+            intDaysToInactivate.setFocus(true);
+            this.showMessage("cms.error.field.daysToInactivate", true, null);
+        } else if (intDaysToActivate.getText().isEmpty()) {
+            intDaysToActivate.setFocus(true);
+            this.showMessage("cms.error.field.daysToActivate", true, null);
+        } else if (intDaysToUse.getText().isEmpty()) {
+            intDaysToUse.setFocus(true);
+            this.showMessage("cms.error.field.daysToUse", true, null);
+        } else if (intDaysToWithdrawCard.getText().isEmpty()) {
+            intDaysToWithdrawCard.setFocus(true);
+            this.showMessage("cms.error.field.daysToToWithdrawCard", true, null);
         } else if (dtbBeginDateValidity.getText().isEmpty()) {
             dtbBeginDateValidity.setFocus(true);
             this.showMessage("cms.error.field.beginDate", true, null);
@@ -272,21 +313,9 @@ public class AdminProductController extends GenericAbstractAdminController {
         } else if (today.compareTo(dtbEndDateValidity.getValue()) > 0) {
             dtbEndDateValidity.setFocus(true);
             this.showMessage("cms.error.date.endDateValidity", true, null);
-        } else if (intDaysBeforeExpiration.getText().isEmpty()) {
-            intDaysBeforeExpiration.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToActivate.getText().isEmpty()) {
-            intDaysToActivate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToInactivate.getText().isEmpty()) {
-            intDaysToInactivate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToWithdrawCard.getText().isEmpty()) {
-            intDaysToWithdrawCard.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToUse.getText().isEmpty()) {
-            intDaysToUse.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbSegmentMarketing.getSelectedItem() == null) {
+            cmbSegmentMarketing.setFocus(true);
+            this.showMessage("cms.error.segmentMarketing.noSelected", true, null);
         } else {
             return true;
         }

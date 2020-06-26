@@ -28,6 +28,7 @@ import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -139,6 +140,8 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
         try {
+            personCardComplementary = applicantNaturalPerson.getPersonId();
+            
             txtIdentificationNumber.setText(applicantNaturalPerson.getIdentificationNumber());
             txtDueDateDocumentIdentification.setValue(applicantNaturalPerson.getDueDateDocumentIdentification());
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
@@ -151,7 +154,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             }
             txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
             txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
-            txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
+            if (applicantNaturalPerson.getPersonId().getEmail()!= null) {
+                if (applicantNaturalPerson.getPersonId().getEmail().contains("@")){
+                    txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
+                }
+            }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
@@ -167,17 +174,18 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     }
                 }
             }
+            
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-    
+
     private void loadFieldR(Request requestData) {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
@@ -205,21 +213,51 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.YEAR, -18);
+        Calendar cumpleCalendar = Calendar.getInstance();
+        if (!(txtBirthDay.getText().isEmpty())) {
+            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
+        }
+        
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("cms.error.field.identificationNumber", true, null);
+        } else if (txtDueDateDocumentIdentification.getText().isEmpty()) {
+            txtDueDateDocumentIdentification.setFocus(true);
+            this.showMessage("cms.error.field.dueDateDocumentIdentification", true, null);
         } else if (txtFullName.getText().isEmpty()) {
             txtFullName.setFocus(true);
             this.showMessage("cms.error.field.fullName", true, null);
         } else if (txtFullLastName.getText().isEmpty()) {
             txtFullLastName.setFocus(true);
             this.showMessage("cms.error.field.lastName", true, null);
-        } else if (txtBirthDay.getText().isEmpty()) {
-            txtBirthDay.setFocus(true);
-            this.showMessage("cms.error.field.txtBirthDay", true, null);
         } else if (txtBirthPlace.getText().isEmpty()) {
             txtBirthPlace.setFocus(true);
             this.showMessage("cms.error.field.txtBirthPlace", true, null);
+        } else if (txtBirthDay.getText().isEmpty()) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthDay", true, null);
+        } else if (cumpleCalendar.compareTo(today) > 0) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.errorDayBith", true, null);
+        } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
+            this.showMessage("cms.error.field.gener", true, null);
+        } else if (cmbCivilState.getSelectedItem() == null) {
+            cmbCivilState.setFocus(true);
+            this.showMessage("cms.error.civilState.notSelected", true, null);
+        } else if (cmbProfession.getSelectedItem() == null) {
+            cmbProfession.setFocus(true);
+            this.showMessage("cms.error.naturalperson.notSelected", true, null);
+        } else if (cmbRelationship.getSelectedItem() == null) {
+            cmbRelationship.setFocus(true);
+            this.showMessage("cms.error.relationship.notSelected", true, null);
         } else if (txtLocalPhone.getText().isEmpty()) {
             txtLocalPhone.setFocus(true);
             this.showMessage("cms.error.field.phoneNumber", true, null);
@@ -233,7 +271,6 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             return true;
         }
         return false;
-
     }
 
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
