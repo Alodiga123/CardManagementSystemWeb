@@ -112,8 +112,10 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
                 for (PasswordChangeRequest passwordChangeRequest : list) {
                     item = new Listitem();
                     item.setValue(passwordChangeRequest);
+                    String pattern = "dd-MM-yyyy";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(passwordChangeRequest.getRequestNumber()));
-                    item.appendChild(new Listcell(passwordChangeRequest.getRequestDate().toString()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(passwordChangeRequest.getRequestDate())));
                     item.appendChild(new Listcell(passwordChangeRequest.getUserId().getCode().toString()));
                     StringBuilder userName = new StringBuilder(passwordChangeRequest.getUserId().getFirstNames());
                     userName.append(" ");
@@ -125,7 +127,6 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
                         indApproved = "No";
                     }
                     item.appendChild(new Listcell(indApproved));
-//                    item.appendChild(new ListcellEditButton(adminPage, passwordChangeRequest));
                     item.appendChild(new ListcellViewButton(adminPage, passwordChangeRequest,true));
                     item.setParent(lbxRecords);
                 }
