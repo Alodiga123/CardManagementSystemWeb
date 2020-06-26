@@ -16,7 +16,9 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -80,10 +82,17 @@ public class ListPersonTypeController extends GenericAbstractListController<Pers
        
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.person.type.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
+        
     }
 
     public void startListener() {

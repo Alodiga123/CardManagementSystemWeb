@@ -14,7 +14,9 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.Network;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -128,10 +130,17 @@ public class ListNetworkController extends GenericAbstractListController<Network
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.menu.network.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.network.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
+        
     }
 
     public void onClick$btnClear() throws InterruptedException {

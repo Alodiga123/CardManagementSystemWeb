@@ -19,6 +19,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -380,11 +381,18 @@ public class ListRateByProductController extends GenericAbstractListController<R
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.rate.by.product.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
-    }
+        
+    } 
 
     @Override
     public List<Request> getFilterList(String filter) {
