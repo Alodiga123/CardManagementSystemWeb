@@ -18,6 +18,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 
 public class AdminPersonTypeController extends GenericAbstractAdminController {
@@ -27,6 +28,8 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     private UtilsEJB utilsEJB = null;
     private Combobox cmbCountry;
     private Combobox cmbOriginApplication;
+    private Radio rIsNaturalPersonYes;
+    private Radio rIsNaturalPersonNo;
     private PersonType personTypeParam;
     private Button btnSave;
     private Integer eventType;
@@ -35,7 +38,6 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         Sessions.getCurrent();
-//        personTypeParam = (Sessions.getCurrent().getAttribute("object") != null) ? (PersonType) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
             personTypeParam = null;
@@ -63,6 +65,11 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     private void loadFields(PersonType personType) {
         try {
             txtName.setText(personType.getDescription());
+            if (personType.getIndNaturalPerson() == true) {
+                rIsNaturalPersonYes.setChecked(true);
+            } else {
+                rIsNaturalPersonYes.setChecked(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -84,6 +91,7 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     }
  
     private void savePersonType(PersonType _personType) {
+        boolean indIsNaturalPerson;
         try {
             PersonType personType = null;
             if (_personType != null) {
@@ -91,9 +99,17 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             } else {//New personType
                 personType = new PersonType();
             }
+            
+            if (rIsNaturalPersonYes.isChecked()) {
+                indIsNaturalPerson = true;
+            } else {
+                indIsNaturalPerson = false;
+            }
+            
             personType.setDescription(txtName.getText());
             personType.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             personType.setOriginApplicationId((OriginApplication) cmbOriginApplication.getSelectedItem().getValue());
+            personType.setIndNaturalPerson(indIsNaturalPerson);
             personType = utilsEJB.savePersonType(personType);
             personTypeParam = personType;
             this.showMessage("sp.common.save.success", false, null);

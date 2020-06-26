@@ -28,7 +28,7 @@
                                                  |
                                                 <toolbarbutton label="${c:l('cms.common.documents.person.type.list')}" onClick='Executions.sendRedirect(&quot;listDocumentsPersonType.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.documents.person.type.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label=""/>
                                                  |
                                                 <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
