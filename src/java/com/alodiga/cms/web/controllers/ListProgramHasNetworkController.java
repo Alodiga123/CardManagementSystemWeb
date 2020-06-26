@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 public class ListProgramHasNetworkController extends GenericAbstractListController<ProgramHasNetwork> {
@@ -197,14 +198,14 @@ public class ListProgramHasNetworkController extends GenericAbstractListControll
         }
     }
 
-    private void showEmptyList() {
+    private void showEmptyList()  {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
-        item.setParent(lbxRecords);
+        item.setParent(lbxRecords);        
     }
 
     public void onClick$btnDownload() throws InterruptedException {

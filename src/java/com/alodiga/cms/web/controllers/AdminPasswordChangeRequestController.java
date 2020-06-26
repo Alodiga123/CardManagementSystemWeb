@@ -104,6 +104,14 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         }
     }
     
+    public void onChange$txtRepeatNewPassword() {
+        if (!txtRepeatNewPassword.getValue().equals(txtNewPassword.getValue())) {
+            this.showMessage("cms.msj.fieldsPasswordNotEquals", false, null);
+        } else {
+            this.clearMessage();
+        }
+    }
+    
     public void onFocus$txtCurrentPassword() {
         this.clearMessage();
         txtCurrentPassword.setText("");
@@ -183,6 +191,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         Date dateRequest = null;
         List<User> userList = null;
         PasswordChangeRequest passwordChangeRequest = null;
+        this.clearMessage();
         
         try {
             if (_passwordChangeRequest != null) {
@@ -247,6 +256,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 attempts++;
                 if (attempts != 3) {
                     this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", false, null);
+                    txtCurrentPassword.setText("");
+                    txtNewPassword.setText("");
+                    txtRepeatNewPassword.setText("");
                 }
             }
             if (attempts == 3) {
