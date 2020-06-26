@@ -30,15 +30,13 @@ public class IndexViewController extends GenericAbstractController {
     }
 
     public void initialize() {
-        try {
-            
+        try {            
 
             Calendar today = Calendar.getInstance();
             Calendar endingDate = Calendar.getInstance();
             endingDate.set(Calendar.MONTH, Calendar.AUGUST);
             endingDate.set(Calendar.DAY_OF_MONTH, 1);
-            endingDate.set(Calendar.YEAR, 2013);
-//            lblUpdatedVersion.setVisible(today.before(endingDate));
+            endingDate.set(Calendar.YEAR, 2020);
 
         } catch (Exception e) {
             e.printStackTrace();

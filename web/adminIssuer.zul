@@ -52,7 +52,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.identification.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.document.identification')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>

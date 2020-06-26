@@ -17,12 +17,14 @@ import com.cms.commons.util.QueryConstants;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminDocumentsPersonTypeController extends GenericAbstractAdminController {
 
@@ -35,6 +37,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     private Textbox txtIdentityCode;
     private Button btnSave;
     private Integer eventType;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -52,6 +55,19 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.documents.person.type.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.documents.person.type.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.documents.person.type.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
@@ -152,7 +168,6 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
-                System.out.println("Agregar un documentsPersonType");
                 loadCmbCountry(eventType);
                 break;
             default:
@@ -183,7 +198,11 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         cmbPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (evenInteger == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, documentsPersonTypeParam.getPersonTypeId().getOriginApplicationId().getId());
+        }        
         request1.setParams(params);
         List<PersonType> personTypes;
         try {
