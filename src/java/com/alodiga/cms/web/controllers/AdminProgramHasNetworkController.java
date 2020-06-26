@@ -73,7 +73,9 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
     }
 
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbNetwork.setVisible(true);
+        cmbNetwork.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbNetworks(eventType, country.getId());
     }
@@ -238,7 +240,7 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         request1.setParams(params);
-        List<Network> networks;
+        List<Network> networks = null;
         try {
             networks = utilsEJB.getNetworkByCountry(request1);
             loadGenericCombobox(networks, cmbNetwork, "name", evenInteger, Long.valueOf(programHasNetworksParam != null ? programHasNetworksParam.getNetworkId().getId() : 0));
@@ -251,6 +253,10 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
+        } finally {
+            if (networks == null) {
+                this.showMessage("cms.msj.NetworkHasProgramaNull", false, null);
+            }            
         }
     }
 
