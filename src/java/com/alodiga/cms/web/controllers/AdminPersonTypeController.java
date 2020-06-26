@@ -14,7 +14,6 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -63,6 +62,8 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
     private void loadFields(PersonType personType) {
         try {
             txtName.setText(personType.getDescription());
+            cmbCountry.setReadonly(true);
+            cmbOriginApplication.setReadonly(true);
         } catch (Exception ex) {
             showError(ex);
         }

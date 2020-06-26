@@ -1,7 +1,7 @@
 package com.alodiga.cms.web.controllers;
-import com.alodiga.cms.commons.ejb.PersonEJB;
+
+
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -10,10 +10,6 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardStatus;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.PersonType;
-import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -28,7 +24,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
 
 public class ListProductController extends GenericAbstractListController<Product> {
 
@@ -68,7 +63,7 @@ public class ListProductController extends GenericAbstractListController<Product
     
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.menu.product.list"));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -104,6 +99,7 @@ public class ListProductController extends GenericAbstractListController<Product
                     item.setValue(product);
                     item.appendChild(new Listcell(product.getName()));
                     item.appendChild(new Listcell(product.getCountryId().getName()));
+                    item.appendChild(new Listcell(product.getProgramId().getName()));
                     item.appendChild(new Listcell(product.getProductTypeId().getName()));
                     item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, product));

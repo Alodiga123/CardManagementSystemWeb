@@ -77,11 +77,17 @@
                                                         <row> 
                                                             <label value="${c:l('cms.common.floor')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.commmon.zipZone')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.address.addressDelivery')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.address.addressTypes')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <intbox id="txtFloor" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="3"/>
                                                             <combobox id="cmbZipZone" width="250px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbAddressTypes" width="250px" mold="rounded" readonly="true"/>
+                                                        </row>
+                                                        <row> 
+                                                            <label value="${c:l('cms.crud.address.addressDelivery')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row> 
                                                             <hbox>
                                                                 <radiogroup id="addressDelivery" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -94,18 +100,12 @@
                                                                 </grid>
                                                             </hbox>
                                                         </row>
-                                                        <row> 
-                                                            <label value="${c:l('cms.crud.address.addressTypes')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row> 
-                                                            <combobox id="cmbAddressTypes" width="250px" mold="rounded" readonly="true"/>
-                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.address.line1')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">
-                                                                <textbox id="txtLine1" multiline="true" rows="1" width="580px" maxlength="250"/>
+                                                                <textbox id="txtLine1" multiline="true" rows="1" width="850px" maxlength="250"/>
                                                             </cell>
                                                         </row>
                                                         <row>
@@ -113,7 +113,7 @@
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">
-                                                                <textbox id="txtLine2" multiline="true" rows="1" width="580px" maxlength="250"/>
+                                                                <textbox id="txtLine2" multiline="true" rows="1" width="850px" maxlength="250"/>
                                                             </cell>
                                                         </row>
                                                     </rows>

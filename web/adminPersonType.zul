@@ -60,7 +60,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
+                                                                <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
