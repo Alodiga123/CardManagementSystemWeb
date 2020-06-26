@@ -18,6 +18,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
     private List<LegalPerson> legalPersonList = null;
     private List<NaturalPerson> naturalPersonList = null;
     public static int indOwnerOption = 2;
+    private Textbox txtName;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -175,19 +177,46 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.program.owner.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        
+    }
+
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
+    public List<Person> getFilterList(String filter) {
+         List<Person> personList_ = new ArrayList<Person>();
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_PROGRAM_OWNER);
+            params.put(Constants.PARAM_PERSON_NAME, filter);
+            request1.setParams(params);
+                personList_ = personEJB.searchPerson(request1);
+            } else {
+                return persons;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return personList_;    }
+
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-    public void onClick$btnClear() throws InterruptedException {
-        txtRequestNumber.setText("");
-    }
-
-    @Override
-    public List<Person> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

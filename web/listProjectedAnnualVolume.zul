@@ -39,9 +39,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.year')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.accounts.number')}" width="190px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.active.card.number')}" width="170px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.year')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.accounts.number')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.active.card.number')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.average.load')}" width="160px" sort="auto"/> 
                                                     <listheader label="${c:l('cms.common.average.card.balance')}" width="160px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>

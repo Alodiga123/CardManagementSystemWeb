@@ -1,6 +1,8 @@
 package com.alodiga.cms.web.controllers;
 
 
+import com.cms.commons.models.User;
+import com.cms.commons.util.Constants;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import java.util.Locale;
@@ -51,7 +53,7 @@ public class AdminHeaderMenuController extends GenericForwardComposer {
     }
 
     public void onClick$mniLogout() {
-
+        session.removeAttribute(Constants.USER_OBJ_SESSION);
         Executions.sendRedirect("./admin.zul");
     }
 

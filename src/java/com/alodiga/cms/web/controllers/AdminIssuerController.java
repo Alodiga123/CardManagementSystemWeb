@@ -66,7 +66,6 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        issuerParam = (Sessions.getCurrent().getAttribute("object") != null) ? (Issuer) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
            issuerParam = null;                    
@@ -259,7 +258,9 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     }
     
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbPersonType.setVisible(true);
+        cmbPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbPersonType(eventType, country.getId());
     }
@@ -320,7 +321,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
-        List<PersonType> personType;
+        List<PersonType> personType = null;
         try {
             personType = utilsEJB.getPersonTypeByCountry(request1);
             loadGenericCombobox(personType, cmbPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getIssuerPersonId().getPersonTypeId().getId() : 0));
@@ -330,6 +331,10 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             showError(ex);
         } catch (NullParameterException ex) {
             showError(ex);
+        } finally {
+            if (personType == null) {
+                this.showMessage("cms.msj.PersonTypeNull", false, null);
+            }            
         }
     }
 

@@ -29,6 +29,7 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     private Textbox txtNewPassword;
     private Textbox txtRepeatNewPassword;
     private Label lblRequestNumber;
-    private Datebox dtbRequestDate;
+    private Label lblRequestDate;
     private Label lblIdentificationNumber;
     private Label lblUser;
     private Label lblComercialAgency;
@@ -103,6 +104,14 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         }
     }
     
+    public void onChange$txtRepeatNewPassword() {
+        if (!txtRepeatNewPassword.getValue().equals(txtNewPassword.getValue())) {
+            this.showMessage("cms.msj.fieldsPasswordNotEquals", false, null);
+        } else {
+            this.clearMessage();
+        }
+    }
+    
     public void onFocus$txtCurrentPassword() {
         this.clearMessage();
         txtCurrentPassword.setText("");
@@ -115,17 +124,16 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         txtNewPassword.setRawValue(null);
         txtRepeatNewPassword.setRawValue(null);
         lblRequestNumber.setValue(null);
-        dtbRequestDate.setValue(null);
+        lblRequestDate.setValue(null);
         lblIdentificationNumber.setValue(null);
         lblUser.setValue(null);
         lblComercialAgency.setValue(null);
     } 
     
     private void loadFields(PasswordChangeRequest passwordChangeRequest) {
-
-        try {
+        try {        
             lblRequestNumber.setValue(passwordChangeRequest.getRequestNumber().toString());
-            dtbRequestDate.setValue(passwordChangeRequest.getRequestDate());
+            lblRequestDate.setValue(passwordChangeRequest.getRequestDate().toString());
             lblIdentificationNumber.setValue(passwordChangeRequest.getUserId().getIdentificationNumber());
             lblUser.setValue(passwordChangeRequest.getUserId().getFirstNames());
             lblComercialAgency.setValue(passwordChangeRequest.getUserId().getComercialAgencyId().getName());
@@ -134,11 +142,11 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             txtRepeatNewPassword.setText(passwordChangeRequest.getNewPassword());
                   
               if (passwordChangeRequest.getCurrentPassword() != null ) {
-                    txtCurrentPassword.setValue(passwordChangeRequest.getCurrentPassword());
+                txtCurrentPassword.setValue(passwordChangeRequest.getCurrentPassword());
               }
               
               if (passwordChangeRequest.getCurrentPassword() == null) {
-                    txtCurrentPassword.setValue(passwordChangeRequest.getNewPassword());
+                txtCurrentPassword.setValue(passwordChangeRequest.getNewPassword());
               } 
                 
             if (passwordChangeRequest.getIndApproved() == true) {
@@ -158,7 +166,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         txtNewPassword.setReadonly(true);
         txtRepeatNewPassword.setReadonly(true);
         btnSave.setVisible(false);
-        dtbRequestDate.setDisabled(true);
+    
     }
     
     public Boolean validateEmpty() {
@@ -183,10 +191,12 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         Date dateRequest = null;
         List<User> userList = null;
         PasswordChangeRequest passwordChangeRequest = null;
+        this.clearMessage();
         
         try {
             if (_passwordChangeRequest != null) {
                 passwordChangeRequest = _passwordChangeRequest;
+                dateRequest = passwordChangeRequest.getRequestDate();
             } else {
                 passwordChangeRequest = new PasswordChangeRequest();
             }
@@ -209,11 +219,12 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 numberRequest = generateNumberSequence();
                 dateRequest = new Date();
                 lblRequestNumber.setValue(numberRequest);
-             
+                lblRequestDate.setValue(dateRequest.toString());
+                
                 //Se aprueba la solicitud automaticamente
                 indApproved = true;                
                 //Se crea el objeto passwordChangeRequest
-                createPasswordChangeRequest(passwordChangeRequest, numberRequest, indApproved); 
+                createPasswordChangeRequest(passwordChangeRequest, numberRequest, dateRequest, indApproved); 
                 
                 //Guardar la solicitud de cambio de contraseña en la BD
                 passwordChangeRequest = personEJB.savePasswordChangeRequest(passwordChangeRequest);
@@ -245,6 +256,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 attempts++;
                 if (attempts != 3) {
                     this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", false, null);
+                    txtCurrentPassword.setText("");
+                    txtNewPassword.setText("");
+                    txtRepeatNewPassword.setText("");
                 }
             }
             if (attempts == 3) {
@@ -252,11 +266,12 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 numberRequest = generateNumberSequence();
                 dateRequest = new Date();
                 lblRequestNumber.setValue(numberRequest);
-                 
+                lblRequestDate.setValue(dateRequest.toString());
+                
                 //Se rechaza la solicitud automaticamente
                 indApproved = false;
                 //Se crea el objeto passwordChangeRequest
-                createPasswordChangeRequest(passwordChangeRequest, numberRequest, indApproved); 
+                createPasswordChangeRequest(passwordChangeRequest, numberRequest, dateRequest, indApproved); 
 
                 //Guardar la solicitud de cambio de contraseña en la BD
                 passwordChangeRequest = personEJB.savePasswordChangeRequest(passwordChangeRequest);
@@ -299,9 +314,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         return numberRequest;
     }
     
-    public void createPasswordChangeRequest(PasswordChangeRequest passwordChangeRequest, String numberRequest, boolean indApproved) {
+    public void createPasswordChangeRequest(PasswordChangeRequest passwordChangeRequest, String numberRequest, Date requestDate, boolean indApproved) {
         passwordChangeRequest.setRequestNumber(numberRequest);
-        passwordChangeRequest.setRequestDate((dtbRequestDate.getValue()));
+        passwordChangeRequest.setRequestDate(requestDate);
         passwordChangeRequest.setUserId(user);
         passwordChangeRequest.setCurrentPassword(txtCurrentPassword.getText());
         passwordChangeRequest.setNewPassword(txtNewPassword.getText());
@@ -333,7 +348,6 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 txtCurrentPassword.setReadonly(true);
                 txtNewPassword.setReadonly(true);
                 txtRepeatNewPassword.setDisabled(false);
-                dtbRequestDate.setReadonly(true);
                 blockFields();
                 rApprovedYes.setDisabled(true);
                 rApprovedNo.setDisabled(true);

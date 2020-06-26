@@ -15,7 +15,9 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -84,7 +86,13 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
        
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.password.change.request.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
@@ -104,8 +112,10 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
                 for (PasswordChangeRequest passwordChangeRequest : list) {
                     item = new Listitem();
                     item.setValue(passwordChangeRequest);
+                    String pattern = "dd-MM-yyyy";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(passwordChangeRequest.getRequestNumber()));
-                    item.appendChild(new Listcell(passwordChangeRequest.getRequestDate().toString()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(passwordChangeRequest.getRequestDate())));
                     item.appendChild(new Listcell(passwordChangeRequest.getUserId().getCode().toString()));
                     StringBuilder userName = new StringBuilder(passwordChangeRequest.getUserId().getFirstNames());
                     userName.append(" ");
@@ -117,7 +127,6 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
                         indApproved = "No";
                     }
                     item.appendChild(new Listcell(indApproved));
-//                    item.appendChild(new ListcellEditButton(adminPage, passwordChangeRequest));
                     item.appendChild(new ListcellViewButton(adminPage, passwordChangeRequest,true));
                     item.setParent(lbxRecords);
                 }

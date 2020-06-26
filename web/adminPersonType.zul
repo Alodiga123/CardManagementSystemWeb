@@ -48,23 +48,36 @@
                                                 <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
-                                                        <column label="" width="290px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="220px"/>
+                                                        <column label="" width="220px"/>
                                                     </columns>
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.person.type')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Application')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.isNaturalPerson')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <textbox id="txtName" width="190px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbOriginApplication" width="250px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true" />
+                                                            <combobox id="cmbOriginApplication" width="200px" mold="rounded" readonly="true" />
+                                                            <hbox>
+                                                                <radiogroup id="isNaturalPerson" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rIsNaturalPersonYes" label="${c:l('cms.commom.Yes')}" radiogroup="isNaturalPerson" />
+                                                                            <radio id="rIsNaturalPersonNo" label="${c:l('cms.commom.No')} " radiogroup="isNaturalPerson" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
                                                         </row>
                                                     </rows>
                                                 </grid>
