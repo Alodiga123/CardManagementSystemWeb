@@ -205,14 +205,13 @@ public class ListRequestController extends GenericAbstractListController<Request
         }
     }
     
-    @Override
+   
     public List<Request> getFilterList(String filter) {
         List<Request> requestaux = new ArrayList<Request>();
-        Request request;
         try {
+            
             if (filter != null && !filter.equals("")) {
-                request = requestEJB.searchCardRequest(filter);
-                requestaux.add(request);
+                requestaux = requestEJB.searchCardRequest(filter);
             } else {
                 return requests;
             }
