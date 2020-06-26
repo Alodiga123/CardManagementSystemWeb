@@ -65,14 +65,12 @@
                                                             <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>                                                            
+                                                            <label value="${c:l('cms.common.birthday')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.gender')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.age')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="45" constraint="no empty: ${c:l('error.field.required')}"/>
-                                                            </hlayout>
+                                                            <datebox id="txtBirthDay" width="250px"/>
                                                             <hbox>
                                                                 <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
@@ -86,16 +84,16 @@
                                                             </hbox>  
                                                             <hlayout>
                                                                 <textbox id="txtAge" value="" width="250px" maxlength="3" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/> 
-                                                             </hlayout>
+                                                            </hlayout>
                                                         </row>                                                       
                                                         <row>
                                                             <label value="${c:l('cms.common.civilState')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.birthday')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.birthPlace')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.phoneType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
-                                                            <datebox id="txtBirthDay" width="250px"/>
+                                                            <textbox id="txtBirthPlace" value="" width="250px" maxlength="45" constraint="no empty: ${c:l('error.field.required')}"/>
                                                             <combobox id="cmbPhoneType" width="250px" mold="rounded" readonly="true" />
                                                         </row>
                                                         <row>

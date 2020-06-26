@@ -204,19 +204,22 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     public Boolean validateEmpty() {
         if (txtUbanization.getText().isEmpty()) {
             txtUbanization.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.urbanization", true, null);
         } else if (txtNameStreet.getText().isEmpty()) {
             txtNameStreet.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.namesStreet", true, null);
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.nameEdification", true, null);
         } else if (txtTower.getText().isEmpty()) {
             txtTower.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.tower", true, null);
         } else if (txtFloor.getText().isEmpty()) {
             txtFloor.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbZipZone.getSelectedItem() == null) {
+            cmbZipZone.setFocus(true);
+            this.showMessage("cms.error.zipZone.notSelected", true, null);
         } else {
             return true;
         }
@@ -280,25 +283,27 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             }
 
             if ((txtTower.getText() != null) && (txtNameEdification.getText() != null)) {
-                StringBuilder linea1 = new StringBuilder((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
-                linea1.append(" ");
+                StringBuilder linea1 = new StringBuilder("Tipo de Calle: ");
+                linea1.append((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(", Calle: ");
                 linea1.append(txtNameStreet.getText());
-                linea1.append(" ");
+                linea1.append(", Urbanizacion: ");
                 linea1.append(txtUbanization.getText());
-                linea1.append(" ");
+                linea1.append(", Edificacion: ");
                 linea1.append((((EdificationType) cmbEdificationType.getSelectedItem().getValue()).getDescription()));
-                linea1.append(" ");
+                linea1.append(", Nombre del edificio: ");
                 linea1.append(txtNameEdification.getText());
-                linea1.append(" ");
+                linea1.append(", Torre: ");
                 linea1.append(txtTower.getText());
-                linea1.append(" ");
+                linea1.append(", Piso: ");
                 linea1.append(txtFloor.getText());
 
-                StringBuilder linea2 = new StringBuilder((((Country) cmbCountry.getSelectedItem().getValue()).getName()));
-                linea2.append(" ");
+                StringBuilder linea2 = new StringBuilder("Pais: ");
+                linea2.append((((Country) cmbCountry.getSelectedItem().getValue()).getName()));
+                linea2.append(", Ciudad: ");
                 linea2.append((((City) cmbCity.getSelectedItem().getValue()).getName()));
-                linea2.append(" ");
-                linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getName()));
+                linea2.append(", Codigo Postal: ");
+                linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getCode()));
 
                 address.setAddressLine1(linea1.toString());
                 address.setAddressLine2(linea2.toString());
@@ -315,9 +320,10 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             personHasAddress.setPersonId(person);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             personHasAddressParam = personHasAddress;
-
+            
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true).publish(new Event(""));
+            loadFields(personHasAddress);
             btnSave.setVisible(false);
         } catch (Exception ex) {
             showError(ex);

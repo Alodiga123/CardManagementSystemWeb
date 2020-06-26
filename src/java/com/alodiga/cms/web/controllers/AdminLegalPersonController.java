@@ -107,14 +107,14 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             }
             if (eventType == WebConstants.EVENT_ADD) {
                 legalPersonParam = null;
-            } else { 
+            } else {
                 if (adminRequest.getRequest().getPersonId() != null) {
                     EJBRequest request1 = new EJBRequest();
                     Map params = new HashMap();
                     params.put(Constants.PERSON_KEY, adminRequest.getRequest().getPersonId().getId());
                     request1.setParams(params);
                     legalPersonList = utilsEJB.getLegalPersonByPerson(request1);
-                    for (LegalPerson applicantLegaPerson: legalPersonList) {
+                    for (LegalPerson applicantLegaPerson : legalPersonList) {
                         legalPersonParam = applicantLegaPerson;
                     }
                 } else {
@@ -164,7 +164,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
@@ -173,7 +173,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     public void loadFields(LegalPerson legalPerson) {
         try {
             txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
@@ -297,8 +297,11 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             }
 
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
-
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
             tabAddress.setDisabled(false);
             tabLegalRepresentatives.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
