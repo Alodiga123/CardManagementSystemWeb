@@ -15,6 +15,7 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,10 +93,17 @@ public class ListPersonClassificationController extends GenericAbstractListContr
        
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.classification.person.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
+        
     }
     
     public void onClick$btnClear() throws InterruptedException {
@@ -116,13 +124,10 @@ public class ListPersonClassificationController extends GenericAbstractListContr
         PersonClassification personclassifications;
         try {
             if (filter != null && !filter.equals("")) {
-                personclassifications = utilsEJB.searchPersonClassification(filter);
-                personclassificationaux.add(personclassifications);
+                personclassificationaux = utilsEJB.getSearchPersonClassification(filter);
             } else {
                 return personclassification;
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListPersonClassificationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }

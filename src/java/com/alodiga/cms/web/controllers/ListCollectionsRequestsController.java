@@ -14,7 +14,9 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,12 +41,11 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
-        
+
     }
 
     public void startListener() {
     }
-
 
     @Override
     public void initialize() {
@@ -52,7 +53,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
         try {
             //Evaluar Permisos
             permissionEdit = true;
-            permissionAdd = true; 
+            permissionAdd = true;
             permissionRead = true;
             adminPage = "adminCollectionsRequest.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
@@ -82,6 +83,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(collectionsRequest.getProgramId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
+                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getCodeIso3()));
                     item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, collectionsRequest) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, collectionsRequest) : new Listcell());
@@ -111,61 +113,82 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showEmptyList();
+            showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
         }
     }
-    
-    
-    private void showEmptyList(){     
-                Listitem item = new Listitem();
-                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.appendChild(new Listcell());
-                item.setParent(lbxRecords);  
+
+    private void showEmptyList() {
+        Listitem item = new Listitem();
+        item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.bread.crumb.collectionsRequest.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.collectionsRequest.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
+        
     }
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
 
-public void onClick$btnSearch() throws InterruptedException {
+    public void onClick$btnSearch() throws InterruptedException {
         try {
             loadDataList(getFilterList(txtName.getText()));
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
+    
     @Override
-    public List<CollectionsRequest> getFilterList(String filter) {
-        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
-        CollectionsRequest collectionsRequests;
+    public List<CollectionsRequest> getFilterList(String name) {
+        List<CollectionsRequest> collectionRequestList = new ArrayList<CollectionsRequest>();
         try {
-            if (filter != null && !filter.equals("")) {
-                collectionsRequests = requestEJB.searchCollectionsRequest(filter);
-                collectionsRequestaux.add(collectionsRequests);
+            if (name != null && !name.equals("")) {
+                collectionRequestList = requestEJB.getSearchCollectionsRequest(name);
             } else {
-                return collectionsRequest;
+                return collectionRequestList;
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListCollectionsRequestsController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }
-        return collectionsRequestaux;
+        return collectionRequestList;
     }
-    
+
+//    @Override
+//    public List<CollectionsRequest> getFilterList(String filter) {
+//        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
+//        CollectionsRequest collectionsRequests;
+//        try {
+//            if (filter != null && !filter.equals("")) {
+//                collectionsRequests = requestEJB.searchCollectionsRequest(filter);
+//                collectionsRequestaux.add(collectionsRequests);
+//            } else {
+//                return collectionsRequest;
+//            }
+//        } catch (RegisterNotFoundException ex) {
+//            Logger.getLogger(ListCollectionsRequestsController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (Exception ex) {
+//            showError(ex);
+//        }
+//        return collectionsRequestaux;
+//    }
+
     public void loadList(List<CollectionsRequest> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

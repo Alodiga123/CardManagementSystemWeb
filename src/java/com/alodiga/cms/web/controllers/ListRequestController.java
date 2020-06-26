@@ -16,6 +16,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,36 +100,39 @@ public class ListRequestController extends GenericAbstractListController<Request
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(request.getRequestNumber()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));
-                    item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(request.getRequestDate())));                    
                     if (request.getPersonId() != null) {                        
                         if (request.getIndPersonNaturalRequest() == true) {
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             StringBuilder applicantNameNatural = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
                             applicantNameNatural.append(" ");
                             applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());          
                             item.appendChild(new Listcell(applicantNameNatural.toString()));
+                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                            item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
-                        } else {
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                        } else {                            
                             applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantNameLegal));
+                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                            item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         }                                                
                     } else {                      
-                        if (request.getIndPersonNaturalRequest() == true) {
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                        if (request.getIndPersonNaturalRequest() == true) {                            
                             item.appendChild(new Listcell("SIN REGISTRAR"));
+                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                            item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
-                        } else {
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                        } else {                            
                             item.appendChild(new Listcell("SIN REGISTRAR"));
+                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
+                            item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
@@ -176,11 +180,18 @@ public class ListRequestController extends GenericAbstractListController<Request
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.request.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.request.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
-    }
+        
+    } 
 
     public void onClick$btnClear() throws InterruptedException {
         txtRequestNumber.setText("");

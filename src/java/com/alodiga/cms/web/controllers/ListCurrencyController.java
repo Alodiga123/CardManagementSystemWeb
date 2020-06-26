@@ -4,7 +4,6 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -15,10 +14,10 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -36,7 +35,6 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
     private UtilsEJB utilsEJB = null;
     private List<Currency> currencies = null;
     private User currentUser;
-   
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -44,23 +42,25 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
         initialize();
     }
 
-    
     @Override
     public void initialize() {
         super.initialize();
         try {
+            permissionEdit = true;
+            permissionAdd = true;
+            permissionRead = true;
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminCurrency.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(currencies);
+            loadList(currencies);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-    
-   public void getData() {
-    currencies = new ArrayList<Currency>();
+
+    public void getData() {
+        currencies = new ArrayList<Currency>();
         try {
             request.setFirst(0);
             request.setLimit(null);
@@ -78,24 +78,29 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
         Sessions.getCurrent().removeAttribute("object");
         Executions.getCurrent().sendRedirect(adminPage);
     }
-    
-       
-   public void onClick$btnDownload() throws InterruptedException {
+
+    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.currency.name.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
+        
     }
-
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
-    
-     public void onClick$btnSearch() throws InterruptedException {
+
+    public void onClick$btnSearch() throws InterruptedException {
         try {
-            loadDataList(getFilterList(txtName.getText()));
+            loadList(getFilterList(txtName.getText()));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -103,42 +108,35 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
 
     @Override
     public List<Currency> getFilterList(String filter) {
-        List<Currency> currencyaux = new ArrayList<Currency>();
-        Currency currency;
+        List<Currency> currencyList = new ArrayList<Currency>();
         try {
             if (filter != null && !filter.equals("")) {
-                currency = utilsEJB.searchCurrency(filter);
-                currencyaux.add(currency);
+                currencyList = utilsEJB.getSearchCurrency(filter);
             } else {
                 return currencies;
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListCurrencyController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }
-        return currencyaux;
+        return currencyList;
     }
-    
+
     public void startListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-    public void loadDataList(List<Currency> list) {
-          try {
+    public void loadList(List<Currency> list) {
+        try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
                 for (Currency currency : list) {
-
                     item = new Listitem();
                     item.setValue(currency);
                     item.appendChild(new Listcell(currency.getName()));
                     item.appendChild(new Listcell(currency.getSymbol()));
-                    item.appendChild( new ListcellEditButton(adminPage, currency));
-                    item.appendChild(new ListcellViewButton(adminPage, currency,true));
+                    item.appendChild(new ListcellEditButton(adminPage, currency));
+                    item.appendChild(new ListcellViewButton(adminPage, currency, true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -152,12 +150,12 @@ public class ListCurrencyController extends GenericAbstractListController<Curren
             }
 
         } catch (Exception ex) {
-           showError(ex);
+            showError(ex);
         }
     }
-    public void loadList(List<Currency> list) {
+
+    public void loadDataList(List<Currency> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 
 }
