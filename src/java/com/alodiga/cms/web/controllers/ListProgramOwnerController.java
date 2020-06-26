@@ -40,6 +40,7 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
     private List<LegalPerson> legalPersonList = null;
     private List<NaturalPerson> naturalPersonList = null;
     public static int indOwnerOption = 2;
+    private Textbox txtName;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -182,12 +183,32 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtRequestNumber.setText("");
+        txtName.setText("");
     }
 
-    @Override
     public List<Person> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+         List<Person> personList_ = new ArrayList<Person>();
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_PROGRAM_OWNER);
+            params.put(Constants.PARAM_PERSON_NAME, filter);
+            request1.setParams(params);
+                personList_ = personEJB.searchPerson(request1);
+            } else {
+                return persons;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return personList_;    }
 
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }
