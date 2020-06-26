@@ -17,6 +17,7 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.cms.commons.util.QueryConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +41,8 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
     private List<LegalPerson> legalperson = null;
     private User currentUser;
     private PersonEJB personEJB = null;
+    private Textbox txtName;
+
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -74,7 +77,19 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
         Executions.getCurrent().sendRedirect("TabCardProgramManager.zul");
      }
 
+        public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
 
+        
+    public void onClick$btnSearch() throws InterruptedException {
+            try {
+                loadDataList(getFilterList(txtName.getText()));
+            } catch (Exception ex) {
+                showError(ex);
+        }
+    }
+        
     public void loadDataList(List<LegalPerson> list) {
         try {
             lbxRecords.getItems().clear();
@@ -148,9 +163,29 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
         
     }
 
-    @Override
+   
     public List<LegalPerson> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<LegalPerson> legalPersonList_ = new ArrayList<LegalPerson>();
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+      
+            Map params = new HashMap();
+            params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.CLASSIFICATION_CARD_MANAGEMENT_PROGRAM);
+            params.put(Constants.PERSON_ENTERPRISE_NAME_KEY, filter);
+            request1.setParams(params);
+
+            request1.setParams(params);
+                legalPersonList_ = personEJB.searchLegalPerson(request1);
+            } else {
+                return legalperson;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return legalPersonList_;
     }
+    
+ 
 
 }
