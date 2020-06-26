@@ -345,7 +345,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 txtCurrentPassword.setReadonly(true);
                 txtNewPassword.setReadonly(true);
                 txtRepeatNewPassword.setDisabled(false);
-                dtbRequestDate.setReadonly(true);
+                dtbRequestDate.setDisabled(false);
                 blockFields();
                 rApprovedYes.setDisabled(true);
                 rApprovedNo.setDisabled(true);

@@ -19,7 +19,9 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -37,6 +39,8 @@ public class ListProductController extends GenericAbstractListController<Product
     private ProductEJB productEJB = null;
     private List<Product> productList = null;
     private User currentUser;
+    private Textbox txtName;
+
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -68,11 +72,18 @@ public class ListProductController extends GenericAbstractListController<Product
     
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("sp.crud.enterprise.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.product.list"));
+            file.append("_");
+            file.append(date);
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
-    }
+        
+    } 
     
     public void getData() {
         productList = new ArrayList<Product>();
@@ -136,7 +147,28 @@ public class ListProductController extends GenericAbstractListController<Product
     }    
 
     public List<Product> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+               List<Product> productList_ = new ArrayList<Product>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                productList_ = productEJB.searchProduct(filter);
+            } else {
+                return productList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return productList_;//To change body of generated methods, choose Tools | Templates.
     }
 
+        public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }
