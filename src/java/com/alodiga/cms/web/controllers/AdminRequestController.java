@@ -172,7 +172,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
     }
 
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbPersonType.setVisible(true);
+        cmbPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbPersonType(eventType, country.getId());
     }
@@ -389,7 +391,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, requestParam.getPersonTypeId().getIndNaturalPerson());
         }
         request1.setParams(params);
-        List<PersonType> personTypes;
+        List<PersonType> personTypes = null;
         try {
             personTypes = utilsEJB.getPersonTypeByCountryByIndNaturalPerson(request1);
             loadGenericCombobox(personTypes, cmbPersonType, "description", evenInteger, Long.valueOf(requestParam != null ? requestParam.getPersonTypeId().getId() : 0));
@@ -401,9 +403,12 @@ public class AdminRequestController extends GenericAbstractAdminController {
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
-        }
-    }
+        } finally {
+            if (personTypes == null) {
+                this.showMessage("cms.msj.PersonTypeNull", false, null);
+         }            
+      }
+   }
 
     private void loadCmbRequestType(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
