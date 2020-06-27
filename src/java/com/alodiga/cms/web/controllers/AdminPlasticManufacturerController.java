@@ -63,6 +63,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     public static PlasticManufacturer plasticManufacturerParent = null;
+    private boolean indNaturalPerson;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -100,6 +101,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     }
     
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbPersonType.setValue("");
         cmbPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
@@ -110,7 +112,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         cmbDocumentsPersonType.setVisible(true);
         PersonType personType = (PersonType) cmbPersonType.getSelectedItem().getValue();
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbDocumentsPersonType(eventType,country.getId(),personType);
+        loadCmbDocumentsPersonType(eventType, personType.getId());
     }
 
     public void clearFields() {
@@ -307,16 +309,26 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         }
     }
 
-    private void loadCmbPersonType(Integer eventType, Integer countryId) {
+    private void loadCmbPersonType(Integer evenInteger, Integer countryId) {
         EJBRequest request1 = new EJBRequest();
         cmbPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, plasticManufacturerParam.getDocumentsPersonTypeId().getPersonTypeId().getOriginApplicationId().getId());
+        }
+        if (evenInteger == 1) {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, indNaturalPerson);
+        } else {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, plasticManufacturerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
+        }
         request1.setParams(params);
-        List<PersonType> personType;
+        List<PersonType> personType = null;
         try {
-            personType = utilsEJB.getPersonTypeByCountry(request1);
+            personType = utilsEJB.getPersonTypeByCountryByIndNaturalPerson(request1);
             loadGenericCombobox(personType, cmbPersonType, "description", eventType, Long.valueOf(plasticManufacturerParam != null ? plasticManufacturerParam.getDocumentsPersonTypeId().getPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -325,19 +337,23 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         } catch (NullParameterException ex) {
             showError(ex);
         }
-    }
-
-    private void loadCmbDocumentsPersonType(Integer eventType,Integer countryId, PersonType personType) {
-        EJBRequest request1 = new EJBRequest();
+        finally {
+            if (personType == null) {
+                this.showMessage("cms.msj.PersonTypeNull", false, null);
+         }            
+      }
+   }
+    
+    private void loadCmbDocumentsPersonType(Integer evenInteger, Integer PersonTypeId) {
         cmbDocumentsPersonType.getItems().clear();
+        EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
-        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, personType.getIndNaturalPerson());
+        params.put(Constants.PERSON_TYPE_KEY,PersonTypeId);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
-            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", eventType, Long.valueOf(plasticManufacturerParam != null ? plasticManufacturerParam.getDocumentsPersonTypeId().getId() : 0));
+            documentsPersonType = personEJB.getDocumentsPersonTypeByPersonType(request1);
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(plasticManufacturerParam != null ? plasticManufacturerParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
