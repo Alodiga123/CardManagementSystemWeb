@@ -32,9 +32,18 @@
                                                             <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbState" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbCity" value="" width="250px" maxlength="60"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbState" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbCity" value="" width="250px" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.urbanization')}" sclass="lblbold"/>
@@ -42,9 +51,18 @@
                                                             <label value="${c:l('cms.common.nameStreet')}" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtUbanization" constraint="no empty" maxlength="50" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <combobox id="cmbStreetType" mold="rounded" readonly="true" width="250px" />
-                                                            <textbox id="txtNameStreet" constraint="no empty" maxlength="40" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <textbox id="txtUbanization" constraint="no empty" maxlength="50" width="250px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbStreetType" mold="rounded" readonly="true" width="250px" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtNameStreet" constraint="no empty" maxlength="40" width="250px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.edificationType')}" sclass="lblbold"/>
@@ -52,17 +70,32 @@
                                                             <label value="${c:l('cms.common.tower')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbEdificationType" mold="rounded" readonly="true" width="250px" />
-                                                            <textbox id="txtNameEdification" value="" width="250px" maxlength="50" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtTower" value="" width="250px" maxlength="40" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbEdificationType" mold="rounded" readonly="true" width="250px" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtNameEdification" value="" width="250px" maxlength="50"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtTower" value="" width="250px" maxlength="40"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.common.floor')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.commmon.zipZone')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtFloor" value="" width="250px" maxlength="3" constraint="/^[0-9]{1,9}(?:\\.[0-9]{1,3})?$/"/>
-                                                            <combobox id="cmbZipZone" width="250px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <textbox id="txtFloor" value="" width="250px" maxlength="3" constraint="/^[0-9]{1,9}(?:\\.[0-9]{1,3})?$/"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbZipZone" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>

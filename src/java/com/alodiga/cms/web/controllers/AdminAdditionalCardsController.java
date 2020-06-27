@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -45,7 +46,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Textbox txtFullName;
     private Textbox txtFullLastName;
     private Textbox txtPositionEnterprise;
-    private Textbox txtProposedLimit;
+    private Doublebox dbxProposedLimit;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private UtilsEJB utilsEJB = null;
@@ -100,7 +101,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         txtFullLastName.setRawValue(null);
         txtIdentificationNumber.setRawValue(null);
         txtPositionEnterprise.setRawValue(null);
-        txtProposedLimit.setRawValue(null);
+        dbxProposedLimit.setRawValue(null);
     }
     
     private void loadFieldR(Request requestData) {
@@ -123,25 +124,31 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             txtFullLastName.setText(cardRequestNaturalPerson.getLastNames());
             txtIdentificationNumber.setText(cardRequestNaturalPerson.getIdentificationNumber());
             txtPositionEnterprise.setText(cardRequestNaturalPerson.getPositionEnterprise());
-            txtProposedLimit.setText(cardRequestNaturalPerson.getProposedLimit().toString());
+            dbxProposedLimit.setValue(cardRequestNaturalPerson.getProposedLimit().floatValue());
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtFullName.setReadonly(true);
-        txtFullLastName.setReadonly(true);
-        txtIdentificationNumber.setReadonly(true);
+        txtFullName.setDisabled(true);
+        txtFullLastName.setDisabled(true);
+        txtIdentificationNumber.setDisabled(true);
         txtPositionEnterprise.setDisabled(true);
-        txtProposedLimit.setDisabled(true);
+        dbxProposedLimit.setDisabled(true);
         cmbCountry.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtFullName.getText().isEmpty()) {
@@ -153,8 +160,8 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         } else if (txtPositionEnterprise.getText().isEmpty()) {
             txtPositionEnterprise.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtProposedLimit.getText().isEmpty()) {
-            txtProposedLimit.setFocus(true);
+        } else if (dbxProposedLimit.getText().isEmpty()) {
+            dbxProposedLimit.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -197,11 +204,14 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             if (eventType == 1) {
                 person.setCreateDate(new Timestamp(new Date().getTime()));
-                person.setPersonClassificationId(personClassification);
+            }else{
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
+            person.setPersonClassificationId(personClassification);
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person = personEJB.savePerson(person);
             personCardRequestNaturalPerson = person;
-
+            
             //Guarda el solicitante adicional de tarjeta
             cardRequestNaturalPerson.setPersonId(personCardRequestNaturalPerson);
             if (legalPerson != null) {
@@ -211,7 +221,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             cardRequestNaturalPerson.setLastNames(txtFullLastName.getText());
             cardRequestNaturalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
-            cardRequestNaturalPerson.setProposedLimit(Float.parseFloat(txtProposedLimit.getText()));
+            cardRequestNaturalPerson.setProposedLimit(dbxProposedLimit.getValue().floatValue());
             cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             if (legalCustomer != null) {
                 cardRequestNaturalPerson.setLegalCustomerId(legalCustomer);
@@ -256,11 +266,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             case WebConstants.EVENT_VIEW:
                 loadFieldR(adminRequest.getRequest());
                 loadFields(cardRequestNaturalPersonParam);
-                txtIdentificationNumber.setDisabled(true);
-                txtFullName.setDisabled(true);
-                txtFullLastName.setDisabled(true);
-                txtPositionEnterprise.setDisabled(true);
-                txtProposedLimit.setDisabled(true);
+                blockFields();
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 break;
