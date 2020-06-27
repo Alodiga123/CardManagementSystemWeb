@@ -10,14 +10,18 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Person;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -34,6 +38,7 @@ public class ListUserController extends GenericAbstractListController<User> {
     private PersonEJB personEJB = null;
     private List<User> userList = null;
     private User currentUser;
+    private Textbox txtName;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -144,9 +149,35 @@ public class ListUserController extends GenericAbstractListController<User> {
         }
     }
 
-    @Override
+    
     public List<User> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<User> userList_ = new ArrayList<User>();
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PARAM_USER, filter);
+            request1.setParams(params);
+               userList_ = personEJB.searchUser(request1);
+            } else {
+                return userList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return userList_;  
     }
 
+    
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }
