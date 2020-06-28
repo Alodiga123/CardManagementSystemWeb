@@ -44,7 +44,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private List<FamilyReferences> familyReferences = null;
-    private int optionMenu;
+    private Long optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -73,7 +73,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             permissionAdd = true;
             permissionRead = true;
             adminPage = "/adminFamilyReferences.zul";
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
@@ -190,7 +190,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
         NaturalCustomer naturalCustomer = null;
 
         try {
-            if (optionMenu == 1) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
                 AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
                 if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
                     applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
@@ -201,7 +201,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
                 request1.setParams(params);
                 familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
                 
-            } else if (optionMenu == 2) {
+            } else if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
                 AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
                 if (adminNaturalCustomer != null) {
                     naturalCustomer = adminNaturalCustomer.getNaturalCustomer();

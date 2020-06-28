@@ -62,6 +62,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
+    private boolean indNaturalPerson;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -266,7 +267,9 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     }
     
     public void onChange$cmbPersonType() {
+        this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
+        cmbDocumentsPersonType.setValue("");
         PersonType personType = (PersonType) cmbPersonType.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, personType.getId());
     }
@@ -320,10 +323,20 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, issuerParam.getDocumentsPersonTypeId().getPersonTypeId().getOriginApplicationId().getId());
+        }
+        if (evenInteger == 1) {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, indNaturalPerson);
+        } else {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, issuerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
+        }
         request1.setParams(params);
         List<PersonType> personType = null;
         try {
-            personType = utilsEJB.getPersonTypeByCountry(request1);
+            personType = utilsEJB.getPersonTypeByCountryByIndNaturalPerson(request1);
             loadGenericCombobox(personType, cmbPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getIssuerPersonId().getPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -344,7 +357,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(Constants.PERSON_TYPE_KEY,documentsPersonTypeId);
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = personEJB.getDocumentsPersonTypeByPersonType(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getDocumentsPersonTypeId().getId() : 0));
@@ -354,6 +367,10 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             showError(ex);
         } catch (NullParameterException ex) {
             showError(ex);
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.documentsPersonTypeNull", false, null);
+            }            
         }
     }
 

@@ -25,6 +25,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,11 +51,12 @@ public class AdminProductController extends GenericAbstractAdminController {
     private ProgramEJB programEJB = null;
     private Product productParam;
     private Textbox txtName;
-    private Intbox  intDaysBeforeExpiration;
-    private Intbox  intDaysToInactivate;
-    private Intbox  intDaysToActivate;
-    private Intbox  intDaysToUse;
-    private Intbox  intDaysToWithdrawCard;
+    private Intbox intDaysBeforeExpiration;
+    private Intbox intDaysToInactivate;
+    private Intbox intDaysToActivate;
+    private Intbox intDaysToUse;
+    private Intbox intDaysToWithdrawCard;
+    private Intbox intMaximunDeactivationTimeBlocking;
     private Datebox dtbBeginDateValidity;
     private Datebox dtbEndDateValidity;
     private Combobox cmbCountry;
@@ -129,6 +131,7 @@ public class AdminProductController extends GenericAbstractAdminController {
         intDaysToActivate.setRawValue(null);
         intDaysToUse.setRawValue(null);
         intDaysToWithdrawCard.setRawValue(null);
+        intMaximunDeactivationTimeBlocking.setRawValue(null);
         dtbBeginDateValidity.setRawValue(null);
         dtbEndDateValidity.setRawValue(null);
     }
@@ -149,6 +152,9 @@ public class AdminProductController extends GenericAbstractAdminController {
             intDaysToActivate.setValue(product.getDaysToActivate().intValue());
             intDaysToUse.setValue(product.getDaysToUse().intValue());
             intDaysToWithdrawCard.setValue(product.getDaysToWithdrawCard().intValue());
+            if (product.getMaximunDeactivationTimeBlocking() != null) {
+                intMaximunDeactivationTimeBlocking.setValue(product.getMaximunDeactivationTimeBlocking().intValue());
+            }
             dtbBeginDateValidity.setValue(product.getBeginDateValidity());
             dtbEndDateValidity.setValue(product.getEndDateValidity());
             switch (product.getValidityMonths()) {
@@ -171,8 +177,18 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public void blockFields() {
-        txtName.setReadonly(true);
-        cmbCountry.setReadonly(true);
+        txtName.setDisabled(true);
+        r24Months.setDisabled(true);
+        r36Months.setDisabled(true);
+        r48Months.setDisabled(true);
+        intDaysBeforeExpiration.setDisabled(true);
+        intDaysToInactivate.setDisabled(true);
+        intDaysToActivate.setDisabled(true);
+        intDaysToUse.setDisabled(true);
+        intDaysToWithdrawCard.setDisabled(true);
+        intMaximunDeactivationTimeBlocking.setDisabled(true);
+        dtbBeginDateValidity.setDisabled(true);
+        dtbEndDateValidity.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -195,6 +211,14 @@ public class AdminProductController extends GenericAbstractAdminController {
                 validityMonth = WebConstants.VALIDITY_MONTH_48;
             }
 
+            //Calculando la edad de la persona segun la fecha de nacimiento
+            Date fechaFinVigencia = new Date();
+            Calendar feVecimiento = Calendar.getInstance();
+            feVecimiento.setTime(((Datebox) dtbBeginDateValidity).getValue());
+            feVecimiento.add(Calendar.MONTH, +validityMonth);
+            Calendar cumpleCalendar = Calendar.getInstance();
+            fechaFinVigencia = feVecimiento.getTime();
+            
             //Obtener estatus PENDING para asociarlo al producto
             EJBRequest request1 = new EJBRequest();
             request1.setParam(WebConstants.PRODUCT_STATUS_PENDING);
@@ -229,9 +253,11 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setDaysToUse(intDaysToUse.getValue());
             product.setDaysToWithdrawCard(intDaysToWithdrawCard.getValue());
             product.setBeginDateValidity((dtbBeginDateValidity.getValue()));
-            product.setEndDateValidity((dtbEndDateValidity.getValue()));
+//            product.setEndDateValidity((dtbEndDateValidity.getValue()));
+            product.setEndDateValidity(fechaFinVigencia);
             product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
+            product.setMaximunDeactivationTimeBlocking(intMaximunDeactivationTimeBlocking.getValue());
             product.setValidityMonths(validityMonth);
             if (eventType == WebConstants.EVENT_ADD) {
                 product.setCreateDate(new Timestamp(new Date().getTime()));
@@ -243,6 +269,7 @@ public class AdminProductController extends GenericAbstractAdminController {
 
             productParam = product;
             productParent = product;
+            loadFields(productParam);
             this.showMessage("sp.common.save.success", false, null);
             btnSave.setDisabled(false);
 
@@ -256,40 +283,89 @@ public class AdminProductController extends GenericAbstractAdminController {
 
     public Boolean validateEmpty() {
         Date today = new Date();
+        ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
 
-        if (txtName.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbProgramType.getSelectedItem() == null) {
+            cmbProgramType.setFocus(true);
+            this.showMessage("cms.error.programType.notSelected", true, null);
+        } else if (cmbProgram.getSelectedItem() == null) {
+            cmbProgram.setFocus(true);
+            this.showMessage("cms.error.program.notSelected", true, null);
+        } else if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("cms.error.field.product", true, null);
+        } else if (cmbKindCard.getSelectedItem() == null) {
+            cmbKindCard.setFocus(true);
+            this.showMessage("cms.error.kindCard.notSelected", true, null);
+        } else if (cmbLevelProduct.getSelectedItem() == null) {
+            cmbLevelProduct.setFocus(true);
+            this.showMessage("cms.error.levelProduct.notSelected", true, null);
+        } else if (cmbProductUse.getSelectedItem() == null) {
+            cmbProductUse.setFocus(true);
+            this.showMessage("cms.error.use.notSelected", true, null);
+//        } else if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
+//            if (cmbDomesticCurrency.getSelectedItem() == null) {
+//                cmbDomesticCurrency.setFocus(true);
+//                this.showMessage("cms.error.domesticCurrency.notSelected", true, null);
+//            }
+//        } else if (productUse.getId() == WebConstants.PRODUCT_USE_INTERNATIONAL) {
+//            if (cmbInternationalCurrency.getSelectedItem() == null) {
+//                cmbInternationalCurrency.setFocus(true);
+//                this.showMessage("cms.error.internationalCurrency.notSelected", true, null);
+//            }
+//        } else if (productUse.getId() == WebConstants.PRODUCT_USE_BOTH) {
+//            if (cmbDomesticCurrency.getSelectedItem() == null) {
+//                cmbDomesticCurrency.setFocus(true);
+//                this.showMessage("cms.error.domesticCurrency.notSelected", true, null);
+//            } else if (cmbInternationalCurrency.getSelectedItem() == null) {
+//                cmbInternationalCurrency.setFocus(true);
+//                this.showMessage("cms.error.internationalCurrency.notSelected", true, null);
+//            }
+        } else if ((!r24Months.isChecked()) && (!r36Months.isChecked()) && (!r48Months.isChecked())) {
+            this.showMessage("cms.error.validityMonths", true, null);
+        } else if (cmbStorageMedio.getSelectedItem() == null) {
+            cmbStorageMedio.setFocus(true);
+            this.showMessage("cms.error.storageMedio.noSelected", true, null);
+        } else if (intDaysBeforeExpiration.getText().isEmpty()) {
+            intDaysBeforeExpiration.setFocus(true);
+            this.showMessage("cms.error.field.intDaysBeforeExpiration", true, null);
+        } else if (intDaysToInactivate.getText().isEmpty()) {
+            intDaysToInactivate.setFocus(true);
+            this.showMessage("cms.error.field.daysToInactivate", true, null);
+        } else if (intDaysToActivate.getText().isEmpty()) {
+            intDaysToActivate.setFocus(true);
+            this.showMessage("cms.error.field.daysToActivate", true, null);
+        } else if (intDaysToUse.getText().isEmpty()) {
+            intDaysToUse.setFocus(true);
+            this.showMessage("cms.error.field.daysToUse", true, null);
+        } else if (intDaysToWithdrawCard.getText().isEmpty()) {
+            intDaysToWithdrawCard.setFocus(true);
+            this.showMessage("cms.error.field.daysToToWithdrawCard", true, null);
+        } else if (intMaximunDeactivationTimeBlocking.getText().isEmpty()) {
+            intDaysToWithdrawCard.setFocus(true);
+            this.showMessage("cms.error.maximunDeactivationTimeBlocking", true, null);
         } else if (dtbBeginDateValidity.getText().isEmpty()) {
             dtbBeginDateValidity.setFocus(true);
             this.showMessage("cms.error.field.beginDate", true, null);
         } else if (today.compareTo(dtbBeginDateValidity.getValue()) < 0) {
             dtbBeginDateValidity.setFocus(true);
             this.showMessage("cms.error.date.beginDateValidity", true, null);
-        } else if (dtbEndDateValidity.getText().isEmpty()) {
-            dtbEndDateValidity.setFocus(true);
-            this.showMessage("cms.error.field.endDate", true, null);
-        } else if (today.compareTo(dtbEndDateValidity.getValue()) > 0) {
-            dtbEndDateValidity.setFocus(true);
-            this.showMessage("cms.error.date.endDateValidity", true, null);
-        } else if (intDaysBeforeExpiration.getText().isEmpty()) {
-            intDaysBeforeExpiration.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToActivate.getText().isEmpty()) {
-            intDaysToActivate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToInactivate.getText().isEmpty()) {
-            intDaysToInactivate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToWithdrawCard.getText().isEmpty()) {
-            intDaysToWithdrawCard.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intDaysToUse.getText().isEmpty()) {
-            intDaysToUse.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+//        } else if (dtbEndDateValidity.getText().isEmpty()) {
+//            dtbEndDateValidity.setFocus(true);
+//            this.showMessage("cms.error.field.endDate", true, null);
+//        } else if (today.compareTo(dtbEndDateValidity.getValue()) > 0) {
+//            dtbEndDateValidity.setFocus(true);
+//            this.showMessage("cms.error.date.endDateValidity", true, null);
+        } else if (cmbSegmentMarketing.getSelectedItem() == null) {
+            cmbSegmentMarketing.setFocus(true);
+            this.showMessage("cms.error.segmentMarketing.noSelected", true, null);
         } else {
             return true;
         }
+
         return false;
     }
 
@@ -357,6 +433,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             case WebConstants.EVENT_EDIT:
                 productParent = productParam;
                 loadFields(productParam);
+                dtbEndDateValidity.setDisabled(true);
                 loadCmbCountry(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);
@@ -371,17 +448,6 @@ public class AdminProductController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 productParent = productParam;
                 loadFields(productParam);
-                txtName.setReadonly(true);
-                r24Months.setDisabled(true);
-                r36Months.setDisabled(true);
-                r48Months.setDisabled(true);
-                intDaysBeforeExpiration.setReadonly(true);
-                intDaysToInactivate.setReadonly(true);
-                intDaysToActivate.setReadonly(true);
-                intDaysToUse.setReadonly(true);
-                intDaysToWithdrawCard.setReadonly(true);
-                dtbBeginDateValidity.setReadonly(true);
-                dtbEndDateValidity.setReadonly(true);
                 blockFields();
                 loadCmbCountry(eventType);
                 loadCmbKindCard(eventType);
@@ -395,6 +461,7 @@ public class AdminProductController extends GenericAbstractAdminController {
                 onChange$cmbProgramType();
                 break;
             case WebConstants.EVENT_ADD:
+                dtbEndDateValidity.setDisabled(true);
                 loadCmbCountry(eventType);
                 loadCmbKindCard(eventType);
                 loadCmbProgramType(eventType);

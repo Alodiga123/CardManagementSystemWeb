@@ -107,14 +107,14 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             }
             if (eventType == WebConstants.EVENT_ADD) {
                 legalPersonParam = null;
-            } else { 
+            } else {
                 if (adminRequest.getRequest().getPersonId() != null) {
                     EJBRequest request1 = new EJBRequest();
                     Map params = new HashMap();
                     params.put(Constants.PERSON_KEY, adminRequest.getRequest().getPersonId().getId());
                     request1.setParams(params);
                     legalPersonList = utilsEJB.getLegalPersonByPerson(request1);
-                    for (LegalPerson applicantLegaPerson: legalPersonList) {
+                    for (LegalPerson applicantLegaPerson : legalPersonList) {
                         legalPersonParam = applicantLegaPerson;
                     }
                 } else {
@@ -142,8 +142,9 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     }
 
     public void onChange$cmbCountry() {
-        cmbDocumentsPersonType.setValue("");
+        this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
+        cmbDocumentsPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
     }
@@ -164,7 +165,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
@@ -173,7 +174,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     public void loadFields(LegalPerson legalPerson) {
         try {
             txtIdentificationNumber.setText(legalPerson.getIdentificationNumber());
@@ -297,8 +298,11 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             }
 
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
-
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
             tabAddress.setDisabled(false);
             tabLegalRepresentatives.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
@@ -387,7 +391,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
         }
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getDocumentsPersonTypeId().getId() : 0));
@@ -399,9 +403,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
-        }
-    }
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
+         }            
+      }
+   }
 
     private void loadCmbEconomicActivity(Integer evenInteger) {
         //cmbEconomicActivity

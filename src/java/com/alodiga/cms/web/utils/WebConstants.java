@@ -21,6 +21,8 @@ public class WebConstants {
     public static final String ISSUER = "issuer";
     public static final String CARD = "card";
     public static final String PRODUCT_TYPE = "productType";
+    public static final String IND_OWNER_PROGRAM = "indOwnerProgram";
+    public static final String IND_OWNER_PROGRAM_SELECT = "indOwnerProgramSelect";
     public static final String SESSION_ACCOUNT = "sp_account";
     public static final String SESSION_DISTRIBUTOR = "sp_loguedDistributor";
     public static final String SESSION_FULLSITE = "sp_fullSite";

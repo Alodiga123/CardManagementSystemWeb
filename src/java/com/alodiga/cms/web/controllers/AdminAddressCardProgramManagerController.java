@@ -217,7 +217,9 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
             personHasAddressParam = personHasAddress;
 
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(true);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setDisabled(true);
+            }
 
         } catch (Exception ex) {
             showError(ex);

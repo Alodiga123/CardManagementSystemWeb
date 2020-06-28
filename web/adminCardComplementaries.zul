@@ -50,9 +50,18 @@
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
@@ -60,9 +69,15 @@
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <datebox id="txtDueDateDocumentIdentification" width="250px"/>
+                                                            <hlayout>
+                                                                <datebox id="txtDueDateDocumentIdentification" width="250px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <textbox id="txtIdentificationNumberOld" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
+                                                            <hlayout>
+                                                                <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
@@ -70,9 +85,18 @@
                                                             <label value="${c:l('cms.common.birthday')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
-                                                            <datebox id="txtBirthDay" width="250px"/>
+                                                            <hlayout>
+                                                                <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtBirthPlace" value="" width="250px" maxlength="45"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <datebox id="txtBirthDay" width="250px"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.common.gender')}" sclass="lblbold"/>
@@ -93,9 +117,11 @@
                                                             </hbox>  
                                                             <hlayout>
                                                                 <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
                                                              </hlayout>
                                                              <hlayout>
                                                                 <combobox id="cmbProfession" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
                                                              </hlayout>
                                                         </row>
                                                         <row>
@@ -104,15 +130,27 @@
                                                             <label value="${c:l('cms.common.naturalperson.familyReferences.cellPhone')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbRelationship" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtLocalPhone" value="" width="250px" maxlength="30"/>
-                                                            <textbox id="txtCellPhone" value="" width="250px" maxlength="30"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbRelationship" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtLocalPhone" value="" width="250px" maxlength="30"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtCellPhone" value="" width="250px" maxlength="30"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                            <hlayout>
+                                                                <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>                                                            
                                                         </row>
                                                     </rows>
                                                 </grid>

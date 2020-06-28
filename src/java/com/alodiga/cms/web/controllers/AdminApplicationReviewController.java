@@ -145,12 +145,12 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtReviewDate.setRawValue(null);
         txtObservations.setRawValue(null);
     }
-    
+
     private void loadField(Request requestData) {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
@@ -226,10 +226,15 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     public Boolean validateEmpty() {
         if (txtReviewDate.getText().isEmpty()) {
             txtReviewDate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.reviewDate", true, null);
         } else if (txtMaximumRechargeAmount.getText().isEmpty()) {
             txtMaximumRechargeAmount.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.maximumRechargeAmount", true, null);
+        } else if (cmbProduct.getSelectedItem() == null) {
+            cmbProduct.setFocus(true);
+            this.showMessage("cms.error.product.notSelected", true, null);
+        } else if ((!rApprovedYes.isChecked()) && (!rApprovedNo.isChecked())) {
+            this.showMessage("cms.error.field.approved", true, null);
         } else if (txtObservations.getText().isEmpty()) {
             txtObservations.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);

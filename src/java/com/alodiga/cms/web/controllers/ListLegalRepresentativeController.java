@@ -1,15 +1,18 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
+import com.cms.commons.models.LegalRepresentatives;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -18,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
@@ -39,11 +44,16 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     private Listbox lbxRecords;
     private Textbox txtName;
     private PersonEJB personEJB = null;
+    private UtilsEJB utilsEJB = null;
+    private Integer eventType;
     private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
+    private Long optionMenu = 0L;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        AdminRequestController adminRequest = new AdminRequestController();
+        eventType = adminRequest.getEventType();
         initialize();
         startListener();
     }
@@ -67,8 +77,10 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
+            optionMenu = (Long) Sessions.getCurrent().getAttribute(WebConstants.OPTION_MENU);
             adminPage = "/adminLegalRepresentative.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadDataList(legalRepresentatives);
         } catch (Exception ex) {
@@ -182,14 +194,16 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
    
     public void getData() {
         legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
+        LegalRepresentatives legalRepresentative = null;
         LegalPerson legalPerson = null;
+        
         try {
-            //Solicitante de Tarjeta
-            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
-            AdminOwnerLegalPersonController adminOwnerLegal = new AdminOwnerLegalPersonController();
-            if (adminLegalPerson.getLegalPerson() != null) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
+                AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
                 legalPerson = adminLegalPerson.getLegalPerson();
-            }else if (adminOwnerLegal.getLegalPerson() != null){
+            }
+            if (optionMenu == Constants.LIST_PROGRAM_OWNER) {
+                AdminOwnerLegalPersonController adminOwnerLegal = new AdminOwnerLegalPersonController();
                 legalPerson = adminOwnerLegal.getLegalPerson();
             }
             EJBRequest request1 = new EJBRequest();
@@ -197,12 +211,23 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
             request1.setParams(params);
             legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);
+            
+            if (eventType == WebConstants.EVENT_EDIT) {
+                EJBRequest request2 = new EJBRequest();
+                for (LegalPersonHasLegalRepresentatives lpr : legalRepresentatives) {
+                    request2.setParam(lpr.getLegalRepresentativesid().getId());
+                    legalRepresentative = utilsEJB.loadLegalRepresentatives(request2);
+                    lpr.setLegalRepresentativesid(legalRepresentative);
+                }
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
             showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListLegalRepresentativeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -217,7 +242,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.legalRepresentatives.list"));
         } catch (Exception ex) {
             showError(ex);
         }

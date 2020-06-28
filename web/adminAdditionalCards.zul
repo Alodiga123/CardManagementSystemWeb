@@ -68,7 +68,7 @@
                                                             <label value="${c:l('cms.common.aditionalCard.proposedLimit')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtProposedLimit" value="" width="250px" maxlength="11"/> 
+                                                            <doublebox id="dbxProposedLimit" width="240px" constraint="no negative"  format="#,##0.##" maxlength="25"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
