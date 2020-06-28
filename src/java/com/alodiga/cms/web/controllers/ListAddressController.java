@@ -191,7 +191,6 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     public void getData() {
         personHasAddress = new ArrayList<PersonHasAddress>();
         Address address = null;
-//        address = new ArrayList<Address>();
         Person person = null;
         try {
             AdminRequestController adminRequest = new AdminRequestController();

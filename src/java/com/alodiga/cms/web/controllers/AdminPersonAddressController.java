@@ -198,6 +198,8 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         txtEmail.setReadonly(true);
         rAddressDeliveryYes.setDisabled(true);
         rAddressDeliveryNo.setDisabled(true);
+        txtLine1.setReadonly(true);
+        txtLine2.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -281,7 +283,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             } else {
                 address.setUpdateDate(new Timestamp(new Date().getTime()));
             }
-
+            
             if ((txtTower.getText() != null) && (txtNameEdification.getText() != null)) {
                 StringBuilder linea1 = new StringBuilder("Tipo de Calle: ");
                 linea1.append((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
@@ -311,7 +313,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 address.setAddressLine1(txtLine1.getText());
                 address.setAddressLine2(txtLine2.getText());
             }
-
             address = utilsEJB.saveAddress(address);
             addressParent = address;
 
