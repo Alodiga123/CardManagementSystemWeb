@@ -57,11 +57,13 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     private Button btnSave;
     private Toolbarbutton tbbTitle;
     private Integer eventType;
+    private Integer indSelect = 2;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        Sessions.getCurrent().setAttribute(WebConstants.IND_OWNER_PROGRAM_SELECT, indSelect);
         if (eventType == WebConstants.EVENT_ADD) {
             legalOwnerParam = null;
         } else {

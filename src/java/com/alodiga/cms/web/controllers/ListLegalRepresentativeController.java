@@ -40,6 +40,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
+    private Long optionMenu = 0L;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -67,6 +68,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
+            optionMenu = (Long) Sessions.getCurrent().getAttribute(WebConstants.OPTION_MENU);
             adminPage = "/adminLegalRepresentative.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
@@ -183,13 +185,14 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     public void getData() {
         legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
         LegalPerson legalPerson = null;
+        
         try {
-            //Solicitante de Tarjeta
-            AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
-            AdminOwnerLegalPersonController adminOwnerLegal = new AdminOwnerLegalPersonController();
-            if (adminLegalPerson.getLegalPerson() != null) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
+                AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
                 legalPerson = adminLegalPerson.getLegalPerson();
-            }else if (adminOwnerLegal.getLegalPerson() != null){
+            }
+            if (optionMenu == Constants.LIST_PROGRAM_OWNER) {
+                AdminOwnerLegalPersonController adminOwnerLegal = new AdminOwnerLegalPersonController();
                 legalPerson = adminOwnerLegal.getLegalPerson();
             }
             EJBRequest request1 = new EJBRequest();

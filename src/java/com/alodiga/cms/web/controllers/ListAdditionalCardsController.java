@@ -49,7 +49,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private List<CardRequestNaturalPerson> cardRequestNaturalPersonList = null;
     private User currentUser;
     private Button btnSave;
-    private int optionMenu;
+    private Long optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -78,7 +78,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             permissionAdd = true;
             permissionRead = true;
             adminPage = "adminAdditionalCards.zul";
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
@@ -94,7 +94,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         LegalCustomer legalCustomer = null;
         try {
 
-            if (optionMenu == 1) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
                 //Solicitante de Tarjeta
                 AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
                 if (adminLegalPerson.getLegalPerson() != null) {
@@ -106,7 +106,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                 request1.setParams(params);
                 cardRequestNaturalPersonList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request1);
 
-            } else if (optionMenu == 2) {
+            } else if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
                 AdminLegalPersonCustomerController adminLegalCustomer = new AdminLegalPersonCustomerController();
                 if (adminLegalCustomer != null) {
                     legalCustomer = adminLegalCustomer.getLegalCustomer();

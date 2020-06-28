@@ -26,6 +26,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Textbox;
 
 public class ListProductController extends GenericAbstractListController<Product> {
 

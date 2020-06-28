@@ -19,6 +19,7 @@ import com.cms.commons.models.Request;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -72,7 +73,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     public Window winAdminNaturalPersonAddress;
     private AdminRequestController adminRequest = null;
     private Request requestCard;
-    private int optionMenu;
+    private Long optionMenu;
     Map params = null;
 
     @Override
@@ -103,7 +104,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -248,12 +249,12 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 indAddressDelivery = false;
             }
 
-            if (optionMenu == 1) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
                 AdminRequestController adminRequest = new AdminRequestController();
                 if (adminRequest.getRequest().getPersonId() != null) {
                     person = adminRequest.getRequest().getPersonId();
                 }
-            } else if (optionMenu == 2) {
+            } else if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
                 if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
                     person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
                 } else if (AdminLegalPersonCustomerController.legalCustomerParam.getPersonId() != null) {

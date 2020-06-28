@@ -58,7 +58,7 @@ public class ListCustomerController extends GenericAbstractListController<Person
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, indCustomerOption);
+            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, Constants.LIST_CUSTOMER_MANAGEMENT);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(persons);
@@ -67,7 +67,7 @@ public class ListCustomerController extends GenericAbstractListController<Person
         }
     }
     
-        public int getIndCustomerOption() {
+    public int getIndCustomerOption() {
         return indCustomerOption;
     }
 

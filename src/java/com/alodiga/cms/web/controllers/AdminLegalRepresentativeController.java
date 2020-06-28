@@ -124,20 +124,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         txtBirthDay.setRawValue(null);
     }
 
-    private void loadFieldR(Request requestData) {
-        try {
-            String pattern = "yyyy-MM-dd";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-            if (requestData.getRequestNumber() != null) {
-                lblRequestNumber.setValue(requestData.getRequestNumber());
-                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
-            }
-        } catch (Exception ex) {
-            showError(ex);
-        }
-    }
-
     private void loadFields(LegalRepresentatives legalRepresentatives) {
         try {
             txtFullName.setText(legalRepresentatives.getFirstNames());
@@ -365,7 +351,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFieldR(adminRequest.getRequest());
                 loadFields(legalRepresentativesParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -373,7 +358,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFieldR(adminRequest.getRequest());
                 loadFields(legalRepresentativesParam);
                 txtIdentificationNumber.setDisabled(true);
                 txtFullName.setDisabled(true);
@@ -389,7 +373,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
