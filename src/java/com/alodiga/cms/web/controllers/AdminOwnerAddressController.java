@@ -57,45 +57,73 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
     private AdminOwnerLegalPersonController adminLegalPerson = null;
     private AdminOwnerNaturalPersonController adminNaturalPerson = null;
     private List<PersonHasAddress> personHasAddressList;
+    private Integer indHaveAddress = 0;
+    private Integer indSelect;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
+        indSelect = (Integer) Sessions.getCurrent().getAttribute(WebConstants.IND_OWNER_PROGRAM_SELECT);
         adminNaturalPerson = new AdminOwnerNaturalPersonController();
         adminLegalPerson = new AdminOwnerLegalPersonController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+        personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
 
-        if (eventType == WebConstants.EVENT_ADD) {
-            addressParam = null;
-        } else {
-            if (adminNaturalPerson.getNaturalPerson() != null) {
-                if (adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress() != null) {
-                    addressParam = adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress().getAddressId();
-                } else {
-                    addressParam = null;
-                }
-            } else if (adminLegalPerson.getLegalPerson() != null) {
-                if (adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress() != null) {
-                    addressParam = adminLegalPerson.getLegalPerson().getPersonId().getPersonHasAddress().getAddressId();
-                } else {
-                    addressParam = null;
-                }
+        try {
+            if (eventType == WebConstants.EVENT_ADD) {
+                addressParam = null;
             } else {
+                if (indSelect == 1) {
+                    if (adminNaturalPerson.getNaturalPerson() != null) {
+                        if (adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress() == null) {
+                            EJBRequest request1 = new EJBRequest();
+                            Map params = new HashMap();
+                            params.put(Constants.PERSON_KEY, adminNaturalPerson.getNaturalPerson().getPersonId().getId());
+                            request1.setParams(params);
+                            personHasAddressList = personEJB.getPersonHasAddressesByPerson(request1);
+                            for (PersonHasAddress pha : personHasAddressList) {
+                                adminNaturalPerson.getNaturalPerson().getPersonId().setPersonHasAddress(pha);
+                            }
+                            addressParam = adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress().getAddressId();
+                        } else {
+                            indHaveAddress = 1;
+                            addressParam = adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress().getAddressId();
+                        }
+                    }
+                } else {
+                    if (adminLegalPerson.getLegalPerson() != null) {
+                        if (adminLegalPerson.getLegalPerson().getPersonId().getPersonHasAddress() == null) {
+                            EJBRequest request1 = new EJBRequest();
+                            Map params = new HashMap();
+                            params.put(Constants.PERSON_KEY, adminLegalPerson.getLegalPerson().getPersonId().getId());
+                            request1.setParams(params);
+                            personHasAddressList = personEJB.getPersonHasAddressesByPerson(request1);
+                            for (PersonHasAddress pha : personHasAddressList) {
+                                adminLegalPerson.getLegalPerson().getPersonId().setPersonHasAddress(pha);
+                            }
+                            addressParam = adminLegalPerson.getLegalPerson().getPersonId().getPersonHasAddress().getAddressId();
+                        } else {
+                            indHaveAddress = 1;
+                            addressParam = adminLegalPerson.getLegalPerson().getPersonId().getPersonHasAddress().getAddressId();
+                        }
+                    }
+                }
+            } 
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
+            if (indHaveAddress == 0 && addressParam == null) {
                 addressParam = null;
             }
-        }
-
-        initialize();
+            initialize();
+        }        
     }
 
     @Override
     public void initialize() {
         super.initialize();
         try {
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -136,7 +164,6 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
             txtNameEdification.setValue(address.getNameEdification());
             txtTower.setValue(address.getTower());
             txtFloor.setValue(address.getFloor().toString());
-
         } catch (Exception ex) {
             showError(ex);
         }
@@ -148,11 +175,10 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
         txtNameEdification.setReadonly(true);
         txtTower.setReadonly(true);
         txtFloor.setReadonly(true);
-        txtEmail.setReadonly(true);
-        cmbCountry.setDisabled(true);
-        cmbState.setDisabled(true);
-        cmbCity.setDisabled(true);
-        cmbEdificationType.setDisabled(true);
+        cmbCountry.setReadonly(true);
+        cmbState.setReadonly(true);
+        cmbCity.setReadonly(true);
+        cmbEdificationType.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -187,24 +213,24 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
             if (_address != null) {
                 address = _address;
                 personHasAddress = ownerPerson.getPersonHasAddress();
-            } else {//New address
+            } else {
                 address = new Address();
                 personHasAddress = new PersonHasAddress();
             }
             
-            //Se obtiene la persona asociada al Owner
-            AdminOwnerLegalPersonController adminOwnerLegal = new AdminOwnerLegalPersonController();
-            AdminOwnerNaturalPersonController adminOwnerNatural = new AdminOwnerNaturalPersonController();
-            if (adminOwnerNatural.getNaturalPerson() != null) {
-                ownerPerson = adminOwnerNatural.getNaturalPerson().getPersonId();
-            }else if (adminOwnerLegal.getLegalPerson()!= null) {
-                ownerPerson = adminOwnerLegal.getLegalPerson().getPersonId();
+            //Se obtiene la persona asociada al Propietario del Programa
+            if (indSelect == 1) {
+                ownerPerson = adminNaturalPerson.getNaturalPerson().getPersonId();
+            } else {
+                ownerPerson = adminLegalPerson.getLegalPerson().getPersonId();
             }
             
+            //Obtiene el tipo de Dirección
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.ADDRESS_TYPE_DELIVERY);
             AddressType addressType = utilsEJB.loadAddressType(request);
 
+            //Se guarda la dirección del propietario del programa
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
@@ -219,7 +245,7 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
             address = utilsEJB.saveAddress(address);
             addressParam = address;
 
-            //PersonHasAddress
+            //Se asocia la dirección a la persona
             personHasAddress.setAddressId(address);
             personHasAddress.setPersonId(ownerPerson);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);

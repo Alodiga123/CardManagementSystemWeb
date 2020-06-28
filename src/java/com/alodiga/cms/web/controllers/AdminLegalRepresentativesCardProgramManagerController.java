@@ -212,11 +212,6 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             phonePerson.setPersonId(personLegalRepresentatives);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
             phonePerson = personEJB.savePhonePerson(phonePerson);
-
-            //Asocia el Representante Legal al Gerente de Programa de Tarjetas
-            legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
-            legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
-            legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
             
             //Guarda el Representante Legal
             legalRepresentatives.setPersonId(personLegalRepresentatives);
@@ -232,8 +227,16 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
+            
+            //Asocia el Representante Legal al Gerente de Programa de Tarjetas
+            legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
+            legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
+            legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
                 
             this.showMessage("sp.common.save.success", false, null);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setDisabled(true);
+            }
             EventQueues.lookup("updateLegalRepresentatives", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
@@ -317,6 +320,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {

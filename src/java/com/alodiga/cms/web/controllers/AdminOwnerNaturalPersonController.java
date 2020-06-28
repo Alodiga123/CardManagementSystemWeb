@@ -65,11 +65,13 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
     private Button btnSave;
     private Integer eventType;
     public static NaturalPerson naturalPersonParam = null;
+    private Integer indSelect = 1;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        Sessions.getCurrent().setAttribute(WebConstants.IND_OWNER_PROGRAM_SELECT, indSelect);
         if (eventType == WebConstants.EVENT_ADD) {
             naturalPersonParam = null;
         } else {
@@ -334,9 +336,9 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType = null;
-
+        List<DocumentsPersonType> documentsPersonType;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(naturalPersonParam != null ? naturalPersonParam.getDocumentsPersonTypeId().getId() : 0));
