@@ -106,7 +106,9 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
     }
 
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
+        cmbDocumentsPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
     }
@@ -348,7 +350,10 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.DocumentsPersonTypeNaturalPersonNull", false, null);
+            }            
         }
     }
 

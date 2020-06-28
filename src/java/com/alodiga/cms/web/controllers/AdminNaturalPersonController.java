@@ -171,8 +171,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     }
 
     public void onChange$cmbCountry() {
-        cmbDocumentsPersonType.setValue("");
+        this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
+        cmbDocumentsPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
     }
@@ -262,6 +263,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtFamilyResponsibilities.setReadonly(true);
         txtEmail.setReadonly(true);
         txtPhoneNumber.setReadonly(true);
+        genderFemale.setDisabled(true);
+        genderMale.setDisabled(true);
         cmbCountry.setReadonly(true);
         cmbCivilState.setReadonly(true);
         cmbProfession.setReadonly(true);
@@ -517,7 +520,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
         }
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getDocumentsPersonTypeId().getId() : 0));
@@ -529,7 +532,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
+            }            
         }
     }
 

@@ -102,7 +102,9 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     }
 
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
+        cmbDocumentsPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
     }
@@ -291,7 +293,7 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_LEGAL_PERSON);
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(legalOwnerParam != null ? legalOwnerParam.getDocumentsPersonTypeId().getId() : 0));
@@ -303,9 +305,13 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.DocumentsPersonTypeLegalPersonNull", false, null);
+            }            
         }
     }
+
 
     private void loadCmbEconomicActivity(Integer evenInteger) {
         //cmbEconomicActivity

@@ -145,7 +145,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.daysToUse')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.daysToWithdrawCard')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.maximunDeactivationTimeBlocking')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -157,19 +157,21 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <datebox id="dtbBeginDateValidity" width="250px" maxlength="60"/>                                                            
+                                                                <intbox id="intMaximunDeactivationTimeBlocking" width="250px" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <datebox id="dtbEndDateValidity" width="250px" maxlength="60"/>
+                                                                <datebox id="dtbBeginDateValidity" width="250px" maxlength="60"/>                                                            
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
+                                                            <datebox id="dtbEndDateValidity" width="250px" maxlength="60"/>
                                                             <hlayout>
                                                                 <combobox id="cmbSegmentMarketing" width="250px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />

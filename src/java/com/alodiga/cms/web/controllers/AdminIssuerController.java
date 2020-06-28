@@ -62,6 +62,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
+    private boolean indNaturalPerson;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -322,10 +323,20 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, issuerParam.getDocumentsPersonTypeId().getPersonTypeId().getOriginApplicationId().getId());
+        }
+        if (evenInteger == 1) {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, indNaturalPerson);
+        } else {
+            params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, issuerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
+        }
         request1.setParams(params);
         List<PersonType> personType = null;
         try {
-            personType = utilsEJB.getPersonTypeByCountry(request1);
+            personType = utilsEJB.getPersonTypeByCountryByIndNaturalPerson(request1);
             loadGenericCombobox(personType, cmbPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getIssuerPersonId().getPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);

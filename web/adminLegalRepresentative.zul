@@ -70,10 +70,11 @@
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
-                                                            </hbox>  
-                                                            <hlayout>
-                                                                <textbox id="txtAge" value="" width="250px" maxlength="3" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/> 
-                                                            </hlayout>
+                                                            </hbox>
+                                                            <label id="txtAge" value="" width="250px" style="color:#837E76;"/>
+                                                            <!--<hlayout>
+                                                                <intbox id="txtAge" width="250px" maxlength="11"/>
+                                                            </hlayout>-->
                                                         </row>                                                       
                                                         <row>
                                                             <label value="${c:l('cms.common.civilState')}" sclass="lblbold"/>
