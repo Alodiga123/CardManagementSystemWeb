@@ -262,6 +262,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtFamilyResponsibilities.setReadonly(true);
         txtEmail.setReadonly(true);
         txtPhoneNumber.setReadonly(true);
+        genderFemale.setDisabled(true);
+        genderMale.setDisabled(true);
         cmbCountry.setReadonly(true);
         cmbCivilState.setReadonly(true);
         cmbProfession.setReadonly(true);
