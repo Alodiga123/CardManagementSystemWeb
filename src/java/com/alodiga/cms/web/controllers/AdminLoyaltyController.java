@@ -136,7 +136,9 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     }
 
     public void onChange$cmbProgram() {
+        this.clearMessage();
         cmbProduct.setVisible(true);
+        cmbProduct.setValue("");
         Program program = (Program) cmbProgram.getSelectedItem().getValue();
         loadCmbProduct(eventType, program.getId());
     }
@@ -451,7 +453,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_PROGRAM_ID, programId);
         request1.setParams(params);
-        List<Product> products;
+        List<Product> products = null;
         try {
             products = productEJB.getProductByProgram(request1);
             loadGenericCombobox(products, cmbProduct, "name", evenInteger, Long.valueOf(programLoyaltyParam != null ? programLoyaltyParam.getProductId().getId() : 0));
@@ -461,8 +463,13 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             showError(ex);
         } catch (NullParameterException ex) {
             showError(ex);
+        } finally {
+            if (products == null) {
+                this.showMessage("cms.msj.ProductsNull", false, null);
+            }            
         }
     }
+
 
     private void loadCmbProgramLoyaltyType(Integer evenInteger) {
         //cmbProgramLoyaltyType
