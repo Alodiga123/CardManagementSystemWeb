@@ -32,9 +32,15 @@
                                                             <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbChannel" width="250px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbChannel" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <label id="txtProduct" value="" width="250px" style="color:#837E76;"/>
-                                                            <combobox id="cmbTransaction" width="250px" mold="rounded" readonly="true"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbTransaction" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.use')}" sclass="lblbold"/>
@@ -42,9 +48,18 @@
                                                             <label value="${c:l('cms.product.limitAndRestrictions.maxNumbTransMont')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProductUse" width="250px" mold="rounded" readonly="true"/>
-                                                            <intbox id="txtMaxNumbTransDaily" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
-                                                            <intbox id="txtMaxNumbTransMont" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbProductUse" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <intbox id="txtMaxNumbTransDaily" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <intbox id="txtMaxNumbTransMont" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.amountMinTransDomestic')}" sclass="lblbold"/>
