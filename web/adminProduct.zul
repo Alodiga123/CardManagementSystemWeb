@@ -93,10 +93,7 @@
                                                                 <combobox id="cmbProductUse" width="250px" mold="rounded" readonly="true" />
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbDomesticCurrency" width="250px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            <combobox id="cmbDomesticCurrency" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.internationalCurrency')}" sclass="lblbold"/>
