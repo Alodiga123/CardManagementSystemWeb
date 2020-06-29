@@ -306,24 +306,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         } else if (cmbProductUse.getSelectedItem() == null) {
             cmbProductUse.setFocus(true);
             this.showMessage("cms.error.use.notSelected", true, null);
-//        } else if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
-//            if (cmbDomesticCurrency.getSelectedItem() == null) {
-//                cmbDomesticCurrency.setFocus(true);
-//                this.showMessage("cms.error.domesticCurrency.notSelected", true, null);
-//            }
-//        } else if (productUse.getId() == WebConstants.PRODUCT_USE_INTERNATIONAL) {
-//            if (cmbInternationalCurrency.getSelectedItem() == null) {
-//                cmbInternationalCurrency.setFocus(true);
-//                this.showMessage("cms.error.internationalCurrency.notSelected", true, null);
-//            }
-//        } else if (productUse.getId() == WebConstants.PRODUCT_USE_BOTH) {
-//            if (cmbDomesticCurrency.getSelectedItem() == null) {
-//                cmbDomesticCurrency.setFocus(true);
-//                this.showMessage("cms.error.domesticCurrency.notSelected", true, null);
-//            } else if (cmbInternationalCurrency.getSelectedItem() == null) {
-//                cmbInternationalCurrency.setFocus(true);
-//                this.showMessage("cms.error.internationalCurrency.notSelected", true, null);
-//            }
         } else if ((!r24Months.isChecked()) && (!r36Months.isChecked()) && (!r48Months.isChecked())) {
             this.showMessage("cms.error.validityMonths", true, null);
         } else if (cmbStorageMedio.getSelectedItem() == null) {
@@ -353,12 +335,6 @@ public class AdminProductController extends GenericAbstractAdminController {
         } else if (today.compareTo(dtbBeginDateValidity.getValue()) < 0) {
             dtbBeginDateValidity.setFocus(true);
             this.showMessage("cms.error.date.beginDateValidity", true, null);
-//        } else if (dtbEndDateValidity.getText().isEmpty()) {
-//            dtbEndDateValidity.setFocus(true);
-//            this.showMessage("cms.error.field.endDate", true, null);
-//        } else if (today.compareTo(dtbEndDateValidity.getValue()) > 0) {
-//            dtbEndDateValidity.setFocus(true);
-//            this.showMessage("cms.error.date.endDateValidity", true, null);
         } else if (cmbSegmentMarketing.getSelectedItem() == null) {
             cmbSegmentMarketing.setFocus(true);
             this.showMessage("cms.error.segmentMarketing.noSelected", true, null);
