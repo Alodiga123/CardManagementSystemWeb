@@ -64,8 +64,6 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         indSelect = (Integer) Sessions.getCurrent().getAttribute(WebConstants.IND_OWNER_PROGRAM_SELECT);
-        adminNaturalPerson = new AdminOwnerNaturalPersonController();
-        adminLegalPerson = new AdminOwnerLegalPersonController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
@@ -75,6 +73,7 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
                 addressParam = null;
             } else {
                 if (indSelect == 1) {
+                    adminNaturalPerson = new AdminOwnerNaturalPersonController();
                     if (adminNaturalPerson.getNaturalPerson() != null) {
                         if (adminNaturalPerson.getNaturalPerson().getPersonId().getPersonHasAddress() == null) {
                             EJBRequest request1 = new EJBRequest();
@@ -92,6 +91,7 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
                         }
                     }
                 } else {
+                    adminLegalPerson = new AdminOwnerLegalPersonController();
                     if (adminLegalPerson.getLegalPerson() != null) {
                         if (adminLegalPerson.getLegalPerson().getPersonId().getPersonHasAddress() == null) {
                             EJBRequest request1 = new EJBRequest();
