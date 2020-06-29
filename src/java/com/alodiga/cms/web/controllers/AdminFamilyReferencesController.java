@@ -7,6 +7,7 @@ import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Request;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -37,7 +38,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     private Integer eventType;
     public Window winAdminFamilyReferences;
     public String indGender = null;
-    private int optionMenu;
+    private Long optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -66,7 +67,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
         super.initialize();
         try {
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -154,12 +155,12 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
             }
 
             //Solicitante
-            if (optionMenu == 1) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
                 AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
                 if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
                     naturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
                 }
-            } else if (optionMenu == 2) {
+            } else if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
                 if (naturalCustomer == null) {
                     AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
                     AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();

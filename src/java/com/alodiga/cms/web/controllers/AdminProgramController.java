@@ -31,8 +31,12 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Textbox;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.Person;
+import com.cms.commons.util.Constants;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Tab;
@@ -47,7 +51,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Textbox txtOtherSourceOfFound;
     private Textbox txtOtheResponsibleNetwoork;
     private Textbox website;
-    private Datebox dtbContrato;
+    private Datebox dtbContractDate;
     private Datebox dtbExpectedLaunchDate;
     private Combobox cmbProgramType;
     private Combobox cmbProductType;
@@ -80,6 +84,10 @@ public class AdminProgramController extends GenericAbstractAdminController {
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     public static Program programParent = null;
+    private List<LegalPerson> legalPersonList = null;
+    private List<NaturalPerson> naturalPersonList = null;
+    NaturalPerson programOwnerNatural = null;
+    LegalPerson programOwnerLegal = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -126,7 +134,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void clearFields() {
         txtName.setRawValue(null);
         txtDescription.setRawValue(null);
-        dtbContrato.setRawValue(null);
+        dtbContractDate.setRawValue(null);
         txtOtherSourceOfFound.setRawValue(null);
         txtBinIin.setRawValue(null);
         txtOtheResponsibleNetwoork.setRawValue(null);
@@ -142,36 +150,44 @@ public class AdminProgramController extends GenericAbstractAdminController {
         try {
             txtName.setText(program.getName());
             txtDescription.setText(program.getDescription());
-            dtbContrato.setValue(program.getContractDate());
+            dtbContractDate.setValue(program.getContractDate());
             dtbExpectedLaunchDate.setValue(program.getExpectedLaunchDate());
+            txtOtheResponsibleNetwoork.setText(program.getOtherResponsibleNetworkReporting());
+            txtOtherSourceOfFound.setText(program.getOtherSourceFunds());
+            txtBinIin.setText(program.getBiniinNumber());
+            
             if (program.getReloadable() == 1) {
                 rReloadableYes.setChecked(true);
             } else {
                 rReloadableNo.setChecked(true);
             }
-
-            txtOtherSourceOfFound.setText(program.getOtherSourceFunds());
+            
             if (program.getSharedBrand() == 1) {
                 rBrandedYes.setChecked(true);
             } else {
                 rBrandedNo.setChecked(true);
             }
+            
             if (program.getWebSite() != null) {
                 website.setText(program.getWebSite());
             }
+            
             if (program.getCashAccess() == 1) {
                 rCashAccesYes.setChecked(true);
             } else {
                 rCashAccesNo.setChecked(true);
-            }
-            txtBinIin.setText(program.getBiniinNumber());
+            }            
+            
             if (program.getUseInternational() == 1) {
                 rInternationalYes.setChecked(true);
             } else {
                 rInternationalNo.setChecked(true);
+            }            
+
+            if (eventType == WebConstants.EVENT_EDIT) {
+                dtbContractDate.setDisabled(true);
+                dtbExpectedLaunchDate.setDisabled(true);
             }
-            txtOtheResponsibleNetwoork.setText(program.getOtherResponsibleNetworkReporting());
-            programParent = program;
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -181,7 +197,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     public void blockFields() {
         txtName.setReadonly(true);
         txtDescription.setReadonly(true);
-        dtbContrato.setDisabled(true);
+        dtbContractDate.setDisabled(true);
         txtOtherSourceOfFound.setReadonly(true);
         txtBinIin.setReadonly(true);
         txtOtheResponsibleNetwoork.setReadonly(true);
@@ -191,20 +207,15 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     public Boolean validateEmpty() {
-        Date today = new Date();
-
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (dtbContrato.getText().isEmpty()) {
-            dtbContrato.setFocus(true);
+        } else if (dtbContractDate.getText().isEmpty()) {
+            dtbContractDate.setFocus(true);
             this.showMessage("cms.error.date.contrato", true, null);
-        } else if (today.compareTo(dtbContrato.getValue()) < 0) {
-            dtbContrato.setFocus(true);
-            this.showMessage("cms.error.date.valid", true, null);
         } else if (cmbProgramType.getSelectedItem() == null) {
             cmbProgramType.setFocus(true);
             this.showMessage("cms.error.programType.notSelected", true, null);
@@ -249,16 +260,28 @@ public class AdminProgramController extends GenericAbstractAdminController {
         } else if (dtbExpectedLaunchDate.getText().isEmpty()) {
             dtbExpectedLaunchDate.setFocus(true);
             this.showMessage("cms.error.date.expectedLaunchDate.empty", true, null);
-        } else if (today.compareTo(dtbExpectedLaunchDate.getValue()) > 0) {
-            dtbExpectedLaunchDate.setFocus(true);
-            this.showMessage("cms.error.date.expectedLaunchDate.valid", true, null);
         } else if (website.getText().isEmpty()) {
             website.setFocus(true);
             this.showMessage("cms.error.field.website", true, null);
         } else {
             return true;
         }
-
+        return false;
+    }
+    
+    public Boolean validateProgram() {
+        Date today = new Date();
+        if (eventType == WebConstants.EVENT_ADD) {
+            if (today.compareTo(dtbContractDate.getValue()) < 0) {
+                dtbContractDate.setFocus(true);
+                this.showMessage("cms.error.contractDate.valid", true, null);
+            } else if (today.compareTo(dtbExpectedLaunchDate.getValue()) > 0) {
+                dtbExpectedLaunchDate.setFocus(true);
+                this.showMessage("cms.error.date.expectedLaunchDate.valid", true, null);    
+            } else {
+                return true;
+            }
+        }        
         return false;
     }
 
@@ -328,11 +351,11 @@ public class AdminProgramController extends GenericAbstractAdminController {
 
             program.setName(txtName.getText());
             program.setDescription(txtDescription.getText());
-            program.setContractDate(dtbContrato.getValue());
+            program.setContractDate(dtbContractDate.getValue());
             program.setProgramTypeId((ProgramType) cmbProgramType.getSelectedItem().getValue());
             program.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
             program.setIssuerId((Issuer) cmbIssuer.getSelectedItem().getValue());
-            program.setProgramOwnerId(((NaturalPerson) cmbProgramOwner.getSelectedItem().getValue()).getPersonId());
+            program.setProgramOwnerId((Person) cmbProgramOwner.getSelectedItem().getValue());
             program.setCardProgramManagerId(((LegalPerson) cmbCardProgramManager.getSelectedItem().getValue()).getPersonId());
             program.setBinSponsorId((BinSponsor) cmbBinSponsor.getSelectedItem().getValue());
             program.setExpectedLaunchDate(dtbExpectedLaunchDate.getValue());
@@ -373,7 +396,9 @@ public class AdminProgramController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveProgram(null);
+                    if (validateProgram()) {
+                        saveProgram(null);
+                    }
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveProgram(programParam);
@@ -544,7 +569,6 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void loadCmbProductType(Integer evenInteger) {
-        //CmbProductType
         EJBRequest request1 = new EJBRequest();
         List<ProductType> productType;
         try {
@@ -561,23 +585,56 @@ public class AdminProgramController extends GenericAbstractAdminController {
 
     private void loadCmbProgramOwner(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<NaturalPerson> naturalPersons;
+        List<Person> personsProgramOwner;
         try {
-            naturalPersons = (List<NaturalPerson>) programEJB.getProgramOwner(request1);
+            Map params = new HashMap();
+            params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_PROGRAM_OWNER);
+            request1.setParams(params);
+            personsProgramOwner = personEJB.getPersonByClassification(request1);
+            for (Person p: personsProgramOwner) {                
+                if (p.getPersonTypeId().getIndNaturalPerson() == true) {
+                    //Obtiene el Gerente del Programa (persona natural)
+                    request1 = new EJBRequest();
+                    params = new HashMap(); 
+                    params.put(Constants.PERSON_KEY, p.getId());
+                    request1.setParams(params);
+                    naturalPersonList = personEJB.getNaturalPersonByPerson(request1);
+                    for (NaturalPerson n : naturalPersonList) {
+                        programOwnerNatural = n;
+                    }
+                    //Actualiza la lista de gerentes de programas
+                    p.setNaturalPerson(programOwnerNatural);
+                } else {
+                    //Obtiene el Gerente del Programa (persona jurídica)
+                    request1 = new EJBRequest();
+                    params = new HashMap(); 
+                    params.put(Constants.PERSON_KEY, p.getId());
+                    request1.setParams(params);
+                    legalPersonList = personEJB.getLegalPersonByPerson(request1);
+                    for (LegalPerson n : legalPersonList) {
+                        programOwnerLegal = n;
+                    }
+                    //Actualiza la lista de gerentes de programas
+                    p.setLegalPerson(programOwnerLegal);
+                }           
+            } 
             cmbProgramOwner.getItems().clear();
-            for (NaturalPerson c : naturalPersons) {
+            for (Person c : personsProgramOwner) {
+                StringBuilder nameProgramOwner = new StringBuilder();
                 Comboitem item = new Comboitem();
                 item.setValue(c);
-                StringBuilder nameProgramOwner = new StringBuilder(c.getFirstNames());
-                nameProgramOwner.append(" ");
-                nameProgramOwner.append(c.getLastNames());
+                if (c.getNaturalPerson() != null) {
+                    nameProgramOwner.append(c.getNaturalPerson().getFirstNames());
+                    nameProgramOwner.append(" ");
+                    nameProgramOwner.append(c.getNaturalPerson().getLastNames());
+                }
+                if (c.getLegalPerson() != null) {
+                    nameProgramOwner.append(c.getLegalPerson().getEnterpriseName());
+                }                
                 item.setLabel(nameProgramOwner.toString());
-                item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbProgramOwner);
-                if (evenInteger != WebConstants.EVENT_ADD) {
-                    if (programParam.getProgramOwnerId().getId() != null) {
-                        cmbProgramOwner.setSelectedItem(item);
-                    }
+                if (programParam != null && c.getId().equals(programParam.getProgramOwnerId().getId())) {
+                    cmbProgramOwner.setSelectedItem(item);
                 }
             }
             if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
@@ -605,10 +662,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
                 Comboitem item = new Comboitem();
                 item.setValue(c);
                 StringBuilder nameCardProgramManager = new StringBuilder(c.getEnterpriseName());
-                nameCardProgramManager.append(" ");
-                nameCardProgramManager.append(c.getTradeName());
                 item.setLabel(nameCardProgramManager.toString());
-                item.setDescription(c.getIdentificationNumber());
                 item.setParent(cmbCardProgramManager);
                 if (programParam != null && c.getId().equals(programParam.getCardProgramManagerId().getLegalPerson().getId())) {
                     cmbCardProgramManager.setSelectedItem(item);

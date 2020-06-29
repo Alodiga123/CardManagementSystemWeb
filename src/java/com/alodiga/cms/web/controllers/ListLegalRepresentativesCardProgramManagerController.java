@@ -51,7 +51,7 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateLegalRepresentatives", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
@@ -184,10 +184,9 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
         legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
         LegalPerson legalPerson = adminCardProgramManager.getCardProgramManager();
         try {
-            
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
+            params.put(Constants.LEGAL_PERSON_KEY, legalPerson.getId());
             request1.setParams(params);
             legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);
         } catch (NullParameterException ex) {

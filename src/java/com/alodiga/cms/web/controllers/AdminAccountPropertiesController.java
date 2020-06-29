@@ -187,7 +187,9 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
     }
 
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbProgram.setVisible(true);
+        cmbProgram.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
 //        loadCmbProgram(eventType, country.getId());
     }
@@ -336,7 +338,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
 
     private void loadCmbProgram(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
-        List<Program> programs;
+        List<Program> programs = null;
         try {
             programs = programEJB.getProgram(request1);
             loadGenericCombobox(programs, cmbProgram, "name", evenInteger, Long.valueOf(accountPropertiesParam != null ? accountPropertiesParam.getProgramId().getId() : 0));
@@ -349,6 +351,10 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
+        } finally {
+            if (programs == null) {
+                this.showMessage("cms.msj.ProgramsNull", false, null);
+            }            
         }
     }
 

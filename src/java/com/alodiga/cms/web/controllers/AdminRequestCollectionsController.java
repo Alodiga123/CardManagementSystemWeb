@@ -19,7 +19,9 @@ import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +127,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
@@ -165,9 +167,19 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     }
 
     public Boolean validateEmpty() {
-        if (txtObservations.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbPersonType.getSelectedItem() == null) {
+            cmbPersonType.setFocus(true);
+            this.showMessage("cms.error.personType.notSelected", true, null);
+        } else if ((!rApprovedYes.isChecked()) && (!rApprovedNo.isChecked())) {
+            this.showMessage("cms.error.radio.approved", true, null);
+        } else if (txtObservations.getText().isEmpty()) {
             txtObservations.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.renewal.observations", true, null);
+        } else if (UrlFile.isEmpty()) {
+            this.showMessage("cms.error.urlFile", true, null);
         } else {
             return true;
         }
@@ -176,7 +188,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
 
     public void onUpload$btnUpload(org.zkoss.zk.ui.event.UploadEvent event) throws Throwable {
         org.zkoss.util.media.Media media = event.getMedia();
-        if (media != null) { 
+        if (media != null) {
             divPreview.getChildren().clear();
             media = event.getMedia();
             File file = new File("/opt/proyecto/cms/imagenes/" + media.getName());
@@ -235,6 +247,11 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             requestHasCollectionsRequest.setIndApproved(indApproved);
             requestHasCollectionsRequest.setObservations(txtObservations.getText());
             requestHasCollectionsRequest.setUrlImageFile(UrlFile);
+            if (eventType == WebConstants.EVENT_ADD) {
+                requestHasCollectionsRequest.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                requestHasCollectionsRequest.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {

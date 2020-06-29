@@ -1,13 +1,16 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Address;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.util.Constants;
@@ -17,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
@@ -38,12 +43,17 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private Listbox lbxRecords;
     private Textbox txtName;
     private PersonEJB personEJB = null;
+    private UtilsEJB utilsEJB = null;
     private List<PersonHasAddress> personHasAddress = null;
-    private int optionMenu;
+    private Integer eventType;
+    private AdminRequestController adminRequest = null;
+    private Long optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        AdminRequestController adminRequest = new AdminRequestController();
+        eventType = adminRequest.getEventType();
         initialize();
         startListener();
     }
@@ -68,8 +78,9 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             permissionAdd = true;
             permissionRead = true;
             adminPage = "/adminPersonAddress.zul";
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadDataList(personHasAddress);
         } catch (Exception ex) {
@@ -97,7 +108,6 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (PersonHasAddress personHasAddress : list) {
                     item = new Listitem();
                     item.setValue(personHasAddress);
@@ -119,7 +129,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                 item.setParent(lbxRecords);
             }
 
-        } catch (Exception ex) {
+        } catch (Exception ex) {//        address = new ArrayList<Address>();
             showError(ex);
         }
     }
@@ -178,35 +188,46 @@ public class ListAddressController extends GenericAbstractListController<PersonH
 
     public void getData() {
         personHasAddress = new ArrayList<PersonHasAddress>();
+        Address address = null;
         Person person = null;
         try {
-            AdminRequestController adminRequest = new AdminRequestController();
-
-            if (optionMenu == 1) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
+                AdminRequestController adminRequest = new AdminRequestController();
                 person = adminRequest.getRequest().getPersonId();
-            } else if (optionMenu == 2) {
+            } 
+            if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
                 if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
                     person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-                }else if(AdminLegalPersonCustomerController.legalCustomerParam != null) {
+                } else if (AdminLegalPersonCustomerController.legalCustomerParam != null) {
                     person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
-                }else if(AdminOwnerNaturalPersonController.naturalPersonParam != null) {
+                } 
+            }    
+            if (optionMenu == Constants.LIST_PROGRAM_OWNER) {
+                if (AdminOwnerNaturalPersonController.naturalPersonParam != null) {
                     person = AdminOwnerNaturalPersonController.naturalPersonParam.getPersonId();
                 }
-            } else {
-                person = null;
             }
-
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, person.getId());
             request1.setParams(params);
             personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
+            if (eventType == WebConstants.EVENT_EDIT) {
+                EJBRequest request2 = new EJBRequest();
+                for (PersonHasAddress phs : personHasAddress) {
+                    request2.setParam(phs.getAddressId().getId());
+                    address = utilsEJB.loadAddress(request2);
+                    phs.setAddressId(address);
+                }
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
             showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListAddressController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             showEmptyList();
         }

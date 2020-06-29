@@ -42,7 +42,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
     private Integer eventType;
     public Window winAdminApplicantOFAC;
     public String indGender = null;
-    private int optionMenu;
+    private Long optionMenu;
     private RequestEJB requestEJB = null;
     private AdminRequestController adminRequest = null;
 
@@ -67,7 +67,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
         try {
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             adminRequest = new AdminRequestController();
             loadData();
         } catch (Exception ex) {

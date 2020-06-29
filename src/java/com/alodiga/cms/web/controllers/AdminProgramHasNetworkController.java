@@ -162,7 +162,6 @@ public class AdminProgramHasNetworkController extends GenericAbstractAdminContro
                     programHasNetworksParam = programHasNetwork;
                     this.showMessage("sp.common.save.success", false, null);
                     EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true).publish(new Event(""));
-                    btnSave.setVisible(false);
                 }
             } catch (NullParameterException ex) {
                 showError(ex);

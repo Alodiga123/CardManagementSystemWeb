@@ -250,6 +250,9 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             this.showMessage("sp.common.save.success", false, null);
             tabAddressCardProgramManager.setDisabled(true);
             tabLegalRepresentativesCardProgramManager.setDisabled(true);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setDisabled(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }

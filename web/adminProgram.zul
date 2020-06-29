@@ -41,7 +41,7 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <datebox id="dtbContrato"  width="265px"/>
+                                                                <datebox id="dtbContractDate"  width="265px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>

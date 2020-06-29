@@ -1,7 +1,7 @@
 package com.alodiga.cms.web.controllers;
-import com.alodiga.cms.commons.ejb.PersonEJB;
+
+
 import com.alodiga.cms.commons.ejb.ProductEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -10,10 +10,6 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardStatus;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.PersonType;
-import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
@@ -115,8 +111,8 @@ public class ListProductController extends GenericAbstractListController<Product
                     item.setValue(product);
                     item.appendChild(new Listcell(product.getName()));
                     item.appendChild(new Listcell(product.getCountryId().getName()));
+                    item.appendChild(new Listcell(product.getProgramId().getName()));
                     item.appendChild(new Listcell(product.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, product));
                     item.appendChild(new ListcellViewButton(adminPage, product,true));
                     item.setParent(lbxRecords);
@@ -157,7 +153,7 @@ public class ListProductController extends GenericAbstractListController<Product
         } catch (Exception ex) {
             showError(ex);
         }
-        return productList_;//To change body of generated methods, choose Tools | Templates.
+        return productList_;
     }
 
         public void onClick$btnClear() throws InterruptedException {

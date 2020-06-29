@@ -267,7 +267,9 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     }
     
     public void onChange$cmbPersonType() {
+        this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
+        cmbDocumentsPersonType.setValue("");
         PersonType personType = (PersonType) cmbPersonType.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, personType.getId());
     }
@@ -355,7 +357,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         Map params = new HashMap();
         params.put(Constants.PERSON_TYPE_KEY,documentsPersonTypeId);
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = personEJB.getDocumentsPersonTypeByPersonType(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(issuerParam != null ? issuerParam.getDocumentsPersonTypeId().getId() : 0));
@@ -365,6 +367,10 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             showError(ex);
         } catch (NullParameterException ex) {
             showError(ex);
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.documentsPersonTypeNull", false, null);
+            }            
         }
     }
 
