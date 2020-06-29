@@ -67,7 +67,7 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             if (personType.getIndNaturalPerson() == true) {
                 rIsNaturalPersonYes.setChecked(true);
             } else {
-                rIsNaturalPersonYes.setChecked(true);
+                rIsNaturalPersonNo.setChecked(true);
             }
             cmbCountry.setReadonly(true);
             cmbOriginApplication.setReadonly(true);

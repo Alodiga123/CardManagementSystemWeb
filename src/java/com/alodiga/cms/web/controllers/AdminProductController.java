@@ -25,6 +25,8 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -211,12 +213,11 @@ public class AdminProductController extends GenericAbstractAdminController {
                 validityMonth = WebConstants.VALIDITY_MONTH_48;
             }
 
-            //Calculando la edad de la persona segun la fecha de nacimiento
+            //Calculando la fecha de vigencia de la tarjeta
             Date fechaFinVigencia = new Date();
             Calendar feVecimiento = Calendar.getInstance();
             feVecimiento.setTime(((Datebox) dtbBeginDateValidity).getValue());
             feVecimiento.add(Calendar.MONTH, +validityMonth);
-            Calendar cumpleCalendar = Calendar.getInstance();
             fechaFinVigencia = feVecimiento.getTime();
             
             //Obtener estatus PENDING para asociarlo al producto
@@ -253,7 +254,6 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setDaysToUse(intDaysToUse.getValue());
             product.setDaysToWithdrawCard(intDaysToWithdrawCard.getValue());
             product.setBeginDateValidity((dtbBeginDateValidity.getValue()));
-//            product.setEndDateValidity((dtbEndDateValidity.getValue()));
             product.setEndDateValidity(fechaFinVigencia);
             product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
@@ -282,7 +282,6 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public Boolean validateEmpty() {
-        Date today = new Date();
         ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
 
         if (cmbCountry.getSelectedItem() == null) {
@@ -332,16 +331,23 @@ public class AdminProductController extends GenericAbstractAdminController {
         } else if (dtbBeginDateValidity.getText().isEmpty()) {
             dtbBeginDateValidity.setFocus(true);
             this.showMessage("cms.error.field.beginDate", true, null);
-        } else if (today.compareTo(dtbBeginDateValidity.getValue()) < 0) {
-            dtbBeginDateValidity.setFocus(true);
-            this.showMessage("cms.error.date.beginDateValidity", true, null);
         } else if (cmbSegmentMarketing.getSelectedItem() == null) {
             cmbSegmentMarketing.setFocus(true);
             this.showMessage("cms.error.segmentMarketing.noSelected", true, null);
         } else {
             return true;
         }
-
+        return false;
+    }
+    
+    public Boolean validateProduct() {
+        Date today = new Date();
+        if (today.compareTo(dtbBeginDateValidity.getValue()) > 0) {
+            dtbBeginDateValidity.setFocus(true);
+            this.showMessage("cms.error.date.beginDateValidity", true, null);
+        } else {
+            return true;
+        }
         return false;
     }
 
@@ -349,7 +355,9 @@ public class AdminProductController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveProduct(null);
+                    if (validateProduct()) {
+                        saveProduct(null);
+                    }
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveProduct(productParam);
@@ -376,7 +384,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public void loadProgramData(Program program) {
-        lblIssuer.setValue(program.getIssuerId().getId().toString());
+        lblIssuer.setValue(program.getIssuerId().getName());
         lblProductType.setValue(program.getProductTypeId().getName());
         lblBinSponsor.setValue(program.getBinSponsorId().getDescription());
         lblBinNumber.setValue(program.getBiniinNumber());
@@ -391,10 +399,12 @@ public class AdminProductController extends GenericAbstractAdminController {
         switch (productUseId) {
             case 1:
                 cmbDomesticCurrency.setDisabled(false);
+                cmbInternationalCurrency.setValue("");
                 cmbInternationalCurrency.setDisabled(true);
                 break;
             case 2:
                 cmbDomesticCurrency.setDisabled(true);
+                cmbDomesticCurrency.setValue("");
                 cmbInternationalCurrency.setDisabled(false);
                 break;
             case 3:

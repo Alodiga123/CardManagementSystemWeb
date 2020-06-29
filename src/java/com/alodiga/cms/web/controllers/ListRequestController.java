@@ -12,6 +12,7 @@ import static com.alodiga.cms.web.generic.controllers.GenericDistributionControl
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Request;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -37,7 +38,6 @@ public class ListRequestController extends GenericAbstractListController<Request
     private RequestEJB requestEJB = null;
     private List<Request> requests = null;
     public static int indAddRequestPerson;
-    public static int indRequestOption = 1;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -56,7 +56,7 @@ public class ListRequestController extends GenericAbstractListController<Request
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, indRequestOption);
+            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, Constants.LIST_CARD_REQUEST);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadList(requests);
@@ -67,10 +67,6 @@ public class ListRequestController extends GenericAbstractListController<Request
 
     public int getAddRequestPerson() {
         return indAddRequestPerson;
-    }
-
-    public int getIndRequestOption() {
-        return indRequestOption;
     }
 
     public void onClick$btnAddNaturalPersonRequest() throws InterruptedException {
@@ -108,25 +104,21 @@ public class ListRequestController extends GenericAbstractListController<Request
                             applicantNameNatural.append(" ");
                             applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
                             item.appendChild(new Listcell(applicantNameNatural.toString()));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                         } else {
                             applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantNameLegal));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
                         }
                     } else {
                         if (request.getIndPersonNaturalRequest() == true) {
                             item.appendChild(new Listcell("SIN REGISTRAR"));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                         } else {
                             item.appendChild(new Listcell("SIN REGISTRAR"));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
                         }

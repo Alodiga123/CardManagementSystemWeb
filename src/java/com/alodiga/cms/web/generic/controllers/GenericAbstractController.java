@@ -133,7 +133,6 @@ public class GenericAbstractController extends GenericForwardComposer implements
                 f.setAccessible(true);
                 String name = (String) f.get(c);
                 item.setLabel(name);
-                item.setDescription(name);
                 item.setParent(combobox);
                 f.setAccessible(false);
                 if (eventType.equals(WebConstants.EVENT_EDIT) || eventType.equals(WebConstants.EVENT_VIEW)) {
