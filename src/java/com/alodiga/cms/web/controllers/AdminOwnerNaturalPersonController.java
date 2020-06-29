@@ -338,7 +338,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
         params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(naturalPersonParam != null ? naturalPersonParam.getDocumentsPersonTypeId().getId() : 0));

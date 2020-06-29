@@ -104,25 +104,21 @@ public class ListRequestController extends GenericAbstractListController<Request
                             applicantNameNatural.append(" ");
                             applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
                             item.appendChild(new Listcell(applicantNameNatural.toString()));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                         } else {
                             applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantNameLegal));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
                         }
                     } else {
                         if (request.getIndPersonNaturalRequest() == true) {
                             item.appendChild(new Listcell("SIN REGISTRAR"));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                         } else {
                             item.appendChild(new Listcell("SIN REGISTRAR"));
-                            item.appendChild(new Listcell(request.getPersonTypeId().getDescription()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
                         }
