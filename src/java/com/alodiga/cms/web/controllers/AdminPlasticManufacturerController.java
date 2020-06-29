@@ -63,6 +63,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     public static PlasticManufacturer plasticManufacturerParent = null;
+    private List<PhonePerson> phonePersonList = null;
     private boolean indNaturalPerson;
 
     @Override
@@ -70,10 +71,10 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           plasticManufacturerParam = null;                    
-       } else {
-           plasticManufacturerParam = (PlasticManufacturer) Sessions.getCurrent().getAttribute("object");            
-       }
+            plasticManufacturerParam = null;
+        } else {
+            plasticManufacturerParam = (PlasticManufacturer) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -99,15 +100,15 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             showError(ex);
         }
     }
-    
+
     public void onChange$cmbCountry() {
         this.clearMessage();
         cmbPersonType.setValue("");
         cmbPersonType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbPersonType(eventType,country.getId());
+        loadCmbPersonType(eventType, country.getId());
     }
-    
+
     public void onChange$cmbPersonType() {
         cmbDocumentsPersonType.setVisible(true);
         PersonType personType = (PersonType) cmbPersonType.getSelectedItem().getValue();
@@ -126,15 +127,26 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     }
 
     public void loadFields(PlasticManufacturer plasticManufacturer) {
+        EJBRequest request = new EJBRequest();
+        Map params = new HashMap();
         try {
             txtIdentificationNumber.setText(plasticManufacturer.getIdentificationNumber());
             txtName.setText(plasticManufacturer.getName());
             txtContractNumber.setValue(plasticManufacturer.getContractNumber());
             txtEmailManufacturer.setText(plasticManufacturer.getPersonId().getEmail());
-            intPhoneManufacturer.setText(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone());
+            if (personEJB.havePhonesByPerson(plasticManufacturer.getPersonId().getId()) > 0) {
+                params.put(Constants.PERSON_KEY, plasticManufacturer.getPersonId().getId());
+                request.setParams(params);
+                phonePersonList = personEJB.getPhoneByPerson(request);
+            }
+            if (phonePersonList != null) {
+                for (PhonePerson p : phonePersonList) {
+                    intPhoneManufacturer.setText(plasticManufacturer.getPersonId().getPhonePerson().getNumberPhone());
+                }
+            }
             txtContactPerson.setText(plasticManufacturer.getContactPerson());
             txtEmailContact.setText(plasticManufacturer.getEmailContactPerson());
-            if (plasticManufacturer.getIndStatus()== true) {
+            if (plasticManufacturer.getIndStatus() == true) {
                 rActiveYes.setChecked(true);
             } else {
                 rActiveNo.setChecked(true);
@@ -156,7 +168,16 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbPersonType.getSelectedItem() == null) {
+            cmbPersonType.setFocus(true);
+            this.showMessage("cms.error.personType.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtName.getText().isEmpty()) {
@@ -173,10 +194,12 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtContactPerson.getText().isEmpty()) {
             txtContactPerson.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);    
+            this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtEmailContact.getText().isEmpty()) {
             txtEmailContact.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);    
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if ((!rActiveYes.isChecked()) && (!rActiveYes.isChecked())) {
+            this.showMessage("cms.error.field.active", true, null);
         } else {
             return true;
         }
@@ -200,13 +223,13 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
                 person = new Person();
                 phonePerson = new PhonePerson();
             }
-            
+
             if (rActiveYes.isChecked()) {
                 indStatus = true;
             } else {
                 indStatus = false;
             }
-            
+
             //Obtener la clasificacion del fabricante de plastico
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_PLASTIC_MANUFACTURER);
@@ -219,12 +242,12 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
-            
+
             //Obtener el tipo de telefono celular
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.PHONE_TYPE_MOBILE);
             PhoneType phoneType = personEJB.loadPhoneType(request);
-            
+
             //Guarda el telefono del Fabricante de Plastico
             if (phonePerson == null) {
                 phonePerson = new PhonePerson();
@@ -246,14 +269,14 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             plasticManufacturer = personEJB.savePlasticManufacturer(plasticManufacturer);
             plasticManufacturerParam = plasticManufacturer;
             this.showMessage("sp.common.save.success", false, null);
-            
-        EventQueues.lookup("updatePlasticManufacturer", EventQueues.APPLICATION, true).publish(new Event(""));
+
+            EventQueues.lookup("updatePlasticManufacturer", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
 
     }
-        
+
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
             switch (eventType) {
@@ -292,7 +315,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             default:
                 break;
         }
-    }    
+    }
 
     private void loadCmbCountry(Integer eventType) {
         EJBRequest request1 = new EJBRequest();
@@ -336,19 +359,18 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             showError(ex);
         } catch (NullParameterException ex) {
             showError(ex);
-        }
-        finally {
+        } finally {
             if (personType == null) {
                 this.showMessage("cms.msj.PersonTypeNull", false, null);
-         }            
-      }
-   }
-    
+            }
+        }
+    }
+
     private void loadCmbDocumentsPersonType(Integer evenInteger, Integer PersonTypeId) {
         cmbDocumentsPersonType.getItems().clear();
         EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
-        params.put(Constants.PERSON_TYPE_KEY,PersonTypeId);
+        params.put(Constants.PERSON_TYPE_KEY, PersonTypeId);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
         try {
@@ -364,6 +386,3 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
     }
 
 }
-
-
-
