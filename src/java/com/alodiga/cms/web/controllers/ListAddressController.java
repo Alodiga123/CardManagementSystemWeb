@@ -47,8 +47,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private List<PersonHasAddress> personHasAddress = null;
     private Integer eventType;
     private AdminRequestController adminRequest = null;
-//    private List<Address> address = null;
-    private int optionMenu;
+    private Long optionMenu;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -79,7 +78,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             permissionAdd = true;
             permissionRead = true;
             adminPage = "/adminPersonAddress.zul";
-            optionMenu = (Integer) session.getAttribute(WebConstants.OPTION_MENU);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
@@ -109,7 +108,6 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (PersonHasAddress personHasAddress : list) {
                     item = new Listitem();
                     item.setValue(personHasAddress);
@@ -131,7 +129,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                 item.setParent(lbxRecords);
             }
 
-        } catch (Exception ex) {
+        } catch (Exception ex) {//        address = new ArrayList<Address>();
             showError(ex);
         }
     }
@@ -191,23 +189,23 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     public void getData() {
         personHasAddress = new ArrayList<PersonHasAddress>();
         Address address = null;
-//        address = new ArrayList<Address>();
         Person person = null;
         try {
-            AdminRequestController adminRequest = new AdminRequestController();
-
-            if (optionMenu == 1) {
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
+                AdminRequestController adminRequest = new AdminRequestController();
                 person = adminRequest.getRequest().getPersonId();
-            } else if (optionMenu == 2) {
+            } 
+            if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
                 if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
                     person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
                 } else if (AdminLegalPersonCustomerController.legalCustomerParam != null) {
                     person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
-                } else if (AdminOwnerNaturalPersonController.naturalPersonParam != null) {
+                } 
+            }    
+            if (optionMenu == Constants.LIST_PROGRAM_OWNER) {
+                if (AdminOwnerNaturalPersonController.naturalPersonParam != null) {
                     person = AdminOwnerNaturalPersonController.naturalPersonParam.getPersonId();
                 }
-            } else {
-                person = null;
             }
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();

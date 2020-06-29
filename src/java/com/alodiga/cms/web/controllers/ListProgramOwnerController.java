@@ -13,6 +13,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.NaturalPerson;
 import com.cms.commons.models.Person;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -40,8 +41,12 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
     private List<Person> persons = null;
     private List<LegalPerson> legalPersonList = null;
     private List<NaturalPerson> naturalPersonList = null;
-    public static int indOwnerOption = 2;
+    public static int indOwnerOption = 0;
     private Textbox txtName;
+    private List<PhonePerson> phonePersonList = null;
+    NaturalPerson programOwnerNatural = null;
+    LegalPerson programOwnerLegal = null;
+    private Long indRequestOption = 0L;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -60,7 +65,7 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, indOwnerOption);
+            Sessions.getCurrent().setAttribute(WebConstants.OPTION_MENU, Constants.LIST_PROGRAM_OWNER);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             loadDataList(persons);
@@ -88,50 +93,46 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
 
     public void loadDataList(List<Person> list) {
         String ownerNameLegal = "";
-        NaturalPerson programOwnerNatural = null;
-        LegalPerson programOwnerLegal = null;
+        String phoneNaturalPerson = "";
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (Person person : list) {
+                for (Person person : list) {                    
                     item = new Listitem();
                     item.setValue(person);
-                    String pattern = "yyyy-MM-dd";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(person.getCountryId().getName()));
-                    item.appendChild(new Listcell(person.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(person.getCreateDate())));
                     if (person.getPersonTypeId().getIndNaturalPerson() == true) {
                         adminPage = "TabProgramOwnerNaturalPerson.zul";
                         StringBuilder OwnerName = new StringBuilder(person.getNaturalPerson().getFirstNames());
                         OwnerName.append(" ");
                         OwnerName.append(person.getNaturalPerson().getLastNames());
                         item.appendChild(new Listcell(OwnerName.toString()));
+                        item.appendChild(new Listcell(person.getCountryId().getName()));
+                        item.appendChild(new Listcell(person.getPersonTypeId().getDescription()));
+                        item.appendChild(new Listcell(person.getEmail()));
+                        
+                        //Se obtiene el teléfono de la persona natural
                         EJBRequest request1 = new EJBRequest();
                         Map params = new HashMap();
                         params.put(Constants.PERSON_KEY, person.getId());
                         request1.setParams(params);
-                        naturalPersonList = personEJB.getNaturalPersonByPerson(request1);
-                        for (NaturalPerson n : naturalPersonList) {
-                            programOwnerNatural = n;
-                        }
-                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, programOwnerNatural) : new Listcell());
-                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, programOwnerNatural) : new Listcell());
+                        phonePersonList = personEJB.getPhoneByPerson(request1);
+                        for (PhonePerson phone : phonePersonList) {
+                            phoneNaturalPerson = phone.getNumberPhone();
+                        }                        
+                        item.appendChild(new Listcell(phoneNaturalPerson));
+                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, person.getNaturalPerson()) : new Listcell());
+                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, person.getNaturalPerson()) : new Listcell());
                     } else {
                         ownerNameLegal = person.getLegalPerson().getEnterpriseName();
                         item.appendChild(new Listcell(ownerNameLegal));
+                        item.appendChild(new Listcell(person.getCountryId().getName()));
+                        item.appendChild(new Listcell(person.getPersonTypeId().getDescription()));
+                        item.appendChild(new Listcell(person.getEmail()));
+                        item.appendChild(new Listcell(person.getLegalPerson().getEnterprisePhone()));
                         adminPage = "TabProgramOwnerLegalPerson.zul";
-                        EJBRequest request1 = new EJBRequest();
-                        Map params = new HashMap();
-                        params.put(Constants.PERSON_KEY, person.getId());
-                        request1.setParams(params);
-                        legalPersonList = personEJB.getLegalPersonByPerson(request1);
-                        for (LegalPerson n : legalPersonList) {
-                            programOwnerLegal = n;
-                        }
-                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, programOwnerLegal) : new Listcell());
-                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, programOwnerLegal) : new Listcell());
+                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, person.getLegalPerson()) : new Listcell());
+                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, person.getLegalPerson()) : new Listcell());
                     }
                     item.setParent(lbxRecords);
                 }
@@ -157,6 +158,33 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
             params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_PROGRAM_OWNER);
             request1.setParams(params);
             persons = personEJB.getPersonByClassification(request1);
+            for (Person p: persons) {                
+                if (p.getPersonTypeId().getIndNaturalPerson() == true) {
+                    //Obtiene el Gerente del Programa (persona natural)
+                    request1 = new EJBRequest();
+                    params = new HashMap(); 
+                    params.put(Constants.PERSON_KEY, p.getId());
+                    request1.setParams(params);
+                    naturalPersonList = personEJB.getNaturalPersonByPerson(request1);
+                    for (NaturalPerson n : naturalPersonList) {
+                        programOwnerNatural = n;
+                    }
+                    //Actualiza la lista de gerentes de programas
+                    p.setNaturalPerson(programOwnerNatural);
+                } else {
+                    //Obtiene el Gerente del Programa (persona jurídica)
+                    request1 = new EJBRequest();
+                    params = new HashMap(); 
+                    params.put(Constants.PERSON_KEY, p.getId());
+                    request1.setParams(params);
+                    legalPersonList = personEJB.getLegalPersonByPerson(request1);
+                    for (LegalPerson n : legalPersonList) {
+                        programOwnerLegal = n;
+                    }
+                    //Actualiza la lista de gerentes de programas
+                    p.setLegalPerson(programOwnerLegal);
+                }           
+            }            
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

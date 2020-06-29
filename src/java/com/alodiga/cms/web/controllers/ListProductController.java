@@ -113,7 +113,6 @@ public class ListProductController extends GenericAbstractListController<Product
                     item.appendChild(new Listcell(product.getCountryId().getName()));
                     item.appendChild(new Listcell(product.getProgramId().getName()));
                     item.appendChild(new Listcell(product.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(product.getBinSponsorId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, product));
                     item.appendChild(new ListcellViewButton(adminPage, product,true));
                     item.setParent(lbxRecords);
@@ -154,7 +153,7 @@ public class ListProductController extends GenericAbstractListController<Product
         } catch (Exception ex) {
             showError(ex);
         }
-        return productList_;//To change body of generated methods, choose Tools | Templates.
+        return productList_;
     }
 
         public void onClick$btnClear() throws InterruptedException {
