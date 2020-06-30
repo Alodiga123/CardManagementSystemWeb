@@ -192,6 +192,9 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtEmail.getText().isEmpty()) {
+            txtEmail.setFocus(true);
+            this.showMessage("cms.error.field.email", true, null);
         } else if (dbxPaidInCapital.getText().isEmpty()) {
             dbxPaidInCapital.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
