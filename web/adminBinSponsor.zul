@@ -55,7 +55,7 @@
                                                             <label value="${c:l('cms.common.binSponsor')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
-                                                             <label value="*" sclass="lblreq" />
+                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                         
