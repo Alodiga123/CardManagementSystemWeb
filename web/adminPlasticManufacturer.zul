@@ -55,12 +55,21 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.person.type')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.document.identification')}" sclass="lblbold"/>   
+                                                            <label value="${c:l('cms.common.documentType.identification')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbPersonType" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentsPersonType" width="270px" mold="rounded" readonly="true" />                                                            
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbPersonType" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.identification.number')}" sclass="lblbold"/>
@@ -69,15 +78,15 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="20"/>
+                                                                <textbox id="txtIdentificationNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                                <textbox id="txtName" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtContractNumber" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="40"/>
+                                                                <textbox id="txtContractNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="40"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                        </row>
@@ -88,18 +97,18 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtEmailManufacturer" width="270px" maxlength="40" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                                <textbox id="txtEmailManufacturer" width="250px" maxlength="40" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <intbox id="intPhoneManufacturer" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
-                                                            <textbox id="txtContactPerson" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
+                                                            <intbox id="intPhoneManufacturer" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="30"/>
+                                                            <textbox id="txtContactPerson" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.email.contact')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtEmailContact" width="270px" maxlength="40" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                            <textbox id="txtEmailContact" width="250px" maxlength="40" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                             <hbox>
                                                             <radiogroup id="PlasticManuActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>

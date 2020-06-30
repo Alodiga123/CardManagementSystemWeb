@@ -153,7 +153,7 @@
                                                         <row>
                                                             <intbox id="txtFamilyResponsibilities" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="2"/>
                                                             <hlayout>
-                                                                <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                                <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
