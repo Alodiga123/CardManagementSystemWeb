@@ -111,6 +111,12 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         } else if (txtDescriptionTransaction.getText().isEmpty()) {
             txtDescriptionTransaction.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if ((!rMonetaryTypeYes.isChecked()) && (!rMonetaryTypeNo.isChecked())) {
+            this.showMessage("cms.error.field.monetaryType", true, null);
+        } else if ((!rTransactionPurchaseYes.isChecked()) && (!rTransactionPurchaseNo.isChecked())) {
+            this.showMessage("cms.error.field.transactionPurchase", true, null);
+        } else if ((!rVariationRateChannelYes.isChecked()) && (!rVariationRateChannelNo.isChecked())) {
+            this.showMessage("cms.error.field.variationRateChannel", true, null);
         } else {
             return true;
         }

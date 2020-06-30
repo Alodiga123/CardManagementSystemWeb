@@ -17,16 +17,27 @@
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                             <separator/>
+                                             <separator/>                                          
                                             <vlayout>
+                                                <hlayout style="text-align:right" width="880px">
+                                                    
+                                                    <label value="${c:l('cms.common.nameLastName')}" width="80px" sclass="lblbold"/>
+                                                    <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
+                                                    
+                                                </hlayout>
                                                 <hlayout>
-                                                    <!--buttons-->
-                                                    <div align="right" width="850px">
+                                                    <!--Add button-->
+                                                    <div align="left" width="490px">
                                                         <button id="btnReviewOFAC" label="${c:l('sp.common.actions.reviewOFAC')}" width="150px" class="open orange" />
-                                                        <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
+                                                    </div>
+                                                    <!--Filters button-->
+                                                    <div align="right" width="390px">
+                                                        <button id="btnSearch" label="${c:l('sp.common.actions.search')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.search.filter.tooltip')}"/>
+                                                        <button  id="btnBack" width="80px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
                                                     </div>
                                                 </hlayout>
                                             </vlayout>
+                                            
                                             <separator/>
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="1000px">

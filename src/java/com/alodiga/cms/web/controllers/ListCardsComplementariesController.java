@@ -209,9 +209,43 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
         return listcellViewModal;
     }
 
-    @Override
     public List<ApplicantNaturalPerson> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       List<ApplicantNaturalPerson> applicantNaturalPersonList_ = new ArrayList<ApplicantNaturalPerson>();
+       ApplicantNaturalPerson applicantNaturalPerson = null;
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PARAM_USER, filter);
+            request1.setParams(params);
+                
+            //Solicitante de Tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            }
+     
+            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+            params.put(Constants.PARAM_APPLICANT_NATURAL_PERSON_NAME_KEY, filter);
+
+            request1.setParams(params);    
+                                
+            applicantNaturalPersonList_ = personEJB.searchCardComplementaryByApplicant(request1);
+            } else {
+                return cardComplementaryList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return applicantNaturalPersonList_;  
+    }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
 }
