@@ -4,43 +4,35 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminParameters" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminParametersController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminParameters" width="850px" height="340px" apply="com.alodiga.cms.web.controllers.AdminParametersController" closable ="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout>
-                        <div></div>
-                        <div width="1000px" align="left" height="380px">
+                        <div width="830px" align="left" height="310px">
                             <hlayout>
-                                <div width="890px">
+                                <div width="820px">
                                     <vlayout>
-                                        <div height="5px" width="100%" style="background:#333;" align="left"></div>
+                                        <div height="5px" width="820px" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
-                                                        <column label="" width="280px"/>
-                                                        <column label="" width="280px"/>
-                                                        <column label="" width="280px"/>
+                                                        <column label="" width="270px"/>
+                                                        <column label="" width="270px"/>
+                                                        <column label="" width="270px"/>
                                                     </columns>
                                                     <rows>
+                                                         <group label="${c:l('cms.crud.loyaltyProgram')}"/>
                                                         <row>
-                                                            <label value="${c:l('cms.tab.loyaltyMain')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.product.limitAndRestrictions.cannel')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.loyaltyProgram.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.loyalty.programType')}" sclass="lblbold"/>
+                                                            <label id="lblIndBonificationFixed" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
                                                             <label id="lblLoyalty" value="" width="250px" style="color:#837E76;"/>
-                                                            <combobox id="cmbChannel" width="250px" mold="rounded" readonly="true"/>
-                                                            <combobox id="cmbTransaction" width="250px" mold="rounded" readonly="true"/>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.crud.loyalty.indBonificationFixed')}" sclass="lblbold"/>
-                                                            <label id="lblTitle" value="" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalMaximumTransactions')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
+                                                            <label id="lblLoyaltyProgramType" value="" width="250px" style="color:#837E76;"/>
                                                             <hbox>
                                                                 <radiogroup id="bonificationFixed" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -52,23 +44,43 @@
                                                                     </rows>
                                                                 </grid>
                                                             </hbox>
-                                                            <hlayout>
-                                                                <doublebox id="txtTotal" width="250px" constraint="no negative" format="#,##0.##" maxlength="20"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <doublebox id="txtTotalMaximumTransactions" width="250px" constraint="no negative" format="#,##0.##" maxlength="20"/>
+                                                        </row>
+                                                    </rows>
+                                                </grid>
+                                                 <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="270px"/>
+                                                        <column label="" width="270px"/>
+                                                        <column label="" width="270px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('cms.crud.parameterTransaction')}"/>                                                        
+                                                        <row>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.channel')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
+                                                            <label id="lblTitle" value="" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
+                                                            <combobox id="cmbChannel" width="240px" mold="rounded" readonly="true"/>
+                                                            <combobox id="cmbTransaction" width="240px" mold="rounded" readonly="true"/>                                                            
+                                                            <hlayout>
+                                                                <doublebox id="txtTotal" width="240px" constraint="no negative" format="#,###.##" maxlength="20"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>                                                            
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.crud.loyalty.parameters.totalMaximumTransactions')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.loyalty.parameters.totalAmountDaily')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.loyalty.parameters.totalAmountMonthly')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <doublebox id="txtTotalMaximumTransactions" width="240px" constraint="no negative" format="#,##0.##" maxlength="20"/>
                                                             <hlayout>
-                                                                <doublebox id="txtTotalAmountDaily" width="250px" constraint="no negative" format="#,##0.##" maxlength="20"/>
+                                                                <doublebox id="txtTotalAmountDaily" width="240px" constraint="no negative" format="#,##0.##" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <doublebox id="txtTotalAmountMonthly" width="250px" constraint="no negative" format="#,##0.##" maxlength="20"/>
+                                                                <doublebox id="txtTotalAmountMonthly" width="240px" constraint="no negative" format="#,##0.##" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>

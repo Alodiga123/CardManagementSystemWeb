@@ -53,11 +53,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.crud.loyaltyProgram')}" width="205px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.LoyaltyProduct')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.loyaltyProgram')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.LoyaltyProduct')}" width="250px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.loyalty.programType')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.loyaltyList.starDate')}" width="100" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.loyaltyList.endDate')}" width="100px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.loyalty.status')}" width="100px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
