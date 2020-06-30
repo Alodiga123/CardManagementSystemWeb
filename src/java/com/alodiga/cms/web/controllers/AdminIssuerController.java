@@ -63,16 +63,16 @@ public class AdminIssuerController extends GenericAbstractAdminController {
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     private boolean indNaturalPerson;
-    
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           issuerParam = null;                    
-       } else {
-           issuerParam = (Issuer) Sessions.getCurrent().getAttribute("object");            
-       }
+            issuerParam = null;
+        } else {
+            issuerParam = (Issuer) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -97,8 +97,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
-    
+
     public void clearFields() {
         txtIdentificationNumber.setRawValue(null);
         txtName.setRawValue(null);
@@ -111,9 +110,8 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         intFaxNumber.setRawValue(null);
         txtPersonContactName.setRawValue(null);
         txtEmailPersonContact.setRawValue(null);
-    } 
-    
-        
+    }
+
     private void loadFields(Issuer issuer) {
         try {
             txtIdentificationNumber.setText(issuer.getDocumentIdentification());
@@ -129,21 +127,21 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             }
             if (issuer.getPersonContactName() != null) {
                 txtPersonContactName.setText(issuer.getPersonContactName());
-            }    
-            if (issuer.getEmailPersonContact() != null) {
-                txtEmailPersonContact.setValue(issuer.getEmailPersonContact());                        
             }
-            if (issuer.getStatusActive()== 1) {
+            if (issuer.getEmailPersonContact() != null) {
+                txtEmailPersonContact.setValue(issuer.getEmailPersonContact());
+            }
+            if (issuer.getStatusActive() == 1) {
                 rActiveYes.setChecked(true);
             } else {
                 rActiveNo.setChecked(true);
             }
             btnSave.setVisible(true);
-        
+
         } catch (Exception ex) {
             showError(ex);
         }
-    }     
+    }
 
     public void blockFields() {
         txtIdentificationNumber.setReadonly(true);
@@ -190,7 +188,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
-            
+
             //Guarda el Emisor
             issuer.setName(txtName.getText());
             issuer.setBinNumber(intBinNumber.getValue());
@@ -208,25 +206,40 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             issuer.setIssuerPersonId(person);
             issuer.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             issuer = personEJB.saveIssuer(issuer);
-            issuerParam =issuer;
+            issuerParam = issuer;
             this.showMessage("sp.common.save.success", false, null);
-            
+
             btnSave.setVisible(false);
         } catch (WrongValueException ex) {
             showError(ex);
         }
-    }  
-    
+    }
+
     public Boolean validateEmpty() {
-        if (txtName.getText().isEmpty()) {
-            txtName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbPersonType.getSelectedItem() == null) {
+            cmbPersonType.setFocus(true);
+            this.showMessage("cms.error.personType.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
         } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtName.getText().isEmpty()) {
+            txtName.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbIssuerType.getSelectedItem() == null) {
+            cmbIssuerType.setFocus(true);
+            this.showMessage("cms.error.Issuer.notSelected", true, null);
         } else if (txtIssuerEmail.getText().isEmpty()) {
             txtIssuerEmail.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (intBinNumber.getText().isEmpty()) {
+            intBinNumber.setFocus(true);
+            this.showMessage("cms.error.field.binNumber", true, null);
         } else if (txtSwiftCode.getText().isEmpty()) {
             txtSwiftCode.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
@@ -236,13 +249,14 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } else if (txtContractNumber.getText().isEmpty()) {
             txtContractNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if ((!rActiveYes.isChecked()) && (!rActiveNo.isChecked())) {
+            this.showMessage("cms.error.field.active", true, null);
         } else {
             return true;
         }
         return false;
     }
-    
-    
+
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
             switch (eventType) {
@@ -257,7 +271,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             }
         }
     }
-    
+
     public void onChange$cmbCountry() {
         this.clearMessage();
         cmbPersonType.setVisible(true);
@@ -265,7 +279,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbPersonType(eventType, country.getId());
     }
-    
+
     public void onChange$cmbPersonType() {
         this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
@@ -273,7 +287,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         PersonType personType = (PersonType) cmbPersonType.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, personType.getId());
     }
-    
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -285,7 +299,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(issuerParam);
-                blockFields();            
+                blockFields();
                 loadCmbCountry(eventType);
                 loadCmbIssuerType(eventType);
                 rActiveYes.setDisabled(true);
@@ -300,9 +314,9 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             default:
                 break;
         }
-    }    
-    
-     private void loadCmbCountry(Integer evenInteger) {
+    }
+
+    private void loadCmbCountry(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Country> country;
         try {
@@ -316,7 +330,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-     
+
     private void loadCmbPersonType(Integer evenInteger, Integer countryId) {
         EJBRequest request1 = new EJBRequest();
         cmbPersonType.getItems().clear();
@@ -347,7 +361,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } finally {
             if (personType == null) {
                 this.showMessage("cms.msj.PersonTypeNull", false, null);
-            }            
+            }
         }
     }
 
@@ -355,7 +369,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         cmbDocumentsPersonType.getItems().clear();
         EJBRequest request1 = new EJBRequest();
         Map params = new HashMap();
-        params.put(Constants.PERSON_TYPE_KEY,documentsPersonTypeId);
+        params.put(Constants.PERSON_TYPE_KEY, documentsPersonTypeId);
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType = null;
         try {
@@ -370,7 +384,7 @@ public class AdminIssuerController extends GenericAbstractAdminController {
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.documentsPersonTypeNull", false, null);
-            }            
+            }
         }
     }
 
@@ -388,11 +402,9 @@ public class AdminIssuerController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
 
     private Object getSelectedItem() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 
-  }
+}
