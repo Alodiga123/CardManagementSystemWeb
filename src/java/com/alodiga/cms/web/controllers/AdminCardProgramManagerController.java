@@ -42,7 +42,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Intbox intIdentificationNumber;
-    private Intbox intPhoneNumber;
+    private Textbox txtPhoneNumber;
     private Doublebox dbxPaidInCapital;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
@@ -135,7 +135,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         txtWebSite.setRawValue(null);
         txtEmail.setRawValue(null);
         dbxPaidInCapital.setRawValue(null);
-        intPhoneNumber.setRawValue(null);
+        txtPhoneNumber.setRawValue(null);
         intIdentificationNumber.setRawValue(null);
     }
 
@@ -146,7 +146,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             txtDateInscriptionRegister.setValue(legalPerson.getDateInscriptionRegister());
             txtRegistryNumber.setText(legalPerson.getRegisterNumber());
             dbxPaidInCapital.setValue(legalPerson.getPayedCapital().floatValue());
-            intPhoneNumber.setText(legalPerson.getEnterprisePhone());
+            txtPhoneNumber.setText(legalPerson.getEnterprisePhone());
             txtWebSite.setValue(legalPerson.getWebSite());
             if (txtEmail != null) {
                 EJBRequest request1 = new EJBRequest();
@@ -169,7 +169,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
         dbxPaidInCapital.setReadonly(true);
-        intPhoneNumber.setReadonly(true);
+        txtPhoneNumber.setReadonly(true);
         intIdentificationNumber.setReadonly(true);
         txtWebSite.setReadonly(true);
         txtEmail.setReadonly(true);
@@ -186,8 +186,8 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intPhoneNumber.getText().isEmpty()) {
-            intPhoneNumber.setFocus(true);
+        } else if (txtPhoneNumber.getText().isEmpty()) {
+            txtPhoneNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
@@ -239,7 +239,7 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             legalPerson.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             legalPerson.setRegisterNumber(txtRegistryNumber.getText());
             legalPerson.setPayedCapital(dbxPaidInCapital.getValue().floatValue());
-            legalPerson.setEnterprisePhone(intPhoneNumber.getValue().toString());
+            legalPerson.setEnterprisePhone(txtPhoneNumber.getValue().toString());
             legalPerson.setWebSite(txtWebSite.getText());
             legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
             legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());

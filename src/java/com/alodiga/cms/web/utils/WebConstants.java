@@ -133,6 +133,9 @@ public class WebConstants {
 
     //CRUD ProgramLoyalty
     public static final int STATUS_PROGRAM_LOYALTY_PENDING = 1;
+    public static final int STATUS_PROGRAM_LOYALTY_ACTIVE = 2;
+    public static final int STATUS_PROGRAM_LOYALTY_INACTIVE = 3;
+    
     public static final int PROGRAM_LOYALTY_TYPE_POINT = 1;
     public static final int PROGRAM_LOYALTY_TYPE_BONIFICATION = 2;
     public static final int STATUS_CUSTOMER = 1;

@@ -57,7 +57,7 @@
                                                             <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.reviewRequest.approved')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.loyaltyProgram.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hbox>
