@@ -18,8 +18,6 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('cms.crud.customer.additionalData.spouse')}" sclass="lblbold"/>
-                                                <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -27,6 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                        <group label="${c:l('cms.crud.customer.additionalData.spouse')}"/>
                                                         <row>
                                                             <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
@@ -55,8 +54,6 @@
                                                         </row>
                                                     </rows>
                                                 </grid>
-                                                <label value="${c:l('cms.crud.customer.additionalData.carData')}" sclass="lblbold"/>
-                                                <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -64,6 +61,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                        <group label="${c:l('cms.crud.customer.additionalData.carData')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.carData.carBrand')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.customer.additionalData.carData.carModel')}" sclass="lblbold"/>
@@ -72,7 +70,7 @@
                                                         <row>
                                                             <textbox id="txtCarBrand" value="" width="250px" maxlength="40"/>
                                                             <textbox id="txtCarModel" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtCarYear" value="" width="250px" maxlength="4"/>
+                                                            <intbox id="txtCarYear" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.carData.carPlate')}" sclass="lblbold"/>
@@ -82,8 +80,6 @@
                                                         </row>
                                                     </rows>
                                                 </grid>
-                                                <label value="${c:l('cms.crud.customer.additionalData.financialInformation')}" sclass="lblbold"/>
-                                                <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -91,6 +87,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
+                                                        <group label="${c:l('cms.crud.customer.additionalData.financialInformation')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.income')}" sclass="lblbold"/>
                                                         </row>
@@ -105,9 +102,9 @@
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.bonuses')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtSalary" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtProfession" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtBonuses" value="" width="250px" maxlength="20"/>
+                                                            <doublebox id="txtSalary" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtProfession" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtBonuses" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.rentsIncome')}" sclass="lblbold"/>
@@ -115,9 +112,9 @@
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.totalIncome')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtRentIncome" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtOtherIncome" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtTotalIncome" value="" width="250px" maxlength="20"/>
+                                                            <doublebox id="txtRentIncome" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtOtherIncome" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtTotalIncome" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.expenses')}" sclass="lblbold"/>
@@ -133,9 +130,9 @@
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.monthlyPaymentCreditCard')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtHousingExpenses" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtMonthlyRentMortgage" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtMonthlyPaymentCreditCard" value="" width="250px" maxlength="20"/>
+                                                            <doublebox id="txtHousingExpenses" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtMonthlyRentMortgage" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtMonthlyPaymentCreditCard" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.monthlyPaymentOtherCredit')}" sclass="lblbold"/>
@@ -143,9 +140,9 @@
                                                             <label value="${c:l('cms.crud.customer.additionalData.financialInformation.totalExpenses')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtMonthlyPaymentOtherCredit" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtEducationExpenses" value="" width="250px" maxlength="20"/>
-                                                            <textbox id="txtTotalExpenses" value="" width="250px" maxlength="20"/>
+                                                            <doublebox id="txtMonthlyPaymentOtherCredit" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtEducationExpenses" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
+                                                            <doublebox id="txtTotalExpenses" width="250px" constraint="no negative" format="#,##0.##" maxlength="30"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
