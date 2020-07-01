@@ -73,7 +73,10 @@ public class AdminSubAccountTypesControllers extends GenericAbstractAdminControl
     }
     
      public Boolean validateEmpty() {
-        if (txtSubAccount.getText().isEmpty()) {
+        if (cmbAccountType.getSelectedItem() == null) {
+            cmbAccountType.setFocus(true);
+            this.showMessage("cms.error.account.subType.noSelected", true, null);
+        } else if (txtSubAccount.getText().isEmpty()) {
             txtSubAccount.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
@@ -112,7 +115,11 @@ public class AdminSubAccountTypesControllers extends GenericAbstractAdminControl
             subAccountType = cardEJB.saveSubAccountType(subAccountType);
             subAccountTypeParam = subAccountType;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+            if (eventType == WebConstants.EVENT_EDIT) {
+                btnSave.setVisible(true);
+            }else {
+                btnSave.setVisible(false);
+            }
         } catch (Exception ex) {
             showError(ex);
         }

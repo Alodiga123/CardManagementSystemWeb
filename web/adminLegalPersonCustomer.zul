@@ -54,7 +54,7 @@
                                                         <row>
                                                             <datebox id="txtDateInscriptionRegister" width="250px" constraint="no empty"/>
                                                             <textbox id="txtRegistryNumber" value="" width="250px" maxlength="45"/>
-                                                            <textbox id="txtPaidInCapital" value="" width="250px" maxlength="60"/>
+                                                            <doublebox id="txtPaidInCapital" width="250px" constraint="no negative" format="#,##0.##" maxlength="25"/>
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.common.website')}" sclass="lblbold"/>
@@ -62,7 +62,7 @@
                                                         </row>
                                                         <row>
                                                             <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>
-                                                            <textbox id="txtEmail" value="" width="250px" maxlength="45"/>
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="45" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                             <textbox id="txtPersonId" value="2" visible="false"/>
                                                         </row>
                                                     </rows>

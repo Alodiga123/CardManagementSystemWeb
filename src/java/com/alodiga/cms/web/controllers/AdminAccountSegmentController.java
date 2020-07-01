@@ -98,7 +98,7 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
         } else if (txtLengthSegment.getText().isEmpty()) {
             txtLengthSegment.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (Integer.parseInt(txtLengthSegment.getText()) > (Integer.parseInt(accountProperties.getLenghtAccount().toString()))) {
+        } else if (Integer.parseInt(txtLengthSegment.getText()) >= (Integer.parseInt(accountProperties.getLenghtAccount().toString()))) {
             txtLengthSegment.setFocus(true);
             this.showMessage("cms.error.lengthSegment", true, null);
         } else {

@@ -222,7 +222,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             if (applicantNaturalPerson.getFamilyResponsibilities() != null) {
                 txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
             }
-            txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
+            if (applicantNaturalPerson.getPersonId().getEmail() != null) {
+                if (applicantNaturalPerson.getPersonId().getEmail().contains("@")) {
+                    txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
+                }
+            }
             if (applicantNaturalPerson.getGender().equals(Gender)) {
                 genderMale.setChecked(true);
             } else {

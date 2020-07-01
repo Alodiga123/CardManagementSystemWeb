@@ -9,10 +9,8 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.CardStatus;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.PersonType;
-import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -21,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -34,8 +34,11 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Textbox txtName;
     private PersonEJB personEJB = null;
-    private List<DocumentsPersonType> documentsPersonTypeList = null;
+    private UtilsEJB utislEJB = null;
+    private UtilsEJB utilsEJB = null;
+    private List<DocumentsPersonType> documentsPersonType = null;
     private User currentUser;
 
     @Override
@@ -54,19 +57,20 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminDocumentsPersonType.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadDataList(documentsPersonTypeList);
+            loadDataList(documentsPersonType);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-        documentsPersonTypeList = new ArrayList<DocumentsPersonType>();
+        documentsPersonType = new ArrayList<DocumentsPersonType>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            documentsPersonTypeList = personEJB.getDocumentsPersonType(request);
+            documentsPersonType = personEJB.getDocumentsPersonType(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -134,9 +138,32 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
            showError(ex);
         }
     }
+    
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
     public List<DocumentsPersonType> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       List<DocumentsPersonType> documentsPersonTypeaux = new ArrayList<DocumentsPersonType>();
+       DocumentsPersonType documentsPersonTypes;
+        try {
+            if (filter != null && !filter.equals("")) {
+                documentsPersonTypeaux = utilsEJB.getSearchDocumentsPersonType(filter);
+            } else {
+                return documentsPersonType;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return documentsPersonTypeaux;
     }
 
 }

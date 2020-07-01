@@ -52,10 +52,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.menu.accountType')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
                                                             <hlayout>
-                                                                <textbox id="txtAccount" constraint="no empty" maxlength="40" width="650px"/>
+                                                                <textbox id="txtAccount" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>

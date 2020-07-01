@@ -77,7 +77,9 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     }
     
     public void onChange$cmbCountry() {
+        this.clearMessage();
         cmbPersonType.setVisible(true);
+        cmbPersonType.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbPersonType(eventType, country.getId());
     }
@@ -204,7 +206,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, documentsPersonTypeParam.getPersonTypeId().getOriginApplicationId().getId());
         }        
         request1.setParams(params);
-        List<PersonType> personTypes;
+        List<PersonType> personTypes = null;
         try {
             personTypes = utilsEJB.getPersonTypeByCountry(request1);
             loadGenericCombobox(personTypes,cmbPersonType, "description",evenInteger,Long.valueOf(documentsPersonTypeParam != null? documentsPersonTypeParam.getPersonTypeId().getId(): 0) );            
@@ -217,6 +219,12 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
+        } finally {
+            if (personTypes == null) {
+                this.showMessage("cms.msj.PersonTypeNull", false, null);
+            }            
         }
+    
+      }
+    
     }
-}
