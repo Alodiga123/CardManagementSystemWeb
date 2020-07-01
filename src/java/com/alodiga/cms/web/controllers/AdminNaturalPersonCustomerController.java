@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
@@ -30,6 +31,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 
 public class AdminNaturalPersonCustomerController extends GenericAbstractAdminController {
 
@@ -62,6 +64,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private Button btnSave;
     private Integer eventType;
     public static NaturalCustomer naturalCustomerParam = null;
+    private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -78,6 +81,19 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     @Override
     public void initialize() {
         super.initialize();
+        switch (eventType) {
+            case WebConstants.EVENT_EDIT:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.customer.edit"));
+                break;
+            case WebConstants.EVENT_VIEW:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.customer.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.customer.add"));
+                break;
+            default:
+                break;
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
@@ -249,7 +265,9 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             }
             naturalCustomer.setFirstNames(txtFullName.getText());
             naturalCustomer.setLastNames(txtFullLastName.getText());
-            naturalCustomer.setMarriedLastName(txtMarriedLastName.getText());
+            if (!txtMarriedLastName.getText().equals("")) {
+                naturalCustomer.setMarriedLastName(txtMarriedLastName.getText());
+            }
             naturalCustomer.setGender(indGender);
             naturalCustomer.setPlaceBirth(txtBirthPlace.getText());
             naturalCustomer.setDateBirth(txtBirthDay.getValue());
@@ -325,17 +343,20 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             ex.printStackTrace();
         }
     }
-
+    
     private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
         cmbDocumentsPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, naturalCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
-        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, naturalCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getOriginApplicationId().getId());
+        }
         request1.setParams(params);
-        List<DocumentsPersonType> documentsPersonType;
-
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
             loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getDocumentsPersonTypeId().getId() : 0));
@@ -347,10 +368,13 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
+            }            
         }
     }
-
+    
     private void loadCmbCivilState(Integer evenInteger) {
         //cmbCivilState
         EJBRequest request1 = new EJBRequest();

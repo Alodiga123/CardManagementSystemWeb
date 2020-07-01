@@ -132,8 +132,8 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             lblAccountType.setValue(accountProperties.getAccountTypeId().getDescription());
             txtIdentifier.setValue(accountProperties.getIdentifier());
             txtLengthAccount.setValue(accountProperties.getLenghtAccount());
-            txtMinimunAmount.setText(accountProperties.getMinimunAmount().toString());
-            txtMaximunAmount.setText(accountProperties.getMaximumAmount().toString());
+            txtMinimunAmount.setValue(accountProperties.getMinimunAmount());
+            txtMaximunAmount.setValue(accountProperties.getMaximumAmount());
             if (accountProperties.getIndOverDraft() == true) {
                 rOverdraftYes.setChecked(true);
             } else {
@@ -180,6 +180,9 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         } else if (txtMaximunAmount.getText().isEmpty()) {
             txtMaximunAmount.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtMaximunAmount.getValue()<= txtMinimunAmount.getValue()) {
+            txtMaximunAmount.setFocus(true);
+            this.showMessage("cms.error.account.maximunAmount", true, null);
         } else {
             return true;
         }
@@ -255,11 +258,17 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
             accountProperties.setIndOverDraft(indOverDraft);
             accountProperties = cardEJB.saveAccountProperties(accountProperties);
             accountPropertiesParam = accountProperties;
+            
             this.showMessage("sp.common.save.success", false, null);
             accountPropertiesParent = accountProperties;
             tabAccountSegment.setDisabled(false);
             EventQueues.lookup("updateAccountProperties", EventQueues.APPLICATION, true).publish(new Event(""));
             btnSave.setVisible(false);
+            if (eventType == WebConstants.EVENT_EDIT) {
+                btnSave.setVisible(true);
+            }else{
+                btnSave.setVisible(false);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -354,7 +363,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         } finally {
             if (programs == null) {
                 this.showMessage("cms.msj.ProgramsNull", false, null);
-            }            
+            }
         }
     }
 
