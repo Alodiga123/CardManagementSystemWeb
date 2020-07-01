@@ -40,6 +40,8 @@ public class ListCustomerController extends GenericAbstractListController<Person
     private List<LegalCustomer> legalCustomerList = null;
     private List<NaturalCustomer> naturalCustomerList = null;
     public static int indCustomerOption = 2;
+    private Textbox txtName;
+
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -183,12 +185,34 @@ public class ListCustomerController extends GenericAbstractListController<Person
     }
 
     public void onClick$btnClear() throws InterruptedException {
-        txtRequestNumber.setText("");
+      txtName.setText("");
+
     }
 
-    @Override
     public List<Person> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    List<Person> personList_ = new ArrayList<Person>();
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_CUSTOMER);
+            params.put(Constants.PARAM_PERSON_NAME, filter);
+            request1.setParams(params);
+               personList_ = personEJB.searchPersonByClassification(request1);
+            } else {
+                return persons;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return personList_;    
     }
 
+      public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }

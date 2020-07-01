@@ -44,7 +44,7 @@
                                                         <row>                                                            
                                                             <textbox id="txtTradeName" value="" width="250px" maxlength="60"/>
                                                             <textbox id="txtEnterpriseName" value="" width="250px" maxlength="45"/>
-                                                            <intbox id="intPhoneNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
+                                                            <textbox id="txtPhoneNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.economicActivity')}" sclass="lblbold"/>
@@ -64,7 +64,8 @@
                                                         <row>
                                                             <doublebox id="dbxPaidInCapital" width="250px" constraint="no negative"  format="#,##0.##" maxlength="30"/>
                                                             <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>
-                                                            <textbox id="txtEmail" value="" width="250px" maxlength="45"/>
+                                                            <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-z]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
+                                                            <label value="*" sclass="lblreq" />
                                                         </row>
                                                     </rows>
                                                 </grid>

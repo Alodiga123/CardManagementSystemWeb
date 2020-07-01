@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 <!--<?init class="com.alodiga.services.provider.web.security.InitiatorLoggedUser" ?>-->
 <zk xmlns:n="native">
-    <window id="winAdminAccountType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminAccountTypesControllers" class="general-window">
+    <window id="winProductType" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProductTypeController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -26,9 +26,10 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.accountType')}" onClick='Executions.sendRedirect(&quot;listAccountType.zul&quot;)'/>                      
+                                                <toolbarbutton label="${c:l('cms.common.productType')}" onClick='Executions.sendRedirect(&quot;listProductType.zul&quot;)'/> 
                                                  |
-                                                <toolbarbutton id= "tbbTitle" label=""/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.productType.add')}"/>                     
+                                                 |        
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -51,9 +52,9 @@
                                                     </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.accountType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                             <hlayout>
-                                                                <textbox id="txtAccount" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                                <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
@@ -65,7 +66,7 @@
                                         <!--Buttons-->
                                         <div align="right">
                                             <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listAccountType.zul&quot;)"/>
+                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listProductType.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
