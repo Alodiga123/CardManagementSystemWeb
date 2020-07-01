@@ -102,7 +102,6 @@ public class ListLoyaltyCommerceCategoryController extends GenericAbstractListCo
                 for (LoyaltyTransactionHasCommerceCategory loyaltyTransactionHasCommerceCategory : list) {
                     item = new Listitem();
                     item.setValue(loyaltyTransactionHasCommerceCategory);
-                    item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getProgramLoyaltyId().getDescription()));
                     item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getChannelId().getName()));
                     item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getProgramLoyaltyTransactionId().getTransactionId().getDescription()));
                     item.appendChild(new Listcell(loyaltyTransactionHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));

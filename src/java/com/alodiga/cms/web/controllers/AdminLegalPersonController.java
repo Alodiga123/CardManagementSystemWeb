@@ -16,6 +16,7 @@ import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -253,7 +254,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             if (_legalPerson != null) {
                 legalPerson = _legalPerson;
                 person = legalPerson.getPersonId();
-            } else {//New LegalPerson
+            } else {
                 legalPerson = new LegalPerson();
                 person = new Person();
             }
@@ -262,6 +263,11 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
+            
+            //Obtener el estatus ACTIVO del solicitante
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
+            StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);
 
             //Guardar Person
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
@@ -287,6 +293,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             legalPerson.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
             legalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             legalPerson.setIdentificationNumber(txtIdentificationNumber.getText());
+            legalPerson.setStatusApplicantId(statusApplicant);
             legalPerson = utilsEJB.saveLegalPerson(legalPerson);
             legalPersonParent = legalPerson;
 

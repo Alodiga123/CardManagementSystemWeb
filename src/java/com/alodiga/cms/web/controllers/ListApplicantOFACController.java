@@ -218,7 +218,11 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
                     } else {
                         item.appendChild(new Listcell(applicantNaturalPerson.getKinShipApplicantId().getDescription()));
                     }
-                    item.appendChild(new Listcell(applicantNaturalPerson.getStatusApplicantId().getDescription()));
+                    if (applicantNaturalPerson.getStatusApplicantId() != null) {
+                        item.appendChild(new Listcell(applicantNaturalPerson.getStatusApplicantId().getDescription()));
+                    } else {
+                        item.appendChild(new Listcell("SIN REGISTRAR"));
+                    }                  
                     item.appendChild(createButtonEditModal(applicantNaturalPerson));
                     item.appendChild(createButtonViewModal(applicantNaturalPerson));
                     item.setParent(lbxRecords);

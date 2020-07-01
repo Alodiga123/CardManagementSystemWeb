@@ -286,20 +286,20 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             }
             
             if ((txtTower.getText() != null) && (txtNameEdification.getText() != null)) {
-                StringBuilder linea1 = new StringBuilder("Tipo de Calle: ");
-                linea1.append((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
-                linea1.append(", Calle: ");
+                StringBuilder linea1 = new StringBuilder((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(": ");
                 linea1.append(txtNameStreet.getText());
                 linea1.append(", Urbanizacion: ");
                 linea1.append(txtUbanization.getText());
-                linea1.append(", Edificacion: ");
+                linea1.append(", ");
                 linea1.append((((EdificationType) cmbEdificationType.getSelectedItem().getValue()).getDescription()));
-                linea1.append(", Nombre del edificio: ");
+                linea1.append(": ");
                 linea1.append(txtNameEdification.getText());
                 linea1.append(", Torre: ");
                 linea1.append(txtTower.getText());
                 linea1.append(", Piso: ");
                 linea1.append(txtFloor.getText());
+                txtLine1.setText(linea1.toString());
 
                 StringBuilder linea2 = new StringBuilder("Pais: ");
                 linea2.append((((Country) cmbCountry.getSelectedItem().getValue()).getName()));
@@ -307,6 +307,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 linea2.append((((City) cmbCity.getSelectedItem().getValue()).getName()));
                 linea2.append(", Codigo Postal: ");
                 linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getCode()));
+                txtLine1.setText(linea2.toString());
 
                 address.setAddressLine1(linea1.toString());
                 address.setAddressLine2(linea2.toString());
