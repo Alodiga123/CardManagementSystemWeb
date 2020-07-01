@@ -6,7 +6,9 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ProgramLoyalty;
+import com.cms.commons.models.StatusProgramLoyalty;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -139,12 +141,12 @@ public class AdminLoyaltyActivationController extends GenericAbstractAdminContro
         return false;
     }
 
-    private void saveReviewCollectionsRequest(ProgramLoyalty _programLoyalty) {
+    private void saveActivationLoyaltyProgram(ProgramLoyalty _programLoyalty) {
         try {
             ProgramLoyalty programLoyalty = null;
             boolean indActivation;
-            int indReviewCollectionApproved = 0;
-            int indReviewCollectionIncomplete = 0;
+            StatusProgramLoyalty statusProgramLoyalty = new StatusProgramLoyalty();
+            EJBRequest request1 = new EJBRequest();
 
             if (_programLoyalty != null) {
                 programLoyalty = _programLoyalty;
@@ -154,8 +156,14 @@ public class AdminLoyaltyActivationController extends GenericAbstractAdminContro
 
             if (rActivationYes.isChecked()) {
                 indActivation = true;
+                request1 = new EJBRequest();
+                request1.setParam(WebConstants.STATUS_PROGRAM_LOYALTY_ACTIVE);
+                statusProgramLoyalty = programEJB.loadStatusProgramLoyalty(request1);
             } else {
                 indActivation = false;
+                request1 = new EJBRequest();
+                request1.setParam(WebConstants.STATUS_PROGRAM_LOYALTY_INACTIVE);
+                statusProgramLoyalty = programEJB.loadStatusProgramLoyalty(request1);
             }
             
             //Guarda el registro para la activacion
@@ -168,6 +176,7 @@ public class AdminLoyaltyActivationController extends GenericAbstractAdminContro
             } else {
                 programLoyalty.setUpdateDate(new Timestamp(new Date().getTime()));
             }
+            programLoyalty.setStatusProgramLoyaltyId(statusProgramLoyalty);
             programLoyalty = programEJB.saveProgramLoyalty(programLoyalty);
             this.showMessage("cms.common.msj", false, null);
 
@@ -180,10 +189,10 @@ public class AdminLoyaltyActivationController extends GenericAbstractAdminContro
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveReviewCollectionsRequest(null);
+                    saveActivationLoyaltyProgram(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveReviewCollectionsRequest(programLoyaltyParam);
+                    saveActivationLoyaltyProgram(programLoyaltyParam);
                     break;
                 default:
                     break;
