@@ -94,8 +94,8 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
                     item.appendChild(new Listcell(generalRate.getCountryId().getName()));
                     item.appendChild(new Listcell(generalRate.getProductTypeId().getName()));
                     item.appendChild(new Listcell(generalRate.getChannelId().getName()));
-                    item.appendChild(new Listcell(generalRate.getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(generalRate.getFixedRate().toString()));
+                    item.appendChild(new Listcell(generalRate.getTransactionId().getCode()));
+                    item.appendChild(new Listcell((generalRate.getApprovalGeneralRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
                     item.appendChild(createButtonEditModal(generalRate));
                     item.appendChild(createButtonViewModal(generalRate));
                     item.setParent(lbxRecords);
