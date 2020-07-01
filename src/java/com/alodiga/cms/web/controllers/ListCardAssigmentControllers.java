@@ -65,6 +65,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     private String applicantName = "";
     private ReviewRequest reviewRequestParam;
 
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -170,15 +171,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         } catch (Exception ex) {
             showError(ex);
         }
-    }
-
-    public void onClick$btnClear() throws InterruptedException {
-        txtRequestNumber.setText("");
-    }
-
-    @Override
-    public List<Request> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Card createCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request, CardStatus cardStatus) {
@@ -559,4 +551,35 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         }
     }
 
+      public void onClick$btnClear() throws InterruptedException {
+      txtRequestNumber.setText("");
+
+    }
+
+    public List<Request> getFilterList(String filter) {
+    List<Request> requestList_ = new ArrayList<Request>();
+        try {
+            if (filter != null && !filter.equals("")) {
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.STATUS_REQUEST_KEY, Constants.STATUS_REQUEST_APPROVED);
+            params.put(Constants.PARAM_PERSON_NAME, filter);
+            request1.setParams(params);
+            requestList_ = requestEJB.searchRequestsByStatus(request1);
+            } else {
+                return requests;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return requestList_;    
+    }
+
+      public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadList(getFilterList(txtRequestNumber.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }
