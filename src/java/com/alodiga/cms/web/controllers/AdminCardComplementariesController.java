@@ -141,7 +141,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private void loadFields(ApplicantNaturalPerson applicantNaturalPerson) {
         try {
             personCardComplementary = applicantNaturalPerson.getPersonId();
-            
+
             txtIdentificationNumber.setText(applicantNaturalPerson.getIdentificationNumber());
             txtDueDateDocumentIdentification.setValue(applicantNaturalPerson.getDueDateDocumentIdentification());
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
@@ -154,8 +154,8 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             }
             txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
             txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
-            if (applicantNaturalPerson.getPersonId().getEmail()!= null) {
-                if (applicantNaturalPerson.getPersonId().getEmail().contains("@")){
+            if (applicantNaturalPerson.getPersonId().getEmail() != null) {
+                if (applicantNaturalPerson.getPersonId().getEmail().contains("@")) {
                     txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
                 }
             }
@@ -174,7 +174,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     }
                 }
             }
-            
+
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -219,7 +219,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
         if (!(txtBirthDay.getText().isEmpty())) {
             cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
         }
-        
+
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
@@ -386,7 +386,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     phonePerson2 = personEJB.savePhonePerson(phonePerson2);
                 }
             }
-            
+
             if (eventType == WebConstants.EVENT_ADD) {
                 btnSave.setVisible(false);
             } else {
