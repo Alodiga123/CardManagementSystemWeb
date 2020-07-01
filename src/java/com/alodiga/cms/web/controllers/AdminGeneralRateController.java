@@ -111,11 +111,17 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     public void onClick$rFixedRateYes() {
         txtFixedRate.setDisabled(false);
         txtPercentageRate.setDisabled(true);
+        if (eventType == WebConstants.EVENT_EDIT) {
+            txtPercentageRate.setValue(0);
+        }
     }
 
     public void onClick$rFixedRateNo() {
         txtFixedRate.setDisabled(true);
         txtPercentageRate.setDisabled(false);
+        if (eventType == WebConstants.EVENT_EDIT) {
+            txtFixedRate.setValue(0);
+        }
     }
 
     public Boolean validateEmpty() {
@@ -159,11 +165,17 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             generalRate.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
             if (rFixedRateYes.isChecked()) {
                 if(txtFixedRate.getValue()!=null){
-                generalRate.setFixedRate(txtFixedRate.getValue().floatValue());
+                    generalRate.setFixedRate(txtFixedRate.getValue().floatValue());
+                    if(txtPercentageRate.getValue()== 0){
+                        generalRate.setPercentageRate(null);
+                    }
                 }
             } else if (rFixedRateNo.isChecked()) {
                 if(txtPercentageRate.getValue()!=null){
-                generalRate.setPercentageRate(txtPercentageRate.getValue().floatValue());
+                    generalRate.setPercentageRate(txtPercentageRate.getValue().floatValue());
+                    if(txtFixedRate.getValue()== 0){
+                        generalRate.setFixedRate(null);
+                    }
                 }
             }
             generalRate.setTotalInitialTransactionsExempt(txtTotalTransactionInitialExempt.getValue());
