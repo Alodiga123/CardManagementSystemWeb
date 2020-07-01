@@ -39,6 +39,8 @@ public class AdminParametersController extends GenericAbstractAdminController {
 
     private Label lblLoyalty;
     private Label lblTitle;
+    private Label lblLoyaltyProgramType;
+    private Label lblIndBonificationFixed;
     private Combobox cmbChannel;
     private Combobox cmbTransaction;
     private Doublebox txtTotal;
@@ -56,10 +58,16 @@ public class AdminParametersController extends GenericAbstractAdminController {
     public static ProgramLoyaltyTransaction programLoyaltyTransactionParent = null;
     public Window winAdminParameters;
     public Window winTabParametersAndComerce;
+    private ProgramLoyalty programLoyalty;
+    private AdminLoyaltyController adminLoyalty;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
+        if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
+            programLoyalty = adminLoyalty.getProgramLoyaltyParent();
+        }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -165,35 +173,68 @@ public class AdminParametersController extends GenericAbstractAdminController {
     public ProgramLoyaltyTransaction getProgramLoyaltyTransactionParent() {
         return programLoyaltyTransactionParent;
     }
+    
+    public Boolean validateEmpty() {
+        if (txtTotalMaximumTransactions.getText().isEmpty()) {
+            txtTotalMaximumTransactions.setFocus(true);
+            this.showMessage("cms.error.emptyTotalMaximumTransactions", true, null);
+        } else if (txtTotalAmountDaily.getText().isEmpty()) {
+            txtTotalAmountDaily.setFocus(true);
+            this.showMessage("cms.error.emptyTotalAmountDaily", true, null);
+        } else if (txtTotalAmountMonthly.getText().isEmpty()) {
+            txtTotalAmountMonthly.setFocus(true);
+            this.showMessage("cms.error.emptyTotalAmountMonthly", true, null);
+        } else if (txtTotal.getText().isEmpty()) {
+            txtTotal.setFocus(true);
+            this.showMessage("cms.error.emptyTotalPointsBonification", true, null);
+        } else if (cmbTransaction.getSelectedItem() == null) {
+            cmbTransaction.setFocus(true);
+            this.showMessage("cms.error.transaction.notSelected", true, null);
+        } else if (cmbChannel.getSelectedItem() == null) {
+            cmbChannel.setFocus(true);
+            this.showMessage("cms.error.channel.notSelected", true, null);
+        } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION && (!rBonificationYes.isChecked()) && (!rBonificationNo.isChecked())) {
+            this.showMessage("cms.error.emptyIndBonificationPoints", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
 
     private void loadField(ProgramLoyaltyTransaction programLoyaltyTransaction) {
-
-        ProgramLoyalty programLoyalty = null;
-        AdminLoyaltyController adminLoyalty = new AdminLoyaltyController();
-        if (adminLoyalty.getProgramLoyaltyParent().getId() != null) {
-            programLoyalty = adminLoyalty.getProgramLoyaltyParent();
-        }
-        lblLoyalty.setValue(programLoyalty.getDescription());
-
-        if (programLoyaltyTransactionParam != null) {
-            txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
+        if (programLoyaltyTransaction == null) {
+            lblLoyalty.setValue(programLoyalty.getDescription());
+            lblLoyaltyProgramType.setValue(programLoyalty.getProgramLoyaltyTypeId().getName());
+            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                lblIndBonificationFixed.setValue("");
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));
+                rBonificationYes.setVisible(false);
+                rBonificationNo.setVisible(false);
+            } else {
+                lblIndBonificationFixed.setValue(Labels.getLabel("cms.crud.loyalty.indBonificationFixed"));
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalBonification"));
+                rBonificationYes.setVisible(true);
+                rBonificationNo.setVisible(true);
+            }
+        } else {
+            lblLoyalty.setValue(programLoyaltyTransaction.getProgramLoyaltyId().getDescription());
+            lblLoyaltyProgramType.setValue(programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getName());
+            if (programLoyaltyTransaction.getTotalMaximumTransactions() != null) {
+                txtTotalMaximumTransactions.setText(programLoyaltyTransaction.getTotalMaximumTransactions().toString());
+            }            
             txtTotalAmountDaily.setText(programLoyaltyTransaction.getTotalAmountDaily().toString());
             txtTotalAmountMonthly.setText(programLoyaltyTransaction.getTotalAmountMonthly().toString());
 
-            if (programLoyaltyTransaction.getTransactionId().getIndTransactionPurchase() == true) {
-                tabCommerce.setDisabled(false);
-            } else {
-                tabCommerce.setDisabled(true);
-            }
-
-            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));
+            if (programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
+                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));                
+                lblIndBonificationFixed.setValue("");
+                rBonificationYes.setVisible(false);
+                rBonificationNo.setVisible(false);
                 txtTotal.setText(programLoyaltyTransaction.getTotalPointsValue().toString());
-                rBonificationYes.setDisabled(true);
-                rBonificationNo.setDisabled(true);
-            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
+            } else if (programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
                 lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalBonification"));
                 txtTotal.setText(programLoyaltyTransaction.getTotalBonificationValue().toString());
+                lblIndBonificationFixed.setValue(Labels.getLabel("cms.crud.loyalty.indBonificationFixed"));
                 if (programLoyaltyTransaction.getIndBonificationFixed() == true) {
                     rBonificationYes.setChecked(true);
                 } else {
@@ -201,17 +242,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
                 }
             }
             programLoyaltyTransactionParent = programLoyaltyTransaction;
-        } else {
-            if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
-                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));
-                rBonificationYes.setDisabled(true);
-                rBonificationNo.setDisabled(true);
-            } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
-                lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalBonification"));
-                rBonificationYes.setDisabled(false);
-                rBonificationNo.setDisabled(false);
-            }
-        }
+        }   
         btnSave.setVisible(true);
     }
 
@@ -306,23 +337,27 @@ public class AdminParametersController extends GenericAbstractAdminController {
         } else if (programLoyalty.getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_BONIFICATION) {
             programLoyaltyTransaction.setTotalBonificationValue(txtTotal.getValue().floatValue());
         }
-        programLoyaltyTransaction.setTotalMaximumTransactions(txtTotalMaximumTransactions.getValue().floatValue());
+        if (txtTotalMaximumTransactions.getValue() != null) {
+            programLoyaltyTransaction.setTotalMaximumTransactions(txtTotalMaximumTransactions.getValue().floatValue());
+        }
         programLoyaltyTransaction.setTotalAmountDaily(txtTotalAmountDaily.getValue().floatValue());
         programLoyaltyTransaction.setTotalAmountMonthly(txtTotalAmountMonthly.getValue().floatValue());
         programLoyaltyTransaction.setIndBonificationFixed(IndBonificationFixed);
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveProgramLoyaltyTransactionParam(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveProgramLoyaltyTransactionParam(programLoyaltyTransactionParam);
-                break;
-            default:
-                break;
-        }
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveProgramLoyaltyTransactionParam(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveProgramLoyaltyTransactionParam(programLoyaltyTransactionParam);
+                    break;
+                default:
+                    break;
+            }
+        }        
     }
 
     public void onClick$btnBack() {

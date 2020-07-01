@@ -289,9 +289,44 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         return listcellViewModal;
     }
 
-    @Override
     public List<ApplicantNaturalPerson> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<ApplicantNaturalPerson> applicantNaturalPersonList_ = new ArrayList<ApplicantNaturalPerson>();
+        ApplicantNaturalPerson applicantNaturalPerson = null;
+
+        try {
+            if (filter != null && !filter.equals("")) {
+            //Solicitante de Tarjeta
+            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            }
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+            params.put(Constants.PARAM_APPLICANT_NATURAL_PERSON_NAME_KEY, filter);
+
+            request1.setParams(params);
+            //applicantList = personEJB.getCardComplementaryByApplicant(request1); 
+            applicantNaturalPersonList_ = personEJB.searchCardComplementaryByApplicantOFAC(request1);
+                  
+            } else {
+                return applicantList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return applicantNaturalPersonList_;  
+    }
+    
+    
+      
+
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
     
 }

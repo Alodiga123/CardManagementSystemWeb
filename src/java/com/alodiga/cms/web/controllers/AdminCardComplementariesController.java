@@ -386,8 +386,13 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     phonePerson2 = personEJB.savePhonePerson(phonePerson2);
                 }
             }
+            
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
             EventQueues.lookup("updateCardComplementaries", EventQueues.APPLICATION, true).publish(new Event(""));
 
         } catch (NullParameterException ex) {

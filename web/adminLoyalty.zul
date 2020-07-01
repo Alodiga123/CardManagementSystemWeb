@@ -27,7 +27,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.loyaltyProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.menu.product')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.tab.loyaltyMain')}" sclass="lblbold"/>
                                                         </row>

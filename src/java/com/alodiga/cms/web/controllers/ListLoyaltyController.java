@@ -102,13 +102,9 @@ public class ListLoyaltyController extends GenericAbstractListController<Program
                 for (ProgramLoyalty programLoyalty : list) {
                     item = new Listitem();
                     item.setValue(programLoyalty);
-                    String pattern = "dd/MM/yyyy";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(programLoyalty.getProgramId().getName()));
+                    item.appendChild(new Listcell(programLoyalty.getDescription()));
                     item.appendChild(new Listcell(programLoyalty.getProductId().getName()));
                     item.appendChild(new Listcell(programLoyalty.getProgramLoyaltyTypeId().getName()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(programLoyalty.getStartDate())));
-                    item.appendChild(new Listcell(simpleDateFormat.format(programLoyalty.getEndDate())));
                     item.appendChild(new Listcell(programLoyalty.getStatusProgramLoyaltyId().getDescription()));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, programLoyalty) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, programLoyalty) : new Listcell());
