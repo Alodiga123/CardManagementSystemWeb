@@ -86,18 +86,22 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
 
     private void loadFields(GeneralRate generalRate) {
         try {
-            if (generalRate.getIndCardHolderModification() == true) {
-                rModificationCardHolderYes.setChecked(true);
-                txtFixedRate.setText(generalRate.getFixedRate().toString());
-                rFixedRateYes.setChecked(true);
+            if (generalRate.getFixedRate() != null) {
+                txtFixedRate.setValue(generalRate.getFixedRate());
+                rFixedRateYes.setChecked(true);  
+                txtPercentageRate.setDisabled(true);
             } else {
-                rModificationCardHolderNo.setChecked(true);
-                txtPercentageRate.setText(generalRate.getPercentageRate().toString());
+                txtPercentageRate.setValue(generalRate.getPercentageRate());
                 rFixedRateYes.setChecked(false);
+                txtFixedRate.setDisabled(true);
             }
-            txtTotalTransactionInitialExempt.setText(generalRate.getTotalInitialTransactionsExempt().toString());
-            txtTotalTransactionExemptPerMonth.setText(generalRate.getTotalTransactionsExemptPerMonth().toString());
-
+            txtTotalTransactionInitialExempt.setValue(generalRate.getTotalInitialTransactionsExempt());
+            txtTotalTransactionExemptPerMonth.setValue(generalRate.getTotalTransactionsExemptPerMonth());
+            if (generalRate.getIndCardHolderModification() == true) {
+                rModificationCardHolderYes.setChecked(true);                
+            } else {
+                rModificationCardHolderNo.setChecked(true);                
+            } 
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);

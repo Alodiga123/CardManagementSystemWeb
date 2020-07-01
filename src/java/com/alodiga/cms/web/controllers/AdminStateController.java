@@ -38,7 +38,6 @@ public class AdminStateController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        stateParam = (Sessions.getCurrent().getAttribute("object") != null) ? (State) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute( WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
            stateParam = null;                    
@@ -58,6 +57,9 @@ public class AdminStateController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.state.view"));
                 break;
+            case WebConstants.EVENT_ADD:
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.state.add"));
+                break;    
             default:
                 break;
         }        
