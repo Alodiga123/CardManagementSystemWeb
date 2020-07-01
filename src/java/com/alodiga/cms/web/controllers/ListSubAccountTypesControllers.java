@@ -1,7 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.CardEJB;
-import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -10,10 +9,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.AccountType;
 import com.cms.commons.models.SubAccountType;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -111,8 +107,8 @@ public class ListSubAccountTypesControllers extends GenericAbstractListControlle
                 for (SubAccountType subAccountType : list) {
                     item = new Listitem();
                     item.setValue(subAccountType);
-                    item.appendChild(new Listcell(subAccountType.getName()));
                     item.appendChild(new Listcell(subAccountType.getAccountTypeId().getDescription()));
+                    item.appendChild(new Listcell(subAccountType.getName()));
                     item.appendChild( new ListcellEditButton(adminPage, subAccountType));
                     item.appendChild(new ListcellViewButton(adminPage, subAccountType,true));
                     item.setParent(lbxRecords);
