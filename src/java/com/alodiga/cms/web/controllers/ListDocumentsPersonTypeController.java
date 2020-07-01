@@ -4,7 +4,6 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
-import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
@@ -35,8 +34,9 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-     private Textbox txtName;
+    private Textbox txtName;
     private PersonEJB personEJB = null;
+    private UtilsEJB utislEJB = null;
     private UtilsEJB utilsEJB = null;
     private List<DocumentsPersonType> documentsPersonType = null;
     private User currentUser;
@@ -57,6 +57,7 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
             currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             adminPage = "adminDocumentsPersonType.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadDataList(documentsPersonType);
         } catch (Exception ex) {
