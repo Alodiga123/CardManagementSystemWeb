@@ -86,18 +86,22 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
 
     private void loadFields(GeneralRate generalRate) {
         try {
-            if (generalRate.getIndCardHolderModification() == true) {
-                rModificationCardHolderYes.setChecked(true);
-                txtFixedRate.setText(generalRate.getFixedRate().toString());
-                rFixedRateYes.setChecked(true);
+            if (generalRate.getFixedRate() != null) {
+                txtFixedRate.setValue(generalRate.getFixedRate());
+                rFixedRateYes.setChecked(true);  
+                txtPercentageRate.setDisabled(true);
             } else {
-                rModificationCardHolderNo.setChecked(true);
-                txtPercentageRate.setText(generalRate.getPercentageRate().toString());
+                txtPercentageRate.setValue(generalRate.getPercentageRate());
                 rFixedRateYes.setChecked(false);
+                txtFixedRate.setDisabled(true);
             }
-            txtTotalTransactionInitialExempt.setText(generalRate.getTotalInitialTransactionsExempt().toString());
-            txtTotalTransactionExemptPerMonth.setText(generalRate.getTotalTransactionsExemptPerMonth().toString());
-
+            txtTotalTransactionInitialExempt.setValue(generalRate.getTotalInitialTransactionsExempt());
+            txtTotalTransactionExemptPerMonth.setValue(generalRate.getTotalTransactionsExemptPerMonth());
+            if (generalRate.getIndCardHolderModification() == true) {
+                rModificationCardHolderYes.setChecked(true);                
+            } else {
+                rModificationCardHolderNo.setChecked(true);                
+            } 
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -107,11 +111,17 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     public void onClick$rFixedRateYes() {
         txtFixedRate.setDisabled(false);
         txtPercentageRate.setDisabled(true);
+        if (eventType == WebConstants.EVENT_EDIT) {
+            txtPercentageRate.setValue(0);
+        }
     }
 
     public void onClick$rFixedRateNo() {
         txtFixedRate.setDisabled(true);
         txtPercentageRate.setDisabled(false);
+        if (eventType == WebConstants.EVENT_EDIT) {
+            txtFixedRate.setValue(0);
+        }
     }
 
     public Boolean validateEmpty() {
@@ -153,10 +163,20 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             generalRate.setProductTypeId((ProductType) cmbProductType.getSelectedItem().getValue());
             generalRate.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
             generalRate.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
-            if (rFixedRateYes != null) {
-                generalRate.setFixedRate(txtFixedRate.getValue().floatValue());
-            } else if (rFixedRateNo != null) {
-                generalRate.setPercentageRate(txtPercentageRate.getValue().floatValue());
+            if (rFixedRateYes.isChecked()) {
+                if(txtFixedRate.getValue()!=null){
+                    generalRate.setFixedRate(txtFixedRate.getValue().floatValue());
+                    if(txtPercentageRate.getValue()== 0){
+                        generalRate.setPercentageRate(null);
+                    }
+                }
+            } else if (rFixedRateNo.isChecked()) {
+                if(txtPercentageRate.getValue()!=null){
+                    generalRate.setPercentageRate(txtPercentageRate.getValue().floatValue());
+                    if(txtFixedRate.getValue()== 0){
+                        generalRate.setFixedRate(null);
+                    }
+                }
             }
             generalRate.setTotalInitialTransactionsExempt(txtTotalTransactionInitialExempt.getValue());
             generalRate.setTotalTransactionsExemptPerMonth(txtTotalTransactionExemptPerMonth.getValue());
@@ -178,7 +198,9 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveGeneralRate(null);
+                    if(validadate()){
+                     saveGeneralRate(null);
+                    }
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveGeneralRate(generalRateParam);
@@ -187,6 +209,65 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
                     break;
             }
         }
+    }
+    
+    public boolean validadate() {
+        boolean isValid= true;
+
+        if( cmbCountry.getSelectedIndex() == -1){
+            this.showMessage("cms.common.countryName.error", true, null);
+            return false;
+            //isValid=true;
+        }
+        
+         if(cmbProductType.getSelectedIndex() == -1){
+        this.showMessage("cms.common.descriptionProductType.error", true, null);
+        return false;
+        }
+        
+         if(cmbChannel.getSelectedIndex() == -1){
+        this.showMessage("cms.common.channel.error", true, null);
+        return false;
+        }
+        
+        if(cmbTransaction.getSelectedIndex() == -1){
+        this.showMessage("cms.common.transaction.error", true, null);
+        return false;
+        }
+        
+         if (rFixedRateYes.isChecked() || rFixedRateNo.isChecked()) {
+             if (rFixedRateYes.isChecked()) {
+                 if (txtFixedRate.getValue() == null) {
+                 this.showMessage("cms.common.fixedRate.error2", true, null);
+                 return false;
+                 }
+             }
+             
+            if (rFixedRateNo.isChecked()) {
+                 if (txtPercentageRate.getValue()== null) {
+                 this.showMessage("cms.common.percentageRate.error", true, null);    
+                 return false;
+                 }
+             }
+  
+        }else{
+           this.showMessage("cms.common.fixedRate.error", true, null);
+           return false;
+        } 
+         
+        if(cmbRateApplicationType.getSelectedIndex() == -1){
+    this.showMessage("cms.common.applicationRateType.error", true, null);
+        return false;
+        }
+       
+
+        if(!(rModificationCardHolderYes.isChecked() || rModificationCardHolderNo.isChecked())){
+        this.showMessage("cms.common.indModificationCardHolder.error", true, null);
+        return false;
+        }
+        
+        return isValid;
+   
     }
 
     public void onClick$btnBack() {
@@ -229,6 +310,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(generalRateParam != null ? generalRateParam.getCountryId().getId() : 0));
+            //cmbCountry.setSelectedIndex(0);
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -247,6 +329,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         try {
             productTypes = utilsEJB.getProductTypes(request1);
             loadGenericCombobox(productTypes, cmbProductType, "name", evenInteger, Long.valueOf(generalRateParam != null ? generalRateParam.getProductTypeId().getId() : 0));
+            //cmbProductType.setSelectedIndex(0);
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -265,6 +348,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         try {
             channelList = productEJB.getChannel(request1);
             loadGenericCombobox(channelList, cmbChannel, "name", evenInteger, Long.valueOf(generalRateParam != null ? generalRateParam.getChannelId().getId() : 0));
+            //cmbChannel.setSelectedIndex(0);
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -283,6 +367,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         try {
             transactionList = productEJB.getTransaction(request1);
             loadGenericCombobox(transactionList, cmbTransaction, "description", evenInteger, Long.valueOf(generalRateParam != null ? generalRateParam.getTransactionId().getId() : 0));
+            //cmbTransaction.setSelectedIndex(0);
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

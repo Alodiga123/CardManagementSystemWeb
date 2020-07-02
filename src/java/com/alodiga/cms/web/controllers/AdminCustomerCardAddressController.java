@@ -23,6 +23,8 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 
 public class AdminCustomerCardAddressController extends GenericAbstractAdminController {
@@ -40,8 +43,10 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
     private Textbox txtNameStreet;
     private Textbox txtNameEdification;
     private Textbox txtTower;
-    private Textbox txtFloor;
+    private Intbox txtFloor;
     private Textbox txtEmail;
+    private Textbox txtLine1;
+    private Textbox txtLine2;
     private Combobox cmbCountry;
     private Combobox cmbState;
     private Combobox cmbCity;
@@ -59,10 +64,10 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        
+
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {                    
+                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
                     naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
                     if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
                         addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
@@ -129,11 +134,27 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
 
     private void loadFields(Address address) {
         try {
-            txtUbanization.setValue(address.getUrbanization());
-            txtNameStreet.setValue(address.getNameStreet());
-            txtNameEdification.setValue(address.getNameEdification());
-            txtTower.setValue(address.getTower());
-            txtFloor.setValue(address.getFloor().toString());
+            if (address.getUrbanization() != null) {
+                txtUbanization.setValue(address.getUrbanization());
+            }
+            if (address.getNameStreet() != null) {
+                txtNameStreet.setValue(address.getNameStreet());
+            }
+            if (address.getNameEdification() != null) {
+                txtNameEdification.setValue(address.getNameEdification());
+            }
+            if (address.getTower() != null) {
+                txtTower.setValue(address.getTower());
+            }
+            if (address.getFloor() != null) {
+                txtFloor.setValue(address.getFloor());
+            }
+            if (address.getAddressLine1() != null) {
+                txtLine1.setValue(address.getAddressLine1());
+            }
+            if (address.getAddressLine2() != null) {
+                txtLine2.setValue(address.getAddressLine2());
+            }
 
         } catch (Exception ex) {
             showError(ex);
@@ -150,6 +171,8 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
         cmbState.setDisabled(true);
         cmbCity.setDisabled(true);
         cmbEdificationType.setDisabled(true);
+        txtLine1.setReadonly(true);
+        txtLine2.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -169,6 +192,9 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
         } else if (txtFloor.getText().isEmpty()) {
             txtFloor.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbZipZone.getSelectedItem() == null) {
+            cmbZipZone.setFocus(true);
+            this.showMessage("cms.error.zipZone.notSelected", true, null);
         } else {
             return true;
         }
@@ -184,7 +210,7 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             if (naturalCustomer.getPersonId() != null) {
                 personHasAddress = naturalCustomer.getPersonId().getPersonHasAddress();
             }
-            
+
             if (_address != null) {
                 address = _address;
             } else {//New address
@@ -199,7 +225,7 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
-            address.setFloor(Integer.parseInt(txtFloor.getText()));
+            address.setFloor(txtFloor.getValue());
             address.setStreetTypeId((StreetType) cmbStreetType.getSelectedItem().getValue());
             address.setNameStreet(txtNameStreet.getText());
             address.setUrbanization(txtUbanization.getText());
@@ -207,6 +233,40 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             address.setAddressTypeId(addressType);
+            if (eventType == WebConstants.EVENT_ADD) {
+                address.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                address.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
+            if ((txtTower.getText() != null) && (txtNameEdification.getText() != null)) {
+                StringBuilder linea1 = new StringBuilder("Tipo de Calle: ");
+                linea1.append((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(", Calle: ");
+                linea1.append(txtNameStreet.getText());
+                linea1.append(", Urbanizacion: ");
+                linea1.append(txtUbanization.getText());
+                linea1.append(", Edificacion: ");
+                linea1.append((((EdificationType) cmbEdificationType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(", Nombre del edificio: ");
+                linea1.append(txtNameEdification.getText());
+                linea1.append(", Torre: ");
+                linea1.append(txtTower.getText());
+                linea1.append(", Piso: ");
+                linea1.append(txtFloor.getText());
+
+                StringBuilder linea2 = new StringBuilder("Pais: ");
+                linea2.append((((Country) cmbCountry.getSelectedItem().getValue()).getName()));
+                linea2.append(", Ciudad: ");
+                linea2.append((((City) cmbCity.getSelectedItem().getValue()).getName()));
+                linea2.append(", Codigo Postal: ");
+                linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getCode()));
+
+                address.setAddressLine1(linea1.toString());
+                address.setAddressLine2(linea2.toString());
+            } else {
+                address.setAddressLine1(txtLine1.getText());
+                address.setAddressLine2(txtLine2.getText());
+            }
             address = utilsEJB.saveAddress(address);
             addressParam = address;
 
@@ -216,6 +276,7 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
 
             this.showMessage("sp.common.save.success", false, null);
+            loadFields(addressParam);
         } catch (Exception ex) {
             showError(ex);
         }

@@ -79,7 +79,7 @@ public class ListCustomerCardsComplementariesController extends GenericAbstractL
         try {
             //Solicitante de Tarjeta
             AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
-            if (adminNaturalCustomer != null) {
+            if (adminNaturalCustomer.getNaturalCustomer() != null) {
                 naturalCustomer = adminNaturalCustomer.getNaturalCustomer();
             }
             EJBRequest request1 = new EJBRequest();
