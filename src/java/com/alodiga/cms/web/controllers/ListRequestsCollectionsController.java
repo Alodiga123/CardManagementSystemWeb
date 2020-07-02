@@ -27,6 +27,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -37,6 +38,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private Textbox txtName;
     private RequestEJB requestEJB = null;
     private List<CollectionsRequest> collectionsByRequest = null;
+    private Tab tabRequestbyCollection;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -59,6 +61,14 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
             loadDataList(collectionsByRequest);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onSelect$tabRequestbyCollection() {
+        try {
+            doAfterCompose(self);
         } catch (Exception ex) {
             showError(ex);
         }

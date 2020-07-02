@@ -63,16 +63,6 @@
                                                             <intbox id="intIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.user.first.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.last.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
-                                                       </row>
-                                                        <row>
-                                                            <textbox id="txtFirstName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtLastName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtUserEmail" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                       </row>
-                                                         <row>
                                                             <label value="${c:l('cms.common.user.employee')}" sclass="lblbold"/> 
                                                             <label value="${c:l('cms.common.user.position')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.user.ext.alodiga')}" sclass="lblbold"/>
@@ -82,6 +72,19 @@
                                                             <label id="lblPosition" width="250px"/> 
                                                             <label id="lblUserExtAlodiga" width="250px"/>                                                            
                                                         </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.user.first.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user.last.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
+                                                       </row>
+                                                        <row>
+                                                            <label id="lblFirstName" width="250px"/> 
+                                                            <label id="lblLastName" width="250px"/> 
+                                                            <label id="lblUserEmail" width="250px"/> 
+                                                            <!--textbox id="txtFirstName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtLastName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtUserEmail" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/-->
+                                                       </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.authorize.registration')}" sclass="lblbold"/>

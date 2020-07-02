@@ -42,6 +42,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Textbox txtIdentificationNumber;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
@@ -112,6 +113,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
             }
         } catch (Exception ex) {
             showError(ex);

@@ -497,28 +497,6 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
         }
     }
 
-//    private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
-//        EJBRequest request1 = new EJBRequest();
-//        cmbDocumentsPersonType.getItems().clear();
-//        Map params = new HashMap();
-//        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-//        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, naturalCustomerParam.getDocumentsPersonTypeId().getPersonTypeId().getIndNaturalPerson());
-//        request1.setParams(params);
-//        List<DocumentsPersonType> documentsPersonType;
-//        try {
-//            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-//            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getDocumentsPersonTypeId().getId() : 0));
-//        } catch (EmptyListException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (GeneralException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        } catch (NullParameterException ex) {
-//            showError(ex);
-//            ex.printStackTrace();
-//        }
-//    }
     private void loadCmbCivilState(Integer evenInteger) {
         //cmbCivilState
         EJBRequest request1 = new EJBRequest();

@@ -28,13 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Radio;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -45,7 +42,9 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
     private Textbox txtNameStreet;
     private Textbox txtNameEdification;
     private Textbox txtTower;
-    private Textbox txtFloor;
+    private Textbox txtLine1;
+    private Textbox txtLine2;
+    private Intbox indFloor;
     private Combobox cmbCountry;
     private Combobox cmbState;
     private Combobox cmbCity;
@@ -63,24 +62,24 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp); 
-        adminCardProgramManager = new AdminCardProgramManagerController(); 
+        super.doAfterCompose(comp);
+        adminCardProgramManager = new AdminCardProgramManagerController();
         personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
         try {
             if (adminCardProgramManager.getEventType() == WebConstants.EVENT_ADD) {
                 personHasAddressParam = null;
-            } else {            
+            } else {
                 if (adminCardProgramManager.getCardProgramManager().getPersonId() != null) {
                     EJBRequest request = new EJBRequest();
                     Map params = new HashMap();
-                    params.put(Constants.PERSON_KEY,adminCardProgramManager.getCardProgramManager().getPersonId().getId());
+                    params.put(Constants.PERSON_KEY, adminCardProgramManager.getCardProgramManager().getPersonId().getId());
                     request.setParams(params);
-                    List<PersonHasAddress> personHasAddressList = personEJB.getPersonHasAddressesByPerson(request); 
+                    List<PersonHasAddress> personHasAddressList = personEJB.getPersonHasAddressesByPerson(request);
                     for (PersonHasAddress p : personHasAddressList) {
                         personHasAddressParam = p;
                     }
-                }          
-            }                   
+                }
+            }
         } catch (Exception ex) {
             showError(ex);
         } finally {
@@ -96,7 +95,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
     public void initialize() {
         super.initialize();
         try {
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);            
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -126,16 +125,32 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         txtNameStreet.setRawValue(null);
         txtNameEdification.setRawValue(null);
         txtTower.setRawValue(null);
-        txtFloor.setRawValue(null);
+        indFloor.setRawValue(null);
     }
 
     private void loadFields(PersonHasAddress personHasAddress) {
         try {
-            txtUbanization.setValue(personHasAddress.getAddressId().getUrbanization());
-            txtNameStreet.setValue(personHasAddress.getAddressId().getNameStreet());
-            txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
-            txtTower.setValue(personHasAddress.getAddressId().getTower());
-            txtFloor.setValue(personHasAddress.getAddressId().getFloor().toString());
+            if (personHasAddress.getAddressId().getUrbanization() != null) {
+                txtUbanization.setValue(personHasAddress.getAddressId().getUrbanization());
+            }
+            if (personHasAddress.getAddressId().getNameStreet() != null) {
+                txtNameStreet.setValue(personHasAddress.getAddressId().getNameStreet());
+            }
+            if (personHasAddress.getAddressId().getNameEdification() != null) {
+                txtNameEdification.setValue(personHasAddress.getAddressId().getNameEdification());
+            }
+            if (personHasAddress.getAddressId().getTower() != null) {
+                txtTower.setValue(personHasAddress.getAddressId().getTower());
+            }
+            if (personHasAddress.getAddressId().getFloor() != null) {
+                indFloor.setValue(personHasAddress.getAddressId().getFloor());
+            }
+            if (personHasAddress.getAddressId().getAddressLine1() != null) {
+                txtLine1.setValue(personHasAddress.getAddressId().getAddressLine1());
+            }
+            if (personHasAddress.getAddressId().getAddressLine2() != null) {
+                txtLine2.setValue(personHasAddress.getAddressId().getAddressLine2());
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -146,25 +161,42 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         txtNameStreet.setReadonly(true);
         txtNameEdification.setReadonly(true);
         txtTower.setReadonly(true);
-        txtFloor.setReadonly(true);
+        indFloor.setReadonly(true);
+        txtLine1.setReadonly(true);
+        txtLine2.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtUbanization.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbState.getSelectedItem() == null) {
+            cmbState.setFocus(true);
+            this.showMessage("cms.error.state.noSelected", true, null);
+        } else if (cmbCity.getSelectedItem() == null) {
+            cmbCity.setFocus(true);
+            this.showMessage("cms.error.field.city", true, null);
+        } else if (txtUbanization.getText().isEmpty()) {
             txtUbanization.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbStreetType.getSelectedItem() == null) {
+            cmbStreetType.setFocus(true);
+            this.showMessage("cms.error.streetType.noSelected", true, null);
         } else if (txtNameStreet.getText().isEmpty()) {
             txtNameStreet.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbEdificationType.getSelectedItem() == null) {
+            cmbEdificationType.setFocus(true);
+            this.showMessage("cms.error.edificationType.notSelected", true, null);
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.nameEdification", true, null);
         } else if (txtTower.getText().isEmpty()) {
             txtTower.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtFloor.getText().isEmpty()) {
-            txtFloor.setFocus(true);
+            this.showMessage("cms.error.field.tower", true, null);
+        } else if (indFloor.getText().isEmpty()) {
+            indFloor.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else {
             return true;
@@ -186,19 +218,19 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
             } else {//New address
                 address = new Address();
                 personHasAddress = new PersonHasAddress();
-            }  
-            
+            }
+
             //Obtiene el tipo de Direccion EMPRESA
-            EJBRequest request = new EJBRequest();
+            EJBRequest addType = new EJBRequest();
             Map param = new HashMap();
-            request.setParam(WebConstants.ADDRESS_TYPE_COMPANY);
-            AddressType addressType = utilsEJB.loadAddressType(request);
-            
+            addType.setParam(WebConstants.ADDRESS_TYPE_COMPANY);
+            AddressType addressType = utilsEJB.loadAddressType(addType);
+
             //Guarda la dirección del gerente del programa de tarjetas
             address.setEdificationTypeId((EdificationType) cmbEdificationType.getSelectedItem().getValue());
             address.setNameEdification(txtNameEdification.getText());
             address.setTower(txtTower.getText());
-            address.setFloor(Integer.parseInt(txtFloor.getText()));
+            address.setFloor(indFloor.getValue());
             address.setStreetTypeId((StreetType) cmbStreetType.getSelectedItem().getValue());
             address.setNameStreet(txtNameStreet.getText());
             address.setUrbanization(txtUbanization.getText());
@@ -206,7 +238,41 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
             address.setZipZoneId((ZipZone) cmbZipZone.getSelectedItem().getValue());
             address.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             address.setAddressTypeId(addressType);
-            address.setCreateDate(new Timestamp(new Date().getTime()));
+            if (eventType == WebConstants.EVENT_ADD) {
+                address.setCreateDate(new Timestamp(new Date().getTime()));
+            } else {
+                address.setUpdateDate(new Timestamp(new Date().getTime()));
+            }
+
+            if ((txtTower.getText() != null) && (txtNameEdification.getText() != null)) {
+                StringBuilder linea1 = new StringBuilder("Tipo de Calle: ");
+                linea1.append((((StreetType) cmbStreetType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(", Calle: ");
+                linea1.append(txtNameStreet.getText());
+                linea1.append(", Urbanizacion: ");
+                linea1.append(txtUbanization.getText());
+                linea1.append(", Edificacion: ");
+                linea1.append((((EdificationType) cmbEdificationType.getSelectedItem().getValue()).getDescription()));
+                linea1.append(", Nombre del edificio: ");
+                linea1.append(txtNameEdification.getText());
+                linea1.append(", Torre: ");
+                linea1.append(txtTower.getText());
+                linea1.append(", Piso: ");
+                linea1.append(indFloor.getText());
+
+                StringBuilder linea2 = new StringBuilder("Pais: ");
+                linea2.append((((Country) cmbCountry.getSelectedItem().getValue()).getName()));
+                linea2.append(", Ciudad: ");
+                linea2.append((((City) cmbCity.getSelectedItem().getValue()).getName()));
+                linea2.append(", Codigo Postal: ");
+                linea2.append((((ZipZone) cmbZipZone.getSelectedItem().getValue()).getCode()));
+
+                address.setAddressLine1(linea1.toString());
+                address.setAddressLine2(linea2.toString());
+            } else {
+                address.setAddressLine1(txtLine1.getText());
+                address.setAddressLine2(txtLine2.getText());
+            }
             address = utilsEJB.saveAddress(address);
             addressParent = address;
 
@@ -215,6 +281,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
             personHasAddress.setPersonId(person);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             personHasAddressParam = personHasAddress;
+            loadFields(personHasAddress);
 
             this.showMessage("sp.common.save.success", false, null);
             if (eventType == WebConstants.EVENT_ADD) {

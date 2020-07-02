@@ -5,11 +5,9 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import static com.alodiga.cms.web.controllers.ListRateByProgramController.program;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.ApprovalGeneralRate;
 import com.cms.commons.models.ApprovalProgramRate;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByProgram;
@@ -59,9 +57,9 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-            approvalProgramRateParam = null;                    
+            approvalProgramRateParam = null;
         } else {
-            approvalProgramRateParam = (ApprovalProgramRate) Sessions.getCurrent().getAttribute("object");            
+            approvalProgramRateParam = (ApprovalProgramRate) Sessions.getCurrent().getAttribute("object");
         }
         initialize();
     }
@@ -97,7 +95,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             txtApprovalDate.setValue(approvalProgramRate.getApprovalDate());
             if (approvalProgramRate.getIndApproved() != null) {
                 if (approvalProgramRate.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);    
+                    rApprovedYes.setChecked(true);
                 } else {
                     rApprovedNo.setChecked(true);
                 }
@@ -110,14 +108,14 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
         rApprovedYes.setDisabled(true);
-        rApprovedNo.setDisabled(true);        
+        rApprovedNo.setDisabled(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
         if (txtApprovalDate.getText().isEmpty()) {
             txtApprovalDate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.approvalDate", true, null);
         } else {
             return true;
         }
@@ -133,13 +131,13 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             } else {
                 approvalProgramRate = new ApprovalProgramRate();
             }
-            
+
             if (rApprovedYes.isChecked()) {
                 indApproved = true;
             } else {
                 indApproved = false;
             }
-            
+
             //Guarda la aprobación de las tarifas por programa
             approvalProgramRate.setProgramId(program);
             approvalProgramRate.setApprovalDate(txtApprovalDate.getValue());
@@ -147,17 +145,17 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             approvalProgramRate.setUserId(user);
             approvalProgramRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalProgramRate = productEJB.saveApprovalProgramRate(approvalProgramRate);
-            
+
             //Actualiza las tarifas del programa que se está aprobando
             updateProgramRate(approvalProgramRate);
-            
+
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
     }
-    
+
     public void updateProgramRate(ApprovalProgramRate approvalProgramRate) {
         try {
             Map params = new HashMap();
@@ -165,19 +163,19 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             params.put(QueryConstants.PARAM_PROGRAM_ID, program.getId());
             request1.setParams(params);
             rateByProgramByProgramList = productEJB.getRateByProgramByProgram(request1);
-            for (RateByProgram rateByProgram: rateByProgramByProgramList) {
+            for (RateByProgram rateByProgram : rateByProgramByProgramList) {
                 rateByProgram.setApprovalProgramRateId(approvalProgramRate);
                 rateByProgram = productEJB.saveRateByProgram(rateByProgram);
             }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showError(ex); 
+            showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         } catch (RegisterNotFoundException ex) {
-            showError(ex); 
-        }           
+            showError(ex);
+        }
     }
 
     public void onClick$btnSave() {
@@ -194,7 +192,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             }
         }
     }
-    
+
     public void onClick$btnBack() {
         winAdminApprovalProgramRate.detach();
     }
@@ -204,11 +202,11 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
                     loadFields(approvalProgramRateParam);
-                break;
+                    break;
                 case WebConstants.EVENT_VIEW:
                     loadFields(approvalProgramRateParam);
                     blockFields();
-                break;
+                    break;
                 case WebConstants.EVENT_ADD:
                     lblProgram.setValue(program.getName());
                     txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
@@ -216,7 +214,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
                     txtCommercialAssessorUserCode.setValue(user.getCode());
                     txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
                     txtIdentification.setValue(user.getIdentificationNumber());
-                break;
+                    break;
             }
         } catch (EmptyListException ex) {
             showError(ex);
@@ -226,5 +224,5 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             showError(ex);
         }
     }
-    
+
 }

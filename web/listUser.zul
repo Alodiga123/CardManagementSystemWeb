@@ -54,12 +54,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.login.user')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.login.user')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identification.number')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.name.user')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.commercial.agency')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.indEnabled')}" width="130px" sort="auto"/>
-                                                    <listheader label="-" width="45px"/>
+                                                    <listheader label="${c:l('cms.common.name.user')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.commercial.agency')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.indEnabled')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

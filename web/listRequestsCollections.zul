@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout>
                         <div></div>
-                        <div width="1200px" align="left" height="1000px">
+                        <div width="1200px" align="left" height="400px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -37,7 +37,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="300px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.countryName')}" width="225px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.descriptionProductType')}" width="260px" sort="auto"/>
