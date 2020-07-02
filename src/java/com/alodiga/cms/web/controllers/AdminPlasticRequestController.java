@@ -13,7 +13,6 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.PlasticCustomizingRequest;
 import com.cms.commons.models.PlasticManufacturer;
 import com.cms.commons.models.Program;
-import com.cms.commons.models.Request;
 import com.cms.commons.models.Sequences;
 import com.cms.commons.models.StatusPlasticCustomizingRequest;
 import com.cms.commons.util.Constants;
@@ -41,6 +40,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Label txtStatus = null;
     private Combobox cmbPlasticManufacturer;
     private Combobox cmbPrograms;
@@ -133,6 +133,8 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             if (plasticCustomizingRequest.getRequestNumber() != null) {
                 lblRequestNumber.setValue(plasticCustomizingRequest.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(plasticCustomizingRequest.getRequestDate()));
+//                lblStatusRequest.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());
+                
             }
             
             txtStatus.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());

@@ -72,9 +72,6 @@
                                                                 </grid>
                                                             </hbox>
                                                             <label id="txtAge" value="" width="250px" style="color:#837E76;"/>
-                                                            <!--<hlayout>
-                                                                <intbox id="txtAge" width="250px" maxlength="11"/>
-                                                            </hlayout>-->
                                                         </row>                                                       
                                                         <row>
                                                             <label value="${c:l('cms.common.civilState')}" sclass="lblbold"/>

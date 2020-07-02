@@ -6,6 +6,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -14,6 +15,7 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.Program;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
@@ -23,6 +25,8 @@ import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
@@ -96,14 +100,14 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbCollectionType(eventType, country.getId());
     }
-    
+
     public void onChange$cmbPrograms() {
-        
+
         program = (Program) cmbPrograms.getSelectedItem().getValue();
         lblProductType.setVisible(true);
         loadProgramData(program);
     }
-    
+
     public void loadProgramData(Program program) {
         lblProductType.setValue(program.getProductTypeId().getName());
     }
@@ -112,30 +116,65 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         btnSave.setVisible(false);
     }
 
-    private void saveCollectionsRequest(CollectionsRequest _collectionsRequest) {
-        try {
-            CollectionsRequest collectionsRequest = null;
+    private void saveCollectionsRequest(CollectionsRequest _collectionsRequest) throws GeneralException, NullParameterException {
+        CollectionsRequest collectionsRequest = null;
+        List<CollectionsRequest> collectionsRequestUnique = null;
 
+        try {
             if (_collectionsRequest != null) {
                 collectionsRequest = _collectionsRequest;
             } else {//New collectionsRequest
                 collectionsRequest = new CollectionsRequest();
             }
 
-            collectionsRequest.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            collectionsRequest.setProductTypeId(((Program) cmbPrograms.getSelectedItem().getValue()).getProductTypeId());
-            collectionsRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
-            collectionsRequest.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
-            collectionsRequest.setCollectionTypeId((CollectionType) cmbCollectionType.getSelectedItem().getValue());
-            collectionsRequest = requestEJB.saveCollectionRequest(collectionsRequest);
-            collectionsRequestParam = collectionsRequest;
-            this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.COUNTRY_KEY, ((Country) cmbCountry.getSelectedItem().getValue()).getId());
+            params.put(Constants.PRODUCT_TYPE_KEY, ((Program) cmbPrograms.getSelectedItem().getValue()).getProductTypeId().getId());
+            params.put(Constants.PROGRAM_KEY, ((Program) cmbPrograms.getSelectedItem().getValue()).getId());
+            params.put(Constants.PERSON_TYPE_KEY, ((PersonType) cmbPersonType.getSelectedItem().getValue()).getId());
+            params.put(Constants.COLLECTION_TYPE_KEY, ((CollectionType) cmbCollectionType.getSelectedItem().getValue()).getId());
+            request1.setParams(params);
+
+            collectionsRequestUnique = requestEJB.getCollectionsRequestsUnique(request1);
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    this.showMessage("cms.common.programLoyaltyTransactionExist", true, null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    buildCollectionsRequest(collectionsRequest);
+                    collectionsRequest = requestEJB.saveCollectionRequest(collectionsRequest);
+                    collectionsRequestParam = collectionsRequest;
+                    this.showMessage("sp.common.save.success", false, null);
+                    break;
+                default:
+                    break;
+            }
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            if (eventType == 1 && collectionsRequestUnique == null) {
+                collectionsRequest = new CollectionsRequest();
+
+                buildCollectionsRequest(collectionsRequest);
+                collectionsRequest = requestEJB.saveCollectionRequest(collectionsRequest);
+
+                collectionsRequestParam = collectionsRequest;
+                this.showMessage("sp.common.save.success", false, null);
+                btnSave.setVisible(false);
+                EventQueues.lookup("updateParameters", EventQueues.APPLICATION, true).publish(new Event(""));
+            }
         }
     }
-    
+
+    public void buildCollectionsRequest(CollectionsRequest collectionsRequest) {
+        collectionsRequest.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+        collectionsRequest.setProductTypeId(((Program) cmbPrograms.getSelectedItem().getValue()).getProductTypeId());
+        collectionsRequest.setProgramId((Program) cmbPrograms.getSelectedItem().getValue());
+        collectionsRequest.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
+        collectionsRequest.setCollectionTypeId((CollectionType) cmbCollectionType.getSelectedItem().getValue());
+    }
+
     public Boolean validateEmpty() {
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
@@ -155,7 +194,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         return false;
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
@@ -219,7 +258,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
     }
-
 
     private void loadCmbPrograms(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();

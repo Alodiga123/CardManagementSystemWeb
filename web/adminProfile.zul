@@ -28,8 +28,6 @@
                                                 <toolbarbutton label="${c:l('cms.crud.profile.list')}" onClick='Executions.sendRedirect(&quot;listProfile.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.profile.add')}"/>
-                                                 |  
-                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -56,7 +54,10 @@
                                                             <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtName" width="330px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <textbox id="txtName" width="500px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <hbox>
                                                             <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>

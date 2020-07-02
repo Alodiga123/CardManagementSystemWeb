@@ -24,12 +24,10 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('cms.menu.profile.data')}" onClick='Executions.sendRedirect(&quot;listProfileData.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.profile.data.add')}"/>
-                                                 |  
-                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="7px" width="100%" style="background:#333;" align="left"></div>
@@ -49,20 +47,29 @@
                                                             <label value="${c:l('cms.common.alias.profile')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbProfile" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbLanguage" width="270px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtAlias" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                         
-                                                       </row>
-                                                      <row>
+                                                            <hlayout>
+                                                                <combobox id="cmbProfile" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbLanguage" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtAlias" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>
+                                                        <row>
                                                             <label value="${c:l('cms.common.description.profile')}" sclass="lblbold"/>
-                                                       </row>
-                                                       <row>
-                                                           <cell colspan="3">
-                                                               <hlayout>
-                                                                   <textbox id="txtDescription" multiline="true" rows="1" width="870px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1200"/>
-                                                               </hlayout>
-                                                           </cell>    
-                                                       </row>  
+                                                        </row>
+                                                        <row>
+                                                            <cell colspan="3">
+                                                                <hlayout>
+                                                                    <textbox id="txtDescription" multiline="true" rows="1" width="820px" maxlength="1200"/>
+                                                                </hlayout>
+                                                            </cell>    
+                                                        </row>  
                                                     </rows>
                                                 </grid>
                                             </vlayout>

@@ -1,4 +1,5 @@
 package com.alodiga.cms.web.controllers;
+
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -24,7 +25,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
 
 
 public class ListPermissionController extends GenericAbstractListController<Permission> {
@@ -33,7 +33,6 @@ public class ListPermissionController extends GenericAbstractListController<Perm
     private Listbox lbxRecords;
     private UtilsEJB utilsEJB = null;
     private List<Permission> permissionList = null;
-    private Permission currentPermission;
     private User user = null;
 
     @Override
@@ -110,15 +109,9 @@ public class ListPermissionController extends GenericAbstractListController<Perm
                 for (Permission permission : list) {
                     item = new Listitem();
                     item.setValue(permission);
-                    item.appendChild(new Listcell(permission.getName().toString()));
-                    item.appendChild(new Listcell(permission.getAction().toString()));
-                    item.appendChild(new Listcell(permission.getEntity().toString()));
-                    if (permission.getEnabled() == true) {
-                        indEnabled = "Yes";
-                    } else {
-                        indEnabled = "No";
-                    }                    
-                    item.appendChild(new Listcell(indEnabled));
+                    item.appendChild(new Listcell(permission.getAction()));
+                    item.appendChild(new Listcell(permission.getEntity()));
+                    item.appendChild(new Listcell(permission.getName()));
                     item.appendChild(new ListcellEditButton(adminPage, permission));
                     item.appendChild(new ListcellViewButton(adminPage, permission,true));
                     item.setParent(lbxRecords);

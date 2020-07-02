@@ -1,15 +1,18 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
+import com.cms.commons.models.LegalRepresentatives;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -18,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
@@ -39,19 +44,22 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
     private Listbox lbxRecords;
     private Textbox txtName;
     private PersonEJB personEJB = null;
+    private UtilsEJB utilsEJB = null;
+    private Integer eventType;
     private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
     private AdminCardProgramManagerController adminCardProgramManager = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        adminCardProgramManager = new AdminCardProgramManagerController(); 
+        adminCardProgramManager = new AdminCardProgramManagerController();
+        eventType = adminCardProgramManager.getEventType();
         initialize();
         startListener();
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateLegalRepresentatives", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateLegalRepresentativesProgramManager", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
@@ -71,13 +79,14 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
             permissionRead = true;
             adminPage = "/adminLegalRepresentativesCardProgramManager.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadDataList(legalRepresentatives);
         } catch (Exception ex) {
             showError(ex);
         }
-    } 
-    
+    }
+
     public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
@@ -124,11 +133,10 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
             showError(ex);
         }
     }
-    
-    
+
     public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
+        Listcell listcellEditModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-edit.png");
             button.setClass("open orange");
@@ -136,12 +144,12 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
@@ -151,11 +159,10 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
         }
         return listcellEditModal;
     }
-    
-    
+
     public Listcell createButtonViewModal(final Object obg) {
-       Listcell listcellViewModal = new Listcell();
-        try {    
+        Listcell listcellViewModal = new Listcell();
+        try {
             Button button = new Button();
             button.setImage("/images/icon-invoice.png");
             button.setTooltiptext(Labels.getLabel("sp.common.actions.view"));
@@ -163,12 +170,12 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
             button.addEventListener("onClick", new EventListener() {
                 @Override
                 public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
+                    Sessions.getCurrent().setAttribute("object", obg);
+                    Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_VIEW);
+                    Map<String, Object> paramsPass = new HashMap<String, Object>();
+                    paramsPass.put("object", obg);
+                    final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+                    window.doModal();
                 }
 
             });
@@ -178,23 +185,35 @@ public class ListLegalRepresentativesCardProgramManagerController extends Generi
         }
         return listcellViewModal;
     }
-    
-   
+
     public void getData() {
         legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
         LegalPerson legalPerson = adminCardProgramManager.getCardProgramManager();
+        LegalRepresentatives legalRepresentative = null;
+
         try {
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.LEGAL_PERSON_KEY, legalPerson.getId());
             request1.setParams(params);
             legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);
+
+            if (eventType == WebConstants.EVENT_EDIT) {
+                EJBRequest request2 = new EJBRequest();
+                for (LegalPersonHasLegalRepresentatives lpr : legalRepresentatives) {
+                    request2.setParam(lpr.getLegalRepresentativesid().getId());
+                    legalRepresentative = utilsEJB.loadLegalRepresentatives(request2);
+                    lpr.setLegalRepresentativesid(legalRepresentative);
+                }
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
             showEmptyList();
         } catch (GeneralException ex) {
             showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            Logger.getLogger(ListLegalRepresentativesCardProgramManagerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
