@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -8,8 +9,11 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Country;
 import com.cms.commons.models.GeneralRate;
 import com.cms.commons.models.Request;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -27,6 +31,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -34,14 +39,17 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
-public class ListGeneralRateController extends GenericAbstractListController<Request> {
+public class ListGeneralRateController extends GenericAbstractListController<GeneralRate> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtRequestNumber;
     private ProductEJB productEJB = null;
+     private UtilsEJB utilsEJB = null;
     private List<GeneralRate> generalRateList = null;
     private Toolbarbutton tbbTitle;
+    private Combobox cmbCountry;
+    private Textbox txtName;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -71,8 +79,10 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
             permissionRead = true;
             tbbTitle.setLabel(Labels.getLabel("cms.common.generalRate.list"));
             adminPage = "adminGeneralRate.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
+            loadCmbCountry(eventType);
             loadList(generalRateList);
         } catch (Exception ex) {
             showError(ex);
@@ -159,7 +169,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
     } 
 
     public void onClick$btnClear() throws InterruptedException {
-        txtRequestNumber.setText("");
+        loadList(generalRateList);
     }
     
     public Listcell createButtonEditModal(final Object obg) {
@@ -225,13 +235,65 @@ public class ListGeneralRateController extends GenericAbstractListController<Req
         return listcellViewModal;
     }
 
+  
+    public List<GeneralRate> getFilterList(Country country) {
+           List<GeneralRate> generalRateList_ = new ArrayList<GeneralRate>();
+        try {
+            if (country != null) {
+             generalRateList_ = productEJB.getGeneralRateByCountry(country);;
+            } else {
+                return generalRateList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return generalRateList_; 
+    }
+
+   
+    private void loadCmbCountry(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<Country> countries;
+        try {
+            countries = utilsEJB.getCountries(request1);
+            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(0));
+            //cmbCountry.setSelectedIndex(0);
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+        
+    }
+    
+    
+        public void onClick$btnSearch() throws InterruptedException {
+        try {
+            if (cmbCountry.getSelectedIndex() == -1) {
+                this.showMessage("cms.common.countryName.error", true, null);
+                cmbCountry.setFocus(true);
+                
+            }else{
+            loadList(getFilterList((Country)cmbCountry.getSelectedItem().getValue()));
+            }
+            
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
     @Override
-    public List<Request> getFilterList(String filter) {
+    public List<GeneralRate> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void loadDataList(List<Request> list) {
+    public void loadDataList(List<GeneralRate> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
