@@ -28,7 +28,7 @@
                                                 |
                                                 <toolbarbutton label="${c:l('cms.menu.country.state')}" onClick='Executions.sendRedirect(&quot;listState.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.country.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label=""/>
                                                 |
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
@@ -45,19 +45,19 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.State')}" sclass="lblbold"/>
-                                                            <hlayout>
-                                                                <textbox id="txtName" width="2700px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
-                                                             <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                        </row>
-                                                        <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <hlayout>
-                                                                <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbCountry" width="260px" mold="rounded" readonly="true"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                        </row>                                      
+                                                        </row>   
+                                                        <row>
+                                                            <label value="${c:l('cms.common.State')}" sclass="lblbold"/>
+                                                            <hlayout>
+                                                                <textbox id="txtName" width="260px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>                                   
                                                     </rows>
                                                 </grid>
                                             </vlayout>

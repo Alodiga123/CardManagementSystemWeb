@@ -349,7 +349,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 applicantNaturalPerson = _applicantNaturalPerson;
                 person = applicantNaturalPerson.getPersonId();
                 phonePerson = applicantNaturalPerson.getPersonId().getPhonePerson();
-            } else {//New ApplicantNaturalPerson
+            } else {
                 applicantNaturalPerson = new ApplicantNaturalPerson();
                 person = new Person();
                 phonePerson = new PhonePerson();
@@ -366,6 +366,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
+            //Obtener el estatus ACTIVO del solicitante
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
             StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);

@@ -124,6 +124,7 @@ public class AdminNetworkController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
+                    blockFields();
                     saveNetwork(null);
                     break;
                 case WebConstants.EVENT_EDIT:

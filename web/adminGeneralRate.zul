@@ -81,8 +81,8 @@
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.indModificationCardHolder')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indModificationCardHolder')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbRateApplicationType" width="250px" mold="rounded" readonly="true"/>

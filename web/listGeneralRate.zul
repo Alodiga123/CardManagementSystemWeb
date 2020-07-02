@@ -29,8 +29,8 @@
                                                     <listheader label="${c:l('cms.common.country')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.productType')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.channel')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.transaction')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.fixedRate')}" width="165px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.transaction.code2')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.approved')}" width="165px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
