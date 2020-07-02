@@ -281,7 +281,7 @@ public class AdminParametersController extends GenericAbstractAdminController {
             if (programLoyaltyTransactionUnique != null) {
                 switch (eventType) {
                     case WebConstants.EVENT_ADD:
-                        this.showMessage("cms.common.programLoyaltyTransactionExist", false, null);
+                        this.showMessage("cms.common.RegisterExistInBD", false, null);
                     break;
                     case WebConstants.EVENT_EDIT:
                         buildProgramLoyaltyTransaction(programLoyalty,programLoyaltyTransaction);

@@ -37,6 +37,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -52,6 +53,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
     private User currentUser;
     private Button btnSave;
     private AdminRequestController adminRequest = null;
+    private Tab tabApplicantOFAC;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -88,16 +90,32 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
             showError(ex);
         }
     }
+    
+    public void onSelect$tabApplicantOFAC() {
+        try {
+            doAfterCompose(self);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
     public void getData() {
         applicantList = new ArrayList<ApplicantNaturalPerson>();
         ApplicantNaturalPerson applicantNaturalPerson = null;
+        Request requestCard = null;
         try {
-            //Solicitante de Tarjeta
-            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            //Solicitud de Tarjeta
+            AdminRequestController adminRequestController = new AdminRequestController();
+            if (adminRequestController.getRequest().getId() != null) {
+                requestCard = adminRequestController.getRequest();
             }
+            if (requestCard.getPersonId() != null) {
+                //Solicitante Principal de Tarjeta
+                AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+                if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                    applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+                }
+            }            
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
