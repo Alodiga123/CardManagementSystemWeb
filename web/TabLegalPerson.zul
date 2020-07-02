@@ -44,7 +44,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <tabbox id="tbxPurchaseTabs" width="900px" height="500px">
+                                                <tabbox id="tbxPurchaseTabs" width="940px" height="500px">
                                                     <tabs>
                                                         <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}" />
                                                         <tab id="tabMain" label="${c:l('cms.tab.legalPersonMain')}" />
