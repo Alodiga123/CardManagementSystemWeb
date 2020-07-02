@@ -59,7 +59,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
-//    private Label txtNumber;
+    private Label lblStatusRequest;
     private Label txtCity;
     private Label txtAgency;
     private Label txtCommercialAssessorUserCode;
@@ -154,6 +154,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
             }
         } catch (Exception ex) {
             showError(ex);

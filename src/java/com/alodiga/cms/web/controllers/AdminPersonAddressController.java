@@ -47,6 +47,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Textbox txtUbanization;
     private Textbox txtNameStreet;
     private Textbox txtNameEdification;
@@ -147,6 +148,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
             }
         } catch (Exception ex) {
             showError(ex);
@@ -326,7 +328,12 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true).publish(new Event(""));
             loadFields(personHasAddress);
-            btnSave.setVisible(false);
+            
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
