@@ -44,9 +44,9 @@ public class AdminUserController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Intbox  intIdentificationNumber;
-    private Textbox txtFirstName;
-    private Textbox txtLastName;
-    private Textbox txtUserEmail;
+    private Textbox lblFirstName;
+    private Textbox lblLastName;
+    private Textbox lblUserEmail;
     private Textbox txtLogin;
     private Textbox txtPassword;
     private Label lblPosition;
@@ -104,9 +104,9 @@ public class AdminUserController extends GenericAbstractAdminController {
     
     public void clearFields() {
         intIdentificationNumber.setRawValue(null);
-        txtFirstName.setRawValue(null);
-        txtLastName.setRawValue(null);
-        txtUserEmail.setRawValue(null);
+        lblFirstName.setRawValue(null);
+        lblLastName.setRawValue(null);
+        lblUserEmail.setRawValue(null);
         txtLogin.setRawValue(null);
         txtPassword.setRawValue(null);
         lblPosition.setValue(null);
@@ -122,12 +122,12 @@ public class AdminUserController extends GenericAbstractAdminController {
         PhonePerson phonePersonEmployeeAuthorize = null;
         try {
             intIdentificationNumber.setText(user.getIdentificationNumber());
-            txtFirstName.setText(user.getFirstNames());
-            txtLastName.setText(user.getLastNames());
-            txtUserEmail.setText(user.getPersonId().getEmail());
             txtLogin.setText(user.getLogin());
             txtPassword.setText(user.getPassword());
             lblPosition.setValue(user.getEmployeeId().getEmployedPositionId().getName());
+            lblFirstName.setValue(user.getEmployeeId().getFirstNames());
+            lblLastName.setValue(user.getEmployeeId().getLastNames());
+            lblUserEmail.setValue(user.getPersonId().getEmail());
             lblUserExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
             lblAuthorizeExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
             if (user.getEmployeeId() != null) {
@@ -166,26 +166,14 @@ public class AdminUserController extends GenericAbstractAdminController {
 
     public void blockFields() {
         intIdentificationNumber.setReadonly(true);
-        txtFirstName.setReadonly(true);
-        txtLastName.setReadonly(true);
-        txtUserEmail.setReadonly(true);
         txtLogin.setReadonly(true);
         txtPassword.setReadonly(true);
         btnSave.setVisible(false);
     }
     
     public Boolean validateEmpty() {
-        if (txtFirstName.getText().isEmpty()) {
-            txtFirstName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (intIdentificationNumber.getText().isEmpty()) {
+        if (intIdentificationNumber.getText().isEmpty()) {
             intIdentificationNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtLastName.getText().isEmpty()) {
-            txtLastName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtUserEmail.getText().isEmpty()) {
-            txtUserEmail.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtLogin.getText().isEmpty()) {
             txtLogin.setFocus(true);
@@ -250,7 +238,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             Person person = new Person();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
-            person.setEmail(txtUserEmail.getText());
+            person.setEmail(lblUserEmail.getValue().toString());
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
@@ -262,8 +250,8 @@ public class AdminUserController extends GenericAbstractAdminController {
             user.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             user.setIdentificationNumber(intIdentificationNumber.getText().toString());
             user.setCode(intIdentificationNumber.getText().toString());
-            user.setFirstNames(txtFirstName.getText());
-            user.setLastNames(txtLastName.getText());
+            user.setFirstNames(lblFirstName.getValue().toString());
+            user.setLastNames(lblLastName.getValue().toString());
             user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());            
             user.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
             user.setAuthorizedEmployeeId((Employee) cmbAuthorizeEmployee.getSelectedItem().getValue());
@@ -302,9 +290,6 @@ public class AdminUserController extends GenericAbstractAdminController {
             case WebConstants.EVENT_EDIT:
                 loadFields(userParam);
                 intIdentificationNumber.setReadonly(true);
-                txtFirstName.setReadonly(true);
-                txtLastName.setReadonly(true);
-                txtUserEmail.setReadonly(true);
                 txtLogin.setReadonly(true);
                 txtPassword.setReadonly(true);
                 loadCmbCountry(eventType);
@@ -318,9 +303,6 @@ public class AdminUserController extends GenericAbstractAdminController {
             case WebConstants.EVENT_VIEW:
                 loadFields(userParam);
                 intIdentificationNumber.setReadonly(true);
-                txtFirstName.setReadonly(true);
-                txtLastName.setReadonly(true);
-                txtUserEmail.setReadonly(true);
                 txtLogin.setReadonly(true);
                 txtPassword.setReadonly(true);
                 loadCmbCountry(eventType);
