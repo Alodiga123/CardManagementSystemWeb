@@ -58,14 +58,14 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbCountry" width="260px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbPrograms" width="260px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <label id="lblProductType" value="" width="200px" style="color:#837E76;"/>
+                                                            <label id="lblProductType" value="" width="260px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
@@ -73,11 +73,11 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <combobox id="cmbPersonType" width="200px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbPersonType" width="260px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <combobox id="cmbCollectionType" width="200px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbCollectionType" width="260px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>

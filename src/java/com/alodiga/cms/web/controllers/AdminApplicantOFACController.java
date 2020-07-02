@@ -24,6 +24,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Window;
 
 public class AdminApplicantOFACController extends GenericAbstractAdminController {
