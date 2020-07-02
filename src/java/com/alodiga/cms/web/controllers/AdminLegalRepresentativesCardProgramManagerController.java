@@ -26,6 +26,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -48,7 +50,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
     private Textbox txtFullName;
     private Textbox txtFullLastName;
     private Textbox txtBirthPlace;
-    private Textbox txtAge;
+    private Label lblAge;
     private Textbox txtPhoneNumber;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -67,24 +69,25 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
     public Window winAdminLegalRepresentCardProgMan;
     public String Gender = null;
     public AdminCardProgramManagerController adminCardProgramManager = null;
+    private List<PhonePerson> phonePersonList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         adminCardProgramManager = new AdminCardProgramManagerController();
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);                
+        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
             legalRepresentativesParam = null;
         } else {
             legalRepresentativesParam = (LegalRepresentatives) Sessions.getCurrent().getAttribute("object");
         }
-        
+
         initialize();
     }
 
     @Override
     public void initialize() {
-        super.initialize();        
+        super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
@@ -105,7 +108,6 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
         txtFullName.setRawValue(null);
         txtFullLastName.setRawValue(null);
         txtBirthPlace.setRawValue(null);
-        txtAge.setRawValue(null);
         txtPhoneNumber.setRawValue(null);
         txtDueDateIdentification.setRawValue(null);
         txtBirthDay.setRawValue(null);
@@ -117,14 +119,27 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             txtFullLastName.setText(legalRepresentatives.getLastNames());
             txtIdentificationNumber.setText(legalRepresentatives.getIdentificationNumber());
             txtDueDateIdentification.setValue(legalRepresentatives.getDueDateDocumentIdentification());
-            txtAge.setText(legalRepresentatives.getAge().toString());
+            lblAge.setValue(legalRepresentatives.getAge().toString());
             txtBirthPlace.setText(legalRepresentatives.getPlaceBirth());
             txtBirthDay.setValue(legalRepresentatives.getDateBirth());
-            txtPhoneNumber.setText(legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone());
             if (legalRepresentatives.getGender().trim().equalsIgnoreCase("F")) {
                 genderFemale.setChecked(true);
             } else {
                 genderMale.setChecked(true);
+            }
+            if (legalRepresentatives.getPersonId().getPhonePerson().getNumberPhone() != null) {
+                EJBRequest request = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY, legalRepresentatives.getPersonId().getId());
+                request.setParams(params);
+                phonePersonList = personEJB.getPhoneByPerson(request);
+                if (phonePersonList != null) {
+                    for (PhonePerson p : phonePersonList) {
+                        if (p.getPhoneTypeId().getId() != null) {
+                            txtPhoneNumber.setText(p.getNumberPhone());
+                        }
+                    }
+                }
             }
         } catch (Exception ex) {
             showError(ex);
@@ -136,10 +151,11 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
         txtFullLastName.setReadonly(true);
         txtIdentificationNumber.setReadonly(true);
         txtDueDateIdentification.setReadonly(true);
-        txtAge.setReadonly(true);
         txtBirthPlace.setReadonly(true);
         txtBirthDay.setReadonly(true);
         txtPhoneNumber.setReadonly(true);
+        genderMale.setDisabled(true);
+        genderFemale.setDisabled(true);
         cmbCountry.setReadonly(true);
         cmbDocumentsPersonType.setReadonly(true);
         cmbPhoneType.setReadonly(true);
@@ -147,15 +163,52 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        Calendar today = Calendar.getInstance();
+        Calendar actual = Calendar.getInstance();
+        today.add(Calendar.YEAR, -18);
+        Calendar cumpleCalendar = Calendar.getInstance();
+        if (!(txtBirthDay.getText().isEmpty())) {
+            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
+        }
+
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.identificationNumber", true, null);
+        } else if (txtDueDateIdentification.getText().isEmpty()) {
+            txtDueDateIdentification.setFocus(true);
+            this.showMessage("cms.error.field.dueDateDocumentIdentification", true, null);
         } else if (txtFullName.getText().isEmpty()) {
             txtFullName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.fullName", true, null);
         } else if (txtFullLastName.getText().isEmpty()) {
             txtFullLastName.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.lastName", true, null);
+        } else if (txtBirthDay.getText().isEmpty()) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthDay", true, null);
+        } else if (cumpleCalendar.compareTo(today) > 0) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.errorDayBith", true, null);
+        } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
+            this.showMessage("cms.error.field.gener", true, null);
+        } else if (cmbCivilState.getSelectedItem() == null) {
+            cmbCivilState.setFocus(true);
+            this.showMessage("cms.error.civilState.notSelected", true, null);
+        } else if (txtBirthPlace.getText().isEmpty()) {
+            txtBirthPlace.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthPlace", true, null);
+        } else if (cmbPhoneType.getSelectedItem() == null) {
+            cmbPhoneType.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        } else if (txtPhoneNumber.getText().isEmpty()) {
+            txtPhoneNumber.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
         } else {
             return true;
         }
@@ -167,6 +220,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
         LegalPerson legalPerson = adminCardProgramManager.getCardProgramManager();
         LegalCustomer legalCustomer = null;
         Person personLegalRepresentatives = null;
+        int edad = 0;
         try {
             LegalRepresentatives legalRepresentatives = null;
             LegalPersonHasLegalRepresentatives legalPersonHasLegalRepresentatives = null;
@@ -192,6 +246,22 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
                 Gender = "M";
             }
 
+            //Calculando la edad de la persona segun la fecha de nacimiento
+            Calendar today = Calendar.getInstance();
+            Calendar cumpleCalendar = Calendar.getInstance();
+            if (!(txtBirthDay.getText().isEmpty())) {
+                cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
+            }
+
+            if (cumpleCalendar.compareTo(today) < 0) {
+                int anioActual = today.get(Calendar.YEAR);
+                int anioNacimiento = cumpleCalendar.get(Calendar.YEAR);
+                edad = anioActual - anioNacimiento;
+            } else {
+                edad = 0;
+            }
+            //------------------------------------------
+
             //Obtener la clasificacion del Representante Legal
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_LEGAL_REPRESENTATIVES);
@@ -203,23 +273,27 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             if (eventType == 1) {
                 person.setCreateDate(new Timestamp(new Date().getTime()));
                 person.setPersonClassificationId(personClassification);
+            } else {
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             person = personEJB.savePerson(person);
             personLegalRepresentatives = person;
-            
+
             //Guarda el telefono del representante legal
-            phonePerson.setNumberPhone(txtPhoneNumber.getText());
-            phonePerson.setPersonId(personLegalRepresentatives);
-            phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = personEJB.savePhonePerson(phonePerson);
-            
+            if (txtPhoneNumber.getText() != null) {
+                phonePerson.setNumberPhone(txtPhoneNumber.getText());
+                phonePerson.setPersonId(personLegalRepresentatives);
+                phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
+                phonePerson = personEJB.savePhonePerson(phonePerson);
+            }
+
             //Guarda el Representante Legal
             legalRepresentatives.setPersonId(personLegalRepresentatives);
             legalRepresentatives.setFirstNames(txtFullName.getText());
             legalRepresentatives.setLastNames(txtFullLastName.getText());
             legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
             legalRepresentatives.setDueDateDocumentIdentification(txtDueDateIdentification.getValue());
-            legalRepresentatives.setAge(Integer.parseInt(txtAge.getText().toString()));
+            legalRepresentatives.setAge(edad);
             legalRepresentatives.setGender(Gender);
             legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
             legalRepresentatives.setDateBirth(txtBirthDay.getValue());
@@ -227,20 +301,27 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
-            
+
             //Asocia el Representante Legal al Gerente de Programa de Tarjetas
-            legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
-            legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
-            legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
-                
-            this.showMessage("sp.common.save.success", false, null);
-            if (eventType == WebConstants.EVENT_ADD) {
+            if (eventType == 1) {
+                legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
+                legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
+                legalPersonHasLegalRepresentatives = personEJB.saveLegalPersonHasLegalRepresentatives(legalPersonHasLegalRepresentatives);
                 btnSave.setDisabled(true);
+            } else {
+                btnSave.setDisabled(false);
             }
-            EventQueues.lookup("updateLegalRepresentatives", EventQueues.APPLICATION, true).publish(new Event(""));
+            this.showMessage("sp.common.save.success", false, null);
+
+            EventQueues.lookup("updateLegalRepresentativesProgramManager", EventQueues.APPLICATION, true).publish(new Event(""));
+            loadFields(legalRepresentatives);
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void onClick$btnBack() {
+        winAdminLegalRepresentCardProgMan.detach();
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
@@ -269,17 +350,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(legalRepresentativesParam);
-                txtIdentificationNumber.setReadonly(true);
-                txtFullName.setReadonly(true);
-                txtFullLastName.setReadonly(true);
-                txtBirthPlace.setDisabled(true);
-                txtAge.setReadonly(true);
-                txtPhoneNumber.setReadonly(true);
-                txtDueDateIdentification.setReadonly(true);
-                txtBirthDay.setReadonly(true);
                 blockFields();
-                genderMale.setDisabled(true);
-                genderFemale.setDisabled(true);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);

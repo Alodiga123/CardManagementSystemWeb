@@ -11,19 +11,17 @@
                 <div align="center" >
                     <hlayout>
                         <div></div>
-                        <div width="1000px" align="left" height="670px">
+                        <div width="1200px" align="left" height="400px">
                             <hlayout>
-                                <div width="850px">
+                                <div width="900px">
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right" width="845px">
-                                                    
                                                     <label value="${c:l('cms.common.nameLastName')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
-                                                    
                                                 </hlayout>
                                                 <hlayout>
                                                     <!--Add button-->
