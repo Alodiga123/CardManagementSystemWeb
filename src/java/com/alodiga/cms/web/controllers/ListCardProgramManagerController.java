@@ -8,7 +8,6 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.custom.components.ListcellEditButton;
 import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import static com.alodiga.cms.web.generic.controllers.GenericDistributionController.request;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -17,7 +16,6 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import com.cms.commons.util.QueryConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,10 +35,10 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private UtilsEJB utilsEJB = null;
     private List<LegalPerson> legalperson = null;
     private User currentUser;
     private PersonEJB personEJB = null;
+    private UtilsEJB utilsEJB = null;
     private Textbox txtName;
 
     
@@ -128,7 +126,7 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
             Map params = new HashMap();
             params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.CLASSIFICATION_CARD_MANAGEMENT_PROGRAM);
             request1.setParams(params);
-            legalperson = personEJB.getLegalPersonByPersonClassification(request1);
+            legalperson = utilsEJB.getLegalPersonByPersonClassification(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -162,7 +160,6 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
         }
         
     }
-
    
     public List<LegalPerson> getFilterList(String filter) {
         List<LegalPerson> legalPersonList_ = new ArrayList<LegalPerson>();

@@ -20,11 +20,13 @@ import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +49,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Textbox txtIdentificationNumber;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
@@ -119,6 +122,21 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         txtPhoneNumber.setRawValue(null);
         txtDueDateIdentification.setRawValue(null);
         txtBirthDay.setRawValue(null);
+    }
+    
+    private void loadFieldR(Request requestData) {
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            if (requestData.getRequestNumber() != null) {
+                lblRequestNumber.setValue(requestData.getRequestNumber());
+                lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void loadFields(LegalRepresentatives legalRepresentatives) {
@@ -305,6 +323,8 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             if (eventType == 1) {
                 person.setCreateDate(new Timestamp(new Date().getTime()));
                 person.setPersonClassificationId(personClassification);
+            }else{
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             person = personEJB.savePerson(person);
             personLegalRepresentatives = person;
@@ -326,7 +346,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentativesParam = legalRepresentatives;
 
             //Guarda el telefono del representante legal
-            if (txtPhoneNumber != null) {
+            if (txtPhoneNumber.getText() != null) {
                 phonePerson.setNumberPhone(txtPhoneNumber.getText());
                 phonePerson.setPersonId(personLegalRepresentatives);
                 phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
@@ -344,10 +364,13 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                     legalCustomerHasLegalRepresentatives.setLegalRepresentativesId(legalRepresentatives);
                     legalCustomerHasLegalRepresentatives = personEJB.saveLegalCustomerHasLegalRepresentatives(legalCustomerHasLegalRepresentatives);
                 }
+                btnSave.setVisible(false);
+            }else{
+                btnSave.setVisible(true);
             }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
-            btnSave.setVisible(false);
+            
             loadFields(legalRepresentatives);
         } catch (Exception ex) {
             showError(ex);
@@ -376,6 +399,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+//                loadFieldR(adminRequest.getRequest());
                 loadFields(legalRepresentativesParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -383,6 +407,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+//                loadFieldR(adminRequest.getRequest());
                 loadFields(legalRepresentativesParam);
                 blockFields();
                 loadCmbCountry(eventType);
@@ -391,6 +416,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+//                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);

@@ -112,6 +112,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
                 request1.setParam(WebConstants.STATUS_PROGRAM_LOYALTY_PENDING);
                 statusPending = programEJB.loadStatusProgramLoyalty(request1);
                 txtStatus.setValue(statusPending.getDescription());
+                txtConversionRatePoints.setDisabled(true);
             } else {
                 request1 = new EJBRequest();
                 Map params = new HashMap();
@@ -119,7 +120,6 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
                 request1.setParams(params);
                 daysWeekHasProgramLoyaltyParam = programEJB.getDaysWeekHasProgramLoyaltyByLoyalty(request1);
             }
-            txtConversionRatePoints.setDisabled(true);
             loadData();
         } catch (Exception ex) {
             showError(ex);

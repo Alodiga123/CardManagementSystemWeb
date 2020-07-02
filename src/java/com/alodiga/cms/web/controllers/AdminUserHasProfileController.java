@@ -154,7 +154,7 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
             if (_userHasProfile != null) {
                 userHasProfile = _userHasProfile;
                 userHasProfile.setUpdateDate(new Timestamp(new Date().getTime()));
-            } else {//New country
+            } else {
                 userHasProfile = new UserHasProfile();
                 userHasProfile.setCreateDate(new Timestamp(new Date().getTime()));
                 userHasProfile.setUpdateDate(new Timestamp(new Date().getTime()));
@@ -171,12 +171,12 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
             userHasProfile.setEnabled(indEnabled); 
             
             if (!validateUserHasProfile(userHasProfile)) {
-            this.showMessage("cms.common.programLoyaltyTransactionExist", true, null);
-            }else{
-            userHasProfile = utilsEJB.saveUserHasProfile(userHasProfile);
-            UserHasProfileParam = userHasProfile;
-            this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+                this.showMessage("cms.common.RegisterExistInBD", true, null);
+            } else {
+                userHasProfile = utilsEJB.saveUserHasProfile(userHasProfile);
+                UserHasProfileParam = userHasProfile;
+                this.showMessage("sp.common.save.success", false, null);
+                btnSave.setVisible(false);
             }
 
         } catch (Exception ex) {

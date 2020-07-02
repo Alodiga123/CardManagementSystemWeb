@@ -42,6 +42,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Request requestParam;
     private CollectionsRequest collectionsRequestParam;
     private RequestHasCollectionsRequest requestHasCollectionsRequestParam;
@@ -131,6 +132,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
             }
         } catch (Exception ex) {
             showError(ex);

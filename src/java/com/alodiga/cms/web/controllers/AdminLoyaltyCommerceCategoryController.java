@@ -138,7 +138,7 @@ public class AdminLoyaltyCommerceCategoryController extends GenericAbstractAdmin
             
             loyaltyTransactionHasCommerceCategoryUnique = programEJB.getLoyaltyTransactionHasCommerceCategoryUnique(request1);
             if (loyaltyTransactionHasCommerceCategoryUnique != null) {
-                this.showMessage("cms.common.programLoyaltyTransactionExist", false, null);
+                this.showMessage("cms.common.RegisterExistInBD", false, null);
             }     
         } catch (Exception ex) {
             showError(ex);

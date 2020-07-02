@@ -25,6 +25,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblRequestNumber;
     private Label lblRequestDate;
+    private Label lblStatusRequest;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
     private Textbox txtCity;
@@ -90,6 +91,7 @@ public class AdminFamilyReferencesController extends GenericAbstractAdminControl
             if (requestData.getRequestNumber() != null) {
                 lblRequestNumber.setValue(requestData.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(requestData.getRequestDate()));
+                lblStatusRequest.setValue(requestData.getStatusRequestId().getDescription());
             }
         } catch (Exception ex) {
             showError(ex);
