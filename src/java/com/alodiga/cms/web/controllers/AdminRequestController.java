@@ -62,6 +62,8 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private Tab tabFamilyReferencesMain;
     private Tab tabAdditionalCards;
     private Tab tabLegalRepresentatives;
+    private Tab tabApplicantOFAC;
+    private Tab tabRequestbyCollection;
     private Tab tabApplicationReview;
     public static Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -95,11 +97,16 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
+                        tabApplicantOFAC.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabApplicantOFAC.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
                     }
                 } else {
@@ -109,11 +116,17 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
                     }
                 }
@@ -139,12 +152,19 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(true);
                     tabFamilyReferencesMain.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    tabApplicantOFAC.setDisabled(true);
+                    tabRequestbyCollection.setDisabled(true);
+                    tabApplicationReview.setDisabled(true);
+                    
                     indNaturalPerson = true;
                 } else {
                     tabMain.setDisabled(true);
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    tabApplicantOFAC.setDisabled(true);
+                    tabRequestbyCollection.setDisabled(true);
+                    tabApplicationReview.setDisabled(true);
                     indNaturalPerson = false;
                 }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.add"));

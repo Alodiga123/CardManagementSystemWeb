@@ -42,11 +42,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="1000px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.applicantStatus')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="130px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.applicantStatus')}" width="130px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
