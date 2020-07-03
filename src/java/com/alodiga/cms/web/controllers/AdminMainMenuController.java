@@ -176,7 +176,8 @@ public class AdminMainMenuController extends GenericForwardComposer {
         createCell(Constants.LIST_COLLECTIONS_REQUEST, "listCollectionRequest.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_COLLECTION_TYPE, "listCollectionTypes.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_STATUS_REQUEST, "listStatusRequest.zul", permissionGroup, listgroup);
-        createCell(Constants.LIST_CARD_REQUEST, "listRequest.zul", permissionGroup, listgroup);     
+        createCell(Constants.LIST_CARD_REQUEST, "listRequest.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CARD_UPDATE_REASON, "listCardUpdateReason.zul", permissionGroup, listgroup);
     }
     
     private void loadProductsManagementGroup(PermissionGroup permissionGroup) {
