@@ -139,7 +139,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             collectionsRequestUnique = requestEJB.getCollectionsRequestsUnique(request1);
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    this.showMessage("cms.common.programLoyaltyTransactionExist", true, null);
+                    this.showMessage("cms.error.requestExist", true, null);
                     break;
                 case WebConstants.EVENT_EDIT:
                     buildCollectionsRequest(collectionsRequest);
