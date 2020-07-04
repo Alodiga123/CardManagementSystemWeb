@@ -105,7 +105,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-                        tabApplicantOFAC.setDisabled(false);
+//                        tabApplicantOFAC.setDisabled(false);
                         tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
                     }
@@ -125,7 +125,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
-                        tabApplicantOFAC.setDisabled(true);
+//                        tabApplicantOFAC.setDisabled(true);
                         tabRequestbyCollection.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
                     }
@@ -162,7 +162,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
-                    tabApplicantOFAC.setDisabled(true);
+//                    tabApplicantOFAC.setDisabled(true);
                     tabRequestbyCollection.setDisabled(true);
                     tabApplicationReview.setDisabled(true);
                     indNaturalPerson = false;

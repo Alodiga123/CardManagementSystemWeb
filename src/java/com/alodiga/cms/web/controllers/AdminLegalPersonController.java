@@ -214,7 +214,13 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         Date today = new Date();
 
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("cms.error.field.identificationNumber", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
@@ -226,9 +232,18 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } else if (txtPhoneNumber.getText().isEmpty()) {
             txtPhoneNumber.setFocus(true);
             this.showMessage("cms.error.field.phoneNumber", true, null);
+        } else if (cmbEconomicActivity.getSelectedItem() == null) {
+            cmbEconomicActivity.setFocus(true);
+            this.showMessage("cms.error.economicActivity.noSelected", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("cms.error.field.registerNumber", true, null);
+        } else if (txtDateInscriptionRegister.getText().isEmpty()) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.inscriptionRegister", true, null);
+        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.inscriptionRegister.invalid", true, null);
         } else if (dbxPaidInCapital.getText().isEmpty()) {
             dbxPaidInCapital.setFocus(true);
             this.showMessage("cms.error.field.paidInCapital", true, null);
@@ -238,14 +253,10 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } else if (txtEmail.getText().isEmpty()) {
             txtEmail.setFocus(true);
             this.showMessage("cms.error.field.email", true, null);
-        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
-            txtDateInscriptionRegister.setFocus(true);
-            this.showMessage("cms.error.date.contract.valid", true, null);
         } else {
             return true;
         }
         return false;
-
     }
 
     private void saveLegalPerson(LegalPerson _legalPerson) {
@@ -265,7 +276,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
-            
+
             //Obtener el estatus ACTIVO del solicitante
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
@@ -415,9 +426,9 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
-         }            
-      }
-   }
+            }
+        }
+    }
 
     private void loadCmbEconomicActivity(Integer evenInteger) {
         //cmbEconomicActivity

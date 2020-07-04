@@ -280,8 +280,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public Boolean validateEmpty() {
-        ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
-
+        
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
@@ -324,7 +323,7 @@ public class AdminProductController extends GenericAbstractAdminController {
             intDaysToWithdrawCard.setFocus(true);
             this.showMessage("cms.error.field.daysToToWithdrawCard", true, null);
         } else if (intMaximunDeactivationTimeBlocking.getText().isEmpty()) {
-            intDaysToWithdrawCard.setFocus(true);
+            intMaximunDeactivationTimeBlocking.setFocus(true);
             this.showMessage("cms.error.maximunDeactivationTimeBlocking", true, null);
         } else if (dtbBeginDateValidity.getText().isEmpty()) {
             dtbBeginDateValidity.setFocus(true);
@@ -350,6 +349,7 @@ public class AdminProductController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
+        this.clearMessage();
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
