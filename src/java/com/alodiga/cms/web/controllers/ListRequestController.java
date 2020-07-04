@@ -106,25 +106,31 @@ public class ListRequestController extends GenericAbstractListController<Request
                             item.appendChild(new Listcell(applicantNameNatural.toString()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         } else {
                             applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantNameLegal));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         }
                     } else {
                         if (request.getIndPersonNaturalRequest() == true) {
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         } else {
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
+                            item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
+                            item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         }
                     }
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                     item.setParent(lbxRecords);
                 }
             } else {

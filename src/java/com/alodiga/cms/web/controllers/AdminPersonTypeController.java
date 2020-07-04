@@ -85,12 +85,20 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbOriginApplication.getSelectedItem() == null) {
+            cmbOriginApplication.setFocus(true);
+            this.showMessage("cms.error.OriginApplication.noSelected", true, null);
+        } else if ((!rIsNaturalPersonYes.isChecked()) && (!rIsNaturalPersonNo.isChecked())) {
+            this.showMessage("cms.error.field.naturalPerson", true, null);
         } else {
             return true;
         }
         return false;
     }
- 
+
     private void savePersonType(PersonType _personType) {
         boolean indIsNaturalPerson;
         try {
@@ -100,13 +108,13 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             } else {//New personType
                 personType = new PersonType();
             }
-            
+
             if (rIsNaturalPersonYes.isChecked()) {
                 indIsNaturalPerson = true;
             } else {
                 indIsNaturalPerson = false;
             }
-            
+
             personType.setDescription(txtName.getText());
             personType.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             personType.setOriginApplicationId((OriginApplication) cmbOriginApplication.getSelectedItem().getValue());
@@ -114,7 +122,12 @@ public class AdminPersonTypeController extends GenericAbstractAdminController {
             personType = utilsEJB.savePersonType(personType);
             personTypeParam = personType;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(true);
+            
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
