@@ -199,9 +199,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         if (!(txtBirthDay.getText().isEmpty())) {
             cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
         }
-//        int anioActual;
-//        int anioNacimiento;
-//        int edad = 0;
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
@@ -225,9 +222,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             this.showMessage("cms.error.field.txtBirthPlace", true, null);
         } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
             this.showMessage("cms.error.field.gener", true, null);
-//        } else if (txtAge.getText().isEmpty()) {
-//            txtAge.setFocus(true);
-//            this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (cmbCivilState.getSelectedItem() == null) {
             cmbCivilState.setFocus(true);
             this.showMessage("cms.error.civilState.notSelected", true, null);
@@ -237,11 +231,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         } else if (cumpleCalendar.compareTo(today) > 0) {
             txtBirthDay.setFocus(true);
             this.showMessage("cms.error.field.errorDayBith", true, null);
-//        } else if (cumpleCalendar.compareTo(today) < 0) {
-//            anioActual = actual.get(Calendar.YEAR);
-//            anioNacimiento = cumpleCalendar.get(Calendar.YEAR);
-////            int edad = anioActual - anioNacimiento;
-//            txtAge.setValue(anioActual - anioNacimiento);
         } else if (cmbPhoneType.getSelectedItem() == null) {
             cmbPhoneType.setFocus(true);
             this.showMessage("cms.error.phoneType.notSelected", true, null);
@@ -280,7 +269,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             }else{
                 edad = 0;
             }
-            //------------------------------------------
 
             if (_legalRepresentatives != null) {
                 legalRepresentatives = _legalRepresentatives;
@@ -336,7 +324,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentatives.setIdentificationNumber(txtIdentificationNumber.getText());
             legalRepresentatives.setDueDateDocumentIdentification(txtDueDateIdentification.getValue());
             legalRepresentatives.setAge(edad);
-//            legalRepresentatives.setAge(txtAge.getValue());
             legalRepresentatives.setGender(indGender);
             legalRepresentatives.setPlaceBirth(txtBirthPlace.getText());
             legalRepresentatives.setDateBirth(txtBirthDay.getValue());
@@ -378,6 +365,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     public void onClick$btnSave() {
+        this.clearMessage();
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
@@ -399,7 +387,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-//                loadFieldR(adminRequest.getRequest());
                 loadFields(legalRepresentativesParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
@@ -407,7 +394,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-//                loadFieldR(adminRequest.getRequest());
                 loadFields(legalRepresentativesParam);
                 blockFields();
                 loadCmbCountry(eventType);
@@ -416,7 +402,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-//                loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
@@ -427,7 +412,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     }
 
     private void loadCmbCountry(Integer evenInteger) {
-        //cmbCountry
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
         try {
