@@ -125,11 +125,21 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
 
     private void loadFields(Address address) {
         try {
-            txtUbanization.setValue(address.getUrbanization());
-            txtNameStreet.setValue(address.getNameStreet());
-            txtNameEdification.setValue(address.getNameEdification());
-            txtTower.setValue(address.getTower());
-            txtFloor.setValue(address.getFloor().toString());
+            if (address.getUrbanization() != null) {
+                txtUbanization.setValue(address.getUrbanization());
+            }
+            if (address.getNameStreet() != null) {
+                txtNameStreet.setValue(address.getNameStreet());
+            }
+            if (address.getNameEdification() != null) {
+                txtNameEdification.setValue(address.getNameEdification());
+            }
+            if (address.getTower() != null) {
+                txtTower.setValue(address.getTower());
+            }
+            if (address.getFloor() != null) {
+                txtFloor.setValue(address.getFloor().toString());
+            }
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);

@@ -229,7 +229,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
-            this.showMessage("cms.error.description", true, null);
+            this.showMessage("cms.error.descriptionLoyalty", true, null);
         } else if (dtbStarDate.getText().isEmpty()) {
             dtbStarDate.setFocus(true);
             this.showMessage("cms.error.field.beginDate", true, null);

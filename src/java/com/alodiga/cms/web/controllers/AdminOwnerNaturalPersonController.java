@@ -23,6 +23,7 @@ import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -46,7 +48,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
     private Textbox txtFullLastName;
     private Textbox txtMarriedLastName;
     private Textbox txtBirthPlace;
-    private Textbox txtFamilyResponsibilities;
+    private Intbox txtFamilyResponsibilities;
     private Textbox txtPhoneNumber;
     private Textbox txtEmail;
     private Combobox cmbCountry;
@@ -139,9 +141,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         String Gender = "M";
         try {
             txtIdentificationNumber.setText(naturalPerson.getIdentificationNumber());
-            if (txtDueDateDocumentIdentification != null) {
-                txtDueDateDocumentIdentification.setValue(naturalPerson.getDueDateDocumentIdentification());
-            }
+            txtDueDateDocumentIdentification.setValue(naturalPerson.getDueDateDocumentIdentification());
             if (naturalPerson.getIdentificationNumberOld() != null) {
                 txtIdentificationNumberOld.setText(naturalPerson.getIdentificationNumberOld());
             }
@@ -154,10 +154,18 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
             }
             txtBirthPlace.setText(naturalPerson.getPlaceBirth());
             txtBirthDay.setValue(naturalPerson.getDateBirth());
-            txtFamilyResponsibilities.setText(naturalPerson.getFamilyResponsibilities().toString());
+            txtFamilyResponsibilities.setValue(naturalPerson.getFamilyResponsibilities());
             txtMarriedLastName.setText(naturalPerson.getMarriedLastName());
-            txtEmail.setText(naturalPerson.getPersonId().getEmail());
-            txtPhoneNumber.setText(naturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+            if (naturalPerson.getPersonId().getEmail() != null) {
+                if (!naturalPerson.getPersonId().getEmail().equalsIgnoreCase("")) {
+                    txtEmail.setText(naturalPerson.getPersonId().getEmail());
+                }
+            }
+            if (naturalPerson.getPersonId().getPhonePerson() != null) {
+                if (!naturalPerson.getPersonId().getPhonePerson().getNumberPhone().equalsIgnoreCase("")) {
+                    txtPhoneNumber.setText(naturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+                }
+            }
 
             naturalPersonParam = naturalPerson;
         } catch (Exception ex) {
@@ -175,7 +183,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         genderMale.setDisabled(true);
         genderFemale.setDisabled(true);
         txtBirthPlace.setReadonly(true);
-        txtBirthDay.setReadonly(true);
+        txtBirthDay.setDisabled(true);
         txtFamilyResponsibilities.setReadonly(true);
         txtEmail.setReadonly(true);
         txtPhoneNumber.setReadonly(true);
@@ -184,6 +192,67 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         cmbProfession.setReadonly(true);
         cmbPhoneType.setReadonly(true);
         btnSave.setVisible(false);
+    }
+
+    public Boolean validateEmpty() {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.YEAR, -18);
+        Calendar cumpleCalendar = Calendar.getInstance();
+        if (!(txtBirthDay.getText().isEmpty())) {
+            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
+        }
+
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
+            txtIdentificationNumber.setFocus(true);
+            this.showMessage("cms.error.field.identificationNumber", true, null);
+        } else if (txtDueDateDocumentIdentification.getText().isEmpty()) {
+            txtDueDateDocumentIdentification.setFocus(true);
+            this.showMessage("cms.error.field.dueDateDocumentIdentification", true, null);
+        } else if (txtFullName.getText().isEmpty()) {
+            txtFullName.setFocus(true);
+            this.showMessage("cms.error.field.fullName", true, null);
+        } else if (txtFullLastName.getText().isEmpty()) {
+            txtFullLastName.setFocus(true);
+            this.showMessage("cms.error.field.lastName", true, null);
+        } else if (txtBirthPlace.getText().isEmpty()) {
+            txtBirthPlace.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthPlace", true, null);
+        } else if (txtBirthDay.getText().isEmpty()) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.txtBirthDay", true, null);
+        } else if (cumpleCalendar.compareTo(today) > 0) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.errorDayBith", true, null);
+        } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
+            this.showMessage("cms.error.field.gener", true, null);
+        } else if (cmbCivilState.getSelectedItem() == null) {
+            cmbCivilState.setFocus(true);
+            this.showMessage("cms.error.civilState.notSelected", true, null);
+        } else if (cmbProfession.getSelectedItem() == null) {
+            cmbProfession.setFocus(true);
+            this.showMessage("cms.error.naturalperson.notSelected", true, null);
+        } else if (txtFamilyResponsibilities.getText().isEmpty()) {
+            txtFamilyResponsibilities.setFocus(true);
+            this.showMessage("cms.error.familyResponsibilities", true, null);
+        } else if (txtEmail.getText().isEmpty()) {
+            txtEmail.setFocus(true);
+            this.showMessage("cms.error.field.email", true, null);
+        } else if (cmbPhoneType.getSelectedItem() == null) {
+            cmbPhoneType.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        } else if (txtPhoneNumber.getText().isEmpty()) {
+            txtPhoneNumber.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private void saveOwnerNaturalPerson(NaturalPerson _naturalPerson) {
@@ -242,7 +311,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
             naturalPerson.setPlaceBirth(txtBirthPlace.getText());
             naturalPerson.setDateBirth(txtBirthDay.getValue());
             naturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
-            naturalPerson.setFamilyResponsibilities(Integer.parseInt(txtFamilyResponsibilities.getText()));
+            naturalPerson.setFamilyResponsibilities(txtFamilyResponsibilities.getValue());
             naturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
             if (eventType == WebConstants.EVENT_ADD) {
                 naturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
@@ -259,24 +328,31 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
                 phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
                 phonePerson = personEJB.savePhonePerson(phonePerson);
             }
-
+            
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+            
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveOwnerNaturalPerson(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveOwnerNaturalPerson(naturalPersonParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveOwnerNaturalPerson(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveOwnerNaturalPerson(naturalPersonParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -353,7 +429,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.DocumentsPersonTypeNaturalPersonNull", false, null);
-            }            
+            }
         }
     }
 

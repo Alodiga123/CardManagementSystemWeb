@@ -37,8 +37,10 @@ import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -169,6 +171,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         txtIdentification.setValue(user.getIdentificationNumber());
     }
 
+    private void loadDate() {
+        Date today = new Date();
+        txtReviewDate.setValue(today);
+    }
+
     private void loadFields(ReviewRequest reviewCollectionsRequest) throws EmptyListException, GeneralException, NullParameterException {
         try {
             if (reviewCollectionsRequest != null) {
@@ -225,10 +232,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     }
 
     public Boolean validateEmpty() {
-        if (txtReviewDate.getText().isEmpty()) {
-            txtReviewDate.setFocus(true);
-            this.showMessage("cms.error.reviewDate", true, null);
-        } else if (txtMaximumRechargeAmount.getText().isEmpty()) {
+        if (txtMaximumRechargeAmount.getText().isEmpty()) {
             txtMaximumRechargeAmount.setFocus(true);
             this.showMessage("cms.error.maximumRechargeAmount", true, null);
         } else if (cmbProduct.getSelectedItem() == null) {
@@ -689,6 +693,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         loadFields(reviewCollectionsRequestParam);
                     } else {
                         loadUser();
+                        loadDate();
+                        txtReviewDate.setDisabled(true);
                     }
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
@@ -699,6 +705,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                         loadFields(reviewCollectionsRequestParam);
                     } else {
                         loadUser();
+                        loadDate();
+                        txtReviewDate.setDisabled(true);
                     }
                     blockFields();
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
@@ -706,6 +714,8 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                 case WebConstants.EVENT_ADD:
                     loadField(requestCard);
                     loadUser();
+                    loadDate();
+                    txtReviewDate.setDisabled(true);
                     loadCmbProduct(eventType, requestCard.getProgramId().getId());
                     break;
 
