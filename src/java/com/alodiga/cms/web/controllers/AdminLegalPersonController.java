@@ -53,6 +53,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Tab tabAddress;
     private Tab tabLegalRepresentatives;
     private Tab tabAdditionalCards;
+    private Tab tabRequestbyCollection;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -83,10 +84,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
                     } else {
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
                     }
                     break;
                 case WebConstants.EVENT_VIEW:
@@ -94,10 +97,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
                     } else {
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
                     }
                     break;
                 case WebConstants.EVENT_ADD:
@@ -105,6 +110,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    tabRequestbyCollection.setDisabled(true);
                     break;
             }
             if (eventType == WebConstants.EVENT_ADD) {
@@ -285,12 +291,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             //Guardar Person
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             person.setEmail(txtEmail.getText());
-            if (eventType == 1) {
+            if (adminRequest.getRequest().getPersonId() != null) {
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
+            } else {
                 person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
                 person.setCreateDate(new Timestamp(new Date().getTime()));
                 person.setPersonClassificationId(personClassification);
-            } else {
-                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             person = personEJB.savePerson(person);
 
@@ -326,6 +332,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             tabAddress.setDisabled(false);
             tabLegalRepresentatives.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
+            tabRequestbyCollection.setDisabled(false);
         } catch (Exception ex) {
             showError(ex);
         }

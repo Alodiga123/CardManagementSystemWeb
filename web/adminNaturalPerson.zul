@@ -11,9 +11,9 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="700px">
+                        <div width="900px" align="left" height="580px">
                             <hlayout>
-                                <div width="900px">
+                                <div width="890px">
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>

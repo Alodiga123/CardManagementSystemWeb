@@ -74,7 +74,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        ListRequestController listRequest = new ListRequestController();
+        listRequest = new ListRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
             requestParam = null;
@@ -87,7 +87,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        listRequest = new ListRequestController();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 if (requestParam.getPersonId() != null) {
@@ -105,7 +104,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-//                        tabApplicantOFAC.setDisabled(false);
                         tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
                     }
@@ -116,7 +114,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
-                        tabApplicantOFAC.setDisabled(true);
                         tabRequestbyCollection.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
                     } else {
@@ -125,7 +122,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
-//                        tabApplicantOFAC.setDisabled(true);
                         tabRequestbyCollection.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
                     }
@@ -162,7 +158,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
-//                    tabApplicantOFAC.setDisabled(true);
                     tabRequestbyCollection.setDisabled(true);
                     tabApplicationReview.setDisabled(true);
                     indNaturalPerson = false;
