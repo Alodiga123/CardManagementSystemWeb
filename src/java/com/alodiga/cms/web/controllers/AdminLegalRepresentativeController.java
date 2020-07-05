@@ -76,6 +76,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public AdminLegalPersonCustomerController adminLegalCustomerPerson = null;
     public AdminOwnerLegalPersonController adminOwnerLegalPerson = null;
     private List<PhonePerson> phonePersonList = null;
+    private List<LegalRepresentatives> legalRepresentativeList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -92,6 +93,18 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             case WebConstants.EVENT_ADD:
                 legalRepresentativesParam = null;
                 break;
+        }
+        if (eventType != WebConstants.EVENT_ADD) {                
+            if (legalRepresentativesParam.getPersonId().getPhonePerson() == null) {
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY, legalRepresentativesParam.getPersonId().getId());
+                request1.setParams(params);
+                phonePersonList = personEJB.getPhoneByPerson(request1);
+                for (PhonePerson phone : phonePersonList) {
+                    legalRepresentativesParam.getPersonId().setPhonePerson(phone);
+                }
+            }
         }
         initialize();
     }
@@ -316,6 +329,14 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             }
             person = personEJB.savePerson(person);
             personLegalRepresentatives = person;
+            
+            //Guarda el telefono del representante legal
+            if (txtPhoneNumber.getText() != null) {
+                phonePerson.setNumberPhone(txtPhoneNumber.getText());
+                phonePerson.setPersonId(personLegalRepresentatives);
+                phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
+                phonePerson = personEJB.savePhonePerson(phonePerson);
+            }
 
             //Guarda el Representante Legal
             legalRepresentatives.setPersonId(personLegalRepresentatives);
@@ -331,14 +352,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
-
-            //Guarda el telefono del representante legal
-            if (txtPhoneNumber.getText() != null) {
-                phonePerson.setNumberPhone(txtPhoneNumber.getText());
-                phonePerson.setPersonId(personLegalRepresentatives);
-                phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-                phonePerson = personEJB.savePhonePerson(phonePerson);
-            }
 
             //Asocia el Representante Legal al Solicitante Jurídico
             if (eventType == 1) {

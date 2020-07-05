@@ -18,9 +18,11 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -154,6 +156,9 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     }
 
     public void loadDataList(List<CardRequestNaturalPerson> list) {
+        Locale locale = new Locale ("es", "ES");
+        NumberFormat numberFormat = NumberFormat.getInstance (locale);
+        String proposedLimit = "";
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -168,7 +173,8 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getIdentificationNumber()));
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getPositionEnterprise()));
-                    item.appendChild(new Listcell(cardRequestNaturalPerson.getProposedLimit().toString()));
+                    proposedLimit = numberFormat.format(cardRequestNaturalPerson.getProposedLimit().floatValue());
+                    item.appendChild(new Listcell(proposedLimit));
                     item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
                     item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());

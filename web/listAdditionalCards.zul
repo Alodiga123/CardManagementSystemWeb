@@ -39,9 +39,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="215px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identificationsTypes')}" width="170px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="130px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.document.identification')}" width="190px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.aditionalCard.positionEnterprise')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.aditionalCard.proposedLimit')}" width="140px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>

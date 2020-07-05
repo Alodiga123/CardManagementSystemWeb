@@ -106,7 +106,6 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                     }
                     break;
                 case WebConstants.EVENT_ADD:
-                    legalPersonParam = null;
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);

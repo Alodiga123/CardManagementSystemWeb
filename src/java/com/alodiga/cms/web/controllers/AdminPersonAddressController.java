@@ -55,7 +55,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Textbox txtLine1;
     private Textbox txtLine2;
     private Intbox txtFloor;
-//    private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbState;
     private Combobox cmbCity;
