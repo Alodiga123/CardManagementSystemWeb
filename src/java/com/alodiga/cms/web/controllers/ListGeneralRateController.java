@@ -35,6 +35,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
@@ -50,12 +51,14 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
     private Toolbarbutton tbbTitle;
     private Combobox cmbCountry;
     private Textbox txtName;
+    private Tab tabApprovalRates;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        initialize(); 
-        startListener();
+        initialize();
+        
+        //startListener();
     }
 
     public void startListener() {
@@ -74,6 +77,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         super.initialize();
         try {
             //Evaluar Permisos
+            tabApprovalRates.setDisabled(true);
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
@@ -81,9 +85,9 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
             adminPage = "adminGeneralRate.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
-            getData();
+            //getData();
             loadCmbCountry(eventType);
-            loadList(generalRateList);
+            //loadList(generalRateList);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -240,7 +244,14 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
            List<GeneralRate> generalRateList_ = new ArrayList<GeneralRate>();
         try {
             if (country != null) {
-             generalRateList_ = productEJB.getGeneralRateByCountry(country);;
+             generalRateList_ = productEJB.getGeneralRateByCountry(country);
+                if (!generalRateList_.isEmpty()) {
+                 tabApprovalRates.setDisabled(false);
+                 Sessions.getCurrent().setAttribute(WebConstants.GENERAL_RATE, generalRateList_);
+                }else{
+                 tabApprovalRates.setDisabled(true);
+                }
+           
             } else {
                 return generalRateList;
             }
