@@ -15,7 +15,6 @@ import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
-import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -31,6 +30,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -41,10 +41,11 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
     private Textbox txtRegistryNumber;
-    private Textbox txtPaidInCapital;
+    private Doublebox dbxPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
     private Textbox txtEmail;
+    private Textbox txtPhoneNumber;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbEconomicActivity;
@@ -96,7 +97,7 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
             showError(ex);
         }
     }
-    
+
     public LegalPerson getLegalPerson() {
         return legalOwnerParam;
     }
@@ -115,7 +116,8 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
         txtEnterpriseName.setRawValue(null);
         txtDateInscriptionRegister.setRawValue(null);
         txtRegistryNumber.setRawValue(null);
-        txtPaidInCapital.setRawValue(null);
+        dbxPaidInCapital.setRawValue(null);
+        txtPhoneNumber.setRawValue(null);
         txtWebSite.setRawValue(null);
         txtEmail.setRawValue(null);
         txtIdentificationNumber.setRawValue(null);
@@ -128,11 +130,14 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
             txtEnterpriseName.setText(legalOwner.getEnterpriseName());
             txtDateInscriptionRegister.setValue(legalOwner.getDateInscriptionRegister());
             txtRegistryNumber.setText(legalOwner.getRegisterNumber());
-            txtPaidInCapital.setText(legalOwner.getPayedCapital().toString());
+            dbxPaidInCapital.setValue(legalOwner.getPayedCapital());
             txtWebSite.setValue(legalOwner.getWebSite());
+            if(legalOwner.getEnterprisePhone() != null){
+                txtPhoneNumber.setValue(legalOwner.getEnterprisePhone());
+            }
             txtEmail.setValue(legalOwner.getPersonId().getEmail());
             txtIdentificationNumber.setText(legalOwner.getIdentificationNumber());
-            
+
             legalOwnerParam = legalOwner;
         } catch (Exception ex) {
             showError(ex);
@@ -144,10 +149,11 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
         txtEnterpriseName.setReadonly(true);
         txtDateInscriptionRegister.setDisabled(true);
         txtRegistryNumber.setReadonly(true);
-        txtPaidInCapital.setReadonly(true);
+        dbxPaidInCapital.setReadonly(true);
         txtWebSite.setReadonly(true);
         txtEmail.setReadonly(true);
         txtIdentificationNumber.setReadonly(true);
+        txtPhoneNumber.setReadonly(true);
         cmbCountry.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
         cmbEconomicActivity.setDisabled(true);
@@ -155,25 +161,50 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     }
 
     public Boolean validateEmpty() {
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        Date today = new Date();
+
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
             txtEnterpriseName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbEconomicActivity.getSelectedItem() == null) {
+            cmbEconomicActivity.setFocus(true);
+            this.showMessage("cms.error.comercialActivity.noSelected", true, null);
+        } else if (txtDateInscriptionRegister.getText().isEmpty()) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.inscriptionRegister", true, null);
+        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.inscriptionRegister.invalid", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (txtPaidInCapital.getText().isEmpty()) {
-            txtPaidInCapital.setFocus(true);
+        } else if (dbxPaidInCapital.getText().isEmpty()) {
+            dbxPaidInCapital.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (txtPhoneNumber.getText().isEmpty()) {
+            txtPhoneNumber.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
+        } else if (txtWebSite.getText().isEmpty()) {
+            txtWebSite.setFocus(true);
+            this.showMessage("cms.error.field.website", true, null);
+        } else if (txtEmail.getText().isEmpty()) {
+            txtEmail.setFocus(true);
+            this.showMessage("cms.error.field.email", true, null);
         } else {
             return true;
         }
         return false;
 
     }
-
 
     private void saveLegalOwner(LegalPerson _legalOwner) {
         try {
@@ -182,6 +213,7 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
 
             if (_legalOwner != null) {
                 legalOwner = _legalOwner;
+                person = legalOwner.getPersonId();
             } else {//New LegalPerson
                 legalOwner = new LegalPerson();
                 person = new Person();
@@ -195,14 +227,14 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
             //Guardar Person
             String id = cmbCountry.getSelectedItem().getParent().getId();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person.setEmail(txtEmail.getText());
             if (eventType == WebConstants.EVENT_ADD) {
+                person.setPersonTypeId(((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue()).getPersonTypeId());
                 person.setCreateDate(new Timestamp(new Date().getTime()));
+                person.setPersonClassificationId(personClassification);
             } else {
                 person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
-            person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
 
             //Guarda los cambios en el Propietario Jurídico
@@ -211,16 +243,22 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
             legalOwner.setEnterpriseName(txtEnterpriseName.getText());
             legalOwner.setDateInscriptionRegister(new Timestamp(txtDateInscriptionRegister.getValue().getTime()));
             legalOwner.setRegisterNumber(txtRegistryNumber.getText());
-            legalOwner.setPayedCapital(Float.parseFloat(txtPaidInCapital.getText()));
+            legalOwner.setPayedCapital(dbxPaidInCapital.getValue().floatValue());
+            legalOwner.setEnterprisePhone(txtPhoneNumber.getText());
             legalOwner.setWebSite(txtWebSite.getText());
             legalOwner.setEconomicActivityId((EconomicActivity) cmbEconomicActivity.getSelectedItem().getValue());
             legalOwner.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             legalOwner.setIdentificationNumber(txtIdentificationNumber.getText());
             legalOwner = utilsEJB.saveLegalPerson(legalOwner);
             legalOwnerParam = legalOwner;
-            
+
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setVisible(false);
+
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -308,10 +346,9 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.DocumentsPersonTypeLegalPersonNull", false, null);
-            }            
+            }
         }
     }
-
 
     private void loadCmbEconomicActivity(Integer evenInteger) {
         //cmbEconomicActivity

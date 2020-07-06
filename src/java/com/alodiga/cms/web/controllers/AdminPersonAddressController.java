@@ -55,7 +55,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Textbox txtLine1;
     private Textbox txtLine2;
     private Intbox txtFloor;
-    private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbState;
     private Combobox cmbCity;
@@ -136,7 +135,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         txtNameEdification.setRawValue(null);
         txtTower.setRawValue(null);
         txtFloor.setRawValue(null);
-        txtEmail.setRawValue(null);
     }
 
     private void loadFieldR(Request requestData) {
@@ -198,7 +196,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         txtNameEdification.setReadonly(true);
         txtTower.setReadonly(true);
         txtFloor.setReadonly(true);
-        txtEmail.setReadonly(true);
         rAddressDeliveryYes.setDisabled(true);
         rAddressDeliveryNo.setDisabled(true);
         txtLine1.setReadonly(true);

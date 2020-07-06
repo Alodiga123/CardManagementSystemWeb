@@ -53,6 +53,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Tab tabAddress;
     private Tab tabLegalRepresentatives;
     private Tab tabAdditionalCards;
+    private Tab tabRequestbyCollection;
     private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -83,10 +84,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
                     } else {
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
                     }
                     break;
                 case WebConstants.EVENT_VIEW:
@@ -94,17 +97,19 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
                     } else {
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
                     }
                     break;
                 case WebConstants.EVENT_ADD:
-                    legalPersonParam = null;
                     tabAddress.setDisabled(true);
                     tabLegalRepresentatives.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    tabRequestbyCollection.setDisabled(true);
                     break;
             }
             if (eventType == WebConstants.EVENT_ADD) {
@@ -214,7 +219,13 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         Date today = new Date();
 
-        if (txtIdentificationNumber.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
             this.showMessage("cms.error.field.identificationNumber", true, null);
         } else if (txtEnterpriseName.getText().isEmpty()) {
@@ -226,9 +237,18 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } else if (txtPhoneNumber.getText().isEmpty()) {
             txtPhoneNumber.setFocus(true);
             this.showMessage("cms.error.field.phoneNumber", true, null);
+        } else if (cmbEconomicActivity.getSelectedItem() == null) {
+            cmbEconomicActivity.setFocus(true);
+            this.showMessage("cms.error.economicActivity.noSelected", true, null);
         } else if (txtRegistryNumber.getText().isEmpty()) {
             txtRegistryNumber.setFocus(true);
             this.showMessage("cms.error.field.registerNumber", true, null);
+        } else if (txtDateInscriptionRegister.getText().isEmpty()) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.inscriptionRegister", true, null);
+        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
+            txtDateInscriptionRegister.setFocus(true);
+            this.showMessage("cms.error.date.inscriptionRegister.invalid", true, null);
         } else if (dbxPaidInCapital.getText().isEmpty()) {
             dbxPaidInCapital.setFocus(true);
             this.showMessage("cms.error.field.paidInCapital", true, null);
@@ -238,14 +258,10 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } else if (txtEmail.getText().isEmpty()) {
             txtEmail.setFocus(true);
             this.showMessage("cms.error.field.email", true, null);
-        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
-            txtDateInscriptionRegister.setFocus(true);
-            this.showMessage("cms.error.date.contract.valid", true, null);
         } else {
             return true;
         }
         return false;
-
     }
 
     private void saveLegalPerson(LegalPerson _legalPerson) {
@@ -265,7 +281,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_APPLICANT);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
-            
+
             //Obtener el estatus ACTIVO del solicitante
             EJBRequest request = new EJBRequest();
             request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
@@ -274,12 +290,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             //Guardar Person
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             person.setEmail(txtEmail.getText());
-            if (eventType == 1) {
+            if (adminRequest.getRequest().getPersonId() != null) {
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
+            } else {
                 person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
                 person.setCreateDate(new Timestamp(new Date().getTime()));
                 person.setPersonClassificationId(personClassification);
-            } else {
-                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             person = personEJB.savePerson(person);
 
@@ -315,6 +331,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             tabAddress.setDisabled(false);
             tabLegalRepresentatives.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
+            tabRequestbyCollection.setDisabled(false);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -415,9 +432,9 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
-         }            
-      }
-   }
+            }
+        }
+    }
 
     private void loadCmbEconomicActivity(Integer evenInteger) {
         //cmbEconomicActivity

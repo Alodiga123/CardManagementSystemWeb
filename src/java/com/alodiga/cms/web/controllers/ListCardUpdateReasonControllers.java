@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.controllers;
-import com.alodiga.cms.commons.ejb.PersonEJB;
-import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.ejb.CardEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,9 +8,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.DocumentsPersonType;
-import com.cms.commons.models.User;
-import com.cms.commons.util.Constants;
+import com.cms.commons.models.StatusUpdateReason;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
@@ -27,15 +24,14 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 
-public class ListDocumentsPersonTypeController extends GenericAbstractListController<DocumentsPersonType> {
+public class ListCardUpdateReasonControllers extends GenericAbstractListController<StatusUpdateReason> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private PersonEJB personEJB = null;
-    private UtilsEJB utilsEJB = null;
-    private List<DocumentsPersonType> documentsPersonType = null;
-    private User currentUser;
+    private CardEJB cardEJB = null;
+    private List<StatusUpdateReason> cardUpdateReason = null;
+   
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -43,30 +39,26 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
         initialize();
     }
 
+
     @Override
     public void initialize() {
         super.initialize();
         try {
-            permissionEdit = true;
-            permissionAdd = true; 
-            permissionRead = true;
-            currentUser = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
-            adminPage = "adminDocumentsPersonType.zul";
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            adminPage = "adminCardUpdateReason.zul";
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             getData();
-            loadDataList(documentsPersonType);
+            loadDataList(cardUpdateReason);
         } catch (Exception ex) {
             showError(ex);
         }
     }
     
    public void getData() {
-        documentsPersonType = new ArrayList<DocumentsPersonType>();
+    cardUpdateReason = new ArrayList<StatusUpdateReason>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            documentsPersonType = utilsEJB.getDocumentsPersonType(request);
+            cardUpdateReason = cardEJB.getStatusUpdateReason(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -88,35 +80,37 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.documents.person.type.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.cardUpdateReason.list"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
         }
-        
+    }
+
+
+    public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
     }
 
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void loadDataList(List<DocumentsPersonType> list) {
+    public void loadDataList(List<StatusUpdateReason> list) {
           try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
-                for (DocumentsPersonType documentsPersonType : list) {
+                for (StatusUpdateReason cardUpdate : list) {
+
                     item = new Listitem();
-                    item.setValue(documentsPersonType);
-                    item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getCountryId().getName()));
-                    item.appendChild(new Listcell(documentsPersonType.getPersonTypeId().getDescription()));
-                    item.appendChild(new Listcell(documentsPersonType.getDescription()));
-                    item.appendChild(new Listcell(documentsPersonType.getCodeIdentificationNumber()));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, documentsPersonType) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, documentsPersonType) : new Listcell());
+                    item.setValue(cardUpdate);
+                    item.appendChild(new Listcell(cardUpdate.getDescription()));
+                    item.appendChild( new ListcellEditButton(adminPage, cardUpdate));
+                    item.appendChild(new ListcellViewButton(adminPage, cardUpdate,true));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -133,32 +127,11 @@ public class ListDocumentsPersonTypeController extends GenericAbstractListContro
            showError(ex);
         }
     }
-    
-    public void onClick$btnClear() throws InterruptedException {
-        txtName.setText("");
-    }
-    
-    public void onClick$btnSearch() throws InterruptedException {
-        try {
-            loadDataList(getFilterList(txtName.getText()));
-        } catch (Exception ex) {
-            showError(ex);
-        }
-    }
 
-    public List<DocumentsPersonType> getFilterList(String filter) {
-       List<DocumentsPersonType> documentsPersonTypeaux = new ArrayList<DocumentsPersonType>();
-       DocumentsPersonType documentsPersonTypes;
-        try {
-            if (filter != null && !filter.equals("")) {
-                documentsPersonTypeaux = utilsEJB.getSearchDocumentsPersonType(filter);
-            } else {
-                return documentsPersonType;
-            }
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        return documentsPersonTypeaux;
+    @Override
+    public List<StatusUpdateReason> getFilterList(String filter) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+ 
 
 }
