@@ -4,9 +4,12 @@ import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.ApprovalGeneralRate;
+import com.cms.commons.models.Country;
+import com.cms.commons.models.GeneralRate;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -14,6 +17,9 @@ import com.cms.commons.util.EjbConstants;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -116,15 +122,31 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
             approvalGeneralRate.setUserId(user);
             approvalGeneralRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalGeneralRate = productEJB.saveApprovalGeneralRate(approvalGeneralRate);
+            updateGeneralRates(approvalGeneralRate);
             
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateApprovalGeneralRate", EventQueues.APPLICATION, true).publish(new Event(""));
             btnSave.setVisible(false);
+            
+            
         } catch (Exception ex) {
+            this.showMessage("sp.error.title", false, null);
             showError(ex);
         }
     }
 
+    public void updateGeneralRates(ApprovalGeneralRate approvalGeneralRate) throws RegisterNotFoundException, NullParameterException, GeneralException {
+    
+        List<GeneralRate> generalRateList= (List<GeneralRate>) Sessions.getCurrent().getAttribute(WebConstants.GENERAL_RATE);
+        
+        for (GeneralRate generalRate : generalRateList) {
+                generalRate.setApprovalGeneralRateId(approvalGeneralRate);
+                productEJB.saveGeneralRate(generalRate);
+        }
+        
+    }
+    
+    
     public void onClick$btnSave() {
         if (validateEmpty()) {
             switch (eventType) {
