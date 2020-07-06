@@ -278,7 +278,11 @@ public class AdminRequestController extends GenericAbstractAdminController {
             request = requestEJB.saveRequest(request);
             requestParam = request;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(true);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
             
             loadFields(requestParam);
             
