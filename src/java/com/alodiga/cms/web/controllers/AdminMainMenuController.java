@@ -9,7 +9,6 @@ import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import java.util.ArrayList;
 import java.util.List;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -178,6 +177,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
         createCell(Constants.LIST_STATUS_REQUEST, "listStatusRequest.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_CARD_REQUEST, "listRequest.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_CARD_UPDATE_REASON, "listCardUpdateReason.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CARD_STATUS_BY_REASON, "listCardStatusByReason.zul", permissionGroup, listgroup);
     }
     
     private void loadProductsManagementGroup(PermissionGroup permissionGroup) {
