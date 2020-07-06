@@ -47,7 +47,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="940px" height="500px">
                                                     <tabs>
                                                         <tab id="tabRequest" label="${c:l('cms.tab.requestCard')}" />
-                                                        <tab id="tabMain" label="${c:l('cms.tab.legalPersonMain')}" />
+                                                        <tab id="tabMain" label="${c:l('cms.tab.applicantData')}" />
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabLegalRepresentatives" label="${c:l('cms.tab.legalRepresentative')}" />
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />

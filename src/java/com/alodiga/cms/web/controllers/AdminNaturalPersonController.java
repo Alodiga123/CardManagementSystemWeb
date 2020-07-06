@@ -373,14 +373,15 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
             //Guardar la persona
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
             person.setEmail(txtEmail.getText());
-            if (eventType == WebConstants.EVENT_ADD) {
+            if (adminRequest.getRequest().getPersonId() != null) {
                 person.setCreateDate(new Timestamp(new Date().getTime()));
             } else {
-                person.setUpdateDate(new Timestamp(new Date().getTime()));
+                person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
+                person.setPersonClassificationId(personClassification);
+                person.setUpdateDate(new Timestamp(new Date().getTime()));                
             }
-            person.setPersonClassificationId(personClassification);
+            
             person = personEJB.savePerson(person);
             applicant = person;
 
