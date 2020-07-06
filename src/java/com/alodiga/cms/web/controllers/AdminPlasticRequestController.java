@@ -30,7 +30,6 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tab;
@@ -45,7 +44,6 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     private Combobox cmbPlasticManufacturer;
     private Combobox cmbPrograms;
     private Combobox cmbStatusPlasticRequest;
-    private Datebox dtbRequestDate;
     private PlasticCustomizingRequest plasticCustomizingRequestParam;
     private UtilsEJB utilsEJB = null;
     private RequestEJB requestEJB = null;
@@ -94,7 +92,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
                 break;
             default:
                 break;
-        }            
+        }
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
@@ -116,39 +114,47 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     public PlasticCustomizingRequest getPlasticCustomizingRequest() {
         return this.plasticCustomer;
     }
-    
+
     public Integer getEventType() {
         return this.eventType;
     }
 
     public void clearFields() {
-        dtbRequestDate.setRawValue(null);
+
     }
 
     private void loadFields(PlasticCustomizingRequest plasticCustomizingRequest) {
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            
+
             if (plasticCustomizingRequest.getRequestNumber() != null) {
                 lblRequestNumber.setValue(plasticCustomizingRequest.getRequestNumber());
                 lblRequestDate.setValue(simpleDateFormat.format(plasticCustomizingRequest.getRequestDate()));
-//                lblStatusRequest.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());
-                
+                lblStatusRequest.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());
             }
-            
+
             txtStatus.setValue(plasticCustomizingRequest.getStatusPlasticCustomizingRequestId().getDescription());
-            dtbRequestDate.setValue(plasticCustomizingRequest.getRequestDate());
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        dtbRequestDate.setReadonly(true);
-        cmbPlasticManufacturer.setReadonly(true);
-        cmbPrograms.setReadonly(true);
         btnSave.setVisible(false);
+    }
+
+    public Boolean validateEmpty() {
+        if (cmbPlasticManufacturer.getSelectedItem() == null) {
+            cmbPlasticManufacturer.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbPrograms.getSelectedItem() == null) {
+            cmbPrograms.setFocus(true);
+            this.showMessage("cms.error.plasticManufacturer.noSelected", true, null);
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private void savePlasticCustomizingRequest(PlasticCustomizingRequest _plasticCustomizingRequest) {
@@ -172,7 +178,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             }
 
             plasticCustomizingRequest.setRequestNumber(numberRequest);
-            plasticCustomizingRequest.setRequestDate((dtbRequestDate.getValue()));
+            plasticCustomizingRequest.setRequestDate(new Timestamp(new Date().getTime()));
             plasticCustomizingRequest.setPlasticManufacturerId((PlasticManufacturer) cmbPlasticManufacturer.getSelectedItem().getValue());
             if (eventType == WebConstants.EVENT_ADD) {
                 plasticCustomizingRequest.setStatusPlasticCustomizingRequestId(statusPending);
@@ -185,13 +191,17 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             } else {
                 plasticCustomizingRequest.setUpdateDate(new Timestamp(new Date().getTime()));
             }
-            plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);         
+            plasticCustomizingRequest = requestEJB.savePlasticCustomizingRequest(plasticCustomizingRequest);
             this.showMessage("sp.common.save.success", false, null);
-            
+
             plasticCustomer = plasticCustomizingRequest;
             loadFields(plasticCustomer);
-            
-            btnSave.setVisible(false);
+
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
             tabPlasticCard.setDisabled(false);
             tabFile.setDisabled(false);
         } catch (Exception ex) {
@@ -200,15 +210,17 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                savePlasticCustomizingRequest(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                savePlasticCustomizingRequest(plasticCustomizingRequestParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    savePlasticCustomizingRequest(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    savePlasticCustomizingRequest(plasticCustomizingRequestParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -234,7 +246,7 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
             case WebConstants.EVENT_ADD:
                 txtStatus.setVisible(true);
                 cmbStatusPlasticRequest.setVisible(false);
-                dtbRequestDate.setValue(today);
+//                dtbRequestDate.setValue(today);
                 loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 break;

@@ -43,10 +43,10 @@ import org.zkoss.zul.Toolbarbutton;
 public class AdminUserController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Intbox  intIdentificationNumber;
-    private Textbox lblFirstName;
-    private Textbox lblLastName;
-    private Textbox lblUserEmail;
+    private Intbox intIdentificationNumber;
+    private Label lblFirstName;
+    private Label lblLastName;
+    private Label lblUserEmail;
     private Textbox txtLogin;
     private Textbox txtPassword;
     private Label lblPosition;
@@ -65,17 +65,17 @@ public class AdminUserController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
-    
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         userParam = (Sessions.getCurrent().getAttribute("object") != null) ? (User) Sessions.getCurrent().getAttribute("object") : null;
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           userParam = null;                    
-       } else {
-           userParam = (User) Sessions.getCurrent().getAttribute("object");            
-       }
+            userParam = null;
+        } else {
+            userParam = (User) Sessions.getCurrent().getAttribute("object");
+        }
         initialize();
     }
 
@@ -100,21 +100,16 @@ public class AdminUserController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
-    
+
     public void clearFields() {
         intIdentificationNumber.setRawValue(null);
-        lblFirstName.setRawValue(null);
-        lblLastName.setRawValue(null);
-        lblUserEmail.setRawValue(null);
         txtLogin.setRawValue(null);
         txtPassword.setRawValue(null);
         lblPosition.setValue(null);
         lblUserExtAlodiga.setValue(null);
         lblAuthorizeExtAlodiga.setValue(null);
-    } 
-    
-        
+    }
+
     private void loadFields(User user) {
         List<PhonePerson> phonePersonUserList = null;
         PhonePerson phonePersonUser = null;
@@ -125,13 +120,10 @@ public class AdminUserController extends GenericAbstractAdminController {
             txtLogin.setText(user.getLogin());
             txtPassword.setText(user.getPassword());
             lblPosition.setValue(user.getEmployeeId().getEmployedPositionId().getName());
-            lblFirstName.setValue(user.getEmployeeId().getFirstNames());
-            lblLastName.setValue(user.getEmployeeId().getLastNames());
-            lblUserEmail.setValue(user.getPersonId().getEmail());
             lblUserExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
             lblAuthorizeExtAlodiga.setValue(user.getEmployeeId().getPersonId().getPhonePerson().getNumberPhone());
             if (user.getEmployeeId() != null) {
-                EJBRequest request = new EJBRequest(); 
+                EJBRequest request = new EJBRequest();
                 HashMap params = new HashMap();
                 params.put(Constants.PERSON_KEY, user.getEmployeeId().getPersonId().getId());
                 request.setParams(params);
@@ -142,7 +134,7 @@ public class AdminUserController extends GenericAbstractAdminController {
                 lblUserExtAlodiga.setValue(phonePersonUser.getExtensionPhoneNumber());
             }
             if (user.getAuthorizedEmployeeId() != null) {
-                EJBRequest request = new EJBRequest(); 
+                EJBRequest request = new EJBRequest();
                 HashMap params = new HashMap();
                 params.put(Constants.PERSON_KEY, user.getAuthorizedEmployeeId().getPersonId().getId());
                 request.setParams(params);
@@ -158,11 +150,11 @@ public class AdminUserController extends GenericAbstractAdminController {
                 rEnabledNo.setChecked(true);
             }
             btnSave.setVisible(true);
-        
+
         } catch (Exception ex) {
             showError(ex);
         }
-    }     
+    }
 
     public void blockFields() {
         intIdentificationNumber.setReadonly(true);
@@ -170,23 +162,40 @@ public class AdminUserController extends GenericAbstractAdminController {
         txtPassword.setReadonly(true);
         btnSave.setVisible(false);
     }
-    
+
     public Boolean validateEmpty() {
-        if (intIdentificationNumber.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+            cmbDocumentsPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (intIdentificationNumber.getText().isEmpty()) {
             intIdentificationNumber.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbEmployee.getSelectedItem() == null) {
+            cmbEmployee.setFocus(true);
+            this.showMessage("cms.error.employee.noSelected", true, null);
+        } else if (cmbComercialAgency.getSelectedItem() == null) {
+            cmbComercialAgency.setFocus(true);
+            this.showMessage("cms.error.comercialAgency.noSelected", true, null);
+        } else if (cmbAuthorizeEmployee.getSelectedItem() == null) {
+            cmbAuthorizeEmployee.setFocus(true);
+            this.showMessage("cms.error.authorizeEmployee.noSelected", true, null);
         } else if (txtLogin.getText().isEmpty()) {
             txtLogin.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtPassword.getText().isEmpty()) {
             txtPassword.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if ((!rEnabledYes.isChecked()) && (!rEnabledNo.isChecked())) {
+            this.showMessage("cms.error.field.enabled", true, null);
         } else {
             return true;
         }
         return false;
     }
-    
+
     public void onChange$cmbCountry() {
         this.clearMessage();
         cmbDocumentsPersonType.setVisible(true);
@@ -194,7 +203,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbDocumentsPersonType(eventType, country.getId());
     }
-    
+
     public void onChange$cmbEmployee() {
         lblPosition.setVisible(true);
         lblUserExtAlodiga.setVisible(true);
@@ -202,6 +211,9 @@ public class AdminUserController extends GenericAbstractAdminController {
         lblPosition.setValue(employee.getEmployedPositionId().getName());
         if (employee.getPersonId().getPhonePerson() != null) {
             lblUserExtAlodiga.setValue(employee.getPersonId().getPhonePerson().getExtensionPhoneNumber());
+            lblFirstName.setValue(employee.getFirstNames());
+            lblLastName.setValue(employee.getLastNames());
+            lblUserEmail.setValue(employee.getPersonId().getEmail());
         }
     }
 
@@ -209,9 +221,8 @@ public class AdminUserController extends GenericAbstractAdminController {
         lblAuthorizeExtAlodiga.setVisible(true);
         Employee employeeAuthorize = (Employee) cmbAuthorizeEmployee.getSelectedItem().getValue();
         lblAuthorizeExtAlodiga.setValue(employeeAuthorize.getPersonId().getPhonePerson().getNumberPhone());
-    }    
-    
-    
+    }
+
     private void saveUser(User _user) throws RegisterNotFoundException, NullParameterException, GeneralException {
         boolean indEnabled = true;
         try {
@@ -242,7 +253,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             person.setCreateDate(new Timestamp(new Date().getTime()));
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
-            
+
             //Guarda el Usuario
             user.setLogin(txtLogin.getText());
             user.setPassword(txtPassword.getText());
@@ -252,20 +263,19 @@ public class AdminUserController extends GenericAbstractAdminController {
             user.setCode(intIdentificationNumber.getText().toString());
             user.setFirstNames(lblFirstName.getValue().toString());
             user.setLastNames(lblLastName.getValue().toString());
-            user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());            
+            user.setEmployeeId((Employee) cmbEmployee.getSelectedItem().getValue());
             user.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
             user.setAuthorizedEmployeeId((Employee) cmbAuthorizeEmployee.getSelectedItem().getValue());
             user.setEnabled(indEnabled);
             user = personEJB.saveUser(user);
-            userParam =user;
+            userParam = user;
             this.showMessage("sp.common.save.success", false, null);
             btnSave.setVisible(false);
         } catch (WrongValueException ex) {
             showError(ex);
         }
-    }  
-    
-    
+    }
+
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
         if (validateEmpty()) {
             switch (eventType) {
@@ -280,11 +290,11 @@ public class AdminUserController extends GenericAbstractAdminController {
             }
         }
     }
-    
+
     public void onclick$btnBack() {
         Executions.getCurrent().sendRedirect("listUser.zul");
     }
-    
+
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
@@ -324,8 +334,8 @@ public class AdminUserController extends GenericAbstractAdminController {
             default:
                 break;
         }
-    }    
-    
+    }
+
     private void loadCmbCountry(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Country> country;
@@ -352,7 +362,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         List<DocumentsPersonType> documentsPersonType = null;
         try {
             documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
-            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(userParam != null ? userParam.getDocumentsPersonTypeId().getId(): 0));
+            loadGenericCombobox(documentsPersonType, cmbDocumentsPersonType, "description", evenInteger, Long.valueOf(userParam != null ? userParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {
@@ -362,10 +372,10 @@ public class AdminUserController extends GenericAbstractAdminController {
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
-            }            
+            }
         }
     }
-    
+
     private void loadCmbEmployee(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Employee> employeeList;
@@ -375,7 +385,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             for (int i = 0; i < employeeList.size(); i++) {
                 Comboitem item = new Comboitem();
                 item.setValue(employeeList.get(i));
-                nameEmployee = employeeList.get(i).getFirstNames()+" "+employeeList.get(i).getLastNames();
+                nameEmployee = employeeList.get(i).getFirstNames() + " " + employeeList.get(i).getLastNames();
                 item.setLabel(nameEmployee);
                 item.setParent(cmbEmployee);
                 if (eventType != 1) {
@@ -392,7 +402,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     private void loadCmbComercialAgency(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<ComercialAgency> comercialAgency;
@@ -407,7 +417,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-    
+
     private void loadCmbAuthorizeEmployee(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Employee> employeeList;
@@ -417,7 +427,7 @@ public class AdminUserController extends GenericAbstractAdminController {
             for (int i = 0; i < employeeList.size(); i++) {
                 Comboitem item = new Comboitem();
                 item.setValue(employeeList.get(i));
-                nameEmployee = employeeList.get(i).getFirstNames()+" "+employeeList.get(i).getLastNames();
+                nameEmployee = employeeList.get(i).getFirstNames() + " " + employeeList.get(i).getLastNames();
                 item.setLabel(nameEmployee);
                 item.setParent(cmbAuthorizeEmployee);
                 if (eventType != 1) {
@@ -438,5 +448,5 @@ public class AdminUserController extends GenericAbstractAdminController {
     private Object getSelectedItem() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-  }
+
+}

@@ -24,12 +24,10 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton label="${c:l('cms.common.user.list')}" onClick='Executions.sendRedirect(&quot;listUser.zul&quot;)'/>
-                                                 |
+                                                |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.user.add')}"/>
-                                                 |  
-                                                <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -58,9 +56,18 @@
                                                             <label value="${c:l('cms.common.number.identification')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentsPersonType" width="270px" mold="rounded" readonly="true" />
-                                                            <intbox id="intIdentificationNumber" width="270px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <intbox id="intIdentificationNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.user.employee')}" sclass="lblbold"/> 
@@ -68,52 +75,66 @@
                                                             <label value="${c:l('cms.common.user.ext.alodiga')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbEmployee" width="270px" mold="rounded" readonly="true" />
+                                                            <hlayout>
+                                                                <combobox id="cmbEmployee" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <label id="lblPosition" width="250px"/> 
-                                                            <label id="lblUserExtAlodiga" width="250px"/>                                                            
+                                                            <label id="lblUserExtAlodiga" width="250px"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.user.first.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.user.last.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
-                                                       </row>
+                                                        </row>
                                                         <row>
-                                                            <label id="lblFirstName" width="250px"/> 
-                                                            <label id="lblLastName" width="250px"/> 
-                                                            <label id="lblUserEmail" width="250px"/> 
+                                                            <label id="lblFirstName" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblLastName" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblUserEmail" value="" width="250px" style="color:#837E76;"/>
                                                             <!--textbox id="txtFirstName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <textbox id="txtLastName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <textbox id="txtUserEmail" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/-->
-                                                       </row>
+                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.authorize.registration')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.aut.ext.alodiga')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbComercialAgency" width="270px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbAuthorizeEmployee" width="270px" mold="rounded" readonly="true" />
-                                                            <label id="lblAuthorizeExtAlodiga" width="250px"/>                                                            
+                                                            <hlayout>
+                                                                <combobox id="cmbComercialAgency" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbAuthorizeEmployee" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <label id="lblAuthorizeExtAlodiga" width="250px"/>
                                                         </row> 
                                                         <row>
                                                             <label value="${c:l('cms.common.login')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.password')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
-                                                        
                                                         <row>
-                                                            <textbox id="txtLogin" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtPassword" type="password" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <hlayout>
+                                                                <textbox id="txtLogin" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtPassword" type="password" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <hbox>
-                                                            <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
-                                                                 <grid>
+                                                                <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rEnabledYes" label="${c:l('cms.commom.Yes')}" radiogroup="EnabledActive" />
                                                                             <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="EnabledActive" />
                                                                         </row>
                                                                     </rows>
-                                                                 </grid>
+                                                                </grid>
                                                             </hbox>
                                                         </row>
                                                     </rows>

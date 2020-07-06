@@ -56,15 +56,11 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.requestDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hlayout>
-                                                                <datebox id="dtbRequestDate" width="250px"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
                                                             <hlayout>
                                                                 <combobox id="cmbPlasticManufacturer" width="250px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
@@ -73,17 +69,10 @@
                                                                 <combobox id="cmbPrograms" width="250px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row> 
-                                                            <cell colspan="2">
-                                                                <hlayout>
-                                                                    <label id="txtStatus" value="" width="270px" style="color:#837E76;"/>
-                                                                    <combobox id="cmbStatusPlasticRequest" width="270px" mold="rounded" readonly="true"/>
-                                                                </hlayout>
-                                                            </cell>
+                                                            <hlayout>
+                                                                <label id="txtStatus" value="" width="250px" style="color:#837E76;"/>
+                                                                <combobox id="cmbStatusPlasticRequest" width="270px" mold="rounded" readonly="true"/>
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>
