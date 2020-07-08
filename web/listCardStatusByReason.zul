@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListPermissionController" class="general-window">
+    <window width="100%" height="100%" apply="com.alodiga.cms.web.controllers.ListCardStatusByReasonControllers" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -13,6 +13,7 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout>
+                        <div></div>
                         <div width="1200px" align="left" height="1000px">
                             <hlayout>
                                 <div>
@@ -24,31 +25,34 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.permission.list')}" />
-                                                 |
-                                                <toolbarbutton id="tbbCurrentAction" />
+                                                |
+                                                <toolbarbutton label="${c:l('cms.menu.cardStatusByReason.list')}"/>
+                                                |
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                            <hlayout>
+                                            <!--Filters for Searching-->
+                                            <vlayout>
+                                                <hlayout>
                                                     <!--Add button-->
-                                                    <div align="left" width="160px">
-                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="100px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                    <div align="left" width="495px">
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
-                                            </hlayout>
+                                                </hlayout>
+                                            </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="430px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.name.permission')}" width="255px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.action')}" width="300px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.entity')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.statusCard')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.cardStatusByReason.updateReason')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.cardStatusByReason.allow')}" width="200px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
+
                                         </div>
                                         <!--Download button-->
                                         <div align="right">
@@ -56,8 +60,10 @@
                                         </div>
                                     </vlayout>
                                 </div>
+                                <div></div>
                             </hlayout>
                         </div>
+                        <div></div>
                     </hlayout>
                 </div>
             </center>

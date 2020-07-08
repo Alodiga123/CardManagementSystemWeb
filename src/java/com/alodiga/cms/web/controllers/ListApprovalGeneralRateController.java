@@ -118,7 +118,6 @@ public class ListApprovalGeneralRateController extends GenericAbstractListContro
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(approvalGeneralRate.getUserId().getComercialAgencyId().getName()));
                     item.appendChild(new Listcell(simpleDateFormat.format(approvalGeneralRate.getApprovalDate())));               
-                    item.appendChild(createButtonEditModal(approvalGeneralRate));
                     item.appendChild(createButtonViewModal(approvalGeneralRate));
                     item.setParent(lbxRecords);
                 }

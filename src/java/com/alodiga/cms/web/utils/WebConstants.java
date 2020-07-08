@@ -171,4 +171,6 @@ public class WebConstants {
     //Address Type
     public static final int ADDRESS_TYPE_COMPANY = 5;
     
+    public static final String GENERAL_RATE= "generalRate";
+    
 }
