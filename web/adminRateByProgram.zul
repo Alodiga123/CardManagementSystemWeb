@@ -46,28 +46,35 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.transaction')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.transaction.code2')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
+                                                            
                                                         </row>
                                                         <row>
                                                             <label id="lblTransaction" width="250px"/>
+                                                            <label id="lblTransactionCode" width="250px"/>
                                                             <label id="lblRateApplicationType" width="250px"/>
-                                                            <textbox id="txtFixedRate" width="250px"/>
+                                                            
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.percentageRate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.totalTransactionInitialExempt')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>
+                                                            
                                                         </row>
                                                         <row>
+                                                            <textbox id="txtFixedRate" width="250px"/>
                                                             <textbox id="txtPercentageRate" width="250px"/>
                                                             <textbox id="txtTotalTransactionInitialExempt" width="250px"/>
-                                                            <textbox id="txtTotalTransactionExemptPerMonth" width="250px"/>
+                                                            
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.indModificationCardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.delivery.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <textbox id="txtTotalTransactionExemptPerMonth" width="250px"/>
                                                             <hbox>
                                                                 <radiogroup id="indModificationCardHolder" onCheck="value = self.selectedItem.label" />
                                                                 <grid>
@@ -79,6 +86,7 @@
                                                                     </rows>
                                                                 </grid>
                                                             </hbox> 
+                                                             <label id="lblStatus" width="250px"/>
                                                         </row>
                                                     </rows>
                                                 </grid>
