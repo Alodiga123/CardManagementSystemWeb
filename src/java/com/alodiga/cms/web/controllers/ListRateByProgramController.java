@@ -142,8 +142,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         if (indExist != 1) {
                             rateByProgram = new RateByProgram();
                             rateByProgram.setChannelId(g.getChannelId());
-                            rateByProgram.setFixedRate(g.getFixedRate());
-                            rateByProgram.setPercentageRate(g.getPercentageRate());
+                            if (g.getFixedRate() != null) {
+                                rateByProgram.setFixedRate(g.getFixedRate());
+                            }
+                            if (g.getPercentageRate() != null) {
+                                rateByProgram.setPercentageRate(g.getPercentageRate());
+                            }                            
                             rateByProgram.setIndCardHolderModification(g.getIndCardHolderModification());
                             rateByProgram.setProgramId(program);
                             rateByProgram.setRateApplicationTypeId(g.getRateApplicationTypeId());
@@ -171,11 +175,24 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         item.setValue(r);
                         item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                         item.appendChild(new Listcell(r.getChannelId().getName()));
-                        item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                        if(r.getTransactionId().getCode() != null){
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }
+                        
                         item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                         item.appendChild(new Listcell(r.getProgramId().getProductTypeId().getName()));
-                        item.appendChild(new Listcell(r.getFixedRate().toString()));
-                        item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        if (r.getFixedRate() != null) {
+                            item.appendChild(new Listcell(r.getFixedRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }
+                        if (r.getPercentageRate() != null) {
+                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }                        
                         item.appendChild(createButtonEditModal(r));
                         item.appendChild(createButtonViewModal(r));
                         item.setParent(lbxRecords);
@@ -210,8 +227,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         for (GeneralRate g : list) {
                             rateByProgram = new RateByProgram();
                             rateByProgram.setChannelId(g.getChannelId());
-                            rateByProgram.setFixedRate(g.getFixedRate());
-                            rateByProgram.setPercentageRate(g.getPercentageRate());
+                            if (g.getFixedRate() != null) {
+                                rateByProgram.setFixedRate(g.getFixedRate());
+                            }
+                            if (g.getPercentageRate() != null) {
+                                rateByProgram.setPercentageRate(g.getPercentageRate());
+                            } 
                             rateByProgram.setIndCardHolderModification(g.getIndCardHolderModification());
                             rateByProgram.setProgramId(program);
                             rateByProgram.setRateApplicationTypeId(g.getRateApplicationTypeId());

@@ -38,7 +38,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.kinShipApplicant')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.percentageMatchApplicant')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.statusApplicant')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.applicantStatus')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblKinShipApplicant" value="" width="250px" maxlength="30"/> 
