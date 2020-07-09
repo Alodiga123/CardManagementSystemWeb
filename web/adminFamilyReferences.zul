@@ -49,7 +49,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullLastName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtFullName" value="" width="250px" maxlength="40"/>

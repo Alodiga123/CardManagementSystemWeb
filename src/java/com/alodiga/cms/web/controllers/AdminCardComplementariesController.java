@@ -461,14 +461,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             case WebConstants.EVENT_VIEW:
                 loadFieldR(adminRequest.getRequest());
                 loadFields(applicantNaturalPersonParam);
-                txtIdentificationNumber.setDisabled(true);
-                txtDueDateDocumentIdentification.setDisabled(true);
-                txtIdentificationNumberOld.setDisabled(true);
-                txtFullName.setDisabled(true);
-                txtFullLastName.setDisabled(true);
-                txtBirthPlace.setDisabled(true);
-                txtBirthDay.setDisabled(true);
-                txtEmail.setDisabled(true);
+                blockFields();
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
@@ -542,7 +535,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getApplicantNaturalPerson().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

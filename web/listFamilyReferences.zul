@@ -42,7 +42,7 @@
                                                     <listheader label="${c:l('cms.common.nameLastName')}" width="240px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.naturalperson.familyReferences.localPhone')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.naturalperson.familyReferences.cellPhone')}" width="170px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.city')}" width="225px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.city')}" width="225px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
