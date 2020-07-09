@@ -171,7 +171,9 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         item.setValue(r);
                         item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                         item.appendChild(new Listcell(r.getChannelId().getName()));
+                        item.appendChild(new Listcell(r.getTransactionId().getCode()));
                         item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                        item.appendChild(new Listcell(r.getProgramId().getProductTypeId().getName()));
                         item.appendChild(new Listcell(r.getFixedRate().toString()));
                         item.appendChild(new Listcell(r.getPercentageRate().toString()));
                         item.appendChild(createButtonEditModal(r));
@@ -182,6 +184,8 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                     btnDownload.setVisible(false);
                     item = new Listitem();
                     item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                    item.appendChild(new Listcell());
+                    item.appendChild(new Listcell());
                     item.appendChild(new Listcell());
                     item.appendChild(new Listcell());
                     item.appendChild(new Listcell());
@@ -227,7 +231,9 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             item.setValue(r);
                             item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                            item.appendChild(new Listcell(r.getProgramId().getProductTypeId().getName()));
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
                             item.appendChild(new Listcell(r.getPercentageRate().toString()));
                             item.appendChild(createButtonEditModal(r));
@@ -238,6 +244,8 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         btnDownload.setVisible(false);
                         item = new Listitem();
                         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                        item.appendChild(new Listcell());
+                        item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
@@ -273,6 +281,8 @@ public class ListRateByProgramController extends GenericAbstractListController<R
     private void showEmptyList(){
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());

@@ -7,6 +7,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.RateByProgram;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -31,6 +32,8 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     private Label lblChannel;
     private Label lblTransaction;
     private Label lblRateApplicationType;
+    private Label lblTransactionCode;
+    private Label lblStatus;
     private Textbox txtFixedRate;
     private Textbox txtPercentageRate;
     private Textbox txtTotalTransactionInitialExempt;
@@ -83,6 +86,12 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             lblProgram.setValue(rateByProgram.getProgramId().getName());
             lblProductType.setValue(rateByProgram.getProgramId().getProductTypeId().getName());
             lblChannel.setValue(rateByProgram.getChannelId().getName());
+            lblTransactionCode.setValue(rateByProgram.getTransactionId().getCode());
+            if (rateByProgram.getApprovalProgramRateId() != null) {
+                lblStatus.setValue(Labels.getLabel("cms.common.approved"));
+            }else{
+                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+            }   
             lblTransaction.setValue(rateByProgram.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProgram.getRateApplicationTypeId().getDescription());
             txtFixedRate.setText(rateByProgram.getFixedRate().toString());

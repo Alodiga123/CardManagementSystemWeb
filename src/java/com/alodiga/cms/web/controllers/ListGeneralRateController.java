@@ -253,6 +253,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
                 }
            
             } else {
+                this.showMessage("cms.error.country.notSelected", true, null);
                 return generalRateList;
             }
         } catch (Exception ex) {
