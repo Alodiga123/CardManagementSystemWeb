@@ -50,6 +50,8 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
+    private AdminCardComplementariesController adminNaturalPerson = null;
+    private List<PersonHasAddress> personHasAddressList;
     private Button btnSave;
     private Integer eventType;
 
@@ -59,12 +61,22 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                adminNaturalPerson = new AdminCardComplementariesController();
+
                 if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
                     ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
                     if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
                         addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
                     } else {
-                        addressParam = null;
+                        EJBRequest request1 = new EJBRequest();
+                        Map params = new HashMap();
+                        params.put(Constants.PERSON_KEY, adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().getId());
+                        request1.setParams(params);
+                        personHasAddressList = personEJB.getPersonHasAddressesByPerson(request1);
+                        for (PersonHasAddress pha : personHasAddressList) {
+                            adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().setPersonHasAddress(pha);
+                        }
+                        addressParam = adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().getPersonHasAddress().getAddressId();
                     }
                 }
                 break;

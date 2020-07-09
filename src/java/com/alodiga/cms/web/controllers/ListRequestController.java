@@ -86,6 +86,7 @@ public class ListRequestController extends GenericAbstractListController<Request
 
     public void loadList(List<Request> list) {
         String applicantNameLegal = "";
+        String tipo = "";
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -100,6 +101,8 @@ public class ListRequestController extends GenericAbstractListController<Request
                     item.appendChild(new Listcell(request.getProgramId().getName()));
                     if (request.getPersonId() != null) {
                         if (request.getIndPersonNaturalRequest() == true) {
+                            tipo = "PN";
+                            item.appendChild(new Listcell(tipo));
                             StringBuilder applicantNameNatural = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
                             applicantNameNatural.append(" ");
                             applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
@@ -109,6 +112,8 @@ public class ListRequestController extends GenericAbstractListController<Request
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         } else {
+                            tipo = "PJ";
+                            item.appendChild(new Listcell(tipo));
                             applicantNameLegal = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantNameLegal));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
@@ -118,12 +123,16 @@ public class ListRequestController extends GenericAbstractListController<Request
                         }
                     } else {
                         if (request.getIndPersonNaturalRequest() == true) {
+                            tipo = "PN";
+                            item.appendChild(new Listcell(tipo));
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                         } else {
+                            tipo = "PJ";
+                            item.appendChild(new Listcell(tipo));
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";

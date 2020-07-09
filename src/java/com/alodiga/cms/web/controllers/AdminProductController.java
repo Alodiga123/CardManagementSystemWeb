@@ -7,6 +7,7 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
+import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -269,7 +270,11 @@ public class AdminProductController extends GenericAbstractAdminController {
             productParent = product;
             loadFields(productParam);
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(false);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
 
             tabCommerceCategory.setDisabled(false);
             tabRestrictions.setDisabled(false);

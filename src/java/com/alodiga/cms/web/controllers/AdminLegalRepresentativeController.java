@@ -354,7 +354,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentativesParam = legalRepresentatives;
 
             //Asocia el Representante Legal al Solicitante Jurídico
-            if (eventType == 1) {
+            if (eventType == WebConstants.EVENT_ADD) {
                 if (legalPerson != null) {
                     legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
                     legalPersonHasLegalRepresentatives.setLegalRepresentativesid(legalRepresentatives);
@@ -364,14 +364,16 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                     legalCustomerHasLegalRepresentatives.setLegalRepresentativesId(legalRepresentatives);
                     legalCustomerHasLegalRepresentatives = personEJB.saveLegalCustomerHasLegalRepresentatives(legalCustomerHasLegalRepresentatives);
                 }
-                btnSave.setVisible(false);
-            } else {
-                btnSave.setVisible(true);
             }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateLegalRepresentative", EventQueues.APPLICATION, true).publish(new Event(""));
 
             loadFields(legalRepresentatives);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }

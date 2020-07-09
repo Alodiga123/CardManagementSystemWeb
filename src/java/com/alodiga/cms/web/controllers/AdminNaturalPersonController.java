@@ -6,6 +6,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -235,7 +236,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             }
             txtPhoneNumber.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
             applicantNaturalPersonParent = applicantNaturalPerson;
-            btnSave.setVisible(true);
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -379,9 +384,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             } else {
                 person.setPersonTypeId(adminRequest.getRequest().getPersonTypeId());
                 person.setPersonClassificationId(personClassification);
-                person.setUpdateDate(new Timestamp(new Date().getTime()));                
+                person.setUpdateDate(new Timestamp(new Date().getTime()));
             }
-            
+
             person = personEJB.savePerson(person);
             applicant = person;
 
@@ -542,7 +547,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } finally {
             if (documentsPersonType == null) {
                 this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
-            }            
+            }
         }
     }
 
