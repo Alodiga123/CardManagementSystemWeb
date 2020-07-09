@@ -39,7 +39,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.product.limitAndRestrictions.cannel')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.product.limitAndRestrictions.channel')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.product')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.trasaction')}" width="200x" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.use')}" width="205px" sort="auto"/>

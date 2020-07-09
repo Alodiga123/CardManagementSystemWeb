@@ -27,7 +27,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.product.limitAndRestrictions.cannel')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.product.limitAndRestrictions.channel')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.product')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
                                                         </row>
