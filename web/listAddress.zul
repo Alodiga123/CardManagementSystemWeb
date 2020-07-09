@@ -40,7 +40,7 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.countryName')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.city')}" width="140px" sort="auto"/>                                                    
+                                                    <listheader label="${c:l('cms.common.city')}" width="140px" sort="auto"/>                                                    
                                                     <listheader label="${c:l('cms.crud.address.addressTypes')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.address.addressDelivery')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.commmon.zipZone')}" width="140px" sort="auto"/>

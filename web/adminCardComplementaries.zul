@@ -47,7 +47,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
