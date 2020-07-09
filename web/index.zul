@@ -22,7 +22,7 @@ Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 <window>
 
     <div width="220px" height="1000px" apply="">
-    <image id="imgLogo" src="/images/logo_header.png" style="cursor:pointer" />
+    <image id="imgLogo" src="/images/Logo_Empresa_Argelia.png" style="cursor:pointer" />
      <listbox id="lbxAccount" width="215px" style="background-color: green; border: 1px solid #7F9DB9; overflow: hidden; zoom: 1;border-width: 1px;border-color: gray;" class="borderedFrame">
         <listgroup open="true">
             <listcell label="prueba"/>
