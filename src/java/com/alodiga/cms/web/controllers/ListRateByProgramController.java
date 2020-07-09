@@ -175,14 +175,23 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         item.setValue(r);
                         item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                         item.appendChild(new Listcell(r.getChannelId().getName()));
-                        item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                        if(r.getTransactionId().getCode() != null){
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }
+                        
                         item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                         item.appendChild(new Listcell(r.getProgramId().getProductTypeId().getName()));
                         if (r.getFixedRate() != null) {
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
                         }
                         if (r.getPercentageRate() != null) {
                             item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
                         }                        
                         item.appendChild(createButtonEditModal(r));
                         item.appendChild(createButtonViewModal(r));
