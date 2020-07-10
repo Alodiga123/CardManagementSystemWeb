@@ -65,7 +65,7 @@
                                                         <row>
                                                             <textbox id="txtFixedRate" width="250px"/>
                                                             <textbox id="txtPercentageRate" width="250px"/>
-                                                            <textbox id="txtTotalTransactionInitialExempt" width="250px"/>
+                                                            <textbox id="txtTotalTransactionInitialExempt" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="11"/>
                                                             
                                                         </row>
                                                         <row>
@@ -74,7 +74,7 @@
                                                             <label value="${c:l('cms.common.delivery.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtTotalTransactionExemptPerMonth" width="250px"/>
+                                                            <textbox id="txtTotalTransactionExemptPerMonth" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="11"/>
                                                             <hbox>
                                                                 <radiogroup id="indModificationCardHolder" onCheck="value = self.selectedItem.label" />
                                                                 <grid>
