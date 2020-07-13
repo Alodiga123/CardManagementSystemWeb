@@ -459,7 +459,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
     }
 
     private void loadCmbIssuer(Integer evenInteger) {
-        //cmbIssuer
+        cmbIssuer.getItems().clear();
         EJBRequest request1 = new EJBRequest();
         List<Issuer> issuers;
         try {

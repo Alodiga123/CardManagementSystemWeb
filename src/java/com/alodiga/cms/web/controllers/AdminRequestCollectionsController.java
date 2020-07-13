@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -52,7 +53,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     private Radio rApprovedYes;
     private Radio rApprovedNo;
     private Label lblInfo;
-//    private Label txtNumber;
     private Label txtPrograms;
     private Label txtProductType;
     private Label txtCollectionType;
@@ -72,7 +72,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-//        collectionsRequestParam = (Sessions.getCurrent().getAttribute("object") != null) ? (CollectionsRequest) Sessions.getCurrent().getAttribute("object") : null;
         AdminRequestController adminRequestController = new AdminRequestController();
         if (adminRequestController.getRequest().getId() != null) {
             requestParam = adminRequestController.getRequest();
@@ -327,7 +326,11 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, requestParam.getPersonTypeId().getIndNaturalPerson());
-        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        if (eventType == WebConstants.EVENT_ADD) {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        } else {
+            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, requestParam.getPersonTypeId().getOriginApplicationId().getId());
+        }
         request1.setParams(params);
         List<PersonType> personTypes;
         try {
