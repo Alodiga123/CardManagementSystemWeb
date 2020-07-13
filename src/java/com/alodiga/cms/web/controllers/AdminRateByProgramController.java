@@ -119,6 +119,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     
     public void onChange$txtFixedRate() {
         this.clearMessage();
+        if (!txtFixedRate.getText().equalsIgnoreCase("")) {
         if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
             this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
             btnSave.setDisabled(true);
@@ -126,32 +127,39 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             this.clearMessage();
             btnSave.setDisabled(false);
         }
+        }
     }
     
     public void onChange$txtPercentageRate() {
         this.clearMessage();
-        if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
+        if (!txtPercentageRate.getText().equalsIgnoreCase("")) {
+          if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
             this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
             btnSave.setDisabled(true);
         } else {
             this.clearMessage();
             btnSave.setDisabled(false);
+        }  
         }
+        
     }
     
     public void onChange$txtTotalTransactionInitialExempt() {
         this.clearMessage();
-        if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
+        if(!txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")){
+             if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
             this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
             btnSave.setDisabled(true);
         } else {
             this.clearMessage();
             btnSave.setDisabled(false);
         }
+        }
     }
     
     public void onChange$txtTotalTransactionExemptPerMonth() {
         this.clearMessage();
+        if(!txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")){
         if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
             this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
             btnSave.setDisabled(true);
@@ -159,6 +167,8 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             this.clearMessage();
             btnSave.setDisabled(false);
         }
+    }
+        
     }
 
     private void saveRateByProgram(RateByProgram _rateByProgram) {
@@ -182,10 +192,19 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             rateByProgram.setProgramId(rateByProgram.getProgramId());
             rateByProgram.setChannelId(rateByProgram.getChannelId());
             rateByProgram.setTransactionId(rateByProgram.getTransactionId());
-            rateByProgram.setFixedRate(Float.parseFloat(txtFixedRate.getText()));
+            if (!txtFixedRate.getText().equalsIgnoreCase("")) {
+             rateByProgram.setFixedRate(Float.parseFloat(txtFixedRate.getText()));
+            }
+            if (!txtPercentageRate.getText().equalsIgnoreCase("")) {
             rateByProgram.setPercentageRate(Float.parseFloat(txtPercentageRate.getText()));
+            }   
+            if (!txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")) {
             rateByProgram.setTotalInitialTransactionsExempt(Integer.parseInt(txtTotalTransactionInitialExempt.getText()));
+            }
+            if (!txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")) {
             rateByProgram.setTotalTransactionsExemptPerMonth(Integer.parseInt(txtTotalTransactionExemptPerMonth.getText()));
+            }
+            
             rateByProgram.setRateApplicationTypeId(rateByProgram.getRateApplicationTypeId());
             rateByProgram.setIndCardHolderModification(indModificationCardHolder);
             rateByProgram = productEJB.saveRateByProgram(rateByProgram);
@@ -199,6 +218,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     }
 
     public void onClick$btnSave() {
+       if (validateEmpty()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveRateByProgram(null);
@@ -208,7 +228,8 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
                 break;
             default:
                 break;
-        }
+        } 
+      }
     }
     
     public void onclick$btnBack() {
@@ -228,6 +249,49 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             default:
                 break;
         }
+    }
+    
+    public Boolean validateEmpty() {
+
+        if (txtFixedRate.getText().equalsIgnoreCase("")) {
+           txtFixedRate.setFocus(true);
+           this.showMessage("cms.common.fixedRate.error2", true, null);
+            return false;
+        }
+        if (Float.parseFloat(txtFixedRate.getText())<=0) {
+           txtFixedRate.setFocus(true);
+           this.showMessage("sp.error.invalid.amount", true, null);
+            return false;
+        }
+        
+        if (txtPercentageRate.getText().equalsIgnoreCase("")) {
+            txtPercentageRate.setFocus(true);
+           this.showMessage("cms.common.percentageRate.error", true, null); 
+            return false;
+        }
+        if (Float.parseFloat(txtPercentageRate.getText())<=0) {
+           txtPercentageRate.setFocus(true);
+           this.showMessage("sp.error.invalid.amount", true, null);
+            return false;
+        }
+        if (txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionInitialExempt.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+            return false;
+        }
+        if (txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionExemptPerMonth.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+            return false;
+        }
+        
+        if(!(rModificationCardHolderYes.isChecked() || rModificationCardHolderNo.isChecked())){
+        this.showMessage("cms.common.indModificationCardHolder.error", true, null);
+        rModificationCardHolderYes.setFocus(true);
+        return false;
+        }
+   
+        return true;
     }
     
 }
