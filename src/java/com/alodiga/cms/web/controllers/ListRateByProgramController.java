@@ -121,6 +121,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         String rbp;
         String gr;
         int indExist = 0;
+        AdminApprovalProgramRateController adminApprovalProgramRate = new AdminApprovalProgramRateController();
         try {
             params.put(QueryConstants.PARAM_PROGRAM_ID, program.getId());
             request1.setParams(params);
@@ -128,6 +129,9 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             if (rateByProgramByProgramList != null) {
                 indLoadList = 1;
                 for (RateByProgram r : rateByProgramByProgramList) {
+                    if (r.getApprovalProgramRateId() == null) {
+                        r.setApprovalProgramRateId(adminApprovalProgramRate.getApprovalProgramRate());
+                    }
                     rateByProgramList.add(r);
                 }    
                 if (list != null && !list.isEmpty()) {
@@ -159,7 +163,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             }
                             if (g.getPercentageRate() != null) {
                                 rateByProgram.setPercentageRateGR(g.getPercentageRate());
-                            }                            
+                            }
                             rateByProgram.setTotalInitialTransactionsExemptGR(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonthGR(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setCreateDate(new Timestamp(new Date().getTime()));
@@ -186,7 +190,6 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         }
                         
                         item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                        item.appendChild(new Listcell(r.getProgramId().getProductTypeId().getName()));
                         if (r.getFixedRate() != null) {
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
                         }else{
@@ -196,7 +199,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             item.appendChild(new Listcell(r.getPercentageRate().toString()));
                         }else{
                             item.appendChild(new Listcell("-"));
-                        }                        
+                        }  
+                        if(r.getApprovalProgramRateId() != null){
+                            item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                        } else {
+                            item.appendChild(new Listcell("No"));
+                        }
                         item.appendChild(createButtonEditModal(r));
                         item.appendChild(createButtonViewModal(r));
                         item.setParent(lbxRecords);
@@ -257,10 +265,14 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
                             item.appendChild(new Listcell(r.getTransactionId().getCode()));
-                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                            item.appendChild(new Listcell(r.getProgramId().getProductTypeId().getName()));
+                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));                            
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
                             item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            if(r.getApprovalProgramRateId() != null){
+                                item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                            } else {
+                                item.appendChild(new Listcell("No"));
+                            }
                             item.appendChild(createButtonEditModal(r));
                             item.appendChild(createButtonViewModal(r));
                             item.setParent(lbxRecords);
