@@ -10,7 +10,7 @@
             <center border="none" flex="true" class="content-transparent">
                 <div align="center">
                     <hlayout>
-                        <div width="1200px" align="left" height="670px">
+                        <div width="1000px" align="left" height="600px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -27,7 +27,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="1000px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.nameUser')}" width="300px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.agencyComercial')}" width="300px" sort="auto"/>
@@ -35,6 +35,10 @@
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
+                                        </div>
+                                        <!--Download button-->
+                                        <div align="right">
+                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/>
                                         </div>
                                     </vlayout>
                                 </div>

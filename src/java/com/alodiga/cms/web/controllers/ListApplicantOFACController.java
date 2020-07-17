@@ -9,18 +9,20 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-//import com.alodiga.ws.remittance.services.WSOFACMethodProxy;
-//import com.alodiga.ws.remittance.services.WsExcludeListResponse;
-//import com.alodiga.ws.remittance.services.WsLoginResponse;
+import com.alodiga.ws.cumpliments.services.OFACMethodWSProxy;
+import com.alodiga.ws.cumpliments.services.WsExcludeListResponse;
+import com.alodiga.ws.cumpliments.services.WsLoginResponse;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.User;
 import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,54 +142,54 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         }
     }
     
-//    public void onClick$btnReviewOFAC() {
-//        int indBlackList = 0;
-//        String lastName = "";
-//        String firstName = "";
-//        float ofacPercentege = 0.5F;
-//        Request request = adminRequest.getRequest();
-//        WSOFACMethodProxy ofac = new WSOFACMethodProxy();
-//        try {
-//            WsLoginResponse loginResponse = new WsLoginResponse();
-//            loginResponse = ofac.loginWS("alodiga", "d6f80e647631bb4522392aff53370502");
-//            WsExcludeListResponse ofacResponse = new WsExcludeListResponse();   
-//            for (ApplicantNaturalPerson applicant: applicantList) {
-//                lastName = applicant.getLastNames();
-//                firstName = applicant.getFirstNames();
-//                ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
-//                
-//                //Guardar el resultado de revisión en lista OFAC para cada solicitante
-//                ReviewOFAC reviewOFAC = new ReviewOFAC();
-//                reviewOFAC.setPersonId(applicant.getPersonId());
-//                reviewOFAC.setRequestId(request);
-//                reviewOFAC.setResultReview(ofacResponse.getPercentMatch());
-//                reviewOFAC = requestEJB.saveReviewOFAC(reviewOFAC);
-//                
-//                //Actualizar el estatus del solicitante si tiene coincidencia con lista OFAC
-//                if (Double.parseDouble(ofacResponse.getPercentMatch()) >= 0.80) {
-//                    applicant.setStatusApplicantId(getStatusApplicant(applicant, Constants.STATUS_APPLICANT_BLACK_LIST));
-//                    indBlackList = 1;
-//                } else {
-//                  applicant.setStatusApplicantId(getStatusApplicant(applicant, Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
-//                }
-//                applicant = personEJB.saveApplicantNaturalPerson(applicant);
-//            }
-//            //Si algun(os) solicitante(s) coincide(n) con la Lista OFAC se actualiza estatus de la solicitud
-//            if (indBlackList == 1) {
-//                request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_PENDING_APPROVAL));
-//            } else {
-//                request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK));
-//            }
-//            request = requestEJB.saveRequest(request);
-//            getData();
-//            loadDataList(applicantList);
-//            this.showMessage("sp.common.finishReviewOFAC", false, null);
-//	} catch (RemoteException e) {
-//            e.printStackTrace();
-//	} catch (Exception ex) {
-//            showError(ex);
-//        }
-//    }
+    public void onClick$btnReviewOFAC() {
+        int indBlackList = 0;
+        String lastName = "";
+        String firstName = "";
+        float ofacPercentege = 0.5F;
+        Request request = adminRequest.getRequest();
+        OFACMethodWSProxy ofac = new OFACMethodWSProxy();
+        try {
+            WsLoginResponse loginResponse = new WsLoginResponse();
+            loginResponse = ofac.loginWS("alodiga", "d6f80e647631bb4522392aff53370502");
+            WsExcludeListResponse ofacResponse = new WsExcludeListResponse();   
+            for (ApplicantNaturalPerson applicant: applicantList) {
+                lastName = applicant.getLastNames();
+                firstName = applicant.getFirstNames();
+                ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
+                
+                //Guardar el resultado de revisión en lista OFAC para cada solicitante
+                ReviewOFAC reviewOFAC = new ReviewOFAC();
+                reviewOFAC.setPersonId(applicant.getPersonId());
+                reviewOFAC.setRequestId(request);
+                reviewOFAC.setResultReview(ofacResponse.getPercentMatch());
+                reviewOFAC = requestEJB.saveReviewOFAC(reviewOFAC);
+                
+                //Actualizar el estatus del solicitante si tiene coincidencia con lista OFAC
+                if (Double.parseDouble(ofacResponse.getPercentMatch()) <= 0.75) {
+                    applicant.setStatusApplicantId(getStatusApplicant(applicant, Constants.STATUS_APPLICANT_BLACK_LIST));
+                    indBlackList = 1;
+                } else {
+                  applicant.setStatusApplicantId(getStatusApplicant(applicant, Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
+                }
+                applicant = personEJB.saveApplicantNaturalPerson(applicant);
+            }
+            //Si algun(os) solicitante(s) coincide(n) con la Lista OFAC se actualiza estatus de la solicitud
+            if (indBlackList == 1) {
+                request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_PENDING_APPROVAL));
+            } else {
+                request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK));
+            }
+            request = requestEJB.saveRequest(request);
+            getData();
+            loadDataList(applicantList);
+            this.showMessage("sp.common.finishReviewOFAC", false, null);
+	} catch (RemoteException e) {
+            e.printStackTrace();
+	} catch (Exception ex) {
+            showError(ex);
+        }
+    }
     
     public StatusApplicant getStatusApplicant(ApplicantNaturalPerson applicant, int statusApplicantId) {
         StatusApplicant statusApplicant = applicant.getStatusApplicantId();

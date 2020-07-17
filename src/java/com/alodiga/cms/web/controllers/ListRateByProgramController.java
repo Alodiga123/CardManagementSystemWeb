@@ -154,8 +154,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             rateByProgram.setTotalInitialTransactionsExempt(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonth(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setTransactionId(g.getTransactionId());
-                            rateByProgram.setFixedRateGR(g.getFixedRate());
-                            rateByProgram.setPercentageRateGR(g.getPercentageRate());
+                            if (g.getFixedRate() != null) {
+                                rateByProgram.setFixedRateGR(g.getFixedRate());
+                            }
+                            if (g.getPercentageRate() != null) {
+                                rateByProgram.setPercentageRateGR(g.getPercentageRate());
+                            }                            
                             rateByProgram.setTotalInitialTransactionsExemptGR(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonthGR(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setCreateDate(new Timestamp(new Date().getTime()));

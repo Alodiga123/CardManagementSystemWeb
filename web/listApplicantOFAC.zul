@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout>
                         <div></div>
-                        <div width="1200px" align="left" height="670px">
+                        <div width="1000px" align="left" height="400px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -19,11 +19,9 @@
                                         <div>
                                              <separator/>                                          
                                             <vlayout>
-                                                <hlayout style="text-align:right" width="880px">
-                                                    
+                                                <hlayout style="text-align:right" width="880px">                                                    
                                                     <label value="${c:l('cms.common.nameLastName')}" width="80px" sclass="lblbold"/>
-                                                    <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
-                                                    
+                                                    <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>                                                    
                                                 </hlayout>
                                                 <hlayout>
                                                     <!--Add button-->
@@ -40,17 +38,21 @@
                                             
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="1000px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="885px" mold="paging" pageSize="10" height="300px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.nameLastName')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identificationsTypes')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.applicantStatus')}" width="130px" sort="auto"/>
-                                                    <listheader label="-" width="45px"/>
-                                                    <listheader label="-" width="45px"/>
+                                                    <listheader label="-" width="40px"/>
+                                                    <listheader label="-" width="40px"/>
                                                 </listhead>
                                             </listbox>
+                                        </div>
+                                        <!--Download button-->
+                                        <div align="right">
+                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/>
                                         </div>
                                     </vlayout>
                                 </div>
