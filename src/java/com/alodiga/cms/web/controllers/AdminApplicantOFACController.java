@@ -89,7 +89,11 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
             lblNameApplicant.setValue(builder.toString());
             lblDocumentTypeApplicant.setValue(applicant.getDocumentsPersonTypeId().getDescription());
             lblNoIdentificationApplicant.setValue(applicant.getIdentificationNumber());
-            lblKinShipApplicant.setValue(applicant.getKinShipApplicantId().getDescription());
+            if (applicant.getKinShipApplicantId() != null) {
+                lblKinShipApplicant.setValue(applicant.getKinShipApplicantId().getDescription());
+            } else {
+                lblKinShipApplicant.setValue(WebConstants.MAIN_APPLICANT);
+            }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicant.getPersonId().getId());

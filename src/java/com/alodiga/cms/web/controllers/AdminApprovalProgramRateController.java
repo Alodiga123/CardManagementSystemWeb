@@ -47,7 +47,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
     private ProductEJB productEJB = null;
     private User user = null;
     private ApprovalProgramRate approvalProgramRateParam;
-    private Button btnSave;
+    private Button btnApprove;
     public Window winAdminApprovalProgramRate;
     private Program program;
     private List<RateByProgram> rateByProgramByProgramList = new ArrayList<RateByProgram>();
@@ -104,12 +104,15 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             showError(ex);
         }
     }
+    
+    private void loadDate() {
+        Date today = new Date();
+        txtApprovalDate.setValue(today);
+    }
 
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
-        rApprovedYes.setDisabled(true);
-        rApprovedNo.setDisabled(true);
-        btnSave.setVisible(false);
+        btnApprove.setVisible(false);
     }
 
     public Boolean validateEmpty() {
@@ -124,18 +127,12 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
 
     private void saveApprovalRates(ApprovalProgramRate _approvalProgramRate) {
         ApprovalProgramRate approvalProgramRate = null;
-        boolean indApproved;
+        boolean indApproved = true;
         try {
             if (_approvalProgramRate != null) {
                 approvalProgramRate = _approvalProgramRate;
             } else {
                 approvalProgramRate = new ApprovalProgramRate();
-            }
-
-            if (rApprovedYes.isChecked()) {
-                indApproved = true;
-            } else {
-                indApproved = false;
             }
 
             //Guarda la aprobación de las tarifas por programa
@@ -149,7 +146,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             //Actualiza las tarifas del programa que se está aprobando
             updateProgramRate(approvalProgramRate);
 
-            this.showMessage("sp.common.save.success", false, null);
+            this.showMessage("cms.common.Approve.success", false, null);
             EventQueues.lookup("updateApprovalProgramRate", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
@@ -178,7 +175,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
         }
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnApprove() {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
@@ -198,16 +195,19 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
     }
 
     public void loadData() {
+        Date today = new Timestamp(new Date().getTime());
         try {
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
                     loadFields(approvalProgramRateParam);
+                    blockFields();
                     break;
                 case WebConstants.EVENT_VIEW:
                     loadFields(approvalProgramRateParam);
                     blockFields();
                     break;
                 case WebConstants.EVENT_ADD:
+                    txtApprovalDate.setValue(today);
                     lblProgram.setValue(program.getName());
                     txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
                     txtAgency.setValue(user.getComercialAgencyId().getName());

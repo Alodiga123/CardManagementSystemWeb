@@ -50,22 +50,10 @@
                                                         <row>
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>    
                                                             <label value="${c:l('cms.crud.generalRates.approvalDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.generalRates.indApproved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="txtIdentification" value="" width="250px" style="color:#837E76;"/>
                                                             <datebox id="txtApprovalDate" width="250px"/>
-                                                            <hbox>
-                                                                <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rApprovedYes" label="${c:l('cms.commom.Yes')}" radiogroup="indApproved" />
-                                                                            <radio id="rApprovedNo" label="${c:l('cms.commom.No')} " radiogroup="indApproved" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
                                                         </row>                                                        
                                                     </rows>
                                                 </grid>
@@ -74,7 +62,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>
+                                            <button  id="btnApprove" width="150px" label="${c:l('cms.common.button.Approve')}" class="open orange"/>
                                         </div>
                                     </vlayout>
                                 </div>
