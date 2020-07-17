@@ -161,9 +161,15 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
     public void getData(int countryId) {
         generalRateList = new ArrayList<GeneralRate>();
         try {
+            AdminApprovalRatesController adminApprovalRates = new AdminApprovalRatesController();            
             request.setFirst(0);
             request.setLimit(null);
             generalRateList = productEJB.getGeneralRateByCountry(country);
+            for (GeneralRate gr: generalRateList) {
+                if (gr.getApprovalGeneralRateId() == null) {
+                    gr.setApprovalGeneralRateId(adminApprovalRates.getApprovalGeneralRate());
+                }
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

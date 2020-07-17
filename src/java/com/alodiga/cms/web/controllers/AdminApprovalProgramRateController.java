@@ -46,7 +46,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
     private Radio rApprovedNo;
     private ProductEJB productEJB = null;
     private User user = null;
-    private ApprovalProgramRate approvalProgramRateParam;
+    public static ApprovalProgramRate approvalProgramRateParam;
     private Button btnApprove;
     public Window winAdminApprovalProgramRate;
     private Program program;
@@ -81,6 +81,10 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
 
     public void clearFields() {
         txtApprovalDate.setRawValue(null);
+    }
+    
+    public ApprovalProgramRate getApprovalProgramRate() {
+        return approvalProgramRateParam;
     }
 
     private void loadFields(ApprovalProgramRate approvalProgramRate) throws EmptyListException, GeneralException, NullParameterException {
@@ -142,6 +146,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             approvalProgramRate.setUserId(user);
             approvalProgramRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalProgramRate = productEJB.saveApprovalProgramRate(approvalProgramRate);
+            approvalProgramRateParam = approvalProgramRate;
 
             //Actualiza las tarifas del programa que se está aprobando
             updateProgramRate(approvalProgramRate);
@@ -214,6 +219,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
                     txtCommercialAssessorUserCode.setValue(user.getCode());
                     txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
                     txtIdentification.setValue(user.getIdentificationNumber());
+                    blockFields();
                     break;
             }
         } catch (EmptyListException ex) {

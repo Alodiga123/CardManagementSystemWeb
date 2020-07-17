@@ -40,7 +40,7 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
     private Datebox txtApprovalDate;
     private ProductEJB productEJB = null;
     private User user = null;
-    private ApprovalGeneralRate approvalGeneralRateParam;
+    public static ApprovalGeneralRate approvalGeneralRateParam;
     private Button btnApprove;
     public Window winAdminApprovalGeneralRates;
 
@@ -73,6 +73,10 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
 
     public void clearFields() {
         txtApprovalDate.setRawValue(null);
+    }
+    
+    public ApprovalGeneralRate getApprovalGeneralRate() {
+        return approvalGeneralRateParam;
     }
 
     private void loadFields(ApprovalGeneralRate approvalGeneralRate) throws EmptyListException, GeneralException, NullParameterException {
@@ -128,6 +132,7 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
             approvalGeneralRate.setUserId(user);
             approvalGeneralRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalGeneralRate = productEJB.saveApprovalGeneralRate(approvalGeneralRate);
+            approvalGeneralRateParam = approvalGeneralRate;
             updateGeneralRates(approvalGeneralRate);
             
             this.showMessage("cms.common.Approve.success", false, null);
