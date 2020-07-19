@@ -48,13 +48,14 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
     private Textbox txtRequestNumber;
     private ProductEJB productEJB = null;
     private UtilsEJB utilsEJB = null;
-    private List<GeneralRate> generalRateList = null;
+    public static List<GeneralRate> generalRateList = null;
     private Toolbarbutton tbbTitle;
     private Combobox cmbCountry;
     private Textbox txtName;
     private Tab tabGeneralRates;
     private Tab tabApprovalRates;
     private static Country country = null;
+    public int indRateApprove = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -99,6 +100,10 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public List<GeneralRate> getGeneralRateList() {
+        return generalRateList;
     }
     
     public void onSelect$tabGeneralRates() {
@@ -160,16 +165,23 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
 
     public void getData(int countryId) {
         generalRateList = new ArrayList<GeneralRate>();
-        try {
-            AdminApprovalRatesController adminApprovalRates = new AdminApprovalRatesController();            
+        AdminApprovalRatesController adminApprovalRates = new AdminApprovalRatesController();
+        try {           
             request.setFirst(0);
             request.setLimit(null);
             generalRateList = productEJB.getGeneralRateByCountry(country);
-            for (GeneralRate gr: generalRateList) {
-                if (gr.getApprovalGeneralRateId() == null) {
-                    gr.setApprovalGeneralRateId(adminApprovalRates.getApprovalGeneralRate());
+            if (Sessions.getCurrent().getAttribute(WebConstants.IND_RATE_APPROVE) != null) {
+                indRateApprove = (Integer) Sessions.getCurrent().getAttribute(WebConstants.IND_RATE_APPROVE);
+            }            
+            if (indRateApprove == 1) {
+                for (GeneralRate gr: generalRateList) {
+                    if (gr.getApprovalGeneralRateId() == null) {
+                        gr.setApprovalGeneralRateId(adminApprovalRates.getApprovalGeneralRate());
+                    }
                 }
             }
+            indRateApprove = 0;
+            Sessions.getCurrent().setAttribute(WebConstants.IND_RATE_APPROVE, indRateApprove);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -296,7 +308,6 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
                 loadList(generalRateList);
                 if (!generalRateList.isEmpty()) {
                      tabApprovalRates.setDisabled(false);
-                     Sessions.getCurrent().setAttribute(WebConstants.GENERAL_RATE, generalRateList);
                 } else {
                      tabApprovalRates.setDisabled(true);
                 }

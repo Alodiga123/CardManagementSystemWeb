@@ -51,6 +51,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
     public Window winAdminApprovalProgramRate;
     private Program program;
     private List<RateByProgram> rateByProgramByProgramList = new ArrayList<RateByProgram>();
+    public int indRateApprove = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -116,7 +117,9 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
 
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
-        btnApprove.setVisible(false);
+        if (eventType != WebConstants.EVENT_ADD) {
+            btnApprove.setVisible(false);
+        }
     }
 
     public Boolean validateEmpty() {
@@ -147,6 +150,7 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
             approvalProgramRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalProgramRate = productEJB.saveApprovalProgramRate(approvalProgramRate);
             approvalProgramRateParam = approvalProgramRate;
+            btnApprove.setVisible(false);
 
             //Actualiza las tarifas del programa que se está aprobando
             updateProgramRate(approvalProgramRate);
@@ -186,8 +190,8 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
                 case WebConstants.EVENT_ADD:
                     saveApprovalRates(null);
                     break;
-                case WebConstants.EVENT_EDIT:
-                    saveApprovalRates(approvalProgramRateParam);
+                case WebConstants.EVENT_VIEW:
+                    blockFields();
                     break;
                 default:
                     break;
@@ -203,10 +207,6 @@ public class AdminApprovalProgramRateController extends GenericAbstractAdminCont
         Date today = new Timestamp(new Date().getTime());
         try {
             switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    loadFields(approvalProgramRateParam);
-                    blockFields();
-                    break;
                 case WebConstants.EVENT_VIEW:
                     loadFields(approvalProgramRateParam);
                     blockFields();
