@@ -124,7 +124,6 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(approvalProgramRate.getUserId().getComercialAgencyId().getName()));
                     item.appendChild(new Listcell(simpleDateFormat.format(approvalProgramRate.getApprovalDate())));               
-                    item.appendChild(createButtonEditModal(approvalProgramRate));
                     item.appendChild(createButtonViewModal(approvalProgramRate));
                     item.setParent(lbxRecords);
                 }
@@ -153,31 +152,6 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
         } catch (Exception ex) {
             this.showMessage("sp.error.general", true, ex);
         }
-    }
-    
-    public Listcell createButtonEditModal(final Object obg) {
-       Listcell listcellEditModal = new Listcell();
-        try {    
-            Button button = new Button();
-            button.setImage("/images/icon-edit.png");
-            button.setTooltiptext(Labels.getLabel("sp.common.actions.edit"));
-            button.setClass("open orange");
-            button.addEventListener("onClick", new EventListener() {
-                @Override
-                public void onEvent(Event arg0) throws Exception {
-                  Sessions.getCurrent().setAttribute("object", obg);  
-                  Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_EDIT);
-                  Map<String, Object> paramsPass = new HashMap<String, Object>();
-                  paramsPass.put("object", obg);
-                  final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
-                  window.doModal(); 
-                }
-            });
-            button.setParent(listcellEditModal);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return listcellEditModal;
     }
     
     public Listcell createButtonViewModal(final Object obg) {

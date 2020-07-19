@@ -67,8 +67,11 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         EventQueue que = EventQueues.lookup("updateRateByProgram", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
             public void onEvent(Event evt) {
-                getData(program.getProductTypeId().getId());
-                loadList(generalRateList);
+                if (program != null) {
+                    getData(program.getProductTypeId().getId());
+                    loadList(generalRateList);
+                    tabApprovalRates.setDisabled(false);
+                }                
             }
         });
     }
@@ -86,7 +89,14 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
-            tabApprovalRates.setDisabled(true);
+            if (program == null) {
+                tabApprovalRates.setDisabled(true);
+            } else {
+                if (cmbProgram.getSelectedItem() != null) {
+                    getData(program.getProductTypeId().getId());
+                    loadList(generalRateList);
+                }
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -318,7 +328,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showEmptyList();
+           showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         }

@@ -352,8 +352,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         }
     }
 
-    public void onChange$cmbTransaction() {
-   
+    public void onChange$cmbTransaction() {   
         Transaction transaction = (Transaction) cmbTransaction.getSelectedItem().getValue();
         lbltransactionCode.setValue(transaction.getCode());
         
