@@ -41,9 +41,9 @@
                                                     <listheader label="${c:l('cms.common.channel')}" width="60px" sort="auto"/>
                                                     <listheader label="${c:l('sp.common.code')}" width="60px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.transaction')}" width="210px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionProductType')}" width="145px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.fixedRate')}" width="80px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.percentageRate')}" width="120px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.approved')}" width="145px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -46,38 +47,40 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
     private Listbox lbxRecords;
     private Textbox txtRequestNumber;
     private ProductEJB productEJB = null;
-     private UtilsEJB utilsEJB = null;
-    private List<GeneralRate> generalRateList = null;
+    private UtilsEJB utilsEJB = null;
+    public static List<GeneralRate> generalRateList = null;
     private Toolbarbutton tbbTitle;
     private Combobox cmbCountry;
     private Textbox txtName;
+    private Tab tabGeneralRates;
     private Tab tabApprovalRates;
+    private static Country country = null;
+    public int indRateApprove = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
-        
-        //startListener();
+        startListener();
     }
 
     public void startListener() {
         EventQueue que = EventQueues.lookup("updateGeneralRate", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
-            public void onEvent(Event evt) {
-                getData();
-                loadList(generalRateList);
+            public void onEvent(Event evt) {                
+                if (country != null) {
+                    getData(country.getId());
+                    loadList(generalRateList);
+                    tabApprovalRates.setDisabled(false);
+                }
             }
         });
     }
-
 
     @Override
     public void initialize() {
         super.initialize();
         try {
-            //Evaluar Permisos
-            tabApprovalRates.setDisabled(true);
             permissionEdit = true;
             permissionAdd = true; 
             permissionRead = true;
@@ -85,12 +88,40 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
             adminPage = "adminGeneralRate.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
-            //getData();
-            loadCmbCountry(eventType);
-            //loadList(generalRateList);
+            loadCmbCountry(eventType); 
+            if (country == null) {
+                tabApprovalRates.setDisabled(true);
+            } else {
+                if (cmbCountry.getSelectedItem() != null) {
+                    getData(country.getId());
+                    loadList(generalRateList);
+                }
+            }
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public List<GeneralRate> getGeneralRateList() {
+        return generalRateList;
+    }
+    
+    public void onSelect$tabGeneralRates() {
+        try {
+            doAfterCompose(self);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public Country getCountry() {
+        return country;
+    }
+    
+    public void onChange$cmbCountry() {
+        country = (Country) cmbCountry.getSelectedItem().getValue();
+        Sessions.getCurrent().setAttribute(WebConstants.COUNTRY, country);
+        getData(country.getId());
     }
  
     public void onClick$btnDelete() {
@@ -132,12 +163,25 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         }
     }
 
-    public void getData() {
+    public void getData(int countryId) {
         generalRateList = new ArrayList<GeneralRate>();
-        try {
+        AdminApprovalRatesController adminApprovalRates = new AdminApprovalRatesController();
+        try {           
             request.setFirst(0);
             request.setLimit(null);
-            generalRateList = productEJB.getGeneralRate(request);
+            generalRateList = productEJB.getGeneralRateByCountry(country);
+            if (Sessions.getCurrent().getAttribute(WebConstants.IND_RATE_APPROVE) != null) {
+                indRateApprove = (Integer) Sessions.getCurrent().getAttribute(WebConstants.IND_RATE_APPROVE);
+            }            
+            if (indRateApprove == 1) {
+                for (GeneralRate gr: generalRateList) {
+                    if (gr.getApprovalGeneralRateId() == null) {
+                        gr.setApprovalGeneralRateId(adminApprovalRates.getApprovalGeneralRate());
+                    }
+                }
+            }
+            indRateApprove = 0;
+            Sessions.getCurrent().setAttribute(WebConstants.IND_RATE_APPROVE, indRateApprove);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -145,8 +189,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         } catch (GeneralException ex) {
             showError(ex);
         }
-    }
-    
+    }    
     
     private void showEmptyList(){
                 Listitem item = new Listitem();
@@ -168,8 +211,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
             Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
-        }
-        
+        }        
     } 
 
     public void onClick$btnClear() throws InterruptedException {
@@ -201,7 +243,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         return listcellEditModal;
     }
     
-       public void onClick$btnAddGeneralRate() throws InterruptedException {
+   public void onClick$btnAddGeneralRate() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
@@ -238,38 +280,13 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         }
         return listcellViewModal;
     }
-
-  
-    public List<GeneralRate> getFilterList(Country country) {
-           List<GeneralRate> generalRateList_ = new ArrayList<GeneralRate>();
-        try {
-            if (country != null) {
-             generalRateList_ = productEJB.getGeneralRateByCountry(country);
-                if (!generalRateList_.isEmpty()) {
-                 tabApprovalRates.setDisabled(false);
-                 Sessions.getCurrent().setAttribute(WebConstants.GENERAL_RATE, generalRateList_);
-                }else{
-                 tabApprovalRates.setDisabled(true);
-                }
-           
-            } else {
-                this.showMessage("cms.error.country.notSelected", true, null);
-                return generalRateList;
-            }
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        return generalRateList_; 
-    }
-
    
     private void loadCmbCountry(Integer evenInteger) {
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
         try {
-            countries = utilsEJB.getCountries(request1);
+            countries = utilsEJB.getCountries(request1);  
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(0));
-            //cmbCountry.setSelectedIndex(0);
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -279,19 +296,21 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }
-        
-    }
+        }        
+    }    
     
-    
-        public void onClick$btnSearch() throws InterruptedException {
+    public void onClick$btnViewRates() throws InterruptedException {
         try {
             if (cmbCountry.getSelectedIndex() == -1) {
                 this.showMessage("cms.common.countryName.error", true, null);
-                cmbCountry.setFocus(true);
-                
-            }else{
-            loadList(getFilterList((Country)cmbCountry.getSelectedItem().getValue()));
+                cmbCountry.setFocus(true);                
+            } else {
+                loadList(generalRateList);
+                if (!generalRateList.isEmpty()) {
+                     tabApprovalRates.setDisabled(false);
+                } else {
+                     tabApprovalRates.setDisabled(true);
+                }
             }
             
         } catch (Exception ex) {
@@ -306,6 +325,10 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
 
     @Override
     public void loadDataList(List<GeneralRate> list) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void getData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
