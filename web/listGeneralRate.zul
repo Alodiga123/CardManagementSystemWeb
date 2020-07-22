@@ -10,29 +10,32 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout>
-                        <div width="1200px" align="left" height="800px">
+                        <div width="1000px" align="left" height="600px">
                             <hlayout>
-                                <div width="890px">
+                                <div width="900px">
                                     <vlayout>                                      
                                         <div>
                                             <separator/> 
-                                            <vlayout>
-                                                <hlayout style="text-align:left" >
-                                                    <label value="${c:l('cms.common.country')}" width="75px" sclass="lblbold"/>
-                                                    <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true" />
-                                                    <button id="btnSearch" label="${c:l('cms.common.actions.viewRate')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.search.filter.tooltip')}"/>
-                                                <hlayout style="text-align:left" >
-                                                <button id="btnAddGeneralRate" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
-                                                </hlayout>
-                                                </hlayout>
-                                     
-                                            </vlayout>
-                                            <hlayout>
-                                     
-                                            </hlayout>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="295px"/>
+                                                        <column label="" width="295px"/>
+                                                        <column label="" align="right" width="295px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <combobox id="cmbCountry" width="280px" mold="rounded" readonly="true"/>
+                                                            <button id="btnViewRates" label="${c:l('cms.common.actions.viewRate')}" width="130px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                            <button id="btnAddGeneralRate" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
+                                                       </row>
+                                                    </rows>   
+                                                </grid>                                                                               
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.country')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.productType')}" width="150px" sort="auto"/>

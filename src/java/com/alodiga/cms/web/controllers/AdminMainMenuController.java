@@ -183,6 +183,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
     private void loadProductsManagementGroup(PermissionGroup permissionGroup) {
         Listgroup listgroup = createListGroup(permissionGroup);
         createCell(Constants.LIST_PRODUCTS_TYPE, "listProductType.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_ECONOMIC_ACTIVITY, "listEconomicActivity.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_PRODUCTS_MANAGEMENT, "listProduct.zul", permissionGroup, listgroup);         
     }
     

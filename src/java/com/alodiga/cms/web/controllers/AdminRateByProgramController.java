@@ -7,6 +7,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.RateByProgram;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -31,6 +32,8 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     private Label lblChannel;
     private Label lblTransaction;
     private Label lblRateApplicationType;
+    private Label lblTransactionCode;
+    private Label lblStatus;
     private Textbox txtFixedRate;
     private Textbox txtPercentageRate;
     private Textbox txtTotalTransactionInitialExempt;
@@ -83,16 +86,27 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             lblProgram.setValue(rateByProgram.getProgramId().getName());
             lblProductType.setValue(rateByProgram.getProgramId().getProductTypeId().getName());
             lblChannel.setValue(rateByProgram.getChannelId().getName());
+            lblTransactionCode.setValue(rateByProgram.getTransactionId().getCode());
+            if (rateByProgram.getApprovalProgramRateId() != null) {
+                lblStatus.setValue(Labels.getLabel("cms.common.approved"));
+            }else{
+                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+            }   
             lblTransaction.setValue(rateByProgram.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProgram.getRateApplicationTypeId().getDescription());
-            txtFixedRate.setText(rateByProgram.getFixedRate().toString());
-            fixedRate = rateByProgram.getFixedRateGR();
-            txtPercentageRate.setText(rateByProgram.getPercentageRate().toString());
-            percentageRate = rateByProgram.getPercentageRateGR();
             txtTotalTransactionInitialExempt.setText(rateByProgram.getTotalInitialTransactionsExempt().toString());
             totalTransactionInitialExempt = rateByProgram.getTotalInitialTransactionsExemptGR();
             txtTotalTransactionExemptPerMonth.setText(rateByProgram.getTotalTransactionsExemptPerMonth().toString());
             totalTransactionExemptPerMonth = rateByProgram.getTotalTransactionsExemptPerMonthGR();
+            if (rateByProgram.getFixedRate() != null) {
+                txtFixedRate.setText(rateByProgram.getFixedRate().toString());
+                fixedRate = rateByProgram.getFixedRateGR();
+                txtPercentageRate.setDisabled(true);
+            } else {
+                txtPercentageRate.setText(rateByProgram.getPercentageRate().toString());
+                percentageRate = rateByProgram.getPercentageRateGR();
+                txtFixedRate.setDisabled(true);
+            }                   
             if (rateByProgram.getIndCardHolderModification() == true) {
                 rModificationCardHolderYes.setChecked(true);
             } else {
@@ -106,50 +120,6 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
 
     public void blockFields() {
         btnSave.setVisible(false);
-    }
-    
-    public void onChange$txtFixedRate() {
-        this.clearMessage();
-        if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
-            this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
-            btnSave.setDisabled(true);
-        } else {
-            this.clearMessage();
-            btnSave.setDisabled(false);
-        }
-    }
-    
-    public void onChange$txtPercentageRate() {
-        this.clearMessage();
-        if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
-            this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
-            btnSave.setDisabled(true);
-        } else {
-            this.clearMessage();
-            btnSave.setDisabled(false);
-        }
-    }
-    
-    public void onChange$txtTotalTransactionInitialExempt() {
-        this.clearMessage();
-        if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
-            this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
-            btnSave.setDisabled(true);
-        } else {
-            this.clearMessage();
-            btnSave.setDisabled(false);
-        }
-    }
-    
-    public void onChange$txtTotalTransactionExemptPerMonth() {
-        this.clearMessage();
-        if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
-            this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
-            btnSave.setDisabled(true);
-        } else {
-            this.clearMessage();
-            btnSave.setDisabled(false);
-        }
     }
 
     private void saveRateByProgram(RateByProgram _rateByProgram) {
@@ -173,10 +143,19 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             rateByProgram.setProgramId(rateByProgram.getProgramId());
             rateByProgram.setChannelId(rateByProgram.getChannelId());
             rateByProgram.setTransactionId(rateByProgram.getTransactionId());
-            rateByProgram.setFixedRate(Float.parseFloat(txtFixedRate.getText()));
-            rateByProgram.setPercentageRate(Float.parseFloat(txtPercentageRate.getText()));
-            rateByProgram.setTotalInitialTransactionsExempt(Integer.parseInt(txtTotalTransactionInitialExempt.getText()));
-            rateByProgram.setTotalTransactionsExemptPerMonth(Integer.parseInt(txtTotalTransactionExemptPerMonth.getText()));
+            if (!txtFixedRate.getText().equalsIgnoreCase("")) {
+             rateByProgram.setFixedRate(Float.parseFloat(txtFixedRate.getText()));
+            }
+            if (!txtPercentageRate.getText().equalsIgnoreCase("")) {
+                rateByProgram.setPercentageRate(Float.parseFloat(txtPercentageRate.getText()));
+            }   
+            if (!txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")) {
+                rateByProgram.setTotalInitialTransactionsExempt(Integer.parseInt(txtTotalTransactionInitialExempt.getText()));
+            }
+            if (!txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")) {
+                rateByProgram.setTotalTransactionsExemptPerMonth(Integer.parseInt(txtTotalTransactionExemptPerMonth.getText()));
+            }
+            
             rateByProgram.setRateApplicationTypeId(rateByProgram.getRateApplicationTypeId());
             rateByProgram.setIndCardHolderModification(indModificationCardHolder);
             rateByProgram = productEJB.saveRateByProgram(rateByProgram);
@@ -190,6 +169,8 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
     }
 
     public void onClick$btnSave() {
+       this.clearMessage();
+       if (validateEmpty() && validateRateByProgram()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveRateByProgram(null);
@@ -199,7 +180,8 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
                 break;
             default:
                 break;
-        }
+        } 
+      }
     }
     
     public void onclick$btnBack() {
@@ -219,6 +201,85 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             default:
                 break;
         }
+    }
+    
+    public Boolean validateEmpty() {
+        if (txtFixedRate.isDisabled() == false) {
+            if (txtFixedRate.getText().equalsIgnoreCase("") ) {
+               txtFixedRate.setFocus(true);
+               this.showMessage("cms.common.fixedRate.error2", true, null);
+               return false;
+        }
+            if (Float.parseFloat(txtFixedRate.getText())<=0 ) {
+               txtFixedRate.setFocus(true);
+               this.showMessage("sp.error.invalid.amount", true, null);
+               return false;
+            }
+        }
+        
+        if (txtPercentageRate.isDisabled() == false) {
+            if (txtPercentageRate.getText().equalsIgnoreCase("") ) {
+               txtPercentageRate.setFocus(true);
+               this.showMessage("cms.common.percentageRate.error", true, null); 
+               return false;
+            }
+            if (Float.parseFloat(txtPercentageRate.getText())<=0 ) {
+               txtPercentageRate.setFocus(true);
+               this.showMessage("sp.error.invalid.amount", true, null);
+               return false;
+            }
+        }
+        
+        if (txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionInitialExempt.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+           return false;
+        }
+        if (txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionExemptPerMonth.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+           return false;
+        }
+        
+        if(!(rModificationCardHolderYes.isChecked() || rModificationCardHolderNo.isChecked())){
+            this.showMessage("cms.common.indModificationCardHolder.error", true, null);
+            rModificationCardHolderYes.setFocus(true);
+            return false;
+        }
+   
+        return true;
+    }
+    
+    public boolean validateRateByProgram() {
+        if (txtPercentageRate.isDisabled() == false) {
+            if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
+                this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
+                txtPercentageRate.setFocus(true);
+                return false;
+            }
+        }              
+        if (txtFixedRate.isDisabled() == false) {
+            if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
+                this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
+                txtFixedRate.setFocus(true);
+                return false;
+            }
+        }       
+        if(!txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")){
+            if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
+                this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
+                txtTotalTransactionInitialExempt.setFocus(true);
+                return false;
+            } 
+        }        
+        if(!txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")){
+            if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
+                this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
+                txtTotalTransactionExemptPerMonth.setFocus(true);
+                return false;
+            }
+        }
+        return true;
     }
     
 }

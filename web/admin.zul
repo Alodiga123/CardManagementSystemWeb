@@ -36,11 +36,20 @@
                 <div align="center">
                     <hlayout>
                         <div></div>
-                        <div width="1200px" height="600px" align="left">
+                        <div width="1200px" height="600px" align="center">
                             <hlayout>
-                                <div  width="235px" align="right">
+                                <div width="1200px" align="center">
                                     <vlayout>
-                                        <image id="imgLogo" src="/images/logo_header.png" />
+                                        <separator/>
+                                         <separator/>
+                                          <separator/>
+                                           <separator/>
+                                            <separator/>
+                                             <separator/>
+                                             <separator/>
+                                             <separator/>
+                                              <separator/>
+                                        <image id="imgLogo" align="center" src="/images/Logo_Empresa_Argelia.png" width="150px" height="150px"/>
                                         <groupbox id="gbxLogin" mold="3d" width="230px" class="borderedFrame">
                                             <caption label="${c:l('cms.common.loginTitle')}" />
                                             <hlayout >

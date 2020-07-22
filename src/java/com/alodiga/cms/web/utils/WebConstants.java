@@ -17,9 +17,12 @@ public class WebConstants {
     public static final String OPTION_MENU = "optionMenu";
     public static final String OPTION_LIST = "optionList";
     public static final String PROGRAM = "program";
+    public static final String COUNTRY = "country";
     public static final String PRODUCT = "product";
     public static final String ISSUER = "issuer";
     public static final String CARD = "card";
+    public static final String IND_RATE_APPROVE = "indRateApprove";
+    public static final String IND_RATE_PROGRAM_APPROVE = "indRateProgramApprove";
     public static final String PRODUCT_TYPE = "productType";
     public static final String IND_OWNER_PROGRAM = "indOwnerProgram";
     public static final String IND_OWNER_PROGRAM_SELECT = "indOwnerProgramSelect";

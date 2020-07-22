@@ -29,6 +29,7 @@ import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Textbox;
 
@@ -60,6 +61,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     private Label lblApproved;
     private Label lblAprovedTitle;
     public Tabbox tb;
+    private Tab tabApprovalRates;
     public Window winAdminGeneralRate;
 
     @Override
@@ -106,7 +108,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
                 txtPercentageRate.setDisabled(true);
             } else {
                 txtPercentageRate.setValue(generalRate.getPercentageRate());
-                rFixedRateYes.setChecked(false);
+                rFixedRateNo.setChecked(true);
                 txtFixedRate.setDisabled(true);
             }
             txtTotalTransactionInitialExempt.setValue(generalRate.getTotalInitialTransactionsExempt());
@@ -168,23 +170,27 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             return false;
         }
         
-         if(cmbProductType.getSelectedIndex() == -1){
-        this.showMessage("cms.common.descriptionProductType.error", true, null);
-        cmbProductType.setFocus(true);
-        return false;
+        if(cmbProductType.getSelectedIndex() == -1){
+            this.showMessage("cms.common.descriptionProductType.error", true, null);
+            cmbProductType.setFocus(true);
+            return false;
         }
         
-         if(cmbChannel.getSelectedIndex() == -1){
-        this.showMessage("cms.common.channel.error", true, null);
-        cmbChannel.setFocus(true);
-        return false;
+        if(cmbChannel.getSelectedIndex() == -1){
+            this.showMessage("cms.common.channel.error", true, null);
+            cmbChannel.setFocus(true);
+            return false;
         }
         
         if(cmbTransaction.getSelectedIndex() == -1){
-        this.showMessage("cms.common.transaction.error", true, null);
-        cmbTransaction.setFocus(true);
-        return false;
+            this.showMessage("cms.common.transaction.error", true, null);
+            cmbTransaction.setFocus(true);
+            return false;
         }
+        
+        if ((!rFixedRateYes.isChecked()) && (!rFixedRateNo.isChecked())) {
+            this.showMessage("cms.error.fixedRateNotSelected", true, null);
+        }    
         
          if (rFixedRateYes.isChecked() || rFixedRateNo.isChecked()) {
              if (rFixedRateYes.isChecked()) {
@@ -201,7 +207,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
                  txtPercentageRate.setFocus(true);
                  return false;
                  }
-             }
+            }
   
         }else{
            this.showMessage("cms.common.fixedRate.error", true, null);
@@ -227,9 +233,9 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
        
 
         if(!(rModificationCardHolderYes.isChecked() || rModificationCardHolderNo.isChecked())){
-        this.showMessage("cms.common.indModificationCardHolder.error", true, null);
-        rModificationCardHolderYes.setFocus(true);
-        return false;
+            this.showMessage("cms.common.indModificationCardHolder.error", true, null);
+            rModificationCardHolderYes.setFocus(true);
+            return false;
         }
    
         return true;
@@ -264,14 +270,14 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             if (rFixedRateYes.isChecked()) {
                 if(txtFixedRate.getValue()!=null){
                     generalRate.setFixedRate(txtFixedRate.getValue().floatValue());
-                    if(txtPercentageRate.getValue()== 0){
+                    if(txtPercentageRate.getValue() == null){
                         generalRate.setPercentageRate(null);
                     }
                 }
             } else if (rFixedRateNo.isChecked()) {
                 if(txtPercentageRate.getValue()!=null){
                     generalRate.setPercentageRate(txtPercentageRate.getValue().floatValue());
-                    if(txtFixedRate.getValue()== 0){
+                    if(txtFixedRate.getValue() == null){
                         generalRate.setFixedRate(null);
                     }
                 }
@@ -282,13 +288,13 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             generalRate.setIndCardHolderModification(indModificationCardHolder);
             
             if (!validateGeneralRate(generalRate) && eventType.equals(WebConstants.EVENT_ADD)) {
-            this.showMessage("cms.common.programLoyaltyTransactionExist", true, null);
+                this.showMessage("cms.common.generalRateTransactionExist", true, null);
             }else{
-            generalRate = productEJB.saveGeneralRate(generalRate);
-            generalRateParam = generalRate;
-            this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateGeneralRate", EventQueues.APPLICATION, true).publish(new Event(""));
-            btnSave.setVisible(false);
+                generalRate = productEJB.saveGeneralRate(generalRate);
+                generalRateParam = generalRate;
+                this.showMessage("sp.common.save.success", false, null);
+                EventQueues.lookup("updateGeneralRate", EventQueues.APPLICATION, true).publish(new Event(""));
+                btnSave.setVisible(false);
             }
         } catch (Exception ex) {
             showError(ex);
@@ -346,8 +352,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
         }
     }
 
-    public void onChange$cmbTransaction() {
-   
+    public void onChange$cmbTransaction() {   
         Transaction transaction = (Transaction) cmbTransaction.getSelectedItem().getValue();
         lbltransactionCode.setValue(transaction.getCode());
         

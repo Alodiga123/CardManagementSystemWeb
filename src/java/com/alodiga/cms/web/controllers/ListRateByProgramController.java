@@ -54,6 +54,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
     public static Program program = null;
     private ProductType productType = null;
     private Tab tabApprovalRates;
+    private Tab tabRatesByProgram;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -66,8 +67,11 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         EventQueue que = EventQueues.lookup("updateRateByProgram", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
             public void onEvent(Event evt) {
-                getData(program.getProductTypeId().getId());
-                loadList(generalRateList);
+                if (program != null) {
+                    getData(program.getProductTypeId().getId());
+                    loadList(generalRateList);
+                    tabApprovalRates.setDisabled(false);
+                }                
             }
         });
     }
@@ -85,7 +89,22 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
-            tabApprovalRates.setDisabled(true);
+            if (program == null) {
+                tabApprovalRates.setDisabled(true);
+            } else {
+                if (cmbProgram.getSelectedItem() != null) {
+                    getData(program.getProductTypeId().getId());
+                    loadList(generalRateList);
+                }
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onSelect$tabRatesByProgram() {
+        try {
+            doAfterCompose(self);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -121,6 +140,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         String rbp;
         String gr;
         int indExist = 0;
+        AdminApprovalProgramRateController adminApprovalProgramRate = new AdminApprovalProgramRateController();
         try {
             params.put(QueryConstants.PARAM_PROGRAM_ID, program.getId());
             request1.setParams(params);
@@ -128,6 +148,9 @@ public class ListRateByProgramController extends GenericAbstractListController<R
             if (rateByProgramByProgramList != null) {
                 indLoadList = 1;
                 for (RateByProgram r : rateByProgramByProgramList) {
+                    if (r.getApprovalProgramRateId() == null) {
+                        r.setApprovalProgramRateId(adminApprovalProgramRate.getApprovalProgramRate());
+                    }
                     rateByProgramList.add(r);
                 }    
                 if (list != null && !list.isEmpty()) {
@@ -142,16 +165,24 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         if (indExist != 1) {
                             rateByProgram = new RateByProgram();
                             rateByProgram.setChannelId(g.getChannelId());
-                            rateByProgram.setFixedRate(g.getFixedRate());
-                            rateByProgram.setPercentageRate(g.getPercentageRate());
+                            if (g.getFixedRate() != null) {
+                                rateByProgram.setFixedRate(g.getFixedRate());
+                            }
+                            if (g.getPercentageRate() != null) {
+                                rateByProgram.setPercentageRate(g.getPercentageRate());
+                            }                            
                             rateByProgram.setIndCardHolderModification(g.getIndCardHolderModification());
                             rateByProgram.setProgramId(program);
                             rateByProgram.setRateApplicationTypeId(g.getRateApplicationTypeId());
                             rateByProgram.setTotalInitialTransactionsExempt(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonth(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setTransactionId(g.getTransactionId());
-                            rateByProgram.setFixedRateGR(g.getFixedRate());
-                            rateByProgram.setPercentageRateGR(g.getPercentageRate());
+                            if (g.getFixedRate() != null) {
+                                rateByProgram.setFixedRateGR(g.getFixedRate());
+                            }
+                            if (g.getPercentageRate() != null) {
+                                rateByProgram.setPercentageRateGR(g.getPercentageRate());
+                            }
                             rateByProgram.setTotalInitialTransactionsExemptGR(g.getTotalInitialTransactionsExempt());
                             rateByProgram.setTotalTransactionsExemptPerMonthGR(g.getTotalTransactionsExemptPerMonth());
                             rateByProgram.setCreateDate(new Timestamp(new Date().getTime()));
@@ -171,9 +202,28 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         item.setValue(r);
                         item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                         item.appendChild(new Listcell(r.getChannelId().getName()));
+                        if(r.getTransactionId().getCode() != null){
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }
+                        
                         item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                        item.appendChild(new Listcell(r.getFixedRate().toString()));
-                        item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        if (r.getFixedRate() != null) {
+                            item.appendChild(new Listcell(r.getFixedRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }
+                        if (r.getPercentageRate() != null) {
+                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }  
+                        if(r.getApprovalProgramRateId() != null){
+                            item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                        } else {
+                            item.appendChild(new Listcell("No"));
+                        }
                         item.appendChild(createButtonEditModal(r));
                         item.appendChild(createButtonViewModal(r));
                         item.setParent(lbxRecords);
@@ -182,6 +232,8 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                     btnDownload.setVisible(false);
                     item = new Listitem();
                     item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                    item.appendChild(new Listcell());
+                    item.appendChild(new Listcell());
                     item.appendChild(new Listcell());
                     item.appendChild(new Listcell());
                     item.appendChild(new Listcell());
@@ -206,8 +258,12 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         for (GeneralRate g : list) {
                             rateByProgram = new RateByProgram();
                             rateByProgram.setChannelId(g.getChannelId());
-                            rateByProgram.setFixedRate(g.getFixedRate());
-                            rateByProgram.setPercentageRate(g.getPercentageRate());
+                            if (g.getFixedRate() != null) {
+                                rateByProgram.setFixedRate(g.getFixedRate());
+                            }
+                            if (g.getPercentageRate() != null) {
+                                rateByProgram.setPercentageRate(g.getPercentageRate());
+                            } 
                             rateByProgram.setIndCardHolderModification(g.getIndCardHolderModification());
                             rateByProgram.setProgramId(program);
                             rateByProgram.setRateApplicationTypeId(g.getRateApplicationTypeId());
@@ -227,9 +283,15 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             item.setValue(r);
                             item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
-                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));                            
                             item.appendChild(new Listcell(r.getFixedRate().toString()));
                             item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            if(r.getApprovalProgramRateId() != null){
+                                item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                            } else {
+                                item.appendChild(new Listcell("No"));
+                            }
                             item.appendChild(createButtonEditModal(r));
                             item.appendChild(createButtonViewModal(r));
                             item.setParent(lbxRecords);
@@ -238,6 +300,8 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                         btnDownload.setVisible(false);
                         item = new Listitem();
                         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                        item.appendChild(new Listcell());
+                        item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
                         item.appendChild(new Listcell());
@@ -264,7 +328,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-           showEmptyList();
+           showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         }
@@ -273,6 +337,8 @@ public class ListRateByProgramController extends GenericAbstractListController<R
     private void showEmptyList(){
                 Listitem item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());

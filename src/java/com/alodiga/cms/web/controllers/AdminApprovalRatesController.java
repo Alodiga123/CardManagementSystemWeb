@@ -40,8 +40,9 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
     private Datebox txtApprovalDate;
     private ProductEJB productEJB = null;
     private User user = null;
-    private ApprovalGeneralRate approvalGeneralRateParam;
-    private Button btnSave;
+    public static ApprovalGeneralRate approvalGeneralRateParam;
+    public int indRateApprove = 0;
+    private Button btnApprove;
     public Window winAdminApprovalGeneralRates;
 
     @Override
@@ -74,6 +75,10 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
     public void clearFields() {
         txtApprovalDate.setRawValue(null);
     }
+    
+    public ApprovalGeneralRate getApprovalGeneralRate() {
+        return approvalGeneralRateParam;
+    }
 
     private void loadFields(ApprovalGeneralRate approvalGeneralRate) throws EmptyListException, GeneralException, NullParameterException {
         try {
@@ -86,7 +91,7 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
                 txtApprovalDate.setValue(approvalGeneralRate.getApprovalDate());
             }
 
-            btnSave.setVisible(true);
+            btnApprove.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -99,7 +104,10 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
 
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
-        btnSave.setVisible(false);
+        btnApprove.setVisible(false);
+        if (eventType != WebConstants.EVENT_ADD) {
+            btnApprove.setVisible(false);
+        }
     }
 
     public Boolean validateEmpty() {
@@ -128,16 +136,14 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
             approvalGeneralRate.setUserId(user);
             approvalGeneralRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalGeneralRate = productEJB.saveApprovalGeneralRate(approvalGeneralRate);
+            approvalGeneralRateParam = approvalGeneralRate;
+            btnApprove.setVisible(false);
+            indRateApprove = 1;
+            Sessions.getCurrent().setAttribute(WebConstants.IND_RATE_APPROVE, indRateApprove);
             updateGeneralRates(approvalGeneralRate);
             
-            this.showMessage("sp.common.save.success", false, null);
+            this.showMessage("cms.common.Approve.success", false, null);
             EventQueues.lookup("updateApprovalGeneralRate", EventQueues.APPLICATION, true).publish(new Event(""));
-            
-            if (eventType == WebConstants.EVENT_ADD) {
-                btnSave.setVisible(false);
-            } else {
-                btnSave.setVisible(true);
-            }
         } catch (Exception ex) {
             this.showMessage("sp.error.title", false, null);
             showError(ex);
@@ -145,25 +151,23 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
     }
 
     public void updateGeneralRates(ApprovalGeneralRate approvalGeneralRate) throws RegisterNotFoundException, NullParameterException, GeneralException {
-    
-        List<GeneralRate> generalRateList= (List<GeneralRate>) Sessions.getCurrent().getAttribute(WebConstants.GENERAL_RATE);
-        
+        ListGeneralRateController listGeneralRate = new ListGeneralRateController();
+        List<GeneralRate> generalRateList = listGeneralRate.getGeneralRateList();            
         for (GeneralRate generalRate : generalRateList) {
-                generalRate.setApprovalGeneralRateId(approvalGeneralRate);
-                productEJB.saveGeneralRate(generalRate);
-        }
-        
+            generalRate.setApprovalGeneralRateId(approvalGeneralRate);
+            productEJB.saveGeneralRate(generalRate);
+        }     
     }
     
     
-    public void onClick$btnSave() {
+    public void onClick$btnApprove() {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveApprovalRates(null);
                     break;
-                case WebConstants.EVENT_EDIT:
-                    saveApprovalRates(approvalGeneralRateParam);
+                case WebConstants.EVENT_VIEW:
+                    blockFields();
                     break;
                 default:
                     break;
@@ -179,9 +183,6 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
         Date today = new Timestamp(new Date().getTime());
         try {
             switch (eventType) {
-                case WebConstants.EVENT_EDIT:
-                    loadFields(approvalGeneralRateParam);
-                    break;
                 case WebConstants.EVENT_VIEW:
                     loadFields(approvalGeneralRateParam);
                     blockFields();
@@ -189,6 +190,11 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
                 case WebConstants.EVENT_ADD:
                     txtApprovalDate.setValue(today);
                     txtApprovalDate.setDisabled(true);
+                    txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
+                    txtAgency.setValue(user.getComercialAgencyId().getName());
+                    txtCommercialAssessorUserCode.setValue(user.getCode());
+                    txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
+                    txtIdentification.setValue(user.getIdentificationNumber());
                     break;
             }
         } catch (EmptyListException ex) {
