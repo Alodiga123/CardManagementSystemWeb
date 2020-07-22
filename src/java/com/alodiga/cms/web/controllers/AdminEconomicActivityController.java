@@ -8,7 +8,7 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
-import com.cms.commons.models.State; 
+import com.cms.commons.models.EconomicActivity;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.util.List;
@@ -22,14 +22,14 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 
-public class AdminStateController extends GenericAbstractAdminController {
+public class AdminEconomicActivityController extends GenericAbstractAdminController {
 
             
     private static final long serialVersionUID = -9145887024839938515L;
-    private Textbox txtName;
+    private Textbox txtCode, txtDescription;
     private UtilsEJB utilsEJB = null;
-    private Combobox cmbCountry;
-    private State stateParam;
+    private Combobox cmbContryId;
+    private EconomicActivity economicActivityParam;
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
@@ -40,9 +40,9 @@ public class AdminStateController extends GenericAbstractAdminController {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute( WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-           stateParam = null;                    
+           economicActivityParam = null;                    
        } else {
-           stateParam = (State) Sessions.getCurrent().getAttribute("object");            
+           economicActivityParam = (EconomicActivity) Sessions.getCurrent().getAttribute("object");            
        }
         initialize();
     }
@@ -52,13 +52,13 @@ public class AdminStateController extends GenericAbstractAdminController {
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.state.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.economicActivity.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.state.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.economicActivity.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.state.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.economicActivity.add"));
                 break;    
             default:
                 break;
@@ -72,28 +72,35 @@ public class AdminStateController extends GenericAbstractAdminController {
     }   
 
     public void clearFields() {
-        txtName.setRawValue(null);;
+        txtCode.setRawValue(null);
+        txtDescription.setRawValue(null);
+        
 
     }
 
-    private void loadFields(State state) {
+    private void loadFields(EconomicActivity economicActivity) {
         try {
-            txtName.setText(state.getName());
+            txtCode.setText(economicActivity.getCode());
+            txtDescription.setText(economicActivity.getDescription());
+            btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtName.setReadonly(true);
+        txtCode.setReadonly(true);
+        txtDescription.setReadonly(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
-        if (txtName.getText().isEmpty()) {
-            txtName.setFocus(true);
+        if (txtCode.getText().isEmpty()) {
+            txtCode.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        
+        } else if (txtDescription.getText().isEmpty()){
+            txtDescription.setFocus(true);
+            this.showMessage("sp.error.field.cannotNull", true, null);        
         } else {
             return true;
         }
@@ -102,19 +109,21 @@ public class AdminStateController extends GenericAbstractAdminController {
     }
 
 
-    private void saveState(State _state) {
+    private void saveEconomicActivity(EconomicActivity _economicActivity) {
         try {
-            State state = null;
+            EconomicActivity economicActivity = null;
 
-            if (_state != null) {
+            if (_economicActivity != null) {
 
-           state = _state;
-            } else {//New country
-                state = new State();
+           economicActivity = _economicActivity;
+            } else {
+                economicActivity = new EconomicActivity();
             }
-            state.setName(txtName.getText());
-            state.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            state = utilsEJB.saveState(state);
+            economicActivity.setCode(txtCode.getText());
+            economicActivity.setDescription(txtDescription.getText());
+            economicActivity.setCountryId((Country) cmbContryId.getSelectedItem().getValue());
+            economicActivity = utilsEJB.saveEconomicActivity(economicActivity);
+            economicActivityParam = economicActivity;
             this.showMessage("sp.common.save.success", false, null);
             
             if (eventType == WebConstants.EVENT_ADD) {
@@ -122,6 +131,7 @@ public class AdminStateController extends GenericAbstractAdminController {
             } else {
                 btnSave.setVisible(true);
             }
+            
         } catch (Exception ex) {
            showError(ex);
         }
@@ -132,10 +142,10 @@ public class AdminStateController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveState(null);
+                    saveEconomicActivity(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveState(stateParam);
+                    saveEconomicActivity(economicActivityParam);
                     break;
                 default:
                     break;
@@ -146,47 +156,29 @@ public class AdminStateController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                loadFields(stateParam);
-                loadcmbCountry(eventType);
+                loadFields(economicActivityParam);
+                loadCmbContryId(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFields(stateParam);
-                txtName.setReadonly(true);
+                loadFields(economicActivityParam);
                 blockFields();
-                loadcmbCountry(eventType);
+                loadCmbContryId(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                loadcmbCountry(eventType);
+                loadCmbContryId(eventType);
                 break;
             default:
                 break;
         }
     }
     
-    private void loadcmbCountry(Integer evenInteger) {
-        
+    private void loadCmbContryId(Integer evenInteger) {
+        //cmbContryId 
         EJBRequest request1 = new EJBRequest();
         List<Country> countries;
- 
         try {
             countries = utilsEJB.getCountries(request1);
-            cmbCountry.getItems().clear();
-            for (Country c : countries) {
- 
-                Comboitem item = new Comboitem();
-                item.setValue(c);
-                item.setLabel(c.getName());
-                item.setDescription(c.getName());
-                item.setParent(cmbCountry);
-                if (stateParam != null && c.getId().equals(stateParam.getCountryId().getId())) {
-                    cmbCountry.setSelectedItem(item);
-                }
-            }
-            if (evenInteger.equals(WebConstants.EVENT_VIEW)) {
-                cmbCountry.setDisabled(true);
-            }
-            
-            
+            loadGenericCombobox(countries, cmbContryId, "name", evenInteger, Long.valueOf(economicActivityParam != null ? economicActivityParam.getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -197,7 +189,7 @@ public class AdminStateController extends GenericAbstractAdminController {
             showError(ex);
             ex.printStackTrace();
         }
- 
     }
+
 
 }
