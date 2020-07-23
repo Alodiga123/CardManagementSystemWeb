@@ -190,8 +190,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             ex.printStackTrace();
         }
         return listcellViewModal;
-    }
-    
+    }    
    
     public void getData() {
         legalRepresentatives = new ArrayList<LegalPersonHasLegalRepresentatives>();
@@ -211,15 +210,13 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             Map params = new HashMap();
             params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, legalPerson.getId());
             request1.setParams(params);
-            legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);
-            
-            if (eventType == WebConstants.EVENT_EDIT) {
-                EJBRequest request2 = new EJBRequest();
-                for (LegalPersonHasLegalRepresentatives lpr : legalRepresentatives) {
-                    request2.setParam(lpr.getLegalRepresentativesid().getId());
-                    legalRepresentative = utilsEJB.loadLegalRepresentatives(request2);
-                    lpr.setLegalRepresentativesid(legalRepresentative);
-                }
+            legalRepresentatives = personEJB.getLegalRepresentativesesBylegalPerson(request1);            
+
+            EJBRequest request2 = new EJBRequest();
+            for (LegalPersonHasLegalRepresentatives lpr : legalRepresentatives) {
+                request2.setParam(lpr.getLegalRepresentativesid().getId());
+                legalRepresentative = utilsEJB.loadLegalRepresentatives(request2);
+                lpr.setLegalRepresentativesid(legalRepresentative);
             }
         } catch (NullParameterException ex) {
             showError(ex);

@@ -37,13 +37,13 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="885px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identificationsTypes')}" width="190px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="170px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="165px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.expirationDate')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.birthday')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.birthday')}" width="130px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

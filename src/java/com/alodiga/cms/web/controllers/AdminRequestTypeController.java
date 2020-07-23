@@ -20,13 +20,13 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     private UtilsEJB utilsEJB = null;
     private RequestType requestTypeParam;
     private Button btnSave;
-    private Integer event;
+    private Integer eventType;
     private Toolbarbutton tbbTitle;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        event = (Integer) Sessions.getCurrent().getAttribute("eventType");
+        eventType = (Integer) Sessions.getCurrent().getAttribute("eventType");
         if (eventType == WebConstants.EVENT_ADD) {
             requestTypeParam = null;
         } else {
@@ -38,7 +38,7 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     @Override
     public void initialize() {
         super.initialize();
-        switch (event) {
+        switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.edit"));
                 break;
@@ -105,6 +105,9 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
             requestType.setDescription(txtDescription.getText());
             requestType = utilsEJB.saveRequestType(requestType);
             requestTypeParam = requestType;
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            }
             this.showMessage("sp.common.save.success", false, null);
         } catch (Exception ex) {
             showError(ex);
@@ -112,8 +115,9 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() {
+        this.clearMessage();
         if (validateEmpty()) {
-            switch (event) {
+            switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveRequestType(null);
                 break;
@@ -125,7 +129,7 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
     }
 
     public void loadData() {
-        switch (event) {
+        switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(requestTypeParam);
                 break;

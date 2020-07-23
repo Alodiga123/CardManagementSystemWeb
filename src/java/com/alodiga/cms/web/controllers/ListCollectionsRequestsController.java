@@ -160,35 +160,12 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     public List<CollectionsRequest> getFilterList(String name) {
         List<CollectionsRequest> collectionRequestList = new ArrayList<CollectionsRequest>();
         try {
-            if (name != null && !name.equals("")) {
-                collectionRequestList = requestEJB.getSearchCollectionsRequest(name);
-            } else {
-                return collectionRequestList;
-            }
+            collectionRequestList = requestEJB.getSearchCollectionsRequest(name);
         } catch (Exception ex) {
             showError(ex);
         }
         return collectionRequestList;
     }
-
-//    @Override
-//    public List<CollectionsRequest> getFilterList(String filter) {
-//        List<CollectionsRequest> collectionsRequestaux = new ArrayList<CollectionsRequest>();
-//        CollectionsRequest collectionsRequests;
-//        try {
-//            if (filter != null && !filter.equals("")) {
-//                collectionsRequests = requestEJB.searchCollectionsRequest(filter);
-//                collectionsRequestaux.add(collectionsRequests);
-//            } else {
-//                return collectionsRequest;
-//            }
-//        } catch (RegisterNotFoundException ex) {
-//            Logger.getLogger(ListCollectionsRequestsController.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//        return collectionsRequestaux;
-//    }
 
     public void loadList(List<CollectionsRequest> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

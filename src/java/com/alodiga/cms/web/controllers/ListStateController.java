@@ -79,7 +79,7 @@ public class ListStateController extends GenericAbstractListController<State> {
                 for (State state : list) {
                     item = new Listitem();
                     item.setValue(state);
-                    item.appendChild(new Listcell(state.getName().toString()));
+                    item.appendChild(new Listcell(state.getName()));
                     item.appendChild(new Listcell(state.getCountryId().getName()));               
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, state) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, state) : new Listcell());
