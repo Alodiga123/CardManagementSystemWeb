@@ -77,6 +77,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
     public AdminOwnerLegalPersonController adminOwnerLegalPerson = null;
     private List<PhonePerson> phonePersonList = null;
     private List<LegalRepresentatives> legalRepresentativeList = null;
+    private Long optionMenu = 0L;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -93,18 +94,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             case WebConstants.EVENT_ADD:
                 legalRepresentativesParam = null;
                 break;
-        }
-        if (eventType != WebConstants.EVENT_ADD) {                
-            if (legalRepresentativesParam.getPersonId().getPhonePerson() == null) {
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY, legalRepresentativesParam.getPersonId().getId());
-                request1.setParams(params);
-                phonePersonList = personEJB.getPhoneByPerson(request1);
-                for (PhonePerson phone : phonePersonList) {
-                    legalRepresentativesParam.getPersonId().setPhonePerson(phone);
-                }
-            }
         }
         initialize();
     }
@@ -176,6 +165,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 for (PhonePerson p : phonePersonList) {
                     if (p.getPhoneTypeId().getId() != null) {
                         txtPhoneNumber.setText(p.getNumberPhone());
+                        legalRepresentativesParam.getPersonId().setPhonePerson(p);
                     }
                 }
             }
@@ -199,7 +189,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         cmbCountry.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
         cmbPhoneType.setDisabled(true);
-
         btnSave.setVisible(false);
     }
 
@@ -301,7 +290,10 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 indGender = "M";
             }
 
-            adminLegalPerson = new AdminLegalPersonController();
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
+                adminLegalPerson = new AdminLegalPersonController();
+            }
+            
             adminLegalCustomerPerson = new AdminLegalPersonCustomerController();
             adminOwnerLegalPerson = new AdminOwnerLegalPersonController();
 
@@ -417,6 +409,9 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
+                if (adminRequest.getRequest().getPersonId() != null) {
+                    
+                }
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);

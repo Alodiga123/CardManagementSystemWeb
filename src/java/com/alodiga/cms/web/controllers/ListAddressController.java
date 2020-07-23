@@ -35,6 +35,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Window;
 
 public class ListAddressController extends GenericAbstractListController<PersonHasAddress> {
@@ -48,6 +49,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private Integer eventType;
     private AdminRequestController adminRequest = null;
     private Long optionMenu;
+    private Tab tabAddress;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -83,6 +85,14 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
             loadDataList(personHasAddress);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onSelect$tabAddress() {
+        try {
+            doAfterCompose(self);
         } catch (Exception ex) {
             showError(ex);
         }

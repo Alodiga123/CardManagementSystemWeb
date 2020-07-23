@@ -57,6 +57,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
     private Product product = null;
     private Tab tabApprovalRates;
     public static Program program = null;
+    private Tab tabRatesByProduct;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -91,6 +92,14 @@ public class ListRateByProductController extends GenericAbstractListController<R
             eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
             loadCmbProgram(WebConstants.EVENT_ADD);
             tabApprovalRates.setDisabled(true);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onSelect$tabRatesByProduct() {
+        try {
+            doAfterCompose(self);
         } catch (Exception ex) {
             showError(ex);
         }

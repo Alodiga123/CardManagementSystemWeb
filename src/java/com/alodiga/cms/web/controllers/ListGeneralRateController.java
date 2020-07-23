@@ -141,7 +141,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
                     item.appendChild(new Listcell(generalRate.getChannelId().getName()));
                     item.appendChild(new Listcell(generalRate.getTransactionId().getCode()));
                     if(generalRate.getApprovalGeneralRateId() != null){
-                     item.appendChild(new Listcell((generalRate.getApprovalGeneralRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                     item.appendChild(new Listcell((generalRate.getApprovalGeneralRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
                     }else{
                      item.appendChild(new Listcell("No"));
                     }

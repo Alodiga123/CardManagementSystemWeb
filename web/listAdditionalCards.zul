@@ -37,17 +37,21 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="885px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.document.identification')}" width="190px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.identificationNumber')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.aditionalCard.positionEnterprise')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.aditionalCard.proposedLimit')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.aditionalCard.positionEnterprise')}" width="135px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.aditionalCard.proposedLimit')}" width="135px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
                                             </listbox>
+                                        </div>
+                                        <!--Download button-->
+                                        <div align="right">
+                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/>
                                         </div>
                                     </vlayout>
                                 </div>
