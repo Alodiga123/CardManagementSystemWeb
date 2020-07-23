@@ -198,6 +198,8 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         } else if (indFloor.getText().isEmpty()) {
             indFloor.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
+        } else if (cmbZipZone.getSelectedItem() == null){
+            this.showMessage("cms.error.zipZone.notSelected", true, null);
         } else {
             return true;
         }

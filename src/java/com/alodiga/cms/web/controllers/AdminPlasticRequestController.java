@@ -147,10 +147,10 @@ public class AdminPlasticRequestController extends GenericAbstractAdminControlle
     public Boolean validateEmpty() {
         if (cmbPlasticManufacturer.getSelectedItem() == null) {
             cmbPlasticManufacturer.setFocus(true);
-            this.showMessage("cms.error.country.notSelected", true, null);
+            this.showMessage("cms.error.plasticManufacturer.noSelected", true, null);
         } else if (cmbPrograms.getSelectedItem() == null) {
             cmbPrograms.setFocus(true);
-            this.showMessage("cms.error.plasticManufacturer.noSelected", true, null);
+            this.showMessage("cms.error.plasticProgram.noSelected", true, null);
         } else {
             return true;
         }

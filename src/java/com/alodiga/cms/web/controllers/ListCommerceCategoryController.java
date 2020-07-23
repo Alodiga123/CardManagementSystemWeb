@@ -98,8 +98,8 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
                     item = new Listitem();
                     item.setValue(productHasCommerceCategory);
                     item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getMccCode()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
                     item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getsegmentCommerceId().getName()));
+                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
                     item.appendChild(createButtonEditModal(productHasCommerceCategory));
                     item.appendChild(createButtonViewModal(productHasCommerceCategory));
                     item.setParent(lbxRecords);
