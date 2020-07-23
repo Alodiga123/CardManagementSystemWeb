@@ -220,7 +220,7 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             item.appendChild(new Listcell("-"));
                         }  
                         if(r.getApprovalProgramRateId() != null){
-                            item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                            item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
                         } else {
                             item.appendChild(new Listcell("No"));
                         }
@@ -284,11 +284,15 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                             item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
                             item.appendChild(new Listcell(r.getTransactionId().getCode()));
-                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));                            
-                            item.appendChild(new Listcell(r.getFixedRate().toString()));
-                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                            if (r.getFixedRate() != null) {
+                                item.appendChild(new Listcell(r.getFixedRate().toString()));
+                            }
+                            if (r.getPercentageRate() != null) {
+                                item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            }                            
                             if(r.getApprovalProgramRateId() != null){
-                                item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Yes":"No"));
+                                item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
                             } else {
                                 item.appendChild(new Listcell("No"));
                             }

@@ -1,5 +1,6 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -31,6 +32,7 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import java.util.ArrayList;
 
 public class ListProgramHasNetworkController extends GenericAbstractListController<ProgramHasNetwork> {
 
@@ -38,7 +40,10 @@ public class ListProgramHasNetworkController extends GenericAbstractListControll
     private Listbox lbxRecords;
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
+    private ProgramEJB programEJB = null;
     private List<ProgramHasNetwork> programHasNetworkList = null;
+    private List<ProgramHasNetwork> networks = null;
+    private  Program program = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -68,6 +73,7 @@ public class ListProgramHasNetworkController extends GenericAbstractListControll
             permissionRead = true;
             adminPage = "/adminProgramHasNetwork.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
             if (programHasNetworkList != null) {
                loadDataList(programHasNetworkList);
@@ -89,8 +95,24 @@ public class ListProgramHasNetworkController extends GenericAbstractListControll
             this.showMessage("sp.error.general", true, ex);
         }
     }
-
-    public void onClick$btnDelete() {
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    @Override
+    public List<ProgramHasNetwork> getFilterList(String filter) {
+        List<ProgramHasNetwork> networksaux = new ArrayList<ProgramHasNetwork>();
+        try {
+            networksaux = programEJB.searchProgramHasNetwork(filter,program);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return networksaux;
     }
 
     public void loadDataList(List<ProgramHasNetwork> list) {
@@ -177,7 +199,6 @@ public class ListProgramHasNetworkController extends GenericAbstractListControll
     }
 
     public void getData() {
-        Program program = null;
         try {
              //Programa principal
             AdminProgramController adminProgram = new AdminProgramController();
@@ -218,12 +239,6 @@ public class ListProgramHasNetworkController extends GenericAbstractListControll
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
-    }
-
-
-    @Override
-    public List<ProgramHasNetwork> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
