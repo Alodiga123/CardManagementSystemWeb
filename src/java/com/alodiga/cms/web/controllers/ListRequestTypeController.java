@@ -35,7 +35,7 @@ public class ListRequestTypeController extends GenericAbstractListController<Req
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Textbox txtDescription;
+    private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private List<RequestType> requestTypes = null;
     private User currentUser;
@@ -99,12 +99,12 @@ public class ListRequestTypeController extends GenericAbstractListController<Req
     }
    
     public void onClick$btnClear() throws InterruptedException {
-        txtDescription.setText("");
+        txtName.setText("");
     }
     
     public void onClick$btnSearch() throws InterruptedException {
         try {
-            loadDataList(getFilterList(txtDescription.getText()));
+            loadDataList(getFilterList(txtName.getText()));
         } catch (Exception ex) {
             showError(ex);
         }

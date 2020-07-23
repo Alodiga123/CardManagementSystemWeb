@@ -145,6 +145,18 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         txtBirthDay.setRawValue(null);
         txtFamilyResponsibilities.setRawValue(null);
     }
+    
+    public Boolean validateEmpty() {
+        if ((!naturalizedYes.isChecked()) && (!naturalizedNo.isChecked())) {
+           this.showMessage("cms.crud.customer.validationData.naturalize", true, null);
+        } else if((!foreignYes.isChecked()) && (!foreignNo.isChecked())) {
+            this.showMessage("cms.crud.customer.validationData.ifForeign", true, null);
+        } else {
+            return true;
+        }
+            return false;
+    }
+            
 
     private void loadFields(NaturalCustomer naturalCustomer) {
         String Gender = "M";
@@ -247,8 +259,8 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
                 indForeign = true;
             } else {
                 indForeign = false;
-            }
-
+            }            
+            
             //naturalPerson            
             naturalCustomer.setPersonId(person);
             naturalCustomer.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
@@ -285,15 +297,17 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveNaturalPersonCustomer(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveNaturalPersonCustomer(naturalCustomerParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveNaturalPersonCustomer(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveNaturalPersonCustomer(naturalCustomerParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

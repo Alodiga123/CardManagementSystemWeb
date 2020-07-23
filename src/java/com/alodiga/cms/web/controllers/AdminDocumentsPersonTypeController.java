@@ -133,10 +133,16 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             documentsPersonType = utilsEJB.saveDocumentsPersonType(documentsPersonType);
             documentsPersonTypeParam = documentsPersonType;
             this.showMessage("sp.common.save.success", false, null);
-            btnSave.setDisabled(true);
-        } catch (Exception ex) {
-            showError(ex);
-        }
+           
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
+            
+            } catch (Exception ex) {
+                showError(ex);
+            }
     }
 
     public void onClick$btnSave() {

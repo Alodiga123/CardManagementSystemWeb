@@ -269,11 +269,18 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
             plasticManufacturer = personEJB.savePlasticManufacturer(plasticManufacturer);
             plasticManufacturerParam = plasticManufacturer;
             this.showMessage("sp.common.save.success", false, null);
+            
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
 
             EventQueues.lookup("updatePlasticManufacturer", EventQueues.APPLICATION, true).publish(new Event(""));
-        } catch (Exception ex) {
-            showError(ex);
-        }
+            
+            } catch (Exception ex) {
+                showError(ex);
+            }
 
     }
 
