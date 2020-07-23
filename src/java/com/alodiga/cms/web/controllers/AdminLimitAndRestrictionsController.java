@@ -333,6 +333,12 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             productHasChannelHasTransaction = productEJB.saveProductHasChannelHasTransaction(productHasChannelHasTransaction);
             productHasChannelHasTransactionParam = productHasChannelHasTransaction;
             this.showMessage("sp.common.save.success", false, null);
+            
+            if (eventType == WebConstants.EVENT_ADD) {
+                btnSave.setVisible(false);
+            } else {
+                btnSave.setVisible(true);
+            }
 
             EventQueues.lookup("updateLimitAndRestrictions", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
