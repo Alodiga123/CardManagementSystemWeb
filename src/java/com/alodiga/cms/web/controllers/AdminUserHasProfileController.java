@@ -186,7 +186,7 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
 
     public void onClick$btnSave() {
 
-        if (rEnabledNo.isChecked() || rEnabledNo.isChecked()) {
+        if (rEnabledYes.isChecked() || rEnabledNo.isChecked()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveUserHasProfile(null);

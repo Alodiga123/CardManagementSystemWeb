@@ -92,7 +92,10 @@ public class AdminNetworkController extends GenericAbstractAdminController {
             txtName.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         
-        } else {
+        } else if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.common.countryName.error", true, null);
+        }else {
             return true;
         }
         return false;
@@ -114,9 +117,11 @@ public class AdminNetworkController extends GenericAbstractAdminController {
             network.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             network = utilsEJB.saveNetwork(network);
             this.showMessage("sp.common.save.success", false, null);
-        } catch (Exception ex) {
-           showError(ex);
-        }
+            btnSave.setVisible(false);
+            
+            } catch (Exception ex) {
+                 showError(ex);
+            }
 
     }
 

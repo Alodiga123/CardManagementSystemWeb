@@ -18,7 +18,7 @@
                                 <div>
                                     <include src="adminMainMenu.zul"/>
                                 </div>
-                                <div width="900px">
+                                <div width="800px">
                                     <vlayout>
                                         <div height="20px" width="100%" align="left">
                                             <!--Bread crumb-->
@@ -40,12 +40,11 @@
                                             </hlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
-                                                <listhead>
-                                                    <listheader label="${c:l('cms.common.id.permission.group')}" width="190px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.language.id')}" width="175px" sort="auto"/>
+                                            <listbox id="lbxRecords" fixedLayout="true" width="755px" mold="paging" pageSize="10" height="450px">
+                                                <listhead>                                     
                                                     <listheader label="${c:l('cms.common.alias.permission.group')}" width="220px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.description.permission.group')}" width="220px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.language.id')}" width="175px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

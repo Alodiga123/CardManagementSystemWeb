@@ -16,7 +16,10 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Profile;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Toolbarbutton;
 
 public class AdminProfileController extends GenericAbstractAdminController {
@@ -25,6 +28,8 @@ public class AdminProfileController extends GenericAbstractAdminController {
     private Textbox txtName;
     private Radio rEnabledYes;
     private Radio rEnabledNo;
+    private Label txtOculto;
+    private Hbox hboxOculto;
     private UtilsEJB utilsEJB = null;
     private Profile profileParam;
     private Button btnSave;
@@ -166,8 +171,12 @@ public class AdminProfileController extends GenericAbstractAdminController {
                 break;
             case WebConstants.EVENT_ADD:
                 rEnabledYes.setChecked(true);
-                rEnabledYes.setDisabled(true);
-                rEnabledNo.setDisabled(true);
+                txtOculto.setVisible(false);
+                rEnabledYes.setVisible(false);
+                rEnabledNo.setVisible(false);
+                hboxOculto.setVisible(false);
+                
+                
                 break;
             default:
                 break;

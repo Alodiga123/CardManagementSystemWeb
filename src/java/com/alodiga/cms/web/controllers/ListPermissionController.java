@@ -109,9 +109,9 @@ public class ListPermissionController extends GenericAbstractListController<Perm
                 for (Permission permission : list) {
                     item = new Listitem();
                     item.setValue(permission);
-                    item.appendChild(new Listcell(permission.getAction()));
-                    item.appendChild(new Listcell(permission.getEntity()));
                     item.appendChild(new Listcell(permission.getName()));
+                    item.appendChild(new Listcell(permission.getEntity()));
+                    item.appendChild(new Listcell(permission.getAction()));
                     item.appendChild(new ListcellEditButton(adminPage, permission));
                     item.appendChild(new ListcellViewButton(adminPage, permission,true));
                     item.setParent(lbxRecords);

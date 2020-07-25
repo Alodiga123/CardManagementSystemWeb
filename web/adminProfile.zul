@@ -51,14 +51,14 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.profile.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
+                                                            <label id="txtOculto" value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="500px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <hbox>
+                                                            <hbox id="hboxOculto">
                                                             <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
                                                                     <rows>

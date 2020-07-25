@@ -25,7 +25,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.permission.list')}" />
+                                                <toolbarbutton label="${c:l('cms.menu.permission.list')}" />
                                                  |
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
@@ -42,9 +42,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.name.permission')}" width="255px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.action')}" width="300px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.entity')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.functionality')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.tableName')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.url')}" width="255px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
