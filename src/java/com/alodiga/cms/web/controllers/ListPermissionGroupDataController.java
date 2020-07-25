@@ -102,10 +102,9 @@ public class ListPermissionGroupDataController extends GenericAbstractListContro
                 for (PermissionGroupData permissionGroupData : list) {
                     item = new Listitem();
                     item.setValue(permissionGroupData);
-                    item.appendChild(new Listcell(permissionGroupData.getPermissionGroupId().getName()));
-                    item.appendChild(new Listcell(permissionGroupData.getLanguageId().getDescription()));
                     item.appendChild(new Listcell(permissionGroupData.getAlias().toString()));
                     item.appendChild(new Listcell(permissionGroupData.getDescription().toString()));
+                    item.appendChild(new Listcell(permissionGroupData.getLanguageId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, permissionGroupData));
                     item.appendChild(new ListcellViewButton(adminPage, permissionGroupData,true));
                     item.setParent(lbxRecords);

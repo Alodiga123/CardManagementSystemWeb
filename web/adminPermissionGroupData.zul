@@ -44,7 +44,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.id.permission.group')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.permission.group.master')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.language.id')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.alias.permission.group')}" sclass="lblbold"/>   
                                                         </row>

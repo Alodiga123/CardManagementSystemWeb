@@ -61,7 +61,6 @@
                                                     <listheader label="${c:l('cms.common.descriptionPersonType')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.email')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.phoneNumber')}" width="150px" sort="auto"/>
-
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
