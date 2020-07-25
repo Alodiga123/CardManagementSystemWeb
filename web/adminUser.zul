@@ -91,9 +91,6 @@
                                                             <label id="lblFirstName" value="" width="250px" style="color:#837E76;"/>
                                                             <label id="lblLastName" value="" width="250px" style="color:#837E76;"/>
                                                             <label id="lblUserEmail" value="" width="250px" style="color:#837E76;"/>
-                                                            <!--textbox id="txtFirstName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtLastName" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtUserEmail" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/-->
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>

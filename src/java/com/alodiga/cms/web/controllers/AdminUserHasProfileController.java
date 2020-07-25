@@ -68,13 +68,13 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.country.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.userHasProfile.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.country.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.userHasProfile.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.country.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.userHasProfile.add"));
                 break;
             default:
                 break;
@@ -115,18 +115,30 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
         cmbUser.setDisabled(true);
         cmbRole.setDisabled(true);
     }
+    
+    public Boolean validateEmpty() {
+        if (cmbUser.getSelectedItem() == null) {
+            cmbUser.setFocus(true);
+            this.showMessage("cms.error.field.cannotNull.cmbUser", true, null);
+        } else if (cmbRole.getSelectedItem() == null) {
+            cmbRole.setFocus(true);
+            this.showMessage("cms.error.field.cannotNull.cmbRole", true, null);
+        } else if ((!rEnabledYes.isChecked()) && (!rEnabledNo.isChecked())) {
+            this.showMessage("cms.error.field.cannotNull.rEnabled", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
 
     public Boolean validateUserHasProfile(UserHasProfile userHasProfile) {
         List<UserHasProfile> userHasProfileList;
         try {
             userHasProfileList= (List<UserHasProfile>) utilsEJB.getUserHasProfileByUser(userHasProfile);
-            
-            boolean isEmpty = userHasProfileList.isEmpty();
-            
+            boolean isEmpty = userHasProfileList.isEmpty();            
             if (isEmpty) {
                 return true;
             }
-
         } catch (EmptyListException ex) {
             Logger.getLogger(AdminUserHasProfileController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GeneralException ex) {
@@ -170,8 +182,8 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
             userHasProfile.setProfileId((Profile) cmbRole.getSelectedItem().getValue());
             userHasProfile.setEnabled(indEnabled); 
             
-            if (!validateUserHasProfile(userHasProfile)) {
-                this.showMessage("cms.common.RegisterExistInBD", true, null);
+            if (!validateUserHasProfile(userHasProfile) && (eventType == WebConstants.EVENT_ADD)) {
+                this.showMessage("cms.common.userHasProfileExistInBD", true, null);
             } else {
                 userHasProfile = utilsEJB.saveUserHasProfile(userHasProfile);
                 UserHasProfileParam = userHasProfile;
@@ -185,8 +197,7 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
     }
 
     public void onClick$btnSave() {
-
-        if (rEnabledYes.isChecked() || rEnabledNo.isChecked()) {
+        if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveUserHasProfile(null);
@@ -197,8 +208,6 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
                 default:
                     break;
             }
-        }else{
-         this.showMessage("sp.common.field.required.full", true, null);
         }
     }
 
