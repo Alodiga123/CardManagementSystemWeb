@@ -103,9 +103,8 @@ public class ListPermissionDataController extends GenericAbstractListController<
                     item = new Listitem();
                     item.setValue(permissionData);
                     item.appendChild(new Listcell(permissionData.getPermissionId().getName()));
-                    item.appendChild(new Listcell(permissionData.getLanguageId().getDescription()));
                     item.appendChild(new Listcell(permissionData.getAlias().toString()));
-                    item.appendChild(new Listcell(permissionData.getDescription().toString()));
+                    item.appendChild(new Listcell(permissionData.getLanguageId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, permissionData));
                     item.appendChild(new ListcellViewButton(adminPage, permissionData,true));
                     item.setParent(lbxRecords);
