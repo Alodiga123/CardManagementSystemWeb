@@ -25,7 +25,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.country.list')}" onClick='Executions.sendRedirect(&quot;listUserHasProfile.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.userHasProfile.list')}" onClick='Executions.sendRedirect(&quot;listUserHasProfile.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label=""/>
                                             </hlayout>

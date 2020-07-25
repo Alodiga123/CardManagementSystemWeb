@@ -149,7 +149,7 @@ public class ListEconomicActivityController extends GenericAbstractListControlle
         List<EconomicActivity> economicActivityux = new ArrayList<EconomicActivity>();
         try {
             if (filter != null && !filter.equals("")) {
-                economicActivityux = utilsEJB.getSearchDescription(filter);
+                
             } else {
                 return economicActivity;
             }
