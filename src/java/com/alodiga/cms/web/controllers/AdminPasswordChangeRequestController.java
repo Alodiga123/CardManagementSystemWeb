@@ -37,6 +37,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
@@ -104,19 +105,28 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         }
     }
     
-    public void onChange$txtRepeatNewPassword() {
-        if (!txtRepeatNewPassword.getValue().equals(txtNewPassword.getValue())) {
-            this.showMessage("cms.msj.fieldsPasswordNotEquals", false, null);
+    public void onClick$imgEye() {
+        if (txtCurrentPassword.getType().equals("password")) {
+            txtCurrentPassword.setType("text");
         } else {
-            this.clearMessage();
-        }
+            txtCurrentPassword.setType("password");
+        }              
     }
     
-    public void onFocus$txtCurrentPassword() {
-        this.clearMessage();
-        txtCurrentPassword.setText("");
-        txtNewPassword.setText("");
-        txtRepeatNewPassword.setText("");
+    public void onClick$imgEye1() {
+        if (txtNewPassword.getType().equals("password")) {
+            txtNewPassword.setType("text");
+        } else {
+            txtNewPassword.setType("password");
+        }              
+    }
+    
+    public void onClick$imgEye2() {
+        if (txtRepeatNewPassword.getType().equals("password")) {
+            txtRepeatNewPassword.setType("text");
+        } else {
+            txtRepeatNewPassword.setType("password");
+        }              
     }
     
     public void clearFields() {
@@ -172,18 +182,35 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
     public Boolean validateEmpty() {
         if (txtCurrentPassword.getText().isEmpty()) {
             txtCurrentPassword.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.cannotNull.txtCurrentPassword", true, null);
         } else if (txtNewPassword.getText().isEmpty()) {
             txtNewPassword.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.cannotNull.txtNewPassword", true, null);
         } else if (txtRepeatNewPassword.getText().isEmpty()) {
             txtRepeatNewPassword.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.cannotNull.txtRepeatNewPassword", true, null);
         } else {
             return true;
         }
         return false;
-    }    
+    }  
+    
+    public boolean validatePasswordChange() {
+        //Valida que la confirmación de la nueva contraseña coincida con la nueva contraseña
+        if (!txtRepeatNewPassword.getValue().equals(txtNewPassword.getValue())) {
+            txtRepeatNewPassword.setValue("");
+            txtRepeatNewPassword.setFocus(true);
+            this.showMessage("cms.msj.fieldsPasswordNotEquals", true, null);
+        } else if (txtNewPassword.getValue().equals(txtCurrentPassword.getValue())) {
+            txtNewPassword.setValue("");
+            txtRepeatNewPassword.setValue("");
+            txtNewPassword.setFocus(true);
+            this.showMessage("cms.msj.fieldsCurrentPasswordEqualsNewPassword", true, null);
+        } else {
+            return true;
+        }
+        return false;
+    }
     
     private void savePasswordChangeRequest(PasswordChangeRequest _passwordChangeRequest) throws RegisterNotFoundException, NullParameterException, GeneralException, EmptyListException {
         boolean indApproved = true;
@@ -191,7 +218,6 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         Date dateRequest = null;
         List<User> userList = null;
         PasswordChangeRequest passwordChangeRequest = null;
-        this.clearMessage();
         
         try {
             if (_passwordChangeRequest != null) {
@@ -206,13 +232,13 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             } else {
                 indApproved = false;
             }
-                   
+            
             //Valida si la contraseña actual es correcta
             Map params = new HashMap();
             params.put(Constants.CURRENT_PASSWORD, txtCurrentPassword.getValue());
             params.put(Constants.USER_KEY,user.getId());
             request1.setParams(params);
-            userList = personEJB.validatePassword(request1);  
+            userList = personEJB.validatePassword(request1); 
             
             if (userList.size() > 0) {
                 //Obtiene el numero de secuencia para Solicitud de Cambio de Contraseña
@@ -255,7 +281,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
             if (userList == null) {
                 attempts++;
                 if (attempts != 3) {
-                    this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", false, null);
+                    this.showMessage("cms.msj.errorCurrentPasswordNotMatchInBD", true, null);
                     txtCurrentPassword.setText("");
                     txtNewPassword.setText("");
                     txtRepeatNewPassword.setText("");
@@ -287,7 +313,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
                 rApprovedYes.setDisabled(true);
                 rApprovedNo.setDisabled(true);
 
-                this.showMessage("cms.msj.passwordChangedRequestRejected", false, null);
+                this.showMessage("cms.msj.passwordChangedRequestRejected", true, null);
                 btnSave.setVisible(false);
             }
                     
@@ -298,7 +324,7 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         try {
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_RENEWAL_REQUEST);
+            params.put(Constants.DOCUMENT_TYPE_KEY, Constants.DOCUMENT_TYPE_CHANGE_PASSWORD_REQUEST);
             request1.setParams(params);
             List<Sequences> sequence = utilsEJB.getSequencesByDocumentType(request1);
             numberRequest = utilsEJB.generateNumberSequence(sequence, Constants.ORIGIN_APPLICATION_CMS_ID);
@@ -329,7 +355,9 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    savePasswordChangeRequest(null);
+                    if (validatePasswordChange()) {
+                        savePasswordChangeRequest(null);
+                    }
                     break;
                 default:
                     break;
