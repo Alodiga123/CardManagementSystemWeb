@@ -42,7 +42,6 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -50,25 +49,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.identification.type')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.number.identification')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <hlayout>
-                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <intbox id="intIdentificationNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="20"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                        </row>
+                                                        <group label="${c:l('cms.common.data.EmployeeUser')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.user.employee')}" sclass="lblbold"/> 
                                                             <label value="${c:l('cms.common.user.position')}" sclass="lblbold"/>
@@ -83,37 +64,62 @@
                                                             <label id="lblUserExtAlodiga" width="250px"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.user.first.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.last.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identification.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.number.identification')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <label id="lblFirstName" value="" width="250px" style="color:#837E76;"/>
-                                                            <label id="lblLastName" value="" width="250px" style="color:#837E76;"/>
-                                                            <label id="lblUserEmail" value="" width="250px" style="color:#837E76;"/>
+                                                            <label id="lblCountry" width="250px"/>
+                                                            <label id="lblIdentificationType" width="250px"/> 
+                                                            <label id="lblIdentificationNumber" width="250px"/> 
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.employee.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.employee.email')}" sclass="lblbold"/>                                                            
+                                                        </row>
+                                                        <row>
+                                                            <label id="lblComercialAgency" width="250px"/>
+                                                            <label id="lblCityEmployee" width="250px"/>
+                                                            <label id="lblEmailEmployee" width="250px"/> 
+                                                        </row>
+                                                    </rows>    
+                                                </grid>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('cms.common.data.EmployeeAuthorizesRegistration')}"/>
+                                                        <row>
                                                             <label value="${c:l('cms.common.authorize.registration')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.aut.ext.alodiga')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row>
-                                                            <hlayout>
-                                                                <combobox id="cmbComercialAgency" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                        <row>                                                            
                                                             <hlayout>
                                                                 <combobox id="cmbAuthorizeEmployee" width="250px" mold="rounded" readonly="true" />
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <label id="lblAuthorizeExtAlodiga" width="250px"/>
                                                         </row> 
+                                                    </rows>
+                                                </grid>  
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('cms.common.data.User')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.login')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.password')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
-                                                        <row>
+                                                        <row>                                                            
                                                             <hlayout>
                                                                 <textbox id="txtLogin" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
@@ -133,9 +139,9 @@
                                                                     </rows>
                                                                 </grid>
                                                             </hbox>
-                                                        </row>
+                                                        </row> 
                                                     </rows>
-                                                </grid>
+                                                </grid> 
                                             </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>

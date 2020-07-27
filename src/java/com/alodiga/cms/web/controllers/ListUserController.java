@@ -154,11 +154,11 @@ public class ListUserController extends GenericAbstractListController<User> {
         List<User> userList_ = new ArrayList<User>();
         try {
             if (filter != null && !filter.equals("")) {
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.PARAM_USER, filter);
-            request1.setParams(params);
-               userList_ = personEJB.searchUser(request1);
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PARAM_USER, filter);
+                request1.setParams(params);
+                userList_ = personEJB.searchUser(request1);
             } else {
                 return userList;
             }
