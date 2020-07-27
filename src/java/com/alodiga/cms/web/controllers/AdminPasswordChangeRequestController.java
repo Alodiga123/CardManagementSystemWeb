@@ -37,6 +37,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
@@ -104,12 +105,28 @@ public class AdminPasswordChangeRequestController extends GenericAbstractAdminCo
         }
     }
     
-    public void onChange$txtRepeatNewPassword() {
-        if (!txtRepeatNewPassword.getValue().equals(txtNewPassword.getValue())) {
-            this.showMessage("cms.msj.fieldsPasswordNotEquals", false, null);
+    public void onClick$imgEye() {
+        if (txtCurrentPassword.getType().equals("password")) {
+            txtCurrentPassword.setType("text");
         } else {
-            this.clearMessage();
-        }
+            txtCurrentPassword.setType("password");
+        }              
+    }
+    
+    public void onClick$imgEye1() {
+        if (txtNewPassword.getType().equals("password")) {
+            txtNewPassword.setType("text");
+        } else {
+            txtNewPassword.setType("password");
+        }              
+    }
+    
+    public void onClick$imgEye2() {
+        if (txtRepeatNewPassword.getType().equals("password")) {
+            txtRepeatNewPassword.setType("text");
+        } else {
+            txtRepeatNewPassword.setType("password");
+        }              
     }
     
     public void clearFields() {

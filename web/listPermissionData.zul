@@ -13,12 +13,12 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout>
-                        <div width="1000px" align="left" height="1000px">
+                        <div width="1200px" align="left" height="1000px">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
                                 </div>
-                                <div width="760px"> 
+                                <div width="900px"> 
                                     <vlayout>
                                         <div height="20px" width="100%" align="left">
                                             <!--Bread crumb-->
@@ -40,7 +40,7 @@
                                             </hlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="760px" mold="paging" pageSize="10" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.id.permission')}" width="250px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.alias.permission')}" width="250px" sort="auto"/>

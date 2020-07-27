@@ -56,9 +56,6 @@
                                                             <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                           <!--<hbox>
-                                                              <textbox id="txtAlternativeName1" value="" width="250px" maxlength="3" tooltip="alternative" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            </hbox>-->
                                                             <combobox id="cmbUser" width="250px" mold="rounded" readonly="true" />
                                                             <combobox id="cmbRole" width="250px" mold="rounded" readonly="true" />
                                                             <hbox>
