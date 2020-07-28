@@ -179,13 +179,13 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
             this.showMessage("cms.error.field.city", true, null);
         } else if (txtUbanization.getText().isEmpty()) {
             txtUbanization.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.urbanization", true, null);
         } else if (cmbStreetType.getSelectedItem() == null) {
             cmbStreetType.setFocus(true);
             this.showMessage("cms.error.streetType.noSelected", true, null);
         } else if (txtNameStreet.getText().isEmpty()) {
             txtNameStreet.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.field.namesStreet", true, null);
         } else if (cmbEdificationType.getSelectedItem() == null) {
             cmbEdificationType.setFocus(true);
             this.showMessage("cms.error.edificationType.notSelected", true, null);
@@ -195,9 +195,9 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         } else if (txtTower.getText().isEmpty()) {
             txtTower.setFocus(true);
             this.showMessage("cms.error.field.tower", true, null);
-        } else if (indFloor.getText().isEmpty()) {
+        } else if ((indFloor.getText().isEmpty())) {
             indFloor.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.floor.noSelected", true, null);
         } else if (cmbZipZone.getSelectedItem() == null){
             this.showMessage("cms.error.zipZone.notSelected", true, null);
         } else {
@@ -205,7 +205,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         }
         return false;
     }
-
+        
     private void saveAddress(PersonHasAddress _personHasAddress) {
         Person person = null;
         try {

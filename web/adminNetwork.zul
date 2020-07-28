@@ -48,13 +48,13 @@
                                                             <label value="${c:l('cms.common.name.network')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="260px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
-                                                             <label value="*" sclass="lblreq" />
+                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <hlayout>
-                                                                <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbCountry" width="265px" mold="rounded" readonly="true"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>                                      

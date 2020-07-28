@@ -51,7 +51,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtUbanization" constraint="no empty" maxlength="50" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtUbanization" maxlength="50" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
@@ -59,7 +59,7 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtNameStreet" constraint="no empty" maxlength="40" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtNameStreet" maxlength="40" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
@@ -88,7 +88,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <intbox id="indFloor" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="3"/>
+                                                                <intbox id="indFloor" width="250px" maxlength="3"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
