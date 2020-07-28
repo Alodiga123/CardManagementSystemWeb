@@ -39,7 +39,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.comercialDesignation')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.companyName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.comercialActivity')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.economicActivity')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtTradeName" value="" width="250px" maxlength="60"/>
