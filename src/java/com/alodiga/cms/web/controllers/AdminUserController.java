@@ -192,6 +192,16 @@ public class AdminUserController extends GenericAbstractAdminController {
         try {
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
+            params.put(Constants.PARAM_EMPLOYEE, employee.getId());
+            request1.setParams(params);
+            userList = personEJB.getValidateEmployee(request1);
+            if (userList != null) {
+                this.showMessage("cms.error.field.employeeExistInBD", true, null);
+                cmbEmployee.setFocus(true);
+                return false;
+            }
+            request1 = new EJBRequest();
+            params = new HashMap();
             params.put(Constants.PARAM_USER, txtLogin.getValue());
             request1.setParams(params);
             userList = personEJB.getUserByLogin(request1);
@@ -205,7 +215,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         }        
         return true;
     }
-
+      
     public void onChange$cmbEmployee() {
         PhonePerson phonePersonEmployee = null;
         try {
@@ -310,7 +320,7 @@ public class AdminUserController extends GenericAbstractAdminController {
                 case WebConstants.EVENT_ADD:
                     if (validateUser()) {
                         saveUser(null);
-                    }
+                    } 
                 break;
                 case WebConstants.EVENT_EDIT:
                     saveUser(userParam);
