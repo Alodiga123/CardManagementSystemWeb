@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.UserEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -61,6 +62,7 @@ public class AdminUserController extends GenericAbstractAdminController {
     private Radio rEnabledNo;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
+    private UserEJB userEJB = null;
     private User userParam;
     private Button btnSave;
     private Integer eventType;
@@ -98,6 +100,7 @@ public class AdminUserController extends GenericAbstractAdminController {
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            userEJB = (UserEJB) EJBServiceLocator.getInstance().get(EjbConstants.USER_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -120,8 +123,15 @@ public class AdminUserController extends GenericAbstractAdminController {
             lblIdentificationType.setValue(user.getEmployeeId().getDocumentsPersonTypeId().getDescription());
             lblIdentificationNumber.setValue(String.valueOf(user.getEmployeeId().getIdentificationNumber()));
             lblCountry.setValue(user.getEmployeeId().getPersonId().getCountryId().getName());
-            lblComercialAgency.setValue(user.getEmployeeId().getComercialAgencyId().getName());
-            lblCityEmployee.setValue(user.getEmployeeId().getComercialAgencyId().getCityId().getName());
+            if (user.getEmployeeId().getComercialAgencyId().getCityId() != null) {
+                lblCityEmployee.setValue(user.getEmployeeId().getComercialAgencyId().getCityId().getName());
+            } else {
+                EJBRequest request = new EJBRequest();
+                request.setParam(user.getEmployeeId().getComercialAgencyId().getId());
+                ComercialAgency comercialAgency = userEJB.loadComercialAgency(request);
+                user.getEmployeeId().getComercialAgencyId().setCityId(comercialAgency.getCityId());
+                lblCityEmployee.setValue(user.getEmployeeId().getComercialAgencyId().getCityId().getName());
+            }            
             lblEmailEmployee.setValue(user.getEmployeeId().getPersonId().getEmail());
             if (user.getEmployeeId() != null) {
                 EJBRequest request = new EJBRequest();
