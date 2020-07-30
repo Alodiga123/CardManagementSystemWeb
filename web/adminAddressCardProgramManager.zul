@@ -51,7 +51,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtUbanization" maxlength="50" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtUbanization" maxlength="50" width="250px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
@@ -59,7 +59,7 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtNameStreet" maxlength="40" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtNameStreet" maxlength="40" width="250px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
@@ -74,12 +74,11 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtNameEdification" value="" width="250px" maxlength="50" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                                <textbox id="txtNameEdification" value="" width="250px" maxlength="50"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtTower" value="" width="250px" maxlength="40" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
+                                                                <textbox id="txtTower" value="" width="250px" maxlength="40" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>     
                                                             </hlayout>
                                                         </row>
                                                         <row> 
