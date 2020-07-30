@@ -71,6 +71,11 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
         dtbActivationDate.setRawValue(null);
     }
     
+    private void loadDate() {
+        Date today = new Date();
+        dtbActivationDate.setValue(today);
+    }
+    
     private void loadFields(Product product) {
         try {
             lblProduct.setValue(product.getName());
@@ -188,8 +193,11 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
     }
 
     public void loadData() {
+        Date today = new Timestamp(new Date().getTime());
         switch (eventType) {
-            case WebConstants.EVENT_EDIT:                    
+            case WebConstants.EVENT_EDIT:
+                dtbActivationDate.setValue(today);
+                dtbActivationDate.setDisabled(true);
                 loadFields(productParam);
             break;
             case WebConstants.EVENT_VIEW:           
@@ -197,6 +205,8 @@ public class AdminActivationProductController extends GenericAbstractAdminContro
                 blockFields();
             break;
             case WebConstants.EVENT_ADD:
+                dtbActivationDate.setValue(today);
+                dtbActivationDate.setDisabled(true);
                 lblCity.setValue(user.getComercialAgencyId().getCityId().getName());
                 lblAgency.setValue(user.getComercialAgencyId().getName());
                 lblUserActivation.setValue(user.getFirstNames() + " " + user.getLastNames());
