@@ -18,6 +18,7 @@ import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.State;
 import com.cms.commons.models.StreetType;
 import com.cms.commons.models.ZipZone;
+import com.cms.commons.models.SourceFunds;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -192,10 +193,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
             this.showMessage("cms.error.field.nameEdification", true, null);
-        } else if (txtTower.getText().isEmpty()) {
-            txtTower.setFocus(true);
-            this.showMessage("cms.error.field.tower", true, null);
-        } else if ((indFloor.getText().isEmpty())) {
+        }  else if ((indFloor.getText().isEmpty())) {
             indFloor.setFocus(true);
             this.showMessage("cms.error.floor.noSelected", true, null);
         } else if (cmbZipZone.getSelectedItem() == null){
@@ -205,7 +203,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         }
         return false;
     }
-        
+           
     private void saveAddress(PersonHasAddress _personHasAddress) {
         Person person = null;
         try {
@@ -311,6 +309,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
     public void onClick$btnBack() {
         winAdminAddressCardProgMan.detach();
     }
+    
 
     public void loadData() {
         switch (eventType) {
@@ -324,6 +323,8 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
                 }
                 loadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
+                txtLine1.setReadonly(true);
+                txtLine2.setReadonly(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadCmbCountry(eventType);
@@ -341,6 +342,8 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
                 loadCmbCountry(eventType);
                 loadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
+                txtLine1.setReadonly(true);
+                txtLine2.setReadonly(true);
                 break;
         }
     }
@@ -454,7 +457,7 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_CITY_ID, cityId);
         request1.setParams(params);
-        List<ZipZone> zipZones;
+        List<ZipZone> zipZones = null;
         try {
             zipZones = utilsEJB.getZipZoneByCities(request1);
             cmbZipZone.getItems().clear();
@@ -480,7 +483,11 @@ public class AdminAddressCardProgramManagerController extends GenericAbstractAdm
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }
-    }
+        } finally {
+            if (zipZones == null) {
+                this.showMessage("cms.msj.ZipZoneNull", false, null);
+         }            
+      }
+   }
 
 }
