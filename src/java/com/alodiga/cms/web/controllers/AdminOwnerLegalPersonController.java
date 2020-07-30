@@ -53,12 +53,13 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
-    public static LegalPerson legalOwnerParam = null;
+    public LegalPerson legalOwnerParam = null;
     private Person person;
     private Button btnSave;
     private Toolbarbutton tbbTitle;
     private Integer eventType;
     private Integer indSelect = 2;
+    public static LegalPerson ownerlegalPerson = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -99,7 +100,7 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     }
 
     public LegalPerson getLegalPerson() {
-        return legalOwnerParam;
+        return ownerlegalPerson;
     }
 
     public void onChange$cmbCountry() {
@@ -251,7 +252,8 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
             legalOwner.setIdentificationNumber(txtIdentificationNumber.getText());
             legalOwner = utilsEJB.saveLegalPerson(legalOwner);
             legalOwnerParam = legalOwner;
-
+            ownerlegalPerson = legalOwner;
+            
             this.showMessage("sp.common.save.success", false, null);
 
             if (eventType == WebConstants.EVENT_ADD) {
@@ -282,12 +284,14 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                ownerlegalPerson = legalOwnerParam;
                 loadFields(legalOwnerParam);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
+                ownerlegalPerson = legalOwnerParam;
                 loadFields(legalOwnerParam);
                 blockFields();
                 loadCmbCountry(eventType);
