@@ -13,7 +13,9 @@ import com.cms.commons.models.ProductHasChannelHasTransaction;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,7 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
     private Textbox txtName;
     private ProductEJB productEJB = null;
     private List<ProductHasChannelHasTransaction> productHasChannelHasTransaction = null;
+    private Product product = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -170,7 +173,6 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
 
     public void getData() {
         productHasChannelHasTransaction = new ArrayList<ProductHasChannelHasTransaction>();
-        Product product = null;
         try {
             AdminProductController adminProduct = new AdminProductController();
             if (adminProduct.getProductParent().getId() != null) {
@@ -201,10 +203,19 @@ public class ListLimitAndRestrictionsController extends GenericAbstractListContr
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.cardRequest.list"));
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String date = simpleDateFormat.format(new Date());
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.tab.download.limitAndRestrictions"));
+            file.append("_");
+            file.append(product.getName());
+            file.append("_");
+            file.append(date);
+            file.append("_");
+            Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
-        }
+        }   
     }
 
     public void onClick$btnClear() throws InterruptedException {

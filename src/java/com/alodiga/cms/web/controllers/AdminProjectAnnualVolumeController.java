@@ -34,8 +34,8 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Combobox cmbYear;
-    private Intbox intAccountsNumber;
-    private Intbox intActiveCardNumber;
+    private Doublebox intAccountsNumber;
+    private Doublebox intActiveCardNumber;
     private Doublebox dbxAverageLoad;
     private Doublebox dbxAverageCardBalance;
     private ProgramEJB programEJB = null;
@@ -91,9 +91,9 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     private void loadFields(ProjectAnnualVolume projectAnnualVolume) {
         try {
             intAccountsNumber.setValue(projectAnnualVolume.getAccountsNumber());
-            intActiveCardNumber.setText(projectAnnualVolume.getActiveCardNumber().toString());
-            dbxAverageLoad.setValue(projectAnnualVolume.getAverageLoad().floatValue());
-            dbxAverageCardBalance.setValue(projectAnnualVolume.getAverageCardBalance().floatValue());
+            intActiveCardNumber.setValue(projectAnnualVolume.getActiveCardNumber());
+            dbxAverageLoad.setValue(projectAnnualVolume.getAverageLoad().doubleValue());
+            dbxAverageCardBalance.setValue(projectAnnualVolume.getAverageCardBalance().doubleValue());
             
             btnSave.setVisible(true);
         } catch (Exception ex) {
@@ -182,8 +182,8 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     public ProjectAnnualVolume CreateProjectAnnualVolume(Program program, ProjectAnnualVolume projectAnnualVolume) {
         projectAnnualVolume.setProgramId(program);
         projectAnnualVolume.setYear(Integer.parseInt(cmbYear.getSelectedItem().getValue().toString()));
-        projectAnnualVolume.setAccountsNumber(intAccountsNumber.getValue());
-        projectAnnualVolume.setActiveCardNumber(intActiveCardNumber.getValue());
+        projectAnnualVolume.setAccountsNumber(intAccountsNumber.intValue());
+        projectAnnualVolume.setActiveCardNumber(intActiveCardNumber.intValue());
         projectAnnualVolume.setAverageLoad(dbxAverageLoad.getValue().floatValue());
         projectAnnualVolume.setAverageCardBalance(dbxAverageCardBalance.getValue().floatValue());
         return projectAnnualVolume;

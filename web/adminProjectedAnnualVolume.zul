@@ -36,11 +36,11 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <intbox id="intAccountsNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="11"/>
+                                                                <doublebox id="intAccountsNumber" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" format="#,##0.##" maxlength="11"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <intbox id="intActiveCardNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="11"/>
+                                                                <doublebox id="intActiveCardNumber" width="250px" constraint="no empty: ${c:l('error.field.required')}, no negative" format="#,##0.##" maxlength="11"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
