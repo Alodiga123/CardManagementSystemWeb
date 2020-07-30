@@ -384,6 +384,7 @@ public class AdminProgramController extends GenericAbstractAdminController {
             programParent = program;
             tabNetwork.setDisabled(false);
             tabProjectedAnnualVolume.setDisabled(false);
+            tabAverageCargeUsage.setDisabled(false);
 
             this.showMessage("sp.common.save.success", false, null);
             btnSave.setVisible(false);
