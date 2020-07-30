@@ -201,7 +201,6 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
         if (!(txtBirthDay.getText().isEmpty())) {
             cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
         }
-
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
@@ -210,7 +209,7 @@ public class AdminOwnerNaturalPersonController extends GenericAbstractAdminContr
             this.showMessage("cms.error.documentType.notSelected", true, null);
         } else if (txtIdentificationNumber.getText().isEmpty()) {
             txtIdentificationNumber.setFocus(true);
-            this.showMessage("cms.error.field.identificationNumber", true, null);
+            this.showMessage("cms.error.field.identificationNumberOwnerProgram", true, null);
         } else if (txtDueDateDocumentIdentification.getText().isEmpty()) {
             txtDueDateDocumentIdentification.setFocus(true);
             this.showMessage("cms.error.field.dueDateDocumentIdentification", true, null);

@@ -104,6 +104,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -292,17 +293,23 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
 
             if (optionMenu == Constants.LIST_CARD_REQUEST) {
                 adminLegalPerson = new AdminLegalPersonController();
+                if (adminLegalPerson.getLegalPerson() != null) {
+                    legalPerson = adminLegalPerson.getLegalPerson();
+                }    
             }
             
-            adminLegalCustomerPerson = new AdminLegalPersonCustomerController();
-            adminOwnerLegalPerson = new AdminOwnerLegalPersonController();
-
-            if (adminLegalPerson.getLegalPerson() != null) {
-                legalPerson = adminLegalPerson.getLegalPerson();
-            } else if (adminLegalCustomerPerson.getLegalCustomer() != null) {
-                legalCustomer = adminLegalCustomerPerson.getLegalCustomer();
-            } else if (adminOwnerLegalPerson.getLegalPerson() != null) {
-                legalPerson = adminOwnerLegalPerson.getLegalPerson();
+            if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
+                adminLegalCustomerPerson = new AdminLegalPersonCustomerController();
+                if (adminLegalCustomerPerson.getLegalCustomer() != null) {
+                    legalCustomer = adminLegalCustomerPerson.getLegalCustomer();
+                }    
+            }
+            
+            if (optionMenu == Constants.LIST_PROGRAM_OWNER) {
+                adminOwnerLegalPerson = new AdminOwnerLegalPersonController();
+                if (adminOwnerLegalPerson.getLegalPerson() != null) {
+                    legalPerson = adminOwnerLegalPerson.getLegalPerson();    
+                }    
             }
 
             //Obtener la clasificacion del Representante Legal
@@ -345,7 +352,7 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
 
-            //Asocia el Representante Legal al Solicitante Jurídico
+            //Asocia el Representante Legal a la persona jurídica
             if (eventType == WebConstants.EVENT_ADD) {
                 if (legalPerson != null) {
                     legalPersonHasLegalRepresentatives.setLegalPersonId(legalPerson);
@@ -409,9 +416,6 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
                 loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                if (adminRequest.getRequest().getPersonId() != null) {
-                    
-                }
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
@@ -448,7 +452,11 @@ public class AdminLegalRepresentativeController extends GenericAbstractAdminCont
         if (eventType == WebConstants.EVENT_ADD) {
             params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
         } else {
-            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
+            if (optionMenu == Constants.LIST_CARD_REQUEST) {
+                params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId());
+            } else {
+                params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+            }
         }
         request1.setParams(params);
         List<DocumentsPersonType> documentsPersonType;
