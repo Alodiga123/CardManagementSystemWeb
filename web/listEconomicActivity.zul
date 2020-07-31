@@ -53,9 +53,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.code')}" width="85px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.description')}" width="300px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.countryName')}" width="350px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.code.ciiu')}" width="95px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.description')}" width="350px" sort="auto"/>                             
                                                     <listheader label="-" width="50px" />
                                                     <listheader label="-" width="50px" />
                                                 </listhead>

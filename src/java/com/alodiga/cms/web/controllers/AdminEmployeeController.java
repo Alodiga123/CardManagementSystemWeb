@@ -42,14 +42,16 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbarbutton;
 
 public class AdminEmployeeController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Combobox cmbCountry;
-    private Combobox cmbPersonType;
+    private Combobox cmbDocumentPersonType;
     private Intbox indIdentification;
+    private Tab tabEmployeePhone;
     private Textbox txtName;
     private Textbox txtLastName;
     private Textbox txtEmail;
@@ -58,9 +60,10 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private UserEJB userEJB = null;
-    private Employee employeeParam;
+    private Employee employeeParam = null;
     private Button btnSave;
     private Integer eventType;
+    public static Employee employeeParent = null;
     private Toolbarbutton tbbTitle;
     private List<PhonePerson> phonePersonUserList = null;
     List<Employee> employeeList = new ArrayList<Employee>();
@@ -100,9 +103,20 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             showError(ex);
         }
     }
-
+    public void onChange$cmbCountry() {
+        this.clearMessage();
+        cmbDocumentPersonType.setVisible(true);
+        cmbDocumentPersonType.setValue("");
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        loadCmbDocumentsPersonType(eventType, country.getId());
+    }
+    
     public void clearFields() {
 
+    }
+    
+    public Employee getEmployeeParent() {
+        return this.employeeParent;
     }
 
     private void loadFields(Employee employee) {
@@ -126,7 +140,6 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
        txtEmail.setRawValue(null);
        btnSave.setVisible(false);
        cmbCountry.setDisabled(true);
-       cmbPersonType.setDisabled(true);
        cmbPositionEnterprise.setDisabled(true);
        cmbComercialAgency.setDisabled(true);
     }
@@ -154,7 +167,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             //Guardar la persona
             Person person = new Person();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            person.setPersonTypeId((PersonType) cmbPersonType.getSelectedItem().getValue());
+            person.setPersonTypeId(((DocumentsPersonType) cmbDocumentPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person.setEmail(txtEmail.getText());
             person.setPersonClassificationId(personClassification);
             person.setCreateDate(new Timestamp(new Date().getTime()));
@@ -165,6 +178,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             employee.setIdentificationNumber(indIdentification.getValue());
             employee.setFirstNames(txtName.getText());
             employee.setLastNames(txtLastName.getText());
+            employee.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentPersonType.getSelectedItem().getValue());
             employee.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
             employee.setEmployedPositionId((EmployedPosition) cmbPositionEnterprise.getSelectedItem().getValue()) ;
             employee = personEJB.saveEmployee(employee);
@@ -181,7 +195,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
         
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                        saveEmployee(null);
+                    saveEmployee(null);
                 break;
                 case WebConstants.EVENT_EDIT:
                     saveEmployee(employeeParam);
@@ -201,21 +215,18 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             case WebConstants.EVENT_EDIT:
                 loadFields(employeeParam);
                 loadCmbContryId(eventType);
-                loadCmbPersonType(eventType);
                 loadCmbComercialAgency(eventType);
                 loadCmbPositionEnterprise(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(employeeParam);
                 loadCmbContryId(eventType);
-                loadCmbPersonType(eventType);
                 loadCmbComercialAgency(eventType);
                 loadCmbPositionEnterprise(eventType);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbContryId(eventType);
-                loadCmbPersonType(eventType);
                 loadCmbComercialAgency(eventType);
                 loadCmbPositionEnterprise(eventType);
                 
@@ -243,13 +254,19 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             ex.printStackTrace();
         }
     }
-    
-    private void loadCmbPersonType(Integer evenInteger) {
+        
+    private void loadCmbDocumentsPersonType(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
-        List<PersonType> personTypes;
+        cmbDocumentPersonType.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        params.put(QueryConstants.PARAM_IND_NATURAL_PERSON, WebConstants.IND_NATURAL_PERSON);
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
+        request1.setParams(params);
+        List<DocumentsPersonType> documentsPersonType = null;
         try {
-            personTypes = utilsEJB.getPersonTypes(request1);
-            loadGenericCombobox(personTypes, cmbPersonType, "description", evenInteger, Long.valueOf(employeeParam != null ? employeeParam.getDocumentsPersonTypeId().getId() : 0));
+            documentsPersonType = utilsEJB.getDocumentsPersonByCountry(request1);
+            loadGenericCombobox(documentsPersonType, cmbDocumentPersonType, "description", evenInteger, Long.valueOf(employeeParam != null ? employeeParam.getDocumentsPersonTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -258,7 +275,10 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             ex.printStackTrace();
         } catch (NullParameterException ex) {
             showError(ex);
-            ex.printStackTrace();
+        } finally {
+            if (documentsPersonType == null) {
+                this.showMessage("cms.msj.DocumentsPersonTypeNull", false, null);
+            }
         }
     }
     

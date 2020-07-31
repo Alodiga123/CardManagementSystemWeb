@@ -1,7 +1,8 @@
-
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProductEJB;
+import com.alodiga.cms.commons.ejb.ProgramEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
+import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -9,14 +10,12 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.Product;
-import com.cms.commons.models.ProductHasCommerceCategory;
+import com.cms.commons.models.Employee;
+import com.cms.commons.models.PhonePerson;
+import com.cms.commons.models.Person;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,16 +32,20 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import java.util.ArrayList;
 
-public class ListCommerceCategoryController extends GenericAbstractListController<ProductHasCommerceCategory> {
+public class ListEmployeePhoneController extends GenericAbstractListController<PhonePerson> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
-    private ProductEJB productEJB = null;
-    private List<ProductHasCommerceCategory> productHasCommerceCategory = null;
-    private Product product = null;
+    private UtilsEJB utilsEJB = null;
+    private PersonEJB personEJB = null;
+    private ProgramEJB programEJB = null;
+    private List<PhonePerson> phonePersonList = null;
+    private  Employee employee = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -52,12 +55,12 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateCommerceCategory", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
 
             public void onEvent(Event evt) {
                 getData();
-                loadDataList(productHasCommerceCategory);
+                loadDataList(phonePersonList);
             }
         });
     }
@@ -70,10 +73,13 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminAddCommerceCategory.zul";
-            productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
+            adminPage = "/adminPhoneEmployee.zul";
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
             getData();
-            loadDataList(productHasCommerceCategory);
+            if (phonePersonList != null) {
+               loadDataList(phonePersonList);
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -84,33 +90,33 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", productHasCommerceCategory);
+            paramsPass.put("object", phonePersonList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
             this.showMessage("sp.error.general", true, ex);
         }
     }
-
-    public void loadDataList(List<ProductHasCommerceCategory> list) {
+     
+    public void loadDataList(List<PhonePerson> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (ProductHasCommerceCategory productHasCommerceCategory : list) {
+                for (PhonePerson phonePerson : list) {
                     item = new Listitem();
-                    item.setValue(productHasCommerceCategory);
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getMccCode()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getsegmentCommerceId().getName()));
-                    item.appendChild(new Listcell(productHasCommerceCategory.getCommerceCategoryId().getEconomicActivity()));
-                    item.appendChild(createButtonEditModal(productHasCommerceCategory));
-                    item.appendChild(createButtonViewModal(productHasCommerceCategory));
+                    item.setValue(phonePerson);
+                    item.appendChild(new Listcell(String.valueOf(phonePerson.getPhoneTypeId().getId())));
+                    item.appendChild(new Listcell(phonePerson.getNumberPhone()));
+                    item.appendChild(createButtonEditModal(phonePerson));
+                    item.appendChild(createButtonViewModal(phonePerson));
                     item.setParent(lbxRecords);
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -176,16 +182,16 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
 
     public void getData() {
         try {
-             //Producto principal
-            AdminProductController adminProduct = new AdminProductController();
-            if (adminProduct.getProductParent().getId() != null) {
-                product = adminProduct.getProductParent();
+             //Empleado Principal
+            AdminEmployeeController adminEmployee = new AdminEmployeeController();
+            if (adminEmployee.getEmployeeParent().getId() != null) {
+                employee = adminEmployee.getEmployeeParent();
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PRODUCT_KEY, product.getId());
+            params.put(Constants.PERSON_KEY, employee.getId());
             request.setParams(params);
-            productHasCommerceCategory = productEJB.getCommerceCategoryByProduct(request);
+            phonePersonList = personEJB.getPhoneHasPerson(request);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -195,37 +201,29 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
         }
     }
 
-    private void showEmptyList() {
+    private void showEmptyList()  {
         Listitem item = new Listitem();
         item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
         item.appendChild(new Listcell());
         item.appendChild(new Listcell());
-        item.setParent(lbxRecords);
+        item.appendChild(new Listcell());
+        item.appendChild(new Listcell());
+        item.setParent(lbxRecords);        
     }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            String pattern = "dd-MM-yyyy";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.tab.listcommerceCategory"));
-            file.append("_");
-            file.append(product.getName());
-            file.append("_");
-            file.append(date);
-            file.append("_");
-            Utils.exportExcel(lbxRecords, file.toString());
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.network.list"));
         } catch (Exception ex) {
             showError(ex);
-        }   
-    } 
+        }
+    }
 
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
 
-    @Override
-    public List<ProductHasCommerceCategory> getFilterList(String filter) {
+    public List<PhonePerson> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -118,10 +118,29 @@ public class ListEmployeeController extends GenericAbstractListController<Employ
                     employeeName.append(" ");
                     employeeName.append(employee.getLastNames());
                     item.appendChild(new Listcell(employeeName.toString()));
-                    item.appendChild(new Listcell(String.valueOf(employee.getIdentificationNumber())));
-                    item.appendChild(new Listcell(employee.getEmployedPositionId().getName()));
-                    item.appendChild(new Listcell(employee.getComercialAgencyId().getName()));
-                    item.appendChild(new Listcell(employee.getPersonId().getPhonePerson().getNumberPhone()));            
+                    if (String.valueOf(employee.getIdentificationNumber()) !=  null){
+                        item.appendChild(new Listcell(String.valueOf(employee.getIdentificationNumber())));
+                    } else{
+                        item.appendChild(new Listcell(""));
+                    }
+                    
+                    if (employee.getEmployedPositionId() != null) {
+                        item.appendChild(new Listcell(employee.getEmployedPositionId().getName()));
+                    } else {
+                        item.appendChild(new Listcell(""));
+                    }
+                    
+                    if(employee.getComercialAgencyId() != null){
+                        item.appendChild(new Listcell(employee.getComercialAgencyId().getName()));
+                    }else{
+                        item.appendChild(new Listcell(""));
+                    }
+                    if (employee.getPersonId().getPhonePerson() != null){
+                        item.appendChild(new Listcell(employee.getPersonId().getPhonePerson().getNumberPhone()));
+                    } else {
+                        item.appendChild(new Listcell(""));
+                    }
+                                
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, employee) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, employee) : new Listcell());
                     item.setParent(lbxRecords);
@@ -140,7 +159,15 @@ public class ListEmployeeController extends GenericAbstractListController<Employ
             showError(ex);
         }
     }
-
+    
+    private void showEmptyList(){
+                Listitem item = new Listitem();
+                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.setParent(lbxRecords);  
+    }
     
     public List<Employee> getFilterList(String filter) {
         List<Employee> employeeList_ = new ArrayList<Employee>();

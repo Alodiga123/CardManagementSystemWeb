@@ -79,9 +79,9 @@ public class ListEconomicActivityController extends GenericAbstractListControlle
                 for (EconomicActivity economicActivity : list) {
                     item = new Listitem();
                     item.setValue(economicActivity);
+                    item.appendChild(new Listcell(economicActivity.getCountryId().getName()));
                     item.appendChild(new Listcell(economicActivity.getCode().toString()));
                     item.appendChild(new Listcell(economicActivity.getDescription()));
-                    item.appendChild(new Listcell(economicActivity.getCountryId().getName()));               
                     item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, economicActivity) : new Listcell());
                     item.appendChild(permissionRead ? new ListcellViewButton(adminPage, economicActivity) : new Listcell());
                     item.setParent(lbxRecords);
