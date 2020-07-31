@@ -52,13 +52,13 @@ public class AdminEconomicActivityController extends GenericAbstractAdminControl
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.economicActivity.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.economic.activity.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.economicActivity.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.economic.activity.viw"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.economicActivity.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.economic.activity.add"));
                 break;    
             default:
                 break;

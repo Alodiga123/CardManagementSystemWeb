@@ -38,14 +38,14 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
                                                         <tab id="tabEmployee" label="${c:l('cms.common.data.EmployeeUser')}" />
-                                                        <tab id="tabPhoneEmployee" label="${c:l('sp.common.phoneNumber')}"/>                                                       
+                                                        <tab id="tabEmployeePhone" label="${c:l('sp.common.phoneNumber')}"/>                                                       
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
                                                             <include src="adminEmployee.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminPhoneEmployee.zul"/>
+                                                            <include src="listEmployeePhone.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
