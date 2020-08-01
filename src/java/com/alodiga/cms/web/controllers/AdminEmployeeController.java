@@ -86,10 +86,13 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.user.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneEmployee.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.user.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneEmployee.view"));
+                break;
+            case WebConstants.EVENT_ADD:
+                 tabEmployeePhone.setDisabled(true);
                 break;
             default:
                 break;
@@ -142,10 +145,41 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
        cmbCountry.setDisabled(true);
        cmbPositionEnterprise.setDisabled(true);
        cmbComercialAgency.setDisabled(true);
+       cmbDocumentPersonType.setDisabled(true);
     }
 
     public Boolean validateEmpty() {
-        return true;
+        if (cmbCountry.getSelectedItem()  != null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        
+        } else if (cmbDocumentPersonType.getSelectedItem() == null) {
+            cmbDocumentPersonType.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if(indIdentification.getText() != null){
+             indIdentification.setFocus(true);
+             this.showMessage("cms.error.employee.noSelected",true, null);
+        } else if(txtName.getText() != null){
+            txtName.setFocus(true);
+            this.showMessage("cms.error.field.fullName",true, null);
+        } else if(txtLastName.getText() != null){
+            txtLastName.setFocus(true);
+            this.showMessage("cms.error.field.lastName",true, null);
+        } else if(txtEmail.getText() != null){
+            txtEmail.setFocus(true);
+            this.showMessage("cms.error.field.email",true, null);
+        } else if (cmbComercialAgency.getSelectedItem() == null) {
+            cmbComercialAgency.setFocus(true);
+            this.showMessage("cms.error.comercialAgency.noSelected", true, null);
+        }  else if (cmbPositionEnterprise.getSelectedItem() == null) {
+            cmbPositionEnterprise.setFocus(true);
+            this.showMessage("cms.error.employee.positionEnterprise", true, null);
+        }
+        else {
+            return true;
+        }
+        return false;
+
     }
    
     private void saveEmployee(Employee _employee) throws RegisterNotFoundException, NullParameterException, GeneralException {
@@ -182,6 +216,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             employee.setComercialAgencyId((ComercialAgency) cmbComercialAgency.getSelectedItem().getValue());
             employee.setEmployedPositionId((EmployedPosition) cmbPositionEnterprise.getSelectedItem().getValue()) ;
             employee = personEJB.saveEmployee(employee);
+            employeeParent = employee;
             employeeParam = employee;
             this.showMessage("sp.common.save.success", false, null);
             
@@ -213,17 +248,23 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
+                employeeParent = employeeParam;
                 loadFields(employeeParam);
                 loadCmbContryId(eventType);
+                onChange$cmbCountry();
                 loadCmbComercialAgency(eventType);
                 loadCmbPositionEnterprise(eventType);
+                
                 break;
             case WebConstants.EVENT_VIEW:
+                employeeParent = employeeParam;
                 loadFields(employeeParam);
                 loadCmbContryId(eventType);
+                onChange$cmbCountry();
                 loadCmbComercialAgency(eventType);
                 loadCmbPositionEnterprise(eventType);
                 blockFields();
+                
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbContryId(eventType);
