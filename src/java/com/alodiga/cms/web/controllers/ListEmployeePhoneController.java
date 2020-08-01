@@ -1,6 +1,5 @@
 package com.alodiga.cms.web.controllers;
 
-import com.alodiga.cms.commons.ejb.ProgramEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.ejb.PersonEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
@@ -43,9 +42,8 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
     private Textbox txtName;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
-    private ProgramEJB programEJB = null;
     private List<PhonePerson> phonePersonList = null;
-    private  Employee employee = null;
+    private Person person = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -55,9 +53,8 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateNetwork", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updatePhonePerson", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
-
             public void onEvent(Event evt) {
                 getData();
                 loadDataList(phonePersonList);
@@ -73,9 +70,9 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
             permissionEdit = true;
             permissionAdd = true;
             permissionRead = true;
-            adminPage = "/adminPhoneEmployee.zul";
+            adminPage = "adminEmployeePhone.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             getData();
             if (phonePersonList != null) {
                loadDataList(phonePersonList);
@@ -106,14 +103,14 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
                 for (PhonePerson phonePerson : list) {
                     item = new Listitem();
                     item.setValue(phonePerson);
-                    item.appendChild(new Listcell(String.valueOf(phonePerson.getPhoneTypeId().getId())));
+                    item.appendChild(new Listcell(String.valueOf(phonePerson.getPhoneTypeId().getDescription())));
                     item.appendChild(new Listcell(phonePerson.getNumberPhone()));
                     item.appendChild(createButtonEditModal(phonePerson));
                     item.appendChild(createButtonViewModal(phonePerson));
                     item.setParent(lbxRecords);
                 }
             } else {
-                btnDownload.setVisible(false);
+                btnDownload.setVisible(true);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());
@@ -181,17 +178,18 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
     }
 
     public void getData() {
+        Employee employee = null;
         try {
              //Empleado Principal
             AdminEmployeeController adminEmployee = new AdminEmployeeController();
-            if (adminEmployee.getEmployeeParent().getId() != null) {
+            if (adminEmployee.getEmployeeParent().getPersonId() != null) {
                 employee = adminEmployee.getEmployeeParent();
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, employee.getId());
+            params.put(Constants.PERSON_KEY, employee.getPersonId().getId());
             request.setParams(params);
-            phonePersonList = personEJB.getPhoneHasPerson(request);
+            phonePersonList = personEJB.getPhoneByPerson(request);            
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
