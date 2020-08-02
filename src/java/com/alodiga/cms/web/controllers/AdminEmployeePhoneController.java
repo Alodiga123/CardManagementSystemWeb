@@ -1,19 +1,26 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.Country;
+import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.Employee;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.cms.commons.util.QueryConstants;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -26,14 +33,25 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Radio;
 
 public class AdminEmployeePhoneController extends GenericAbstractAdminController {
 
             
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtPhone;
+    private Textbox txtCodeCountry;
+    private Textbox txtAreaCode;
+    private Textbox txtPhoneExtension;
     private PersonEJB personEJB = null;
+    private UtilsEJB utilsEJB = null;
+    private Combobox cmbCountry; 
     private Combobox cmbPhoneType;
+    private Radio rIsPrincipalNumberYes;
+    private Radio rIsPrincipalNumberNo;
     private PhonePerson phonePersonParam;
     private Button btnSave;
     private Integer eventType;
@@ -58,11 +76,23 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         super.initialize();
         try {
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            utilsEJB  = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
         }
-    }   
+    }
+    
+    public void onChange$cmbCountry() {
+        this.clearMessage();
+        
+        txtCodeCountry.setVisible(true);
+        txtCodeCountry.setValue("");
+        
+        Country country = (Country) cmbCountry.getSelectedItem().getValue();
+        txtCodeCountry.setValue(country.getCode());
+    }
+    
 
     public void clearFields() {
         txtPhone.setRawValue(null);;
@@ -72,6 +102,10 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     private void loadFields(PhonePerson phonePerson) {
         try {
             txtPhone.setText(phonePerson.getNumberPhone());
+            txtCodeCountry.setText(phonePerson.getCountryCode());
+            txtAreaCode.setText(phonePerson.getAreaCode());
+            txtPhoneExtension.setText(phonePerson.getExtensionPhoneNumber());
+            
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -95,7 +129,16 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         } else if (cmbPhoneType.getSelectedItem() == null) {
             cmbPhoneType.setFocus(true);
             this.showMessage("cms.error.phoneType.notSelected", true, null);
-        }else {
+        } else if (txtAreaCode.getText().isEmpty()) {
+            txtAreaCode.setFocus(true);
+            this.showMessage("cms.error.employee.areaCode", true, null);
+        } else if (txtPhoneExtension.getText().isEmpty()) {
+            txtPhoneExtension.setFocus(true);
+            this.showMessage("cms.error.employee.extensionPhone", true, null);
+        } else if ((!rIsPrincipalNumberYes.isChecked()) && (!rIsPrincipalNumberNo.isChecked())) {
+            this.showMessage("cms.error.employee.PhoneMain", true, null);
+        }
+        else {
             return true;
         }
         return false;
@@ -104,7 +147,8 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
 
 
     private void savePhone(PhonePerson _phonePerson) {
-        Employee employee = null;       
+        Employee employee = null;
+        boolean indPrincipalPhone  = true;
         try {
             PhonePerson phonePerson = null;
 
@@ -115,6 +159,11 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
                 phonePerson = new PhonePerson();
             }
             
+            if (rIsPrincipalNumberYes.isChecked()) {
+                indPrincipalPhone = true;
+            } else {
+                indPrincipalPhone = false;
+            }
             //Obtener Person
              AdminEmployeeController adminEmployee = new AdminEmployeeController();
             if (adminEmployee.getEmployeeParent().getPersonId().getId() != null) {
@@ -123,8 +172,13 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             
             //Guardar telefono
             phonePerson.setPersonId(employee.getPersonId());
+            phonePerson.setCountryCode(txtCodeCountry.getText());
+            phonePerson.setAreaCode(txtAreaCode.getText());
             phonePerson.setNumberPhone(txtPhone.getText());
+            phonePerson.setExtensionPhoneNumber(txtPhoneExtension.getText());
+            phonePerson.setIndMainPhone(indPrincipalPhone);
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
+            
             phonePerson = personEJB.savePhonePerson(phonePerson);
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updatePhonePerson", EventQueues.APPLICATION, true).publish(new Event(""));
@@ -157,15 +211,20 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             case WebConstants.EVENT_EDIT:
                 loadFields(phonePersonParam);
                 loadcmbPhoneType(eventType);
+                loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(phonePersonParam);
                 txtPhone.setReadonly(true);
                 blockFields();
                 loadcmbPhoneType(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
                 loadcmbPhoneType(eventType);
+                loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 break;
             default:
                 break;
@@ -189,8 +248,22 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             ex.printStackTrace();
         }
         
+     }
+    
+    private void loadCmbCountry(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<Country> countryList;
+        try {
+            countryList = utilsEJB.getCountries(request1);
+            loadGenericCombobox(countryList, cmbCountry, "name", evenInteger, Long.valueOf(phonePersonParam != null ? phonePersonParam.getPersonId().getCountryId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
         }
-      
+    }     
 }
 
     
