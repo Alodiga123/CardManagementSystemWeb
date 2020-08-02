@@ -27,9 +27,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.product')}" onClick='Executions.sendRedirect(&quot;listEmployee.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.employee.list')}" onClick='Executions.sendRedirect(&quot;listEmployee.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.product.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.employee.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -38,14 +38,14 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
                                                         <tab id="tabEmployee" label="${c:l('cms.common.data.EmployeeUser')}" />
-                                                        <tab id="tabPhoneEmployee" label="${c:l('sp.common.phoneNumber')}"/>                                                       
+                                                        <tab id="tabEmployeePhone" label="${c:l('sp.common.phoneNumber')}"/>                                                       
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
                                                             <include src="adminEmployee.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminPhoneEmployee.zul"/>
+                                                            <include src="listEmployeePhone.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>

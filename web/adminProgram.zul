@@ -159,7 +159,7 @@
                                                                 </grid>
                                                             </hbox> 
                                                             <hlayout>
-                                                                <textbox id="txtBinIin" width="265px" maxlength="15" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
+                                                                <textbox id="txtBinIin" width="265px" maxlength="6" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>

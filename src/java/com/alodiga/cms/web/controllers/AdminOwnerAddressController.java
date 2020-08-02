@@ -347,6 +347,8 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
                 onChange$cmbCountry();
                 onChange$cmbState();
                 onChange$cmbCity();
+                txtLine1.setReadonly(true);
+                txtLine2.setReadonly(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(addressParam);
@@ -362,6 +364,8 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
                 loadCmbCountry(eventType);
                 LoadCmbStreetType(eventType);
                 loadCmbEdificationType(eventType);
+                txtLine1.setReadonly(true);
+                txtLine2.setReadonly(true);
                 break;
             default:
                 break;

@@ -28,6 +28,8 @@
                                                 <toolbarbutton label="${c:l('cms.menu.economic.activity.list')}" onClick='Executions.sendRedirect(&quot;listEconomicActivity.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label=""/>
+                                                 |
+                                                <toolbarbutton id="tbbCurrentAction" />                 
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -51,7 +53,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.code')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.common.code.ciiu')}" sclass="lblbold"/>
                                                             <label value="${c:l('sp.common.description')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.country.name')}" sclass="lblbold"/>
                                                         </row>

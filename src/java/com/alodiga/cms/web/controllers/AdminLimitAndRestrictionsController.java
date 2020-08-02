@@ -169,6 +169,16 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         } else if (txtMaxNumbTransMont.getText().isEmpty()) {
             txtMaxNumbTransMont.setFocus(true);
             this.showMessage("cms.error.maxNumbTransMont", true, null);
+        } else if (txtMaxNumbTransDaily.getValue() > txtMaxNumbTransMont.getValue()){
+            this.showMessage("cms.product.limitAndRestrictions.DailylessMont", true, null);
+        } else if (txtAmountMinTransDomestic.getValue() > txtAmountMaxTransDomestic.getValue()){
+            this.showMessage("cms.product.limitAndRestrictions.DailylessMontNational", true, null);
+        } else if (txtAmountMinTransInt.getValue() > txtAmountMaxTransInt.getValue()){
+            this.showMessage("cms.product.limitAndRestrictions.DailylessMontInter", true, null);
+        } else if(txtDailyAmountLimitDomestic.getValue() > txtMonthlyAmountLimitDomestic.getValue()){
+            this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimit", true, null);
+        } else if(txtDailyAmountLimitInt.getValue() > txtMonthlyAmountLimitInt.getValue()){
+            this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimitInter", true, null);
         } else if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
             if (txtAmountMinTransDomestic.getText().isEmpty()) {
                 txtAmountMinTransDomestic.setFocus(true);

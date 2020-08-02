@@ -231,9 +231,9 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
         } else if (txtDateInscriptionRegister.getText().isEmpty()) {
             txtDateInscriptionRegister.setFocus(true);
             this.showMessage("cms.error.date.inscriptionRegister", true, null);
-        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) > 0) {
+        } else if (today.compareTo(txtDateInscriptionRegister.getValue()) < 0) {
             txtDateInscriptionRegister.setFocus(true);
-            this.showMessage("cms.error.date.inscriptionRegister.valid", true, null);
+            this.showMessage("cms.error.date.inscriptionRegister.invalid", true, null);
         } else if (dbxPaidInCapital.getText().isEmpty()) {
             dbxPaidInCapital.setFocus(true);
             this.showMessage("cms.error.field.paidInCapital", true, null);
