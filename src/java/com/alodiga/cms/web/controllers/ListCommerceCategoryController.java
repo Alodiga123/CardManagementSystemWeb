@@ -213,7 +213,6 @@ public class ListCommerceCategoryController extends GenericAbstractListControlle
             file.append(product.getName());
             file.append("_");
             file.append(date);
-            file.append("_");
             Utils.exportExcel(lbxRecords, file.toString());
         } catch (Exception ex) {
             showError(ex);
