@@ -10,7 +10,7 @@
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
-                        <div width="900px" align="left" height="200px">
+                        <div width="900px" align="left" height="300px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>                                       
@@ -26,19 +26,61 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.phoneType.list')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.crud.country.list')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.areaCode')}" sclass="lblbold"/>
+                                                        </row>
+                                                        
+                                                        <row> 
                                                             <hlayout>
-                                                                <combobox id="cmbPhoneType" width="265px" mold="rounded" readonly="true"/>
+                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            
+                                                                <textbox id="txtCodeCountry" width="150px" maxlength="120"/>
+                                                                
+                                                            <hlayout>
+                                                                <textbox id="txtAreaCode" width="150px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>  
                                                         <row>
                                                             <label value="${c:l('sp.common.phoneNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.extensionPhone')}" sclass="lblbold"/>  
+                                                            <label value="${c:l('cms.menu.phoneType.list')}" sclass="lblbold"/>     
+                                                        </row>
+                                                        
+                                                        <row>
                                                             <hlayout>
                                                                 <textbox id="txtPhone" width="260px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                        </row>                                    
+                                                            <hlayout>
+                                                                <textbox id="txtPhoneExtension" width="260px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbPhoneType" width="265px" mold="rounded" readonly="true"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row> 
+                                                        <row>
+                                                           <label value="${c:l('sp.common.principalPhoneNumber')}" sclass="lblbold"/> 
+                                                        </row>
+                                                        <row>
+                                                            <hbox>
+                                                                <radiogroup id="isPrincipalNumber" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rIsPrincipalNumberYes" label="${c:l('cms.commom.Yes')}" radiogroup="isPrincipalNumber" />
+                                                                            <radio id="rIsPrincipalNumerNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumber" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
+                                                        </row>
+                                                                                           
                                                     </rows>
                                                 </grid>
                                             </vlayout>
