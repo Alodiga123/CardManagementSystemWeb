@@ -15,7 +15,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="890px">
+                        <div width="1200px" align="left" height="630px">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
@@ -35,7 +35,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
+                                                <tabbox id="tbxEmployeeTabs" width="970px" height="400px">
                                                     <tabs>
                                                         <tab id="tabEmployee" label="${c:l('cms.common.data.EmployeeUser')}" />
                                                         <tab id="tabEmployeePhone" label="${c:l('sp.common.phoneNumber')}"/>                                                       

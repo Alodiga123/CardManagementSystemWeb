@@ -4,33 +4,16 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPhoneEmployee" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminEmployeePhone" class="general-window">
+    <window id="winAdminPhoneEmployee" title="${c:l('cms.common.crud.EmployeePhone')}" width="950px" height="250px" apply="com.alodiga.cms.web.controllers.AdminEmployeePhoneController" closable="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
-            <north border="none" size="52px" class="content-transparent">
-                <include src="adminHeader.zul"/>
-            </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
                     <hlayout >
-                        <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="900px" align="left" height="200px">
                             <hlayout>
-                                <div>
-                                    <include src="adminMainMenu.zul"/>
-                                </div>
                                 <div width="900px">
-                                    <vlayout>
-                                        <div height="20px" width="100%" align="left">
-                                            <!--Bread crumb-->
-                                            <hlayout>
-                                                <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.phoneEmployee.add')}"/>
-                                                |
-                                                <toolbarbutton id="tbbCurrentAction" />
-                                            </hlayout>
-                                        </div>
+                                    <vlayout>                                       
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
@@ -75,9 +58,6 @@
                     </hlayout>
                 </div>
             </center>
-            <south border="none" size="40px">
-                <include src="adminFooter.zul"/>
-            </south>
         </borderlayout>
     </window>
 </zk>

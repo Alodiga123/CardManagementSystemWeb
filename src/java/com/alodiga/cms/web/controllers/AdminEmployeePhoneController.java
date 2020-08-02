@@ -18,6 +18,8 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -54,16 +56,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     @Override
     public void initialize() {
         super.initialize();
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneEmployee.edit"));
-                break;
-            case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneEmployee.view"));
-                break;
-            default:
-                break;
-        }        
         try {
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
@@ -135,6 +127,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
             phonePerson = personEJB.savePhonePerson(phonePerson);
             this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updatePhonePerson", EventQueues.APPLICATION, true).publish(new Event(""));
             btnSave.setVisible(false);
             
             } catch (Exception ex) {
