@@ -155,7 +155,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             if (_phonePerson != null) {
 
            phonePerson = _phonePerson;
-            } else {//New country
+            } else {
                 phonePerson = new PhonePerson();
             }
             
@@ -213,6 +213,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
                 loadcmbPhoneType(eventType);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
+                txtCodeCountry.setReadonly(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(phonePersonParam);
@@ -225,6 +226,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
                 loadcmbPhoneType(eventType);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
+                txtCodeCountry.setReadonly(true);
                 break;
             default:
                 break;

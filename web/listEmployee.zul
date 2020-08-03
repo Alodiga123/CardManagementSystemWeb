@@ -53,11 +53,11 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.employee.name')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identification.number')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.aditionalCard.positionEnterprise')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.data.EmployeeUser')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identification.employee')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.user.position')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.agencyComercial')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.enterprisePhone')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.phone')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

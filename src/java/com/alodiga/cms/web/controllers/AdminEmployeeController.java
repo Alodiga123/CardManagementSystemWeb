@@ -86,10 +86,10 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneEmployee.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.employee.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.phoneEmployee.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.employee.view"));
                 break;
             case WebConstants.EVENT_ADD:
                  tabEmployeePhone.setDisabled(true);
@@ -149,23 +149,22 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
     }
 
     public Boolean validateEmpty() {
-        if (cmbCountry.getSelectedItem()  != null) {
+        if (cmbCountry.getSelectedItem()  == null) {
             cmbCountry.setFocus(true);
-            this.showMessage("cms.error.country.notSelected", true, null);
-        
+            this.showMessage("cms.error.country.notSelected", true, null);     
         } else if (cmbDocumentPersonType.getSelectedItem() == null) {
             cmbDocumentPersonType.setFocus(true);
             this.showMessage("cms.error.documentType.notSelected", true, null);
-        } else if(indIdentification.getText() != null){
+        } else if(indIdentification.getText() == null){
              indIdentification.setFocus(true);
              this.showMessage("cms.error.employee.noSelected",true, null);
-        } else if(txtName.getText() != null){
+        } else if(txtName.getText() == null){
             txtName.setFocus(true);
             this.showMessage("cms.error.field.fullName",true, null);
-        } else if(txtLastName.getText() != null){
+        } else if(txtLastName.getText() == null){
             txtLastName.setFocus(true);
             this.showMessage("cms.error.field.lastName",true, null);
-        } else if(txtEmail.getText() != null){
+        } else if(txtEmail.getText() == null){
             txtEmail.setFocus(true);
             this.showMessage("cms.error.field.email",true, null);
         } else if (cmbComercialAgency.getSelectedItem() == null) {
