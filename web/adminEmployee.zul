@@ -17,7 +17,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
+                                                <div align="right" style="margin-right:8px;">
                                                     <hlayout>
                                                         <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
                                                         <separator/>
@@ -61,7 +61,7 @@
                                                         <row>
                                                             <textbox id="txtName" width="250px" maxlength="15"/>
                                                             <textbox id="txtLastName" width="250px" maxlength="15"/>
-                                                            <textbox id="txtEmail" width="250px" maxlength="15"/>
+                                                            <textbox id="txtEmail" width="250px" maxlength="30"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.aditionalCard.positionEnterprise')}" sclass="lblbold"/>
