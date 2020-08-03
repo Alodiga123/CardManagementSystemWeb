@@ -84,11 +84,9 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     }
     
     public void onChange$cmbCountry() {
-        this.clearMessage();
-        
+        this.clearMessage();        
         txtCodeCountry.setVisible(true);
-        txtCodeCountry.setValue("");
-        
+        txtCodeCountry.setValue("");        
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         txtCodeCountry.setValue(country.getCode());
     }
@@ -104,8 +102,12 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             txtPhone.setText(phonePerson.getNumberPhone());
             txtCodeCountry.setText(phonePerson.getCountryCode());
             txtAreaCode.setText(phonePerson.getAreaCode());
-            txtPhoneExtension.setText(phonePerson.getExtensionPhoneNumber());
-            
+            txtPhoneExtension.setText(phonePerson.getExtensionPhoneNumber()); 
+            if (phonePerson.getIndMainPhone() == true) {
+                rIsPrincipalNumberYes.setChecked(true);
+            } else {
+                rIsPrincipalNumberNo.setChecked(true);
+            }
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
@@ -174,6 +176,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             
             //Guardar telefono
             phonePerson.setPersonId(employee.getPersonId());
+            phonePerson.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             phonePerson.setCountryCode(txtCodeCountry.getText());
             phonePerson.setAreaCode(txtAreaCode.getText());
             phonePerson.setNumberPhone(txtPhone.getText());
