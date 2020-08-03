@@ -28,10 +28,14 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="5" height="250px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="7" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.phoneType')}" width="400px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.phoneNumber')}" width="400px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.codeCountry')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.areaCode')}" width="100px" sort="auto"/>                                                     
+                                                    <listheader label="${c:l('cms.common.phoneNumber')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.extension')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.employeePhoneMain')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.menu.phoneTypeEmployee')}" width="150px" sort="auto"/>  
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
