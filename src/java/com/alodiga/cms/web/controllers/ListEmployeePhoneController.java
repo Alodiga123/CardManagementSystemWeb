@@ -103,8 +103,12 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
                 for (PhonePerson phonePerson : list) {
                     item = new Listitem();
                     item.setValue(phonePerson);
-                    item.appendChild(new Listcell(String.valueOf(phonePerson.getPhoneTypeId().getDescription())));
+                    item.appendChild(new Listcell(phonePerson.getCountryCode()));
+                    item.appendChild(new Listcell(phonePerson.getAreaCode()));
                     item.appendChild(new Listcell(phonePerson.getNumberPhone()));
+                    item.appendChild(new Listcell(phonePerson.getExtensionPhoneNumber()));
+                    item.appendChild(new Listcell(String.valueOf(phonePerson.getIndMainPhone())));
+                    item.appendChild(new Listcell(String.valueOf(phonePerson.getPhoneTypeId().getDescription())));
                     item.appendChild(createButtonEditModal(phonePerson));
                     item.appendChild(createButtonViewModal(phonePerson));
                     item.setParent(lbxRecords);

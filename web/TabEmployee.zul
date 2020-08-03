@@ -38,7 +38,7 @@
                                                 <tabbox id="tbxEmployeeTabs" width="970px" height="400px">
                                                     <tabs>
                                                         <tab id="tabEmployee" label="${c:l('cms.common.data.EmployeeUser')}" />
-                                                        <tab id="tabEmployeePhone" label="${c:l('sp.common.phoneNumber')}"/>                                                       
+                                                        <tab id="tabEmployeePhone" label="${c:l('sp.common.phone')}"/>                                                       
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
