@@ -96,6 +96,7 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
     }
      
     public void loadDataList(List<PhonePerson> list) {
+        String indMainPhone = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -107,8 +108,17 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
                     item.appendChild(new Listcell(phonePerson.getAreaCode()));
                     item.appendChild(new Listcell(phonePerson.getNumberPhone()));
                     item.appendChild(new Listcell(phonePerson.getExtensionPhoneNumber()));
-                    item.appendChild(new Listcell(String.valueOf(phonePerson.getIndMainPhone())));
-                    item.appendChild(new Listcell(String.valueOf(phonePerson.getPhoneTypeId().getDescription())));
+                    if (phonePerson.getIndMainPhone() != null) {
+                        if (phonePerson.getIndMainPhone() == true) {
+                            indMainPhone = "Si";
+                        } else {
+                            indMainPhone = "No";
+                        }
+                        item.appendChild(new Listcell(indMainPhone));
+                    } else {
+                        item.appendChild(new Listcell("No"));
+                    }                    
+                    item.appendChild(new Listcell(phonePerson.getPhoneTypeId().getDescription()));
                     item.appendChild(createButtonEditModal(phonePerson));
                     item.appendChild(createButtonViewModal(phonePerson));
                     item.setParent(lbxRecords);

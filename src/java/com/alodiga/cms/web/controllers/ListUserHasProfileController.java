@@ -75,14 +75,9 @@ public class ListUserHasProfileController extends GenericAbstractListController<
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                //btnDownload.setVisible(true);
                 for (UserHasProfile userHasProfile : list) {
                     item = new Listitem();
-                    item.setValue(userHasProfile);
-                    //StringBuilder userName = new StringBuilder(user.getFirstNames());
-                    //userName.append(" ");
-                    //userName.append(user.getLastNames());
-             
+                    item.setValue(userHasProfile);             
                     item.appendChild(new Listcell(userHasProfile.getUserId().getFirstNames().concat(" ").concat(userHasProfile.getUserId().getLastNames())));
                     item.appendChild(new Listcell(userHasProfile.getProfileId().getName()));
                     String indEnabled = null;
