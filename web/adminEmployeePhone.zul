@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPhoneEmployee" title="${c:l('cms.common.crud.EmployeePhone')}" width="950px" height="250px" apply="com.alodiga.cms.web.controllers.AdminEmployeePhoneController" closable="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminPhoneEmployee" title="${c:l('cms.common.crud.EmployeePhone')}" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminEmployeePhoneController" closable="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -26,7 +26,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.crud.country.list')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.areaCode')}" sclass="lblbold"/>
                                                         </row>
@@ -45,9 +45,9 @@
                                                             </hlayout>
                                                         </row>  
                                                         <row>
-                                                            <label value="${c:l('sp.common.phoneNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.extensionPhone')}" sclass="lblbold"/>  
-                                                            <label value="${c:l('cms.menu.phoneType.list')}" sclass="lblbold"/>     
+                                                            <label value="${c:l('cms.menu.phoneTypeEmployee')}" sclass="lblbold"/>     
                                                         </row>
                                                         
                                                         <row>
@@ -65,7 +65,7 @@
                                                             </hlayout>
                                                         </row> 
                                                         <row>
-                                                           <label value="${c:l('sp.common.principalPhoneNumber')}" sclass="lblbold"/> 
+                                                           <label value="${c:l('cms.menu.phonEmployee.MainPhone')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
                                                             <hbox>

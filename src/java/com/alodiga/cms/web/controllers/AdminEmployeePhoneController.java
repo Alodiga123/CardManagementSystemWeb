@@ -113,7 +113,10 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     }
 
     public void blockFields() {
+        txtCodeCountry.setReadonly(true);
         txtPhone.setReadonly(true);
+        txtAreaCode.setReadonly(true);
+        txtPhoneExtension.setReadonly(true);
         btnSave.setVisible(false);
     }
     
@@ -125,7 +128,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         if (txtPhone.getText().isEmpty()) {
             txtPhone.setFocus(true);
             this.showMessage("cms.error.field.phoneNumber", true, null);
-        
         } else if (cmbPhoneType.getSelectedItem() == null) {
             cmbPhoneType.setFocus(true);
             this.showMessage("cms.error.phoneType.notSelected", true, null);
@@ -212,15 +214,14 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
                 loadFields(phonePersonParam);
                 loadcmbPhoneType(eventType);
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
                 txtCodeCountry.setReadonly(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(phonePersonParam);
                 txtPhone.setReadonly(true);
                 blockFields();
+                loadCmbCountry(eventType);
                 loadcmbPhoneType(eventType);
-                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
                 loadcmbPhoneType(eventType);
