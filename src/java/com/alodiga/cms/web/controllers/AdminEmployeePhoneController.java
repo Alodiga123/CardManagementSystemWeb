@@ -140,8 +140,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         } else if (txtPhoneExtension.getText().isEmpty()) {
             txtPhoneExtension.setFocus(true);
             this.showMessage("cms.error.employee.extensionPhone", true, null);
-        } else if ((!rIsPrincipalNumberYes.isChecked()) && (!rIsPrincipalNumberNo.isChecked())) {
-            this.showMessage("cms.error.employee.PhoneMain", true, null);
         }
         else {
             return true;
@@ -160,13 +158,15 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             }
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
-            params.put(Constants.PARAM_MAIN_PHONE, employee.getPersonId().getPhonePerson().getIndMainPhone());
+            params.put(Constants.PERSON_KEY, employee.getPersonId().getId());
             request.setParams(params);
             phonePersonList = personEJB.getValidateMainPhone(request);
-            if (phonePersonList != null){
-                this.showMessage("cms.error.field.loginExistInBD", true, null);
+            if (rIsPrincipalNumberYes.isChecked()){
+                if(phonePersonList != null){
+                this.showMessage("cms.error.employee.PhoneMainYes", true, null);
                 txtPhone.setFocus(true);
                 return false;
+                }
             }
         } catch (Exception ex) {
             showError(ex);
