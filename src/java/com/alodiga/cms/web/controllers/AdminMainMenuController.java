@@ -137,6 +137,7 @@ public class AdminMainMenuController extends GenericForwardComposer {
     private void loadBasicTableManagementGroup(PermissionGroup permissionGroup) {
         Listgroup listgroup = createListGroup(permissionGroup);
         createCell(Constants.LIST_COUNTRY, "listCountry.zul", permissionGroup, listgroup);
+        createCell(Constants.LIST_CITY, "listCity.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_CURRENCY, "listCurrency.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_CLASSIFICATION_PERSON, "listClassificationPerson.zul", permissionGroup, listgroup);
         createCell(Constants.LIST_STATE, "listState.zul", permissionGroup, listgroup);
