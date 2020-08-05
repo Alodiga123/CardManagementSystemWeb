@@ -226,7 +226,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
  
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
-        
+        if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveEmployee(null);
@@ -237,7 +237,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
                 default:
                 break;
             }
-        
+        }
     }
 
     public void onclick$btnBack() {

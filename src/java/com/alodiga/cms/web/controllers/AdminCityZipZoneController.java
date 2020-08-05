@@ -119,13 +119,13 @@ public class AdminCityZipZoneController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         if (txtName.getText().isEmpty()) {
             txtName.setFocus(true);
-            this.showMessage("cms.error.field.phoneNumber", true, null);
+            this.showMessage("cms.error.field.fullName", true, null);
         } else if (txtCode.getText().isEmpty()) {
             txtCode.setFocus(true);
-            this.showMessage("cms.error.employee.areaCode", true, null);
+            this.showMessage("cms.error.field.cityEmptyCode", true, null);
         } else if (txtCity.getText().isEmpty()) {
             txtCity.setFocus(true);
-            this.showMessage("cms.error.employee.extensionPhone", true, null);
+            this.showMessage("cms.error.field.city", true, null);
         } else {
             return true;
         }
