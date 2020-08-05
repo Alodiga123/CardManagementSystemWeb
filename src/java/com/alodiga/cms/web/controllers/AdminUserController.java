@@ -69,8 +69,9 @@ public class AdminUserController extends GenericAbstractAdminController {
     private Toolbarbutton tbbTitle;
     private List<PhonePerson> phonePersonUserList = null;
     Employee employee = null;
-    List<User> userList = new ArrayList<User>();
-
+    List<User> userEmployeeList = new ArrayList<User>();
+    List<User> userLoginList = new ArrayList<User>();
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -199,30 +200,40 @@ public class AdminUserController extends GenericAbstractAdminController {
     }
     
     public boolean validateUser() {
+        userEmployeeList.clear();
+        userLoginList.clear();
         try {
+            //Valida si el empleado ya tiene usuario
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PARAM_EMPLOYEE, employee.getId());
             request1.setParams(params);
-            userList = personEJB.getValidateEmployee(request1);
-            if (userList != null) {
+            userEmployeeList = personEJB.getValidateEmployee(request1);
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
+            if (userEmployeeList.size() > 0) {
                 this.showMessage("cms.error.field.employeeExistInBD", true, null);
                 cmbEmployee.setFocus(true);
                 return false;
             }
-            request1 = new EJBRequest();
-            params = new HashMap();
-            params.put(Constants.PARAM_USER, txtLogin.getValue());
-            request1.setParams(params);
-            userList = personEJB.getUserByLogin(request1);
-            if (userList != null) {
-                this.showMessage("cms.error.field.loginExistInBD", true, null);
-                txtLogin.setFocus(true);
-                return false;
+            try {
+                //Valida si el login ingresado ya existe en BD
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PARAM_USER, txtLogin.getValue());
+                request1.setParams(params);
+                userLoginList = personEJB.getUserByLogin(request1);
+            } catch (Exception ex) {
+                showError(ex);
+            } finally {
+                if (userLoginList.size() > 0) {
+                    this.showMessage("cms.error.field.loginExistInBD", true, null);
+                    txtLogin.setFocus(true);
+                    return false;
+                }
             }
-        } catch (Exception ex) {
-            showError(ex);
-        }        
+        }       
         return true;
     }
       
@@ -267,7 +278,11 @@ public class AdminUserController extends GenericAbstractAdminController {
             this.showMessage("cms.msj.error.EmployeeAuthorizeNotEqualToEmployeeUser", true, null);
             cmbAuthorizeEmployee.setFocus(true);           
         } else {
-            lblAuthorizeExtAlodiga.setValue(employeeAuthorize.getPersonId().getPhonePerson().getNumberPhone());
+            if (employeeAuthorize.getPersonId().getPhonePerson() != null) {
+                lblAuthorizeExtAlodiga.setValue(employeeAuthorize.getPersonId().getPhonePerson().getNumberPhone());
+            } else {
+                lblAuthorizeExtAlodiga.setValue("");
+            }
         }        
     }
 
@@ -333,7 +348,9 @@ public class AdminUserController extends GenericAbstractAdminController {
                     } 
                 break;
                 case WebConstants.EVENT_EDIT:
-                    saveUser(userParam);
+                    if (validateUser()) {
+                        saveUser(userParam);
+                    }                    
                 break;
                 default:
                 break;
