@@ -217,6 +217,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             employee = personEJB.saveEmployee(employee);
             employeeParent = employee;
             employeeParam = employee;
+            tabEmployeePhone.setDisabled(false);
             this.showMessage("sp.common.save.success", false, null);
             
         } catch (WrongValueException ex) {
@@ -226,7 +227,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
  
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
-        
+        if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveEmployee(null);
@@ -237,7 +238,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
                 default:
                 break;
             }
-        
+        }
     }
 
     public void onclick$btnBack() {

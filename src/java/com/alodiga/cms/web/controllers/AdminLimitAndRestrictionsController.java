@@ -153,7 +153,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         if ((cmbProductUse.getSelectedItem() != null)) {
             productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
         }
-
         if (cmbChannel.getSelectedItem() == null) {
             cmbChannel.setFocus(true);
             this.showMessage("cms.error.chanel.noSelected", true, null);
@@ -169,17 +168,7 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         } else if (txtMaxNumbTransMont.getText().isEmpty()) {
             txtMaxNumbTransMont.setFocus(true);
             this.showMessage("cms.error.maxNumbTransMont", true, null);
-        } else if (txtMaxNumbTransDaily.getValue() > txtMaxNumbTransMont.getValue()){
-            this.showMessage("cms.product.limitAndRestrictions.DailylessMont", true, null);
-        } else if (txtAmountMinTransDomestic.getValue() > txtAmountMaxTransDomestic.getValue()){
-            this.showMessage("cms.product.limitAndRestrictions.DailylessMontNational", true, null);
-        } else if (txtAmountMinTransInt.getValue() > txtAmountMaxTransInt.getValue()){
-            this.showMessage("cms.product.limitAndRestrictions.DailylessMontInter", true, null);
-        } else if(txtDailyAmountLimitDomestic.getValue() > txtMonthlyAmountLimitDomestic.getValue()){
-            this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimit", true, null);
-        } else if(txtDailyAmountLimitInt.getValue() > txtMonthlyAmountLimitInt.getValue()){
-            this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimitInter", true, null);
-        } else if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
+        }  else if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
             if (txtAmountMinTransDomestic.getText().isEmpty()) {
                 txtAmountMinTransDomestic.setFocus(true);
                 this.showMessage("cms.error.amountMinTransDomestic", true, null);
@@ -192,7 +181,13 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             } else if (txtMonthlyAmountLimitDomestic.getText().isEmpty()) {
                 txtMonthlyAmountLimitDomestic.setFocus(true);
                 this.showMessage("cms.error.monthlyAmountLimitDomestic", true, null);
-            } else {
+            } else if (txtMaxNumbTransDaily.getValue() > txtMaxNumbTransMont.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMont", true, null);
+            } else if (txtAmountMinTransDomestic.getValue() > txtAmountMaxTransDomestic.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMontNational", true, null);
+            } else if(txtDailyAmountLimitDomestic.getValue() > txtMonthlyAmountLimitDomestic.getValue()){
+            this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimit", true, null);
+            }  else {
                 return true;
             }
         } else if (productUse.getId() == WebConstants.PRODUCT_USE_INTERNATIONAL) {
@@ -208,6 +203,12 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             } else if (txtMonthlyAmountLimitInt.getText().isEmpty()) {
                 txtMonthlyAmountLimitInt.setFocus(true);
                 this.showMessage("cms.error.monthlyAmountLimitInt", true, null);
+            } else if (txtMaxNumbTransDaily.getValue() > txtMaxNumbTransMont.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMont", true, null);
+            } else if (txtAmountMinTransInt.getValue() > txtAmountMaxTransInt.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMontInter", true, null);
+            } else if(txtDailyAmountLimitInt.getValue() > txtMonthlyAmountLimitInt.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimitInter", true, null);
             } else {
                 return true;
             }
@@ -236,6 +237,16 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             } else if (txtMonthlyAmountLimitInt.getText().isEmpty()) {
                 txtMonthlyAmountLimitInt.setFocus(true);
                 this.showMessage("cms.error.monthlyAmountLimitInt", true, null);
+            } else if (txtMaxNumbTransDaily.getValue() > txtMaxNumbTransMont.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMont", true, null);
+            } else if (txtAmountMinTransDomestic.getValue() > txtAmountMaxTransDomestic.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMontNational", true, null);
+            } else if (txtAmountMinTransInt.getValue() > txtAmountMaxTransInt.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailylessMontInter", true, null);
+            } else if(txtDailyAmountLimitDomestic.getValue() > txtMonthlyAmountLimitDomestic.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimit", true, null);
+            } else if(txtDailyAmountLimitInt.getValue() > txtMonthlyAmountLimitInt.getValue()){
+                this.showMessage("cms.product.limitAndRestrictions.DailyLessMontLimitInter", true, null);
             } else {
                 return true;
             }

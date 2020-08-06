@@ -109,6 +109,8 @@ public class AdminAverageCargeUsageController extends GenericAbstractAdminContro
         } else if (dbxAverageSpendMonth.getText().isEmpty()) {
             dbxAverageSpendMonth.setFocus(true);
             this.showMessage("cms.error.field.averageSpendMonth", true, null);
+        } else if(dbxAverageSpendMonth.getValue() > dbxAverageLoadMonth.getValue()){
+            this.showMessage("cms.error.field.averageSpendMonthError", true, null);
         } else {
             return true;
         }

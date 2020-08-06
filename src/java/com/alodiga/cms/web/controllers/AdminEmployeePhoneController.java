@@ -18,6 +18,7 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     private Integer eventType;
     private Toolbarbutton tbbTitle;
     public Window winAdminPhoneEmployee;
-    
+    List<PhonePerson> phonePersonList = new ArrayList<PhonePerson>();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -139,14 +140,38 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         } else if (txtPhoneExtension.getText().isEmpty()) {
             txtPhoneExtension.setFocus(true);
             this.showMessage("cms.error.employee.extensionPhone", true, null);
-        } else if ((!rIsPrincipalNumberYes.isChecked()) && (!rIsPrincipalNumberNo.isChecked())) {
-            this.showMessage("cms.error.employee.PhoneMain", true, null);
         }
         else {
             return true;
         }
         return false;
 
+    }
+    
+    public boolean validatePhone() {
+        Employee employee = null;
+        try {    
+            //Empleado Principal
+            AdminEmployeeController adminEmployee = new AdminEmployeeController();
+            if (adminEmployee.getEmployeeParent().getPersonId() != null) {
+                employee = adminEmployee.getEmployeeParent();
+            }
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, employee.getPersonId().getId());
+            request.setParams(params);
+            phonePersonList = personEJB.getValidateMainPhone(request);
+            if (rIsPrincipalNumberYes.isChecked()){
+                if(phonePersonList != null){
+                this.showMessage("cms.error.employee.PhoneMainYes", true, null);
+                txtPhone.setFocus(true);
+                return false;
+                }
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }        
+        return true;
     }
 
 
@@ -199,8 +224,9 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    blockFields();
-                    savePhone(null);
+                   if (validatePhone()){
+                    savePhone(null);   
+                   }                    
                     break;
                 case WebConstants.EVENT_EDIT:
                     savePhone(phonePersonParam);

@@ -5,7 +5,7 @@
 <?init class="com.alodiga.cms.web.security.IndexAdminRedirectInit" ?>
 
 <zk xmlns:n="native">
-    <window id="winTabProgramNetwork" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminProgramController" class="general-window">
+    <window id="winTabCity" width="100%" height="100%" apply="com.alodiga.cms.web.controllers.AdminCityController" class="general-window">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <north border="none" size="52px" class="content-transparent">
@@ -15,7 +15,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="890px">
+                        <div width="1200px" align="left" height="630px">
                             <hlayout>
                                 <div>
                                     <include src="adminMainMenu.zul"/>
@@ -27,33 +27,25 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.Program')}" onClick='Executions.sendRedirect(&quot;listProgram.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.city.list')}" onClick='Executions.sendRedirect(&quot;listCity.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton id= "tbbTitle" label=""/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.city.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
+                                                <tabbox id="tbxCityTabs" width="970px" height="400px">
                                                     <tabs>
-                                                        <tab id="tabMain" label="${c:l('cms.tab.programMain')}" />
-                                                        <tab id="tabNetwork" label="${c:l('cms.common.program.network')}"/>
-                                                        <tab id="tabProjectedAnnualVolume" label="${c:l('cms.common.projected.annual.volume')}"/>
-                                                        <tab id="tabAverageCargeUsage" label="${c:l('cms.common.average.carge.usage.tab')}"/>
+                                                        <tab id="tabCity" label="${c:l('sp.common.city')}" />
+                                                        <tab id="tabCityZipZone" label="${c:l('cms.common.zipZone')}"/>                                                       
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>
-                                                            <include src="adminProgram.zul"/>
+                                                            <include src="adminCity.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listProgramHasNetwork.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listProjectedAnnualVolume.zul"/>
-                                                        </tabpanel>
-                                                        <tabpanel>
-                                                            <include src="listAverageCargeUsage.zul"/>
+                                                            <include src="listCityZipZone.zul"/>
                                                         </tabpanel>
                                                     </tabpanels>
                                                 </tabbox>
