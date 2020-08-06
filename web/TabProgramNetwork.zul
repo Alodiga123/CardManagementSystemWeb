@@ -40,7 +40,7 @@
                                                         <tab id="tabMain" label="${c:l('cms.tab.programMain')}" />
                                                         <tab id="tabNetwork" label="${c:l('cms.common.program.network')}"/>
                                                         <tab id="tabProjectedAnnualVolume" label="${c:l('cms.common.projected.annual.volume')}"/>
-                                                        <tab id="tabAverageCargeUsage" label="${c:l('cms.common.average.carge.usage')}"/>
+                                                        <tab id="tabAverageCargeUsage" label="${c:l('cms.common.average.carge.usage.tab')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>

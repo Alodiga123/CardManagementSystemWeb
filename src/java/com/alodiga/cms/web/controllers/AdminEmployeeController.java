@@ -217,6 +217,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             employee = personEJB.saveEmployee(employee);
             employeeParent = employee;
             employeeParam = employee;
+            tabEmployeePhone.setDisabled(false);
             this.showMessage("sp.common.save.success", false, null);
             
         } catch (WrongValueException ex) {
