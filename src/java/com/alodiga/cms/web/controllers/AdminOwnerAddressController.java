@@ -243,8 +243,14 @@ public class AdminOwnerAddressController extends GenericAbstractAdminController 
 
             //Se obtiene la persona asociada al Propietario del Programa
             if (indSelect == 1) {
+                if (eventType == WebConstants.EVENT_ADD) {
+                    adminNaturalPerson = new AdminOwnerNaturalPersonController();    
+                }
                 ownerPerson = adminNaturalPerson.getNaturalPerson().getPersonId();
             } else {
+                if (eventType == WebConstants.EVENT_ADD) {
+                    adminLegalPerson = new AdminOwnerLegalPersonController();    
+                }
                 ownerPerson = adminLegalPerson.getLegalPerson().getPersonId();
             }
 

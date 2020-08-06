@@ -54,7 +54,7 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <doublebox id="dbxAverageCardBalance" width="250px" constraint="no negative" format="#,##0.##" maxlength="7"/>
+                                                                <doublebox id="dbxAverageCardBalance" width="250px" constraint="no negative" format="#,##0.##" maxlength="25"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>

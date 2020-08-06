@@ -52,7 +52,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.login.user')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identification.number')}" width="180px" sort="auto"/>
