@@ -173,11 +173,7 @@ public class ListEmployeeController extends GenericAbstractListController<Employ
         List<Employee> employeeList_ = new ArrayList<Employee>();
         try {
             if (filter != null && !filter.equals("")) {
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PARAM_USER, filter);
-                request1.setParams(params);
-               // employeeList_ = personEJB.searchUser(request1);
+                employeeList_ = personEJB.getSearchEmployee(filter);
             } else {
                 return employeeList;
             }

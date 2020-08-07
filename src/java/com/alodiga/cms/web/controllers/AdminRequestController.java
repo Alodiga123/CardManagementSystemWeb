@@ -222,6 +222,30 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void blockFields() {
         btnSave.setVisible(false);
     }
+    
+    public Boolean validateEmpty() {
+        if (cmbCountry.getSelectedItem()  == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);     
+        } else if (cmbPersonType.getSelectedItem() == null) {
+            cmbPersonType.setFocus(true);
+            this.showMessage("cms.error.personType.notSelected", true, null);
+        } else if (cmbProductType.getSelectedItem() == null) {
+            cmbProductType.setFocus(true);
+            this.showMessage("cms.error.requestTarjetType", true, null);
+        } else if (cmbPrograms.getSelectedItem() == null) {
+            cmbPrograms.setFocus(true);
+            this.showMessage("cms.error.program.notSelected", true, null);
+        } else if (cmbRequestType.getSelectedItem() == null) {
+            cmbRequestType.setFocus(true);
+            this.showMessage("cms.error.requestTipeSolicitude", true, null);
+        }
+        else {
+            return true;
+        }
+        return false;
+
+    }
 
     private void saveRequest(Request _request) {
         boolean indPersonNaturalRequest = true;
@@ -294,6 +318,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() {
+       if (validateEmpty()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveRequest(null);
@@ -303,7 +328,8 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 break;
             default:
                 break;
-        }
+            }
+        } 
     }
 
     public void loadData() {
