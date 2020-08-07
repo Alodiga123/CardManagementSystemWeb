@@ -59,9 +59,18 @@
                                                             <label value="${c:l('cms.common.employee.email')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtName" width="250px" maxlength="15"/>
-                                                            <textbox id="txtLastName" width="250px" maxlength="15"/>
-                                                            <textbox id="txtEmail" width="250px" maxlength="30"/>
+                                                            <hlayout>
+                                                              <textbox id="txtName" width="250px" maxlength="15"/> 
+                                                              <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
+                                                            <hlayout>
+                                                             <textbox id="txtLastName" width="250px" maxlength="15"/>
+                                                             <label value="*" sclass="lblreq" />    
+                                                            </hlayout>
+                                                            <hlayout>
+                                                             <textbox id="txtEmail" width="250px" maxlength="30"/> 
+                                                             <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.aditionalCard.positionEnterprise')}" sclass="lblbold"/>

@@ -204,24 +204,39 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     }
 
     public Boolean validateEmpty() {
-        if (txtUbanization.getText().isEmpty()) {
+        if (cmbCountry.getSelectedItem() == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);
+        } else if (cmbState.getSelectedItem() == null) {
+            cmbState.setFocus(true);
+            this.showMessage("cms.error.state.noSelected", true, null);
+        } else if (cmbCity.getSelectedItem() == null) {
+            cmbCity.setFocus(true);
+            this.showMessage("cms.error.field.city", true, null);
+        } else if (txtUbanization.getText().isEmpty()) {
             txtUbanization.setFocus(true);
             this.showMessage("cms.error.field.urbanization", true, null);
+        } else if (cmbStreetType.getSelectedItem() == null) {
+            cmbStreetType.setFocus(true);
+            this.showMessage("cms.error.streetType.noSelected", true, null);
         } else if (txtNameStreet.getText().isEmpty()) {
             txtNameStreet.setFocus(true);
             this.showMessage("cms.error.field.namesStreet", true, null);
+        } else if (cmbEdificationType.getSelectedItem() == null) {
+            cmbEdificationType.setFocus(true);
+            this.showMessage("cms.error.edificationType.notSelected", true, null);
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
             this.showMessage("cms.error.field.nameEdification", true, null);
-        } else if (txtTower.getText().isEmpty()) {
-            txtTower.setFocus(true);
-            this.showMessage("cms.error.field.tower", true, null);
-        } else if (txtFloor.getText().isEmpty()) {
+        }  else if ((txtFloor.getText().isEmpty())) {
             txtFloor.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if (cmbZipZone.getSelectedItem() == null) {
-            cmbZipZone.setFocus(true);
+            this.showMessage("cms.error.floor.noSelected", true, null);
+        } else if (cmbZipZone.getSelectedItem() == null){
             this.showMessage("cms.error.zipZone.notSelected", true, null);
+        } else if (cmbAddressTypes.getSelectedItem() == null){
+            this.showMessage("cms.error.request.addressDeliveryType", true, null);
+        } else if ((!rAddressDeliveryYes.isChecked()) && (!rAddressDeliveryNo.isChecked())){
+            this.showMessage("cms.error.request.addressDeliveryCheck", true, null);
         } else {
             return true;
         }
