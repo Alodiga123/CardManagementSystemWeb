@@ -52,7 +52,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Download button--> 
                                         <div align="right"> 
-                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="80px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/> 
+                                            <button id="btnDownload" label="${c:l('sp.common.actions.download')}"  width="110px" class="open gray" tooltiptext="${c:l('sp.common.actions.download.tooltip')}"/> 
                                         </div> 
                                     </vlayout>
                                 </div>

@@ -56,7 +56,7 @@ public class ListEconomicActivityController extends GenericAbstractListControlle
             adminPage = "adminEconomicActivity.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             getData();
-            loadList(economicActivity);
+            loadDataList(economicActivity);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -70,7 +70,7 @@ public class ListEconomicActivityController extends GenericAbstractListControlle
     public void onClick$btnDelete() {
     }
 
-    public void loadList(List<EconomicActivity> list) {
+    public void loadDataList(List<EconomicActivity> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -143,13 +143,21 @@ public class ListEconomicActivityController extends GenericAbstractListControlle
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
     @Override
     public List<EconomicActivity> getFilterList(String filter) {
         List<EconomicActivity> economicActivityux = new ArrayList<EconomicActivity>();
         try {
             if (filter != null && !filter.equals("")) {
-                
+                economicActivityux = utilsEJB.getSearchEconomicActivity(filter);
             } else {
                 return economicActivity;
             }
@@ -158,14 +166,5 @@ public class ListEconomicActivityController extends GenericAbstractListControlle
         }
         return economicActivityux;
     }
-    
-
-    @Override
-    public void loadDataList(List<EconomicActivity> list) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    
 
 }

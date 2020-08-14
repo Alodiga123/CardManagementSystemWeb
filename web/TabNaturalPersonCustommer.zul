@@ -47,8 +47,8 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.naturalPersonMain')}"/>
-                                                        <tab id="tabAdditionalData" label="${c:l('cms.tab.naturalCustomer.additionalData')}"/>
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
+                                                        <tab id="tabAdditionalData" label="${c:l('cms.tab.naturalCustomer.additionalData')}"/>
                                                         <tab id="tabFamilyReferencesMain" label="${c:l('cms.tab.familyReferencesMain')}"/>
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.cardComplementaries')}"/>
                                                     </tabs>
@@ -57,10 +57,10 @@
                                                             <include src="adminNaturalPersonCustomer.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="adminNaturalCustomerAdditionalData.zul"/>
+                                                            <include src="listAddress.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
-                                                            <include src="listAddress.zul"/>
+                                                            <include src="adminNaturalCustomerAdditionalData.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listFamilyReferences.zul"/>
