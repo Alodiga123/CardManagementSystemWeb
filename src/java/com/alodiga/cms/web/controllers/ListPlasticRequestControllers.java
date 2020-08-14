@@ -65,15 +65,12 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
             showError(ex);
         }
     }
-
-
-
+   
     public void onClick$btnAdd() throws InterruptedException {
         Sessions.getCurrent().setAttribute("eventType", WebConstants.EVENT_ADD);
         Executions.getCurrent().sendRedirect(adminPage);
     }
-    
-       
+           
    public void onClick$btnDownload() throws InterruptedException {
         try {
             Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.plasticRequest.list"));
@@ -82,9 +79,16 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
         }
     }
 
-
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
+    }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     public void startListener() {
@@ -128,7 +132,17 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
 
     @Override
     public List<PlasticCustomizingRequest> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<PlasticCustomizingRequest> plasticCustomizingRequestList_ = new ArrayList<PlasticCustomizingRequest>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                plasticCustomizingRequestList_ = requestEJB.getSearchPlasticCustomizingRequest(filter);
+            } else {
+                return plasticCustomizingRequest;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return plasticCustomizingRequestList_; 
     }
 
 }

@@ -152,21 +152,17 @@ public class ListStateController extends GenericAbstractListController<State> {
     }
     @Override
     public List<State> getFilterList(String filter) {
-         List<State> stateaux = new ArrayList<State>();
-        State states;
+         List<State> stateList_ = new ArrayList<State>();
         try {
             if (filter != null && !filter.equals("")) {
-                states = utilsEJB.searchState(filter);
-                stateaux.add(states);
+                stateList_ = utilsEJB.getSearchState(filter);
             } else {
-                return state; 
+                return state;
             }
-        } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListStateController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             showError(ex);
         }
-        return stateaux;
+        return stateList_; 
     }
 
     @Override

@@ -228,7 +228,10 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
             this.showMessage("cms.error.field.nameEdification", true, null);
-        }  else if ((txtFloor.getText().isEmpty())) {
+        } else if ((txtTower.getText().isEmpty())){
+            txtTower.setFocus(true);
+            this.showMessage("cms.error.field.tower", true, null);
+        } else if ((txtFloor.getText().isEmpty())) {
             txtFloor.setFocus(true);
             this.showMessage("cms.error.floor.noSelected", true, null);
         } else if (cmbZipZone.getSelectedItem() == null){

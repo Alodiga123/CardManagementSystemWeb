@@ -93,6 +93,14 @@ public class ListSubAccountTypesControllers extends GenericAbstractListControlle
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
     public void startListener() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -129,6 +137,16 @@ public class ListSubAccountTypesControllers extends GenericAbstractListControlle
 
     @Override
     public List<SubAccountType> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       List<SubAccountType> subAccountTypeList_ = new ArrayList<SubAccountType>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                subAccountTypeList_ = cardEJB.getSearchSubAccountType(filter);
+            } else {
+                return subAccountTypes;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return subAccountTypeList_; 
     }
 }

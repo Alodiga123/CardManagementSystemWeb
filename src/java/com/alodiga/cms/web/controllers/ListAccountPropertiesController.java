@@ -25,11 +25,13 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Textbox;
 
 public class ListAccountPropertiesController extends GenericAbstractListController<AccountProperties> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Textbox txtName;
     private List<AccountProperties> accountPropertiesList = null;
     private CardEJB cardEJB= null;
     private User currentUser;
@@ -132,8 +134,28 @@ public class ListAccountPropertiesController extends GenericAbstractListControll
     @Override
     
     public List<AccountProperties> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      List<AccountProperties> accountPropertiesList_ = new ArrayList<AccountProperties>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                accountPropertiesList_ = cardEJB.getSearchAccountProperties(filter);
+            } else {
+                return accountPropertiesList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return accountPropertiesList_;  
     }
    
+     public void onClick$btnClear() throws InterruptedException {
+        txtName.setText("");
+    }
 
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 }

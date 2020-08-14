@@ -225,9 +225,26 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
-
-    @Override
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
     public List<CardRenewalRequest> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      List<CardRenewalRequest> cardRenewalList_ = new ArrayList<CardRenewalRequest>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                cardRenewalList_ = cardEJB.getSearchCardRenewalRequest(filter);
+            } else {
+                return cardByIssuerList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return cardRenewalList_;  
     }
 }

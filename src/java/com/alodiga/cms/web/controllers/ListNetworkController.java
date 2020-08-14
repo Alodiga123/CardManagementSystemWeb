@@ -198,23 +198,6 @@ public class ListNetworkController extends GenericAbstractListController<Network
         return networkaux;
     }
     
-    public List<Network> getFilterList(String filter,int optionFilter) {
-        List<Network> networkaux = new ArrayList<Network>();
-        Network networks;
-        try {
-            if (filter != null && !filter.equals("")) {
-                
-                networks = utilsEJB.searchNetwork(filter);
-                networkaux.add(networks);
-            } else {
-                return network; 
-            }
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        return networkaux;
-    }
-    
     @Override
     public void loadDataList(List<Network> list) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
