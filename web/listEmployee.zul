@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                           <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.common.data.EmployeeUser')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('sp.common.lastNameEmployee')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -51,7 +51,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.data.EmployeeUser')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identification.employee')}" width="180px" sort="auto"/>

@@ -33,6 +33,10 @@
                                         <div>
                                             <!--Filters for Searching-->
                                             <vlayout>
+                                                <hlayout style="text-align:right">
+                                                    <label value="${c:l('cms.common.requestNumber')}" width="80px" sclass="lblbold"/>
+                                                    <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
+                                                </hlayout>
                                                 <hlayout>
                                                     <!--Add button-->
                                                     <div align="left" width="495px">

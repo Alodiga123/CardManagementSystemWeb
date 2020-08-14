@@ -162,10 +162,28 @@ public class ListLoyaltyController extends GenericAbstractListController<Program
     public void onClick$btnClear() throws InterruptedException {
         txtName.setText("");
     }
+    
+    public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtName.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
 
     @Override
     public List<ProgramLoyalty> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<ProgramLoyalty> programList_ = new ArrayList<ProgramLoyalty>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                programList_ = programEJB.getSearchProgramLoyalty(filter);
+            } else {
+                return programLoyalty;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return programList_; 
     }
 
 }

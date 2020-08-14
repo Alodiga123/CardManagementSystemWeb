@@ -157,10 +157,14 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
     }
     
     @Override
-    public List<CollectionsRequest> getFilterList(String name) {
+    public List<CollectionsRequest> getFilterList(String filter) {
         List<CollectionsRequest> collectionRequestList = new ArrayList<CollectionsRequest>();
         try {
-            collectionRequestList = requestEJB.getSearchCollectionsRequest(name);
+          if (filter != null && !filter.equals("")) {  
+                collectionRequestList = requestEJB.getSearchCollectionsRequest(filter);
+          } else {
+              return collectionsRequest; 
+          }
         } catch (Exception ex) {
             showError(ex);
         }

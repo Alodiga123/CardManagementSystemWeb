@@ -155,16 +155,16 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
         } else if (cmbDocumentPersonType.getSelectedItem() == null) {
             cmbDocumentPersonType.setFocus(true);
             this.showMessage("cms.error.documentType.notSelected", true, null);
-        } else if(indIdentification.getText() == null){
+        } else if(indIdentification.getText().isEmpty()){
              indIdentification.setFocus(true);
              this.showMessage("cms.error.employee.noSelected",true, null);
-        } else if(txtName.getText() == null){
+        } else if(txtName.getText().isEmpty()){
             txtName.setFocus(true);
             this.showMessage("cms.error.field.fullName",true, null);
-        } else if(txtLastName.getText() == null){
+        } else if(txtLastName.getText().isEmpty()){
             txtLastName.setFocus(true);
             this.showMessage("cms.error.field.lastName",true, null);
-        } else if(txtEmail.getText() == null){
+        } else if(txtEmail.getText().isEmpty()){
             txtEmail.setFocus(true);
             this.showMessage("cms.error.field.email",true, null);
         } else if (cmbComercialAgency.getSelectedItem() == null) {

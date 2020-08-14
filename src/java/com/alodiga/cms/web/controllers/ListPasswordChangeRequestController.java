@@ -32,6 +32,7 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Textbox txtRequestNumber;
     private PersonEJB personEJB = null;
     private List<User> userList = null;
     private List<PasswordChangeRequest> passwordChangeRequestList = null;
@@ -145,10 +146,43 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
            showError(ex);
         }
     }
-
+    
+    private void showEmptyList(){
+                Listitem item = new Listitem();
+                item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
+                item.setParent(lbxRecords);  
+    }
+    
+    //txtRequestNumber
     @Override
     public List<PasswordChangeRequest> getFilterList(String filter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       List<PasswordChangeRequest> passwordChangeList_ = new ArrayList<PasswordChangeRequest>();
+        try {
+            if (filter != null && !filter.equals("")) {
+                passwordChangeList_ = personEJB.getSearchPasswordChange(filter);
+            } else {
+                return passwordChangeRequestList;
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return passwordChangeList_; 
     }
+
+    public void onClick$btnClear() throws InterruptedException {
+        txtRequestNumber.setText("");
+    }
+
+     public void onClick$btnSearch() throws InterruptedException {
+        try {
+            loadDataList(getFilterList(txtRequestNumber.getText()));
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+
 
 }

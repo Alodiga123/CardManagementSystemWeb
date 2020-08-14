@@ -42,9 +42,9 @@
                                                             <label value="${c:l('cms.common.nameStreet')}" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtUbanization" constraint="no empty" maxlength="50" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtUbanization" maxlength="50" width="250px"/>
                                                             <combobox id="cmbStreetType" mold="rounded" readonly="true" width="250px" />
-                                                            <textbox id="txtNameStreet" constraint="no empty" maxlength="40" width="250px" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtNameStreet" maxlength="40" width="250px"/>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.edificationType')}" sclass="lblbold"/>
@@ -53,15 +53,15 @@
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbEdificationType" mold="rounded" readonly="true" width="250px" />
-                                                            <textbox id="txtNameEdification" value="" width="250px" maxlength="50" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                            <textbox id="txtTower" value="" width="250px" maxlength="40" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtNameEdification" value="" width="250px" maxlength="50"/>
+                                                            <textbox id="txtTower" value="" width="250px" maxlength="40"/>
                                                         </row>
                                                         <row> 
                                                             <label value="${c:l('cms.common.floor')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.commmon.zipZone')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <intbox id="txtFloor" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="3"/>
+                                                            <intbox id="txtFloor" width="250px" maxlength="3"/>
                                                             <combobox id="cmbZipZone" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
