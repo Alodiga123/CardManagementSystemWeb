@@ -53,7 +53,8 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     public static LegalCustomer legalCustomerParam = null;
     private Person person;
     private Button btnSave;
-    private Integer eventType;
+    public static Integer eventType;
+    private int indPersonTypeCustomer = 2;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -63,6 +64,7 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
             legalCustomerParam = null;
         } else {
             legalCustomerParam = (LegalCustomer) Sessions.getCurrent().getAttribute("object");
+            Sessions.getCurrent().setAttribute(WebConstants.IND_PERSON_TYPE_CUSTOMER, indPersonTypeCustomer);
         }
         initialize();
     }
@@ -81,6 +83,10 @@ public class AdminLegalPersonCustomerController extends GenericAbstractAdminCont
     
     public LegalCustomer getLegalCustomer() {
         return legalCustomerParam;
+    }
+    
+    public Integer getEventType() {
+        return this.eventType;
     }
 
     public void onChange$cmbCountry() {

@@ -59,10 +59,10 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        switch (eventType) {
+        try {
+            switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 adminNaturalPerson = new AdminCardComplementariesController();
-
                 if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
                     ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
                     if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
@@ -70,13 +70,13 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
                     } else {
                         EJBRequest request1 = new EJBRequest();
                         Map params = new HashMap();
-                        params.put(Constants.PERSON_KEY, adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().getId());
+                        params.put(Constants.PERSON_KEY, adminNaturalPerson.getPersonCardComplementary().getId());
                         request1.setParams(params);
-                        personHasAddressList = personEJB.getPersonHasAddressesByPerson(request1);
+                        personHasAddressList = personEJB.getPersonHasAddressesByPerson(request1);                                               
                         for (PersonHasAddress pha : personHasAddressList) {
                             adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().setPersonHasAddress(pha);
                         }
-                        addressParam = adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().getPersonHasAddress().getAddressId();
+                        addressParam = adminNaturalPerson.getPersonCardComplementary().getPersonHasAddress().getAddressId();
                     }
                 }
                 break;
@@ -93,7 +93,12 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
             case WebConstants.EVENT_ADD:
                 addressParam = null;
                 break;
-        }
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
+            addressParam = null;
+        }        
         initialize();
     }
 
