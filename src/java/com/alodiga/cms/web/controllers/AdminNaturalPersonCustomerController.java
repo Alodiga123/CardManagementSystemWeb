@@ -13,6 +13,8 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
+import com.cms.commons.models.PhonePerson;
+import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.Profession;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -29,6 +31,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -43,11 +46,14 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     private Textbox txtFullLastName;
     private Textbox txtMarriedLastName;
     private Textbox txtBirthPlace;
-    private Textbox txtFamilyResponsibilities;
+    private Textbox txtPhoneNumber;
+    private Intbox txtFamilyResponsibilities;
+    private Textbox txtEmail;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
     private Combobox cmbProfession;
+    private Combobox cmbPhoneType;
     private Datebox txtBirthDay;
     private Datebox txtDueDateDocumentIdentification;
     private Radio genderMale;
@@ -61,21 +67,47 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     public Boolean indForeign = null;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
+    private List<PhonePerson> phonePersonList = null;
     private Button btnSave;
-    private Integer eventType;
+    public static Integer eventType;
     public static NaturalCustomer naturalCustomerParam = null;
     private Toolbarbutton tbbTitle;
+    private int indPersonTypeCustomer = 1;
+    Long countPhoneByPerson = 0L;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        if (eventType == WebConstants.EVENT_ADD) {
-            naturalCustomerParam = null;
-        } else {
-            naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+        try {
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+            if (eventType == WebConstants.EVENT_ADD) {
+                naturalCustomerParam = null;
+            } else {
+                naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+                Sessions.getCurrent().setAttribute(WebConstants.IND_PERSON_TYPE_CUSTOMER, indPersonTypeCustomer);                  
+                
+                //Se actualiza el teléfono del cliente en el objeto naturalCustomerParam
+                if (naturalCustomerParam.getPersonId().getPhonePerson() == null) {
+                    countPhoneByPerson = personEJB.havePhonesByPerson(naturalCustomerParam.getPersonId().getId());
+                    if (countPhoneByPerson != 0) {
+                        EJBRequest request1 = new EJBRequest();
+                        Map params = new HashMap();
+                        params.put(Constants.PERSON_KEY, naturalCustomerParam.getPersonId().getId());
+                        request1.setParams(params);
+                        phonePersonList = personEJB.getPhoneByPerson(request1);
+                        for (PhonePerson phone : phonePersonList) {
+                            naturalCustomerParam.getPersonId().setPhonePerson(phone);
+                        }
+                    }                    
+                }            
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
+            initialize();
         }
-        initialize();
     }
 
     @Override
@@ -95,8 +127,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
                 break;
         }
         try {
-            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -160,6 +190,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
     private void loadFields(NaturalCustomer naturalCustomer) {
         String Gender = "M";
+        Long countPhoneByPerson = 0L;
         try {
             txtIdentificationNumber.setText(naturalCustomer.getIdentificationNumber());
             if (txtDueDateDocumentIdentification != null) {
@@ -196,11 +227,19 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             }
             txtBirthPlace.setText(naturalCustomer.getPlaceBirth());
             txtBirthDay.setValue(naturalCustomer.getDateBirth());
-            txtFamilyResponsibilities.setText(naturalCustomer.getFamilyResponsibilities().toString());
-            if (txtCountryStayTime != null) {
+            if (txtCountryStayTime.getText() != "") {
                 txtCountryStayTime.setText(naturalCustomer.getCountryStayTime().toString());
             }
-            txtMarriedLastName.setText(naturalCustomer.getMarriedLastName());
+            if (naturalCustomer.getMarriedLastName() != null) {
+                txtMarriedLastName.setText(naturalCustomer.getMarriedLastName());
+            }
+            txtEmail.setText(naturalCustomer.getPersonId().getEmail());
+            if (naturalCustomer.getFamilyResponsibilities() != null) {
+                txtFamilyResponsibilities.setText(naturalCustomer.getFamilyResponsibilities().toString());
+            }
+            if (naturalCustomer.getPersonId().getPhonePerson() != null) {
+                txtPhoneNumber.setText(naturalCustomer.getPersonId().getPhonePerson().getNumberPhone());
+            }                               
         } catch (Exception ex) {
             showError(ex);
         }
@@ -231,16 +270,18 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
     private void saveNaturalPersonCustomer(NaturalCustomer _naturalCustomer) {
         NaturalCustomer naturalCustomer = null;
-        AdminRequestController adminRequest = new AdminRequestController();
-        try {
-            Person person = null;
+        PhonePerson phonePerson = null;
+        Person person = null;
+        try {          
 
             if (_naturalCustomer != null) {
                 naturalCustomer = _naturalCustomer;
                 person = naturalCustomer.getPersonId();
-            } else {//New ApplicantNaturalPerson
-                naturalCustomer = new NaturalCustomer();
-                person = new Person();
+                if (naturalCustomer.getPersonId().getPhonePerson() != null) {
+                    phonePerson = naturalCustomer.getPersonId().getPhonePerson();
+                } else {
+                    phonePerson = new PhonePerson();
+                }                
             }
 
             if (genderFemale.isChecked()) {
@@ -261,7 +302,13 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
                 indForeign = false;
             }            
             
-            //naturalPerson            
+            //Se guardan los teléfonos del cliente
+            phonePerson.setPersonId(person);
+            phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
+            phonePerson.setNumberPhone(txtPhoneNumber.getText());
+            phonePerson = personEJB.savePhonePerson(phonePerson);
+
+            //Se guardan los datos del cliente            
             naturalCustomer.setPersonId(person);
             naturalCustomer.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             naturalCustomer.setIdentificationNumber(txtIdentificationNumber.getText());
@@ -270,7 +317,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
             if (!txtIdentificationNumberOld.getText().equals("")) {
                 naturalCustomer.setIdentificationNumberOld(txtIdentificationNumberOld.getText());
             }
-            //naturalCustomer.setStatusCustomerId(null);
             naturalCustomer.setIndForeign(indForeign);
             if (!txtCountryStayTime.getText().equals("")) {
                 naturalCustomer.setCountryStayTime(Integer.parseInt(txtCountryStayTime.getText()));
@@ -319,6 +365,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
+                loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 blockFields();
@@ -327,11 +374,13 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
+                loadCmbPhoneType(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
+                loadCmbPhoneType(eventType);
                 break;
             default:
                 break;
@@ -417,6 +466,24 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
         try {
             profession = personEJB.getProfession(request1);
             loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getProfessionId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadCmbPhoneType(Integer evenInteger) {
+        EJBRequest request1 = new EJBRequest();
+        List<PhoneType> phoneType;
+        try {
+            phoneType = personEJB.getPhoneType(request1);
+            loadGenericCombobox(phoneType, cmbPhoneType, "description", evenInteger, Long.valueOf(naturalCustomerParam.getPersonId().getPhonePerson() != null ? naturalCustomerParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

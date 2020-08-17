@@ -45,6 +45,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
     private PersonEJB personEJB = null;
     private List<FamilyReferences> familyReferences = null;
     private Long optionMenu;
+    private int indPersonTypeCustomer = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -199,23 +200,21 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
                 Map params = new HashMap();
                 params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
                 request1.setParams(params);
-                familyReferences = personEJB.getFamilyReferencesByApplicant(request1);
-                
+                familyReferences = personEJB.getFamilyReferencesByApplicant(request1);                
             } else if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
-                AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
-                if (adminNaturalCustomer != null) {
-                    naturalCustomer = adminNaturalCustomer.getNaturalCustomer();
-                }
-                
+                indPersonTypeCustomer = (Integer) Sessions.getCurrent().getAttribute(WebConstants.IND_PERSON_TYPE_CUSTOMER);
+                if (indPersonTypeCustomer == 1) {
+                    AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
+                    if (adminNaturalCustomer != null) {
+                        naturalCustomer = adminNaturalCustomer.getNaturalCustomer();
+                    }
+                }               
                 EJBRequest request1 = new EJBRequest();
                 Map params = new HashMap();
                 params.put(Constants.APPLICANT_NATURAL_CUSTOMER_KEY, naturalCustomer.getId());
                 request1.setParams(params);
                 familyReferences = personEJB.getFamilyReferencesByCustomer(request1);
-            } else {
-                familyReferences = null;
             }
-
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
