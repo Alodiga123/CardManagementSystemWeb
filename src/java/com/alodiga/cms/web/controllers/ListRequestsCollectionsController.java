@@ -10,6 +10,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -38,6 +39,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private Textbox txtName;
     private RequestEJB requestEJB = null;
     private List<CollectionsRequest> collectionsByRequest = null;
+    private RequestHasCollectionsRequest requestHasCollectionsRequestParam;
     private Tab tabRequestbyCollection;
 
     @Override
@@ -76,6 +78,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
 
     public void loadDataList(List<CollectionsRequest> list) {
         String applicantName = "";
+        RequestHasCollectionsRequest requestHasCollectionsRequest = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
