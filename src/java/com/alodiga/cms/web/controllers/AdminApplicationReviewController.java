@@ -22,6 +22,7 @@ import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PersonHasAddress;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ReasonRejectionRequest;
 import com.cms.commons.models.Request;
@@ -89,6 +90,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     private AdminRequestController adminRequest = null;
     private AdminNaturalPersonController adminNaturalPerson = null;
     private ApplicantNaturalPerson applicantNaturalPerson = null;
+    private List<PhonePerson> phonePersonList = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -424,13 +426,21 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setStatusCustomerId(getStatusActiveCustomer());
             naturalCustomer.setFirstNames(applicant.getFirstNames());
             naturalCustomer.setLastNames(applicant.getLastNames());
-            naturalCustomer.setMarriedLastName(applicant.getMarriedLastName());
+            if (applicant.getMarriedLastName() != null) {
+                naturalCustomer.setMarriedLastName(applicant.getMarriedLastName());
+            }
             naturalCustomer.setGender(applicant.getGender());
-            naturalCustomer.setPlaceBirth(applicant.getPlaceBirth());
+            if (applicant.getPlaceBirth() != null) {
+                naturalCustomer.setPlaceBirth(applicant.getPlaceBirth());
+            }
             naturalCustomer.setDateBirth(applicant.getDateBirth());
             naturalCustomer.setCivilStatusId(applicant.getCivilStatusId());
-            naturalCustomer.setFamilyResponsibilities(applicant.getFamilyResponsibilities());
-            naturalCustomer.setProfessionId(applicant.getProfessionId());
+            if (applicant.getFamilyResponsibilities() != null) {
+                naturalCustomer.setFamilyResponsibilities(applicant.getFamilyResponsibilities());
+            }
+            if (applicant.getProfessionId() != null) {
+                naturalCustomer.setProfessionId(applicant.getProfessionId());
+            }
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
@@ -505,8 +515,10 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
     public void saveCardComplementariesCustomer(NaturalCustomer naturalCustomerMain) {
         try {
             Long countCardComplementary = 0L;
+            Long countPhoneByPerson = 0L;
             Person person = null;
-            NaturalCustomer naturalCustomer = new NaturalCustomer();
+            PhonePerson phonePerson = new PhonePerson();
+            NaturalCustomer naturalCustomer = null;
 
             countCardComplementary = personEJB.countCardComplementaryByApplicant(applicantNaturalPerson.getId());
 
@@ -525,6 +537,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
                 for (ApplicantNaturalPerson r : cardComplementaryList) {
                     person = new Person();
+                    phonePerson = new PhonePerson();
                     naturalCustomer = new NaturalCustomer();
 
                     //Guardar la persona
@@ -534,8 +547,26 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     person.setCreateDate(new Timestamp(new Date().getTime()));
                     person.setPersonClassificationId(personClassification);
                     person = personEJB.savePerson(person);
+                    
+                    //Se guardan los teléfonos del solicitante adicional
+                    countPhoneByPerson = personEJB.havePhonesByPerson(r.getPersonId().getId());
+                    if (countPhoneByPerson != 0) {
+                        EJBRequest request = new EJBRequest(); 
+                        params = new HashMap();
+                        params.put(Constants.PERSON_KEY, r.getPersonId().getId());
+                        request.setParams(params);
+                        phonePersonList = personEJB.getPhoneByPerson(request);
+                        if (phonePersonList != null) {
+                            for (PhonePerson p : phonePersonList) {
+                                phonePerson.setPersonId(person);
+                                phonePerson.setPhoneTypeId(p.getPhoneTypeId());
+                                phonePerson.setNumberPhone(p.getNumberPhone());
+                                phonePerson = personEJB.savePhonePerson(phonePerson);
+                            }
+                        }
+                    }                    
 
-                    //Guadar el solicitante para tarjeta complementaria
+                    //Se guarda el solicitante para tarjeta complementaria
                     naturalCustomer.setPersonId(person);
                     naturalCustomer.setDocumentsPersonTypeId(r.getDocumentsPersonTypeId());
                     naturalCustomer.setIdentificationNumber(r.getIdentificationNumber());
@@ -543,13 +574,21 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     naturalCustomer.setStatusCustomerId(getStatusActiveCustomer());
                     naturalCustomer.setFirstNames(r.getFirstNames());
                     naturalCustomer.setLastNames(r.getLastNames());
-                    naturalCustomer.setMarriedLastName(r.getMarriedLastName());
+                    if (r.getMarriedLastName() != null) {
+                        naturalCustomer.setMarriedLastName(r.getMarriedLastName());
+                    }
                     naturalCustomer.setGender(r.getGender());
-                    naturalCustomer.setPlaceBirth(r.getPlaceBirth());
+                    if (r.getPlaceBirth() != null) {
+                        naturalCustomer.setPlaceBirth(r.getPlaceBirth());
+                    }
                     naturalCustomer.setDateBirth(r.getDateBirth());
                     naturalCustomer.setCivilStatusId(r.getCivilStatusId());
-                    naturalCustomer.setFamilyResponsibilities(r.getFamilyResponsibilities());
-                    naturalCustomer.setProfessionId(r.getProfessionId());
+                    if (r.getFamilyResponsibilities() != null) {
+                        naturalCustomer.setFamilyResponsibilities(r.getFamilyResponsibilities());
+                    }
+                    if (r.getProfessionId() != null) {
+                        naturalCustomer.setProfessionId(r.getProfessionId());
+                    }
                     naturalCustomer.setNaturalCustomerId(naturalCustomerMain);
                     naturalCustomer.setKinShipApplicantId(r.getKinShipApplicantId());
                     naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));

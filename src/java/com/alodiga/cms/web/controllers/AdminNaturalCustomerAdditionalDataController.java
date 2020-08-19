@@ -77,9 +77,7 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-
             customer = new AdminNaturalPersonCustomerController();
-
             naturalCustomer = customer.getNaturalCustomer();
             Map params = new HashMap();
             EJBRequest request2 = new EJBRequest();
@@ -114,8 +112,7 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
         } catch (Exception ex) {
             showError(ex);
         } finally {
-            if (additionalInformationNaturalCustomerParam != null) {
-            } else {
+            if (additionalInformationNaturalCustomerParam == null) {
                 additionalInformationNaturalCustomerParam = null;
                 loadData();
             }
@@ -422,32 +419,32 @@ public class AdminNaturalCustomerAdditionalDataController extends GenericAbstrac
     }
 
     public void onClick$btnSave() {
-//        if (validateEmpty()) {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveNaturalPersonCustomer(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveNaturalPersonCustomer(additionalInformationNaturalCustomerParam);
-                break;
-            default:
-                break;
+        if (validateEmpty()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveNaturalPersonCustomer(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveNaturalPersonCustomer(additionalInformationNaturalCustomerParam);
+                    break;
+                default:
+                    break;
+            }
         }
-//        }
     }
 
     public void loadData() {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                if (additionalInformationNaturalCustomerParam != null) {
-                    loadFields(additionalInformationNaturalCustomerParam);
-                } else {
-                    additionalInformationNaturalCustomerParam = null;
-                }
                 txtTotalIncome.setDisabled(true);
                 txtTotalExpenses.setDisabled(true);
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
+                if (additionalInformationNaturalCustomerParam != null) {
+                    loadFields(additionalInformationNaturalCustomerParam);
+                    onChange$cmbCountry();
+                } else {
+                    additionalInformationNaturalCustomerParam = null;
+                }
                 break;
             case WebConstants.EVENT_VIEW:
                 blockFields();

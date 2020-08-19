@@ -225,9 +225,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 txtFamilyResponsibilities.setText(applicantNaturalPerson.getFamilyResponsibilities().toString());
             }
             if (applicantNaturalPerson.getPersonId().getEmail() != null) {
-                if (applicantNaturalPerson.getPersonId().getEmail().contains("@")) {
-                    txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
-                }
+                txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
             }
             if (applicantNaturalPerson.getGender().equals(Gender)) {
                 genderMale.setChecked(true);

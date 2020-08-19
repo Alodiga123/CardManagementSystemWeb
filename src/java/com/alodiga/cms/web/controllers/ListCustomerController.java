@@ -39,7 +39,6 @@ public class ListCustomerController extends GenericAbstractListController<Person
     private List<Person> persons = null;
     private List<LegalCustomer> legalCustomerList = null;
     private List<NaturalCustomer> naturalCustomerList = null;
-    public static int indCustomerOption = 2;
     private Textbox txtName;
 
 
@@ -68,10 +67,6 @@ public class ListCustomerController extends GenericAbstractListController<Person
             showError(ex);
         }
     }
-    
-    public int getIndCustomerOption() {
-        return indCustomerOption;
-    }
 
     public void onClick$btnDelete() {
     }
@@ -89,43 +84,24 @@ public class ListCustomerController extends GenericAbstractListController<Person
                     item.setValue(person);
                     item.appendChild(new Listcell(person.getCountryId().getName()));
                     item.appendChild(new Listcell(person.getPersonTypeId().getDescription()));
-                    if (person.getPersonTypeId().getIndNaturalPerson() == true) {
+                    if (person.getPersonTypeId().getIndNaturalPerson() == true) {                 
                         item.appendChild(new Listcell(person.getNaturalCustomer().getIdentificationNumber()));
                         StringBuilder customerName = new StringBuilder(person.getNaturalCustomer().getFirstNames());
                         customerName.append(" ");
                         customerName.append(person.getNaturalCustomer().getLastNames());
                         item.appendChild(new Listcell(customerName.toString()));
                         item.appendChild(new Listcell(person.getNaturalCustomer().getStatusCustomerId().getDescription()));
-                        adminPage = "TabNaturalPersonCustommer.zul";
-                        EJBRequest request1 = new EJBRequest();
-                        Map params = new HashMap();
-                        params.put(Constants.PERSON_KEY, person.getId());
-                        request1.setParams(params);
-                        naturalCustomerList = personEJB.getNaturalCustomerByPerson(request1);
-                        for (NaturalCustomer n : naturalCustomerList) {
-                            naturalCustomer = n;
-                        }
-
-                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, naturalCustomer) : new Listcell());
-                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, naturalCustomer) : new Listcell());
-                    } else {
+                        adminPage = "TabNaturalPersonCustommer.zul"; 
+                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, person.getNaturalCustomer()) : new Listcell());
+                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, person.getNaturalCustomer()) : new Listcell());                        
+                    } else {                        
                         item.appendChild(new Listcell(person.getLegalCustomer().getIdentificationNumber()));
                         customerNameLegal = person.getLegalCustomer().getEnterpriseName();
                         item.appendChild(new Listcell(customerNameLegal));
                         item.appendChild(new Listcell(person.getLegalCustomer().getStatusCustomerId().getDescription()));
                         adminPage = "TabLegalPersonCustommer.zul";
-
-                        EJBRequest request1 = new EJBRequest();
-                        Map params = new HashMap();
-                        params.put(Constants.PERSON_KEY, person.getId());
-                        request1.setParams(params);
-                        legalCustomerList = personEJB.getLegalCustomerByPerson(request1);
-                        for (LegalCustomer n : legalCustomerList) {
-                            legalCustomer = n;
-                        }
-
-                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, legalCustomer) : new Listcell());
-                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, legalCustomer) : new Listcell());
+                        item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, person.getLegalCustomer()) : new Listcell());
+                        item.appendChild(permissionRead ? new ListcellViewButton(adminPage, person.getLegalCustomer()) : new Listcell());                       
                     }
                     item.setParent(lbxRecords);
                 }
@@ -145,12 +121,39 @@ public class ListCustomerController extends GenericAbstractListController<Person
 
     public void getData() {
         persons = new ArrayList<Person>();
+        NaturalCustomer naturalCustomer = null;
+        LegalCustomer legalCustomer = null;
         try {
             EJBRequest request1 = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_CLASSIFICATION_KEY, Constants.PERSON_CLASSIFICATION_CUSTOMER);
             request1.setParams(params);
             persons = personEJB.getPersonByClassification(request1);
+            for (Person person : persons) {
+                if (person.getPersonTypeId().getIndNaturalPerson() == true) {
+                    if (person.getNaturalCustomer() == null) {
+                        request1 = new EJBRequest();
+                        params = new HashMap();
+                        params.put(Constants.PERSON_KEY, person.getId());
+                        request1.setParams(params);
+                        naturalCustomerList = personEJB.getNaturalCustomerByPerson(request1);
+                        for (NaturalCustomer nc : naturalCustomerList) {
+                            person.setNaturalCustomer(nc);                                
+                        }
+                    }
+                } else {
+                    if (person.getLegalCustomer() == null) {
+                        request1 = new EJBRequest();
+                        params = new HashMap();
+                        params.put(Constants.PERSON_KEY, person.getId());
+                        request1.setParams(params);
+                        legalCustomerList = personEJB.getLegalCustomerByPerson(request1);
+                        for (LegalCustomer lc : legalCustomerList) {
+                            person.setLegalCustomer(lc);
+                        }
+                    }
+                }           
+            }               
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

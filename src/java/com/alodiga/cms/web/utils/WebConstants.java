@@ -16,6 +16,7 @@ public class WebConstants {
     public static final String EVENTYPE = "eventType";
     public static final String OPTION_MENU = "optionMenu";
     public static final String OPTION_LIST = "optionList";
+    public static final String IND_PERSON_TYPE_CUSTOMER = "indPersonTypeCustomer";
     public static final String PROGRAM = "program";
     public static final String COUNTRY = "country";
     public static final String PRODUCT = "product";

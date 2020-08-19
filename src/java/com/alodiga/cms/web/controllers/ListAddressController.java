@@ -48,14 +48,15 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private List<PersonHasAddress> personHasAddress = null;
     private Integer eventType;
     private AdminRequestController adminRequest = null;
+    private AdminNaturalPersonCustomerController adminNaturalCustomer = null;
+    private AdminLegalPersonCustomerController adminLegalCustomer = null;
     private Long optionMenu;
     private Tab tabAddress;
+    private int indPersonTypeCustomer = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequest = new AdminRequestController();
-        eventType = adminRequest.getEventType();
         initialize();
         startListener();
     }
@@ -146,7 +147,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                 item.setParent(lbxRecords);
             }
 
-        } catch (Exception ex) {//        address = new ArrayList<Address>();
+        } catch (Exception ex) {
             showError(ex);
         }
     }
@@ -209,19 +210,30 @@ public class ListAddressController extends GenericAbstractListController<PersonH
         Person person = null;
         try {
             if (optionMenu == Constants.LIST_CARD_REQUEST) {
-                AdminRequestController adminRequest = new AdminRequestController();
+                adminRequest = new AdminRequestController();
                 person = adminRequest.getRequest().getPersonId();
+                eventType = adminRequest.getEventType();
             } 
             if (optionMenu == Constants.LIST_CUSTOMER_MANAGEMENT) {
-                if (AdminNaturalPersonCustomerController.naturalCustomerParam != null) {
-                    person = AdminNaturalPersonCustomerController.naturalCustomerParam.getPersonId();
-                } else if (AdminLegalPersonCustomerController.legalCustomerParam != null) {
-                    person = AdminLegalPersonCustomerController.legalCustomerParam.getPersonId();
-                } 
+                indPersonTypeCustomer = (Integer) Sessions.getCurrent().getAttribute(WebConstants.IND_PERSON_TYPE_CUSTOMER);
+                if (indPersonTypeCustomer == 1) {
+                    AdminNaturalPersonCustomerController adminNaturalCustomer = new AdminNaturalPersonCustomerController();
+                    if (adminNaturalCustomer.naturalCustomerParam != null) {
+                        person = adminNaturalCustomer.naturalCustomerParam.getPersonId();
+                        eventType = adminNaturalCustomer.getEventType();
+                    }
+                } else {
+                    AdminLegalPersonCustomerController adminLegalCustomer = new AdminLegalPersonCustomerController();
+                    if (adminLegalCustomer.legalCustomerParam != null) {
+                        person = adminLegalCustomer.legalCustomerParam.getPersonId();
+                        eventType = adminLegalCustomer.getEventType();
+                    }
+                }                
             }    
             if (optionMenu == Constants.LIST_PROGRAM_OWNER) {
-                if (AdminOwnerNaturalPersonController.naturalPersonParam != null) {
-                    person = AdminOwnerNaturalPersonController.naturalPersonParam.getPersonId();
+                AdminOwnerNaturalPersonController adminOwnerNaturalPerson = new AdminOwnerNaturalPersonController();
+                if (adminOwnerNaturalPerson.naturalPersonParam != null) {
+                    person = adminOwnerNaturalPerson.naturalPersonParam.getPersonId();
                 }
             }
             EJBRequest request1 = new EJBRequest();
@@ -232,9 +244,11 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             if (eventType == WebConstants.EVENT_EDIT) {
                 EJBRequest request2 = new EJBRequest();
                 for (PersonHasAddress phs : personHasAddress) {
-                    request2.setParam(phs.getAddressId().getId());
-                    address = utilsEJB.loadAddress(request2);
-                    phs.setAddressId(address);
+                    if (phs.getAddressId() == null) {
+                        request2.setParam(phs.getAddressId().getId());
+                        address = utilsEJB.loadAddress(request2);
+                        phs.setAddressId(address);
+                    }                    
                 }
             }
         } catch (NullParameterException ex) {
@@ -244,9 +258,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
         } catch (GeneralException ex) {
             showError(ex);
         } catch (RegisterNotFoundException ex) {
-            Logger.getLogger(ListAddressController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            showEmptyList();
+            showError(ex);
         }
     }
 
