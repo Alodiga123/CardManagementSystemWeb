@@ -242,7 +242,8 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
                         item.appendChild(new Listcell(applicantNaturalPerson.getStatusApplicantId().getDescription()));
                     } else {
                         item.appendChild(new Listcell("SIN REGISTRAR"));
-                    }                  
+                    }
+                    item.appendChild(new Listcell(applicantNaturalPerson.getPersonId().getReviewOFAC().getResultReview()));
                     item.appendChild(createButtonEditModal(applicantNaturalPerson));
                     item.appendChild(createButtonViewModal(applicantNaturalPerson));
                     item.setParent(lbxRecords);

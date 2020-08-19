@@ -126,22 +126,28 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     public void onClick$btnBack() {
         winAdminPhoneEmployee.detach();
     }
-
+    //cms.error.employee.areaCode
+    //txtAreaCode
     public Boolean validateEmpty() {
-        if (txtPhone.getText().isEmpty()) {
-            txtPhone.setFocus(true);
-            this.showMessage("cms.error.field.phoneNumber", true, null);
-        } else if (cmbPhoneType.getSelectedItem() == null) {
-            cmbPhoneType.setFocus(true);
-            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        if (cmbCountry.getSelectedItem()  == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);     
+        } else if (txtCodeCountry.getText().isEmpty()) {
+            txtCodeCountry.setFocus(true);
+            this.showMessage("cms.error.employee.areaCountry", true, null);
         } else if (txtAreaCode.getText().isEmpty()) {
             txtAreaCode.setFocus(true);
             this.showMessage("cms.error.employee.areaCode", true, null);
+        } else if (txtPhone.getText().isEmpty()) {
+            txtPhone.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
         } else if (txtPhoneExtension.getText().isEmpty()) {
             txtPhoneExtension.setFocus(true);
             this.showMessage("cms.error.employee.extensionPhone", true, null);
-        }
-        else {
+        } else if (cmbPhoneType.getSelectedItem() == null) {
+            cmbPhoneType.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        } else {
             return true;
         }
         return false;

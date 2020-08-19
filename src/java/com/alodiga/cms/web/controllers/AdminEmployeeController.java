@@ -157,7 +157,7 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             this.showMessage("cms.error.documentType.notSelected", true, null);
         } else if(indIdentification.getText().isEmpty()){
              indIdentification.setFocus(true);
-             this.showMessage("cms.error.employee.noSelected",true, null);
+             this.showMessage("cms.error.employee.identification",true, null);
         } else if(txtName.getText().isEmpty()){
             txtName.setFocus(true);
             this.showMessage("cms.error.field.fullName",true, null);
@@ -167,14 +167,13 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
         } else if(txtEmail.getText().isEmpty()){
             txtEmail.setFocus(true);
             this.showMessage("cms.error.field.email",true, null);
+        } else if (cmbPositionEnterprise.getSelectedItem() == null) {
+            cmbPositionEnterprise.setFocus(true);
+            this.showMessage("cms.error.employee.positionEnterprise", true, null);
         } else if (cmbComercialAgency.getSelectedItem() == null) {
             cmbComercialAgency.setFocus(true);
             this.showMessage("cms.error.comercialAgency.noSelected", true, null);
-        }  else if (cmbPositionEnterprise.getSelectedItem() == null) {
-            cmbPositionEnterprise.setFocus(true);
-            this.showMessage("cms.error.employee.positionEnterprise", true, null);
-        }
-        else {
+        } else {
             return true;
         }
         return false;
