@@ -12,6 +12,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -101,6 +102,7 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
 
     public void loadDataList(List<FamilyReferences> list) {
         try {
+            Request request = null;
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
@@ -114,8 +116,19 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
                     item.appendChild(new Listcell(familyReferences.getLocalPhone()));
                     item.appendChild(new Listcell(familyReferences.getCellPhone()));
                     item.appendChild(new Listcell(familyReferences.getCity()));
-                    item.appendChild(createButtonEditModal(familyReferences));
-                    item.appendChild(createButtonViewModal(familyReferences));
+                    
+                    AdminRequestController adminRequest = new AdminRequestController();
+                    if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                    }
+                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                        item.appendChild(createButtonEditModal(familyReferences));
+                        item.appendChild(createButtonViewModal(familyReferences));
+                    } else {
+                        item.appendChild(new Listcell(" "));
+                        item.appendChild(createButtonViewModal(familyReferences));
+                        btnAdd.setVisible(false);
+                    }
                     item.setParent(lbxRecords);
                 }
             } else {

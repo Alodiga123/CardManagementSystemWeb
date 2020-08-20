@@ -39,7 +39,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private Textbox txtName;
     private RequestEJB requestEJB = null;
     private List<CollectionsRequest> collectionsByRequest = null;
-    private RequestHasCollectionsRequest requestHasCollectionsRequestParam;
+    private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList;
     private Tab tabRequestbyCollection;
 
     @Override
@@ -79,6 +79,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     public void loadDataList(List<CollectionsRequest> list) {
         String applicantName = "";
         RequestHasCollectionsRequest requestHasCollectionsRequest = null;
+        Request request = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -89,8 +90,18 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
                     item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
-                    item.appendChild(createButtonEditModal(collectionsRequest));
+                    AdminRequestController adminRequest = new AdminRequestController();
+                    if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                    }
+                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                        item.appendChild(createButtonEditModal(collectionsRequest));
                     item.appendChild(createButtonViewModal(collectionsRequest));
+                    } else {
+                        item.appendChild(new Listcell(" "));
+                        item.appendChild(createButtonViewModal(collectionsRequest));
+                        btnAdd.setVisible(false);
+                    }
                     item.setParent(lbxRecords);
                 }
             } else {
