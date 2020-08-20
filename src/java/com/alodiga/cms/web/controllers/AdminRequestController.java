@@ -134,11 +134,13 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(false);
                     tabFamilyReferencesMain.setDisabled(false);
                     tabAdditionalCards.setDisabled(false);
+                    blockFields();
                 } else {
                     tabMain.setDisabled(true);
                     tabAddress.setDisabled(true);
                     tabFamilyReferencesMain.setDisabled(true);
                     tabAdditionalCards.setDisabled(true);
+                    blockFields();
                 }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
                 break;
@@ -151,7 +153,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabApplicantOFAC.setDisabled(true);
                     tabRequestbyCollection.setDisabled(true);
                     tabApplicationReview.setDisabled(true);
-                    
                     indNaturalPerson = true;
                 } else {
                     tabMain.setDisabled(true);
@@ -351,6 +352,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 loadCmbRequestType(eventType);
                 onChange$cmbCountry();
                 onChange$cmbProductType();
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
