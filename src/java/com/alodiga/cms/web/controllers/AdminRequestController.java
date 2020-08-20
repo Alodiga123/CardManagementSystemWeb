@@ -95,7 +95,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-                        tabApplicationReview.setDisabled(false);
                         tabApplicantOFAC.setDisabled(false);
                         tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
@@ -107,41 +106,30 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
                     }
-                } else {
-                    if (requestParam.getIndPersonNaturalRequest() == true) {
-                        tabMain.setDisabled(false);
-                        tabAddress.setDisabled(true);
-                        tabFamilyReferencesMain.setDisabled(true);
-                        tabAdditionalCards.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
-                        tabRequestbyCollection.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
-                    } else {
-                        tabMain.setDisabled(false);
-                        tabAddress.setDisabled(true);
-                        tabLegalRepresentatives.setDisabled(true);
-                        tabAdditionalCards.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
-                        tabRequestbyCollection.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
-                    }
-                }
+                } 
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
                 if (requestParam.getPersonId() != null) {
+                   if (requestParam.getIndPersonNaturalRequest() == true) {
                     tabMain.setDisabled(false);
                     tabAddress.setDisabled(false);
                     tabFamilyReferencesMain.setDisabled(false);
                     tabAdditionalCards.setDisabled(false);
+                    tabApplicantOFAC.setDisabled(false);
+                    tabRequestbyCollection.setDisabled(false);
+                    tabApplicationReview.setDisabled(false);
                     blockFields();
                 } else {
-                    tabMain.setDisabled(true);
-                    tabAddress.setDisabled(true);
-                    tabFamilyReferencesMain.setDisabled(true);
-                    tabAdditionalCards.setDisabled(true);
+                     tabMain.setDisabled(false);
+                     tabAddress.setDisabled(false);
+                     tabLegalRepresentatives.setDisabled(false);
+                     tabAdditionalCards.setDisabled(false);
+                     tabRequestbyCollection.setDisabled(false);
+                     tabApplicationReview.setDisabled(false);
                     blockFields();
                 }
+            }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.view"));
                 break;
             case WebConstants.EVENT_ADD:
