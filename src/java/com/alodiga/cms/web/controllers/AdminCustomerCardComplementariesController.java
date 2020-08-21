@@ -80,6 +80,7 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
             naturalCustomerParam = null;
         } else {
             naturalCustomerParam = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+            customerCard = naturalCustomerParam.getPersonId();
         }
         initialize();
     }
@@ -301,7 +302,7 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
             person.setPersonClassificationId(personClassification);
             person = personEJB.savePerson(person);
             customerCard = person;
-
+            
             ////Guarda el Solicitante Adicional
             naturalCustomer.setPersonId(person);
             naturalCustomer.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());

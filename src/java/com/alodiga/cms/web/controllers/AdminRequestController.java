@@ -104,6 +104,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabApplicantOFAC.setDisabled(false);
                         tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
                     }
@@ -113,15 +114,16 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(true);
                         tabFamilyReferencesMain.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(true);
                         tabRequestbyCollection.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
                     } else {
+                        //OJO Validar que la solicitud tenga al menos una tarjeta adicional 
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(true);
                         tabRequestbyCollection.setDisabled(true);
                         tabApplicationReview.setDisabled(true);
                     }

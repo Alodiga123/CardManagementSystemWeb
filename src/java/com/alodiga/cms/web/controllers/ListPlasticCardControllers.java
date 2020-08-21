@@ -49,6 +49,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -59,7 +60,6 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     private Textbox txtName;
     private Label lblProgram;
     private Label lblProduct;
-    private Combobox cmbProgram;
     private Combobox cmbProduct;
     private UtilsEJB utilsEJB = null;
     private ProgramEJB programEJB = null;
@@ -74,17 +74,16 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     private Button btnViewCard;
     private Button btnAssigment;
     public int optionList = 0;
+    private Tab tabPlasticCard;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-        if (eventType != WebConstants.EVENT_ADD) {
-            adminPlasticRequest = new AdminPlasticRequestController();
-            if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {                
-                plasticCustomizingRequestParam = adminPlasticRequest.getPlasticCustomizingRequest();
-            }
-        }        
+        adminPlasticRequest = new AdminPlasticRequestController();
+        if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {                
+            plasticCustomizingRequestParam = adminPlasticRequest.getPlasticCustomizingRequest();
+        }     
         initialize();
     }
 
@@ -98,8 +97,18 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            cmbProduct.setVisible(false);
             loadField();
 
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onSelect$tabPlasticCard() {
+        try {
+            cmbProduct.setVisible(false);
+            doAfterCompose(self);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -140,10 +149,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     }
 
     public Boolean validateEmpty() {
-        if (cmbProgram.getSelectedItem() == null) {
-            cmbProgram.setFocus(true);
-            this.showMessage("cms.error.program.notSelected", true, null);
-        } else if (cmbProduct.getSelectedItem() == null) {
+        if (cmbProduct.getSelectedItem() == null) {
             cmbProduct.setFocus(true);
             this.showMessage("cms.error.producto.notSelected", true, null);
         } else {
@@ -154,31 +160,32 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
 
     private void loadField() {
         if (eventType == WebConstants.EVENT_ADD) {
-            lblProgram.setVisible(false);
-            lblProduct.setVisible(false);
-            loadCmbProgram(eventType);
+            if (plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard() != null) {
+                lblProduct.setValue(plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard().getCardId().getProductId().getName());
+            } else {
+                loadCmbProductByProgram();
+            }            
         } else {
             plasticCustomerCard = getDataPlastic(plasticCustomizingRequestParam);
-            if (plasticCustomerCard != null) {
-                cmbProduct.setVisible(false);
-                cmbProgram.setVisible(false);
+            if (plasticCustomerCard.size() != 0) {
+                lblProduct.setVisible(true);
                 lblProgram.setValue(plasticCustomizingRequestParam.getProgramId().getName());
                 lblProduct.setValue(plasticCustomerCard.get(0).getCardId().getProductId().getName());
                 loadDataPlasticList(plasticCustomerCard);
                 btnViewCard.setVisible(false);
+                btnAssigment.setVisible(false);
             } else {
-                lblProgram.setVisible(false);
-                lblProduct.setVisible(false);
-                loadCmbProgram(eventType);
-                onChange$cmbProgram();
+                loadCmbProductByProgram();
             }
         }
     }
-
-    public void onChange$cmbProgram() {
+    
+    public void loadCmbProductByProgram() {
+        lblProgram.setVisible(true);
+        lblProgram.setValue(plasticCustomizingRequestParam.getProgramId().getName());
+        lblProduct.setVisible(false);
         cmbProduct.setVisible(true);
-        Program program = (Program) cmbProgram.getSelectedItem().getValue();
-        loadCmbProduct(eventType, program.getId());
+        loadCmbProduct(eventType, plasticCustomizingRequestParam.getProgramId().getId());
     }
 
     public void getData() {
@@ -196,7 +203,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
         } catch (GeneralException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-            showEmptyList();
+            showError(ex);
         }
     }
 
@@ -243,6 +250,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
 
     public List<PlastiCustomizingRequestHasCard> getDataPlastic(PlasticCustomizingRequest plasticCustomizingRequest) {
         plasticCustomerCard = new ArrayList<PlastiCustomizingRequestHasCard>();
+        Card card = null;
         try {
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             EJBRequest request2 = new EJBRequest();
@@ -250,12 +258,21 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
             params.put(QueryConstants.PARAM_PLASTIC_CUSTOMIZING_REQUEST_ID, plasticCustomizingRequest.getId());
             request2.setParams(params);
             plasticCustomerCard = requestEJB.getCardByPlastiCustomizingRequest(request2);
+            //Actualiza el estatus de la tarjeta
+            for (PlastiCustomizingRequestHasCard p: plasticCustomerCard) {
+                request2 = new EJBRequest();
+                request2.setParam(p.getCardId().getId());
+                card = cardEJB.loadCard(request2);
+                p.setCardId(card);
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (GeneralException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
-            showEmptyList();
+            showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            showError(ex);
         }
         return plasticCustomerCard;
     }
@@ -346,10 +363,6 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     public void onClick$btnAssigment() throws InterruptedException {
         try {
             saveCard(plasticCard);
-            adminPlasticRequest = new AdminPlasticRequestController();
-            if (adminPlasticRequest.getPlasticCustomizingRequest().getId() != null) {
-                plasticCustomizingRequestParam = adminPlasticRequest.getPlasticCustomizingRequest();
-            }
             getDataPlastic(plasticCustomizingRequestParam);
             loadDataPlasticList(plasticCustomerCard);
         } catch (Exception ex) {
@@ -423,24 +436,6 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
                 item.setLabel(product.get(i).getName());
                 item.setParent(cmbProduct);
             }
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        }
-    }
-
-    private void loadCmbProgram(Integer evenInteger) {
-        EJBRequest request1 = new EJBRequest();
-        List<Program> programs;
-        try {
-            programs = programEJB.getProgram(request1);
-            loadGenericCombobox(programs, cmbProgram, "name", evenInteger, Long.valueOf(plasticCustomizingRequestParam != null ? plasticCustomizingRequestParam.getProgramId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
