@@ -194,7 +194,7 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         cmbProgram.setVisible(true);
         cmbProgram.setValue("");
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-//        loadCmbProgram(eventType, country.getId());
+        loadCmbProgram(eventType, country.getId());
     }
 
     public void onChange$cmbProgram() {
@@ -299,7 +299,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 txtMinimunAmount.setDisabled(false);
                 txtMaximunAmount.setDisabled(false);
                 loadCmbCountry(eventType);
-                loadCmbProgram(eventType);
                 onChange$cmbCountry();
                 onChange$cmbProgram();
                 break;
@@ -310,7 +309,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 txtMinimunAmount.setDisabled(false);
                 txtMaximunAmount.setDisabled(false);
                 loadCmbCountry(eventType);
-                loadCmbProgram(eventType);
                 blockFields();
                 onChange$cmbCountry();
                 onChange$cmbProgram();
@@ -319,7 +317,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbProgram(eventType);
                 onChange$cmbProgram();
                 break;
             default:
@@ -345,11 +342,14 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         }
     }
 
-    private void loadCmbProgram(Integer evenInteger) {
+    private void loadCmbProgram(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
         List<Program> programs = null;
         try {
-            programs = programEJB.getProgram(request1);
+            Map params = new HashMap();
+            params.put(Constants.COUNTRY_KEY, countryId);
+            request1.setParams(params);
+            programs = programEJB.getProgramByCountry(request1);
             loadGenericCombobox(programs, cmbProgram, "name", evenInteger, Long.valueOf(accountPropertiesParam != null ? accountPropertiesParam.getProgramId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
@@ -360,10 +360,6 @@ public class AdminAccountPropertiesController extends GenericAbstractAdminContro
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        } finally {
-            if (programs == null) {
-                this.showMessage("cms.msj.ProgramsNull", false, null);
-            }
         }
     }
 

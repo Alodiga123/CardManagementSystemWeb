@@ -47,7 +47,7 @@
                                             </vlayout>
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="15" height="480px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="480px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.countryName')}" width="120px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.descriptionPersonType')}" width="150px" sort="auto"/>
