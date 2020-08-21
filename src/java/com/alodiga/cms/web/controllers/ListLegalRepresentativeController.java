@@ -13,6 +13,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.LegalRepresentatives;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -104,6 +105,7 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     public void loadDataList(List<LegalPersonHasLegalRepresentatives> list) {
         try {
             lbxRecords.getItems().clear();
+            Request request = null;
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
                 for (LegalPersonHasLegalRepresentatives legalRepresentatives : list) {
@@ -120,8 +122,18 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDueDateDocumentIdentification())));
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDateBirth())));
                     
-                    item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
-                    item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
+                    AdminRequestController adminRequest = new AdminRequestController();
+                    if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                    }
+                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                        item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
+                        item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
+                    } else {
+                        item.appendChild(new Listcell(" "));
+                        item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
+                        btnAdd.setVisible(false);
+                    }
                     item.setParent(lbxRecords);
                 }
             } else {

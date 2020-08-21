@@ -9,6 +9,7 @@ import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
+import com.cms.commons.models.Request;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -114,6 +115,7 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
     
     public void loadDataList(List<ApplicantNaturalPerson> list) {
         try {
+            Request request = null;
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
@@ -127,8 +129,18 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
                     item.appendChild(new Listcell(applicantNaturalPerson.getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(applicantNaturalPerson.getIdentificationNumber()));
                     item.appendChild(new Listcell(applicantNaturalPerson.getKinShipApplicantId().getDescription()));
-                    item.appendChild(createButtonEditModal(applicantNaturalPerson));
-                    item.appendChild(createButtonViewModal(applicantNaturalPerson));
+                    AdminRequestController adminRequest = new AdminRequestController();
+                    if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                    }
+                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                        item.appendChild(createButtonEditModal(applicantNaturalPerson));
+                        item.appendChild(createButtonViewModal(applicantNaturalPerson));
+                    } else {
+                        item.appendChild(new Listcell(" "));
+                        item.appendChild(createButtonViewModal(applicantNaturalPerson));
+                        btnAdd.setVisible(false);
+                    }
                     item.setParent(lbxRecords);
                 }
             } else {

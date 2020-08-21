@@ -5,6 +5,7 @@ import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
+import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -126,22 +127,28 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     public void onClick$btnBack() {
         winAdminPhoneEmployee.detach();
     }
-
+    //cms.error.employee.areaCode
+    //txtAreaCode
     public Boolean validateEmpty() {
-        if (txtPhone.getText().isEmpty()) {
-            txtPhone.setFocus(true);
-            this.showMessage("cms.error.field.phoneNumber", true, null);
-        } else if (cmbPhoneType.getSelectedItem() == null) {
-            cmbPhoneType.setFocus(true);
-            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        if (cmbCountry.getSelectedItem()  == null) {
+            cmbCountry.setFocus(true);
+            this.showMessage("cms.error.country.notSelected", true, null);     
+        } else if (txtCodeCountry.getText().isEmpty()) {
+            txtCodeCountry.setFocus(true);
+            this.showMessage("cms.error.employee.areaCountry", true, null);
         } else if (txtAreaCode.getText().isEmpty()) {
             txtAreaCode.setFocus(true);
             this.showMessage("cms.error.employee.areaCode", true, null);
+        } else if (txtPhone.getText().isEmpty()) {
+            txtPhone.setFocus(true);
+            this.showMessage("cms.error.field.phoneNumber", true, null);
         } else if (txtPhoneExtension.getText().isEmpty()) {
             txtPhoneExtension.setFocus(true);
             this.showMessage("cms.error.employee.extensionPhone", true, null);
-        }
-        else {
+        } else if (cmbPhoneType.getSelectedItem() == null) {
+            cmbPhoneType.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        }  else {
             return true;
         }
         return false;
@@ -161,12 +168,10 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             params.put(Constants.PERSON_KEY, employee.getPersonId().getId());
             request.setParams(params);
             phonePersonList = personEJB.getValidateMainPhone(request);
-            if (rIsPrincipalNumberYes.isChecked()){
-                if(phonePersonList != null){
+            if ((phonePersonList != null) && (rIsPrincipalNumberYes.isChecked())){
                 this.showMessage("cms.error.employee.PhoneMainYes", true, null);
                 txtPhone.setFocus(true);
                 return false;
-                }
             }
         } catch (Exception ex) {
             showError(ex);
@@ -220,12 +225,13 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
 
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnSave()throws RegisterNotFoundException, NullParameterException, GeneralException {
+        this.clearMessage();
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                    if (validatePhone()){
-                    savePhone(null);   
+                        savePhone(null);   
                    }                    
                     break;
                 case WebConstants.EVENT_EDIT:

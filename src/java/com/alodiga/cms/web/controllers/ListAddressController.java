@@ -13,6 +13,7 @@ import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Address;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonHasAddress;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -42,6 +43,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
+    private Button btnAdd;
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
@@ -116,6 +118,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
 
     public void loadDataList(List<PersonHasAddress> list) {
         String indAddressDelivery = "";
+        Request request = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -133,8 +136,19 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                     }
                     item.appendChild(new Listcell(indAddressDelivery));
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getZipZoneId().getCode()));
-                    item.appendChild(createButtonEditModal(personHasAddress));
-                    item.appendChild(createButtonViewModal(personHasAddress));
+                    
+                    AdminRequestController adminRequest = new AdminRequestController();
+                    if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                    }
+                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                        item.appendChild(createButtonEditModal(personHasAddress));
+                        item.appendChild(createButtonViewModal(personHasAddress));
+                    } else {
+                        item.appendChild(new Listcell(" "));
+                        item.appendChild(createButtonViewModal(personHasAddress));
+                        btnAdd.setVisible(false);
+                    }
                     item.setParent(lbxRecords);
                 }
             } else {

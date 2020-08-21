@@ -15,6 +15,7 @@ import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.LegalCustomer;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.User;
+import com.cms.commons.models.Request;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -159,6 +160,7 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         Locale locale = new Locale ("es", "ES");
         NumberFormat numberFormat = NumberFormat.getInstance (locale);
         String proposedLimit = "";
+        Request request = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -175,10 +177,19 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getPositionEnterprise()));
                     proposedLimit = numberFormat.format(cardRequestNaturalPerson.getProposedLimit().floatValue());
                     item.appendChild(new Listcell(proposedLimit));
-                    item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
-                    item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
-                    item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, cardRequestNaturalPerson) : new Listcell());
-                    item.appendChild(permissionRead ? new ListcellViewButton(adminPage, cardRequestNaturalPerson) : new Listcell());
+                    
+                    AdminRequestController adminRequest = new AdminRequestController();
+                    if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                    }
+                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                        item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
+                        item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
+                    } else {
+                        item.appendChild(new Listcell(" "));
+                        item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
+                        btnAdd.setVisible(false);
+                    }
                     item.setParent(lbxRecords);
                 }
             } else {
