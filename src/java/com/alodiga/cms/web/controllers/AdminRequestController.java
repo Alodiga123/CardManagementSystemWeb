@@ -103,10 +103,30 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
+                        tabApplicantOFAC.setDisabled(false);
                         tabRequestbyCollection.setDisabled(false);
                         tabApplicationReview.setDisabled(false);
                     }
-                } 
+                } else {
+                    if (requestParam.getIndPersonNaturalRequest() == true) {
+                        tabMain.setDisabled(false);
+                        tabAddress.setDisabled(true);
+                        tabFamilyReferencesMain.setDisabled(true);
+                        tabAdditionalCards.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
+                    } else {
+                        //OJO Validar que la solicitud tenga al menos una tarjeta adicional 
+                        tabMain.setDisabled(false);
+                        tabAddress.setDisabled(true);
+                        tabLegalRepresentatives.setDisabled(true);
+                        tabAdditionalCards.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
+                    }
+                }
                 tbbTitle.setLabel(Labels.getLabel("cms.crud.request.edit"));
                 break;
             case WebConstants.EVENT_VIEW:

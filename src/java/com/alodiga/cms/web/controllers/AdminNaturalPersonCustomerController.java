@@ -190,7 +190,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
     private void loadFields(NaturalCustomer naturalCustomer) {
         String Gender = "M";
-        Long countPhoneByPerson = 0L;
         try {
             txtIdentificationNumber.setText(naturalCustomer.getIdentificationNumber());
             if (txtDueDateDocumentIdentification != null) {
@@ -439,7 +438,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     }
     
     private void loadCmbCivilState(Integer evenInteger) {
-        //cmbCivilState
         EJBRequest request1 = new EJBRequest();
         List<CivilStatus> civilStatuses;
 
@@ -459,7 +457,6 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
     }
 
     private void loadCmbProfession(Integer evenInteger) {
-        //cmbProfession
         EJBRequest request1 = new EJBRequest();
         List<Profession> profession;
 

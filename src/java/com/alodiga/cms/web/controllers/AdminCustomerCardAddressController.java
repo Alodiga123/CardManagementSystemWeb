@@ -64,7 +64,7 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
-
+        personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
@@ -72,6 +72,18 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
                     if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
                         addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
                     } else {
+                        Long customerHasAddress = personEJB.countAddressByPerson(naturalCustomer.getPersonId().getId());
+                        if (customerHasAddress > 0) {
+                            EJBRequest request = new EJBRequest();
+                            Map params = new HashMap();
+                            params.put(Constants.PERSON_KEY, naturalCustomer.getPersonId().getId());
+                            request.setParams(params);
+                            List<PersonHasAddress> phaList = personEJB.getPersonHasAddressesByPerson(request);
+                            for (PersonHasAddress pha: phaList) {
+                                naturalCustomer.getPersonId().setPersonHasAddress(pha);
+                            }
+                            addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
+                        }
                         addressParam = null;
                     }
                 }
@@ -98,7 +110,6 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -202,14 +213,16 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
     }
 
     private void saveAddress(Address _address) {
-        Person applicantPersonCard = null;
+        Person customerPersonCard = null;
         try {
             Address address = null;
             PersonHasAddress personHasAddress = null;
 
-            if (naturalCustomer.getPersonId() != null) {
-                personHasAddress = naturalCustomer.getPersonId().getPersonHasAddress();
-            }
+            if (eventType != WebConstants.EVENT_ADD && naturalCustomer.getPersonId() != null) {
+                if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
+                    personHasAddress = naturalCustomer.getPersonId().getPersonHasAddress();
+                }                                 
+            }            
 
             if (_address != null) {
                 address = _address;
@@ -271,8 +284,17 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
             addressParam = address;
 
             //PersonHasAddress
+            if (eventType != WebConstants.EVENT_ADD) {
+                personHasAddress.setPersonId(naturalCustomer.getPersonId());
+            } else {
+                //Se obtiene la persona asociada a la tarjeta complementaria
+                AdminCustomerCardComplementariesController adminCustomerCardComplementary = new AdminCustomerCardComplementariesController();
+                if (adminCustomerCardComplementary.getCustomerCard() != null) {
+                    customerPersonCard = adminCustomerCardComplementary.getCustomerCard();
+                }
+                personHasAddress.setPersonId(customerPersonCard);                
+            }            
             personHasAddress.setAddressId(address);
-            personHasAddress.setPersonId(naturalCustomer.getPersonId());
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
 
             this.showMessage("sp.common.save.success", false, null);

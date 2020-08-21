@@ -408,6 +408,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
         try {
             Person person = new Person();
             NaturalCustomer naturalCustomer = new NaturalCustomer();
+            PhonePerson phonePerson = new PhonePerson();
             ApplicantNaturalPerson applicant = requestCard.getPersonId().getApplicantNaturalPerson();
 
             //Guardar la persona asociada al cliente
@@ -444,6 +445,26 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             naturalCustomer.setCreateDate(new Timestamp(new Date().getTime()));
             naturalCustomer = personEJB.saveNaturalCustomer(naturalCustomer);
             naturalCustomerParent = naturalCustomer;
+            
+            //Guarda los teléfonos del cliente
+            if (requestCard.getPersonId().getPhonePerson() == null) {
+                Long personHavePhone = personEJB.havePhonesByPerson(requestCard.getPersonId().getId());
+                if (personHavePhone > 0) {
+                    EJBRequest request = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PERSON_KEY, requestCard.getPersonId().getId());
+                    request.setParams(params);
+                    phonePersonList = personEJB.getPhoneByPerson(request);
+                    for (PhonePerson p: phonePersonList) {
+                        requestCard.getPersonId().setPhonePerson(p);
+                    }
+                }
+            }
+            phonePerson.setPersonId(person);
+            phonePerson.setIndMainPhone(true);
+            phonePerson.setNumberPhone(requestCard.getPersonId().getPhonePerson().getNumberPhone());
+            phonePerson.setPhoneTypeId(requestCard.getPersonId().getPhonePerson().getPhoneTypeId());
+            phonePerson = personEJB.savePhonePerson(phonePerson);
 
             //Actualiza el cliente en la solicitud de tarjeta
             requestCard.setPersonCustomerId(naturalCustomer.getPersonId());
