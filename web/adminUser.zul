@@ -134,11 +134,12 @@
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rEnabledYes" label="${c:l('cms.commom.Yes')}" radiogroup="EnabledActive" />
-                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="EnabledActive" />
+                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="EnabledActive" checked = "true"/>
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
                                                             </hbox>
+                                                            <label value="*" sclass="lblreq" />
                                                         </row> 
                                                     </rows>
                                                 </grid> 

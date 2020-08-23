@@ -25,7 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('sp.common.data.request')}"/> 
+                                                        <group label="${c:l('cms.common.data.request')}"/> 
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -52,9 +52,18 @@
                                                             <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                            <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                            <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
+                                                                <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>
+                                                                <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
@@ -62,15 +71,27 @@
                                                             <label value="${c:l('cms.common.aditionalCard.positionEnterprise')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
-                                                            <textbox id="txtPositionEnterprise" value="" width="250px" maxlength="50"/>
+                                                            <hlayout>
+                                                              <textbox id="txtFullName" value="" width="250px" maxlength="40"/>
+                                                              <label value="*" sclass="lblreq" />   
+                                                            </hlayout>
+                                                            <hlayout>
+                                                              <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/>
+                                                              <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
+                                                            <hlayout>
+                                                              <textbox id="txtPositionEnterprise" value="" width="250px" maxlength="50"/>
+                                                              <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.aditionalCard.proposedLimit')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <doublebox id="dbxProposedLimit" width="240px" constraint="no negative"  format="#,##0.##" maxlength="25"/>
+                                                            <hlayout>
+                                                             <doublebox id="dbxProposedLimit" width="240px" constraint="no negative"  format="#,##0.##" maxlength="25"/>
+                                                             <label value="*" sclass="lblreq" /> 
+                                                            </hlayout>
                                                         </row>
                                                     </rows>
                                                 </grid>
