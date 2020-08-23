@@ -443,7 +443,7 @@ public class AdminNaturalPersonCustomerController extends GenericAbstractAdminCo
 
         try {
             civilStatuses = personEJB.getCivilStatus(request1);
-            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getPersonId().getNaturalCustomer().getCivilStatusId().getId() : 0));
+            loadGenericCombobox(civilStatuses, cmbCivilState, "description", evenInteger, Long.valueOf(naturalCustomerParam != null ? naturalCustomerParam.getCivilStatusId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
