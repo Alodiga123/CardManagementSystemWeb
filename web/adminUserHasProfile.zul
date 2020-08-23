@@ -56,19 +56,26 @@
                                                             <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
+                                                            <hlayout>
                                                             <combobox id="cmbUser" width="250px" mold="rounded" readonly="true" />
+                                                            <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
                                                             <combobox id="cmbRole" width="250px" mold="rounded" readonly="true" />
+                                                            <label value="*" sclass="lblreq" />
+                                                            </hlayout>
                                                             <hbox>
                                                             <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rEnabledYes" label="${c:l('cms.commom.Yes')}" radiogroup="EnabledActive" />
-                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="EnabledActive" />
+                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="EnabledActive" checked = "true" />
                                                                         </row>
                                                                     </rows>
                                                                  </grid>
                                                             </hbox>
+                                                            <label value="*" sclass="lblreq" />
                                                         </row>
                                                                                                                     
                                                     </rows>

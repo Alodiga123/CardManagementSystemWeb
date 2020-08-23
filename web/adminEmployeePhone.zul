@@ -40,7 +40,7 @@
                                                                 <textbox id="txtCodeCountry" width="150px" maxlength="120"/>
                                                                 
                                                             <hlayout>
-                                                                <textbox id="txtAreaCode" width="150px" maxlength="120"/>
+                                                                <textbox id="txtAreaCode" width="150px" maxlength="120" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>  
@@ -52,11 +52,11 @@
                                                         
                                                         <row>
                                                             <hlayout>
-                                                                <textbox id="txtPhone" width="260px" maxlength="80"/>
+                                                                <textbox id="txtPhone" width="260px" maxlength="80" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <textbox id="txtPhoneExtension" width="260px" maxlength="80"/>
+                                                                <textbox id="txtPhoneExtension" width="260px" maxlength="80" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
