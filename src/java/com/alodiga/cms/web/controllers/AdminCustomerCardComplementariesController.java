@@ -70,7 +70,7 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
     private List<PhonePerson> phonePersonList = null;
     public static Person customerCard = null;
     private Button btnSave;
-    private Integer eventType;
+    public static Integer eventType;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -99,6 +99,10 @@ public class AdminCustomerCardComplementariesController extends GenericAbstractA
 
     public Person getCustomerCard() {
         return this.customerCard;
+    }
+    
+    public Integer getEventType() {
+        return this.eventType;
     }
 
     public void onClick$naturalizedYes() {

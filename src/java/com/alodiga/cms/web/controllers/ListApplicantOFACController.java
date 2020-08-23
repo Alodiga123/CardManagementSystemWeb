@@ -130,7 +130,29 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         } catch (GeneralException ex) {
             showError(ex);
         } finally {
-            applicantList.add(applicantNaturalPerson);
+            try {
+                applicantList.add(applicantNaturalPerson);
+                for (ApplicantNaturalPerson applicant : applicantList) {
+                    Long haveReviewOFAC = requestEJB.haveReviewOFACByPerson(applicantNaturalPerson.getPersonId().getId());
+                    if (haveReviewOFAC > 0) {
+                        EJBRequest request = new EJBRequest();
+                        Map params = new HashMap();
+                        params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
+                        params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                        request.setParams(params);
+                        List<ReviewOFAC> reviewOFAC = requestEJB.getReviewOFACByApplicantByRequest(request);
+                        for (ReviewOFAC r: reviewOFAC) {
+                            applicant.getPersonId().setReviewOFAC(r);
+                        }
+                    }                    
+                }
+            } catch (NullParameterException ex) {
+                showError(ex);
+            } catch (EmptyListException ex) {
+                showError(ex);
+            } catch (GeneralException ex) {
+                showError(ex);
+            }            
         }
     }  
 
@@ -231,7 +253,6 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
                     builder.append(" ");
                     builder.append(applicantNaturalPerson.getLastNames());                    
                     item.appendChild(new Listcell(builder.toString()));
-                    item.appendChild(new Listcell(applicantNaturalPerson.getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(applicantNaturalPerson.getIdentificationNumber()));
                     if (applicantNaturalPerson.getKinShipApplicantId() == null) {
                         item.appendChild(new Listcell(WebConstants.MAIN_APPLICANT));
@@ -243,7 +264,11 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
                     } else {
                         item.appendChild(new Listcell("SIN REGISTRAR"));
                     }
-                    item.appendChild(new Listcell(applicantNaturalPerson.getPersonId().getReviewOFAC().getResultReview()));
+                    if (applicantNaturalPerson.getPersonId().getReviewOFAC() != null) {
+                        item.appendChild(new Listcell(applicantNaturalPerson.getPersonId().getReviewOFAC().getResultReview()));
+                    } else {
+                        item.appendChild(new Listcell(""));
+                    }
                     item.appendChild(createButtonEditModal(applicantNaturalPerson));
                     item.appendChild(createButtonViewModal(applicantNaturalPerson));
                     item.setParent(lbxRecords);
