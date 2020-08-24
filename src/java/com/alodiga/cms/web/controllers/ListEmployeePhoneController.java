@@ -34,6 +34,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 import java.util.ArrayList;
+import org.zkoss.zul.Tab;
 
 public class ListEmployeePhoneController extends GenericAbstractListController<PhonePerson> {
 
@@ -44,12 +45,21 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
     private PersonEJB personEJB = null;
     private List<PhonePerson> phonePersonList = null;
     private Person person = null;
+    private Tab tabEmployeePhone;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
         startListener();
+    }
+    
+    public void onSelect$tabEmployeePhone() {
+        try {
+            doAfterCompose(self);
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     public void startListener() {
@@ -193,6 +203,7 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
 
     public void getData() {
         Employee employee = null;
+        phonePersonList = new ArrayList<PhonePerson>();
         try {
              //Empleado Principal
             AdminEmployeeController adminEmployee = new AdminEmployeeController();

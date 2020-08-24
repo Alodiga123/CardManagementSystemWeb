@@ -32,14 +32,13 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ListRequestsCollectionsController extends GenericAbstractListController<CollectionsRequest> {
+public class ListRequestsCollectionsController extends GenericAbstractListController<RequestHasCollectionsRequest> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
     private RequestEJB requestEJB = null;
-    private List<CollectionsRequest> collectionsByRequest = null;
-    private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList;
+    private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList = null;
     private Tab tabRequestbyCollection;
 
     @Override
@@ -62,7 +61,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             adminPage = "adminRequestCollections.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             getData();
-            loadDataList(collectionsByRequest);
+            loadDataList(requestHasCollectionsRequestList);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -76,30 +75,32 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         }
     }
 
-    public void loadDataList(List<CollectionsRequest> list) {
+    public void loadDataList(List<RequestHasCollectionsRequest> list) {
         String applicantName = "";
+        //requestHasCollectionsRequestList
         RequestHasCollectionsRequest requestHasCollectionsRequest = null;
         Request request = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (CollectionsRequest collectionsRequest : list) {
+                for (RequestHasCollectionsRequest requestCollectionsRequest : list) {
                     item = new Listitem();
-                    item.setValue(collectionsRequest);
-                    item.appendChild(new Listcell(collectionsRequest.getCountryId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getProductTypeId().getName()));
-                    item.appendChild(new Listcell(collectionsRequest.getCollectionTypeId().getDescription()));
+                    item.setValue(requestCollectionsRequest);
+                    item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCountryId().getName()));
+                    item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getProductTypeId().getName()));
+                    item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCollectionTypeId().getDescription()));
+                    item.appendChild(new Listcell(requestCollectionsRequest.getIndApproved().toString()));
                     AdminRequestController adminRequest = new AdminRequestController();
                     if(adminRequest.getRequest().getStatusRequestId() != null){
                         request = adminRequest.getRequest();
                     }
                     if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
-                        item.appendChild(createButtonEditModal(collectionsRequest));
-                    item.appendChild(createButtonViewModal(collectionsRequest));
+                        item.appendChild(createButtonEditModal(requestCollectionsRequest));
+                        item.appendChild(createButtonViewModal(requestCollectionsRequest));
                     } else {
                         item.appendChild(new Listcell(" "));
-                        item.appendChild(createButtonViewModal(collectionsRequest));
+                        item.appendChild(createButtonViewModal(requestCollectionsRequest));
                         btnAdd.setVisible(false);
                     }
                     item.setParent(lbxRecords);
@@ -117,7 +118,22 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             showError(ex);
         }
     }
-
+    
+    public void onClick$btnAdd() throws InterruptedException {
+        try {
+            Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
+            Map<String, Object> paramsPass = new HashMap<String, Object>();
+            paramsPass.put("object", requestHasCollectionsRequestList);
+            if (requestHasCollectionsRequestList.size() == 0) {
+                requestHasCollectionsRequestList = null;
+            }
+            final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
+            window.doModal();
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
     public Listcell createButtonEditModal(final Object obg) {
         Listcell listcellEditModal = new Listcell();
         try {
@@ -170,8 +186,8 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         return listcellViewModal;
     }
 
-    public void getData() {
-        collectionsByRequest = new ArrayList<CollectionsRequest>();
+    public void getData() {;
+        requestHasCollectionsRequestList = new ArrayList<RequestHasCollectionsRequest>();
         Request requestCard = null;
         
         AdminRequestController adminRequestController = new AdminRequestController();
@@ -181,12 +197,9 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         try {
             Map params = new HashMap();
             EJBRequest request1 = new EJBRequest();
-            params.put(Constants.COUNTRY_KEY, requestCard.getCountryId().getId());
-            params.put(Constants.PRODUCT_TYPE_KEY, requestCard.getProductTypeId().getId());
-            params.put(Constants.PROGRAM_KEY, requestCard.getProgramId().getId());
-            params.put(Constants.PERSON_TYPE_KEY, requestCard.getPersonTypeId().getId());
+            params.put(Constants.REQUEST_KEY, requestCard.getId());
             request1.setParams(params);
-            collectionsByRequest = requestEJB.getCollectionsByRequest(request1);
+            requestHasCollectionsRequestList = requestEJB.getRequestsHasCollectionsRequestByRequest(request1);
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -218,7 +231,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     }
 
     @Override
-    public List<CollectionsRequest> getFilterList(String filter) {
+    public List<RequestHasCollectionsRequest> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
