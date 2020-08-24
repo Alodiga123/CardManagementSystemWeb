@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1000px" align="left" height="580px">
+                        <div width="900px" align="left" height="580px">
                             <hlayout>
                                 <div width="890px">
                                     <vlayout>
@@ -45,7 +45,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.common.requestNaturalRegister')}"/>
+                                                        <group label="${c:l('cms.common.requestNaturalPersonRegister')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
@@ -159,6 +159,7 @@
                                                         </row>
                                                     </rows>
                                                 </grid>
+                                            </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
