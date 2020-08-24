@@ -51,6 +51,7 @@
                                                         <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
                                                         <tab id="tabLegalRepresentatives" label="${c:l('cms.tab.legalRepresentative')}" />
                                                         <tab id="tabAdditionalCards" label="${c:l('cms.tab.additionalCards')}" />
+                                                        <tab id="tabApplicantOFAC" label="${c:l('cms.tab.applicantOFAC')}"/>
                                                         <tab id="tabRequestbyCollection" label="${c:l('cms.tab.requestByCollections')}"/>
                                                         <tab id="tabApplicationReview" label="${c:l('cms.tab.applicationReview')}"/>
                                                     </tabs>
@@ -69,6 +70,9 @@
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listAdditionalCards.zul"/>
+                                                        </tabpanel>
+                                                        <tabpanel>
+                                                            <include src="listApplicantOFAC.zul"/>
                                                         </tabpanel>
                                                         <tabpanel>
                                                             <include src="listRequestsCollections.zul"/>

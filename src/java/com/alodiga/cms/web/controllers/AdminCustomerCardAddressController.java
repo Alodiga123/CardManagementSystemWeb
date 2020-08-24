@@ -59,49 +59,39 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
     private Button btnSave;
     private Integer eventType;
     private NaturalCustomer naturalCustomer;
+    private AdminCustomerCardComplementariesController adminCustomerCardComplementary = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        adminCustomerCardComplementary = new AdminCustomerCardComplementariesController();        
+        eventType = adminCustomerCardComplementary.getEventType();
         personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-        switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
-                    naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
-                    if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
-                        addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
-                    } else {
-                        Long customerHasAddress = personEJB.countAddressByPerson(naturalCustomer.getPersonId().getId());
-                        if (customerHasAddress > 0) {
-                            EJBRequest request = new EJBRequest();
-                            Map params = new HashMap();
-                            params.put(Constants.PERSON_KEY, naturalCustomer.getPersonId().getId());
-                            request.setParams(params);
-                            List<PersonHasAddress> phaList = personEJB.getPersonHasAddressesByPerson(request);
-                            for (PersonHasAddress pha: phaList) {
-                                naturalCustomer.getPersonId().setPersonHasAddress(pha);
-                            }
-                            addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
+        if (eventType != WebConstants.EVENT_ADD) {
+            if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
+                naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
+                if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
+                    addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
+                } else {
+                    Long customerHasAddress = personEJB.countAddressByPerson(naturalCustomer.getPersonId().getId());
+                    if (customerHasAddress > 0) {
+                        EJBRequest request = new EJBRequest();
+                        Map params = new HashMap();
+                        params.put(Constants.PERSON_KEY, naturalCustomer.getPersonId().getId());
+                        request.setParams(params);
+                        List<PersonHasAddress> phaList = personEJB.getPersonHasAddressesByPerson(request);
+                        for (PersonHasAddress pha: phaList) {
+                            naturalCustomer.getPersonId().setPersonHasAddress(pha);
                         }
-                        addressParam = null;
-                    }
-                }
-                break;
-            case WebConstants.EVENT_VIEW:
-                if (((NaturalCustomer) Sessions.getCurrent().getAttribute("object")) != null) {
-                    naturalCustomer = (NaturalCustomer) Sessions.getCurrent().getAttribute("object");
-                    if (naturalCustomer.getPersonId().getPersonHasAddress() != null) {
                         addressParam = naturalCustomer.getPersonId().getPersonHasAddress().getAddressId();
                     } else {
                         addressParam = null;
-                    }
+                    }                        
                 }
-                break;
-            case WebConstants.EVENT_ADD:
-                addressParam = null;
-                break;
-        }
+            }
+        } else {
+            addressParam = null;
+        }        
         initialize();
     }
 
@@ -288,7 +278,6 @@ public class AdminCustomerCardAddressController extends GenericAbstractAdminCont
                 personHasAddress.setPersonId(naturalCustomer.getPersonId());
             } else {
                 //Se obtiene la persona asociada a la tarjeta complementaria
-                AdminCustomerCardComplementariesController adminCustomerCardComplementary = new AdminCustomerCardComplementariesController();
                 if (adminCustomerCardComplementary.getCustomerCard() != null) {
                     customerPersonCard = adminCustomerCardComplementary.getCustomerCard();
                 }
