@@ -25,7 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('sp.common.data.request')}"/>
+                                                        <group label="${c:l('cms.common.data.request')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -47,7 +47,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.crud.cardRequestType.review')}" sclass="lblbold"/>
                                                             <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
@@ -57,11 +57,11 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true"/>
+                                                                <textbox id="txtCountry" width="250px" maxlength="15" value="" style="color:#837E76;"/> 
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <combobox id="cmbPersonType" width="250px" mold="rounded" readonly="true"/>
+                                                                <textbox id="txtPersonType" width="250px" maxlength="15" value="" style="color:#837E76;"/> 
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <label id="txtProductType" value="" width="250px" style="color:#837E76;"/>
@@ -73,7 +73,7 @@
                                                         </row>
                                                         <row>
                                                             <label id="txtPrograms" value="" width="250px" style="color:#837E76;"/>
-                                                            <label id="txtCollectionType" value="" width="250px" style="color:#837E76;"/>
+                                                            <combobox id="cmbCollectionType" width="250px" mold="rounded" readonly="true" />
                                                             <hbox>
                                                                 <radiogroup id="indApproved" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
