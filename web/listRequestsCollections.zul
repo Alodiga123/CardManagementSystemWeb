@@ -42,7 +42,7 @@
                                                     <listheader label="${c:l('cms.common.countryName')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.descriptionProductType')}" width="250px" sort="auto"/>
                                                     <listheader label="${c:l('cms.requestCollection.collectionTypes')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.status')}" width="105px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.status')}" width="95px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
