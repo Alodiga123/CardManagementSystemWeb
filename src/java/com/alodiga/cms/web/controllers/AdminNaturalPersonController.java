@@ -55,6 +55,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Textbox txtMarriedLastName;
     private Textbox txtBirthPlace;
     private Textbox txtPhoneNumber;
+    private Textbox txtCodeCountryPhoneL;
+    private Textbox txtAreaCodePhoneL;
+    private Textbox txtPhoneCelL;
+    private Textbox txtCodeCountryPhone;       
+    private Textbox txtAreaCodePhone;
+    private Textbox txtPhoneCel;
     private Intbox txtFamilyResponsibilities;
     private Textbox txtEmail;
     private Combobox cmbCountry;
@@ -62,10 +68,18 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Combobox cmbCivilState;
     private Combobox cmbProfession;
     private Combobox cmbPhoneType;
+    private Combobox cmbCountryPhoneL;
+    private Combobox cmbPhoneTypePhoneL;
+    private Combobox cmbCountryPhone;
+    private Combobox cmbPhoneTypePhone;       
     private Datebox txtBirthDay;
     private Datebox txtDueDateDocumentIdentification;
     private Radio genderMale;
     private Radio genderFemale;
+    private Radio rIsPrincipalNumberLYes;
+    private Radio rIsPrincipalNumerLNo;
+    private Radio rIsPrincipalNumberYes;
+    private Radio rIsPrincipalNumerNo;       
     public String indGender = null;
     private Tab tabAddress;
     private Tab tabFamilyReferencesMain;
@@ -232,7 +246,39 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             } else {
                 genderFemale.setChecked(true);
             }
-            txtPhoneNumber.setText(applicantNaturalPerson.getPersonId().getPhonePerson().getNumberPhone());
+            
+            EJBRequest request = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
+            request.setParams(params);
+            phonePersonList = personEJB.getPhoneByPerson(request);
+            if (phonePersonList != null) {
+                for (PhonePerson p : phonePersonList) {
+                    if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
+                        cmbCountryPhoneL.setValue(p.getCountryId().getName());
+                        txtPhoneCelL.setText(p.getNumberPhone());
+                        txtCodeCountryPhoneL.setText(p.getCountryCode());
+                        txtAreaCodePhoneL.setText(p.getAreaCode());
+                            if (p.getIndMainPhone() == true) {
+                                    rIsPrincipalNumberLYes.setChecked(true);
+                                }else {
+                                    rIsPrincipalNumerLNo.setChecked(true);
+                            }
+                    }
+                    if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                         cmbCountryPhone.setValue(p.getCountryId().getName());
+                         txtPhoneCel.setText(p.getNumberPhone());
+                         txtCodeCountryPhone.setText(p.getCountryCode());
+                         txtAreaCodePhone.setText(p.getAreaCode());
+                            if (p.getIndMainPhone() == true) {
+                                    rIsPrincipalNumberYes.setChecked(true);
+                                }else {
+                                    rIsPrincipalNumerNo.setChecked(true);
+                            }
+                    }
+                }
+            }
+            
             applicantNaturalPersonParent = applicantNaturalPerson;
             if (eventType == WebConstants.EVENT_ADD) {
                 btnSave.setVisible(false);
@@ -270,13 +316,21 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtBirthDay.setReadonly(true);
         txtFamilyResponsibilities.setReadonly(true);
         txtEmail.setReadonly(true);
-        txtPhoneNumber.setReadonly(true);
+        txtCodeCountryPhoneL.setReadonly(true);
+        txtAreaCodePhoneL.setReadonly(true);
+        txtPhoneCelL.setReadonly(true);        
+        txtCodeCountryPhone.setReadonly(true);
+        txtAreaCodePhone.setReadonly(true);
+        txtPhoneCel.setReadonly(true);        
         genderFemale.setDisabled(true);
         genderMale.setDisabled(true);
+        cmbCountryPhoneL.setDisabled(true);
+        cmbPhoneTypePhoneL.setDisabled(true);
+        cmbCountryPhone.setDisabled(true);
+        cmbPhoneTypePhone.setDisabled(true);
         cmbCountry.setReadonly(true);
         cmbCivilState.setReadonly(true);
         cmbProfession.setReadonly(true);
-        cmbPhoneType.setReadonly(true);
         btnSave.setVisible(false);
     }
 
@@ -286,9 +340,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         Calendar cumpleCalendar = Calendar.getInstance();
         if (!(txtBirthDay.getText().isEmpty())) {
             cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
-        }
-
-        if (cmbCountry.getSelectedItem() == null) {
+        } else if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
         } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
@@ -323,18 +375,46 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (cmbProfession.getSelectedItem() == null) {
             cmbProfession.setFocus(true);
             this.showMessage("cms.error.naturalperson.notSelected", true, null);
-        } else if (cmbPhoneType.getSelectedItem() == null) {
-            cmbPhoneType.setFocus(true);
-            this.showMessage("cms.error.phoneType.notSelected", true, null);
-        } else if (txtPhoneNumber.getText().isEmpty()) {
-            txtPhoneNumber.setFocus(true);
-            this.showMessage("cms.error.field.phoneNumber", true, null);
         } else if (txtFamilyResponsibilities.getText().isEmpty()) {
             txtFamilyResponsibilities.setFocus(true);
             this.showMessage("cms.error.familyResponsibilities", true, null);
         } else if (txtEmail.getText().isEmpty()) {
             txtEmail.setFocus(true);
             this.showMessage("cms.error.field.email", true, null);
+        } else if (cmbCountryPhoneL.getSelectedItem()  == null) {
+            cmbCountryPhoneL.setFocus(true);
+            this.showMessage("cms.error.country.notSelected.PhoneLocal", true, null);     
+        } else if (txtCodeCountryPhoneL.getText().isEmpty()) {
+            txtCodeCountryPhoneL.setFocus(true);
+            this.showMessage("cms.error.employee.areaCountry.PhoneLocal", true, null);
+        } else if (txtAreaCodePhoneL.getText().isEmpty()) {
+            txtAreaCodePhoneL.setFocus(true);
+            this.showMessage("cms.error.employee.areaCode.PhoneLocal", true, null);
+        } else if (txtPhoneCelL.getText().isEmpty()) {
+            txtPhoneCelL.setFocus(true);
+            this.showMessage("cms.error.field.phoneLocalNumber", true, null);
+        } else if (cmbPhoneTypePhoneL.getSelectedItem() == null) {
+            cmbPhoneTypePhoneL.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        } else if ((!rIsPrincipalNumberLYes.isChecked()) && (!rIsPrincipalNumerLNo.isChecked())){
+            this.showMessage("cms.error.employee.phoneLocalMain", true, null);
+        } else if (cmbCountryPhone.getSelectedItem()  == null) {
+            cmbCountryPhone.setFocus(true);
+            this.showMessage("cms.error.country.notSelected.CellPhone", true, null);     
+        } else if (txtCodeCountryPhone.getText().isEmpty()) {
+            txtCodeCountryPhone.setFocus(true);
+            this.showMessage("cms.error.employee.areaCountry.CellPhone", true, null);
+        } else if (txtAreaCodePhone.getText().isEmpty()) {
+            txtAreaCodePhone.setFocus(true);
+            this.showMessage("cms.error.employee.areaCode.CellPhone", true, null);
+        } else if (txtPhoneCel.getText().isEmpty()) {
+            txtPhoneCel.setFocus(true);
+            this.showMessage("cms.error.field.cellPhoneNumber", true, null);
+        } else if (cmbPhoneTypePhone.getSelectedItem() == null) {
+            cmbPhoneTypePhone.setFocus(true);
+            this.showMessage("cms.error.phoneType.notSelected", true, null);
+        } else if ((!rIsPrincipalNumberYes.isChecked()) && (!rIsPrincipalNumerNo.isChecked())){
+            this.showMessage("cms.error.employee.cellPhoneMain", true, null);
         } else {
             return true;
         }
@@ -344,6 +424,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
         ApplicantNaturalPerson applicantNaturalPerson = null;
         AdminRequestController adminRequest = new AdminRequestController();
+        boolean indPrincipalPhoneL  = true;
+        boolean indPrincipalPhone  = true;
+        PhonePerson phonePerson1 = null;
+        PhonePerson phonePerson2 = null;
+        PhonePerson phonePersons = null; 
         try {
             Person person = null;
             PhonePerson phonePerson = null;
@@ -362,6 +447,18 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 indGender = "F";
             } else {
                 indGender = "M";
+            }
+            
+            if (rIsPrincipalNumberLYes.isChecked()) {
+                indPrincipalPhoneL = true;
+            } else {
+                indPrincipalPhoneL = false;
+            }
+            
+            if (rIsPrincipalNumberYes.isChecked()) {
+                indPrincipalPhone = true;
+            } else {
+                indPrincipalPhone = false;
             }
 
             //Obtener la clasificacion del solicitante
@@ -418,13 +515,47 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 requestCard.setPersonId(person);
                 requestEJB.saveRequest(requestCard);
             }
+            
+              //Obtener los Telefonos
+            if (eventType != 1) {
+                request = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY, person.getId());
+                request.setParams(params);
+                phonePersonList = personEJB.getPhoneByPerson(request);
 
-            //phonePerson
-            phonePerson.setNumberPhone(txtPhoneNumber.getText());
-            phonePerson.setPersonId(person);
-            phonePerson.setPhoneTypeId((PhoneType) cmbPhoneType.getSelectedItem().getValue());
-            phonePerson = personEJB.savePhonePerson(phonePerson);
+                if (phonePersonList != null) {
+                    for (PhonePerson p : phonePersonList) {
+                        if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
+                            phonePerson1 = p;
+                        }
+                        if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                            phonePerson2 = p;
+                        }
+                    }
 
+                
+                    //Telefono Local         
+                    phonePerson1.setPersonId(person);
+                    phonePerson1.setCountryId((Country) cmbCountryPhoneL.getSelectedItem().getValue());
+                    phonePerson1.setCountryCode(txtCodeCountryPhoneL.getText());
+                    phonePerson1.setAreaCode(txtAreaCodePhoneL.getText());
+                    phonePerson1.setNumberPhone(txtPhoneCelL.getText());
+                    phonePerson1.setPhoneTypeId((PhoneType) cmbPhoneTypePhoneL.getSelectedItem().getValue());
+                    phonePerson1.setIndMainPhone(indPrincipalPhoneL);
+                    phonePerson1 = personEJB.savePhonePerson(phonePerson1);
+                    //Telefono Celular
+                    phonePerson2.setPersonId(person);
+                    phonePerson2.setCountryId((Country) cmbCountryPhone.getSelectedItem().getValue());
+                    phonePerson2.setCountryCode(txtCodeCountryPhone.getText());
+                    phonePerson2.setAreaCode(txtAreaCodePhone.getText());
+                    phonePerson2.setNumberPhone(txtPhoneCel.getText());
+                    phonePerson2.setPhoneTypeId((PhoneType) cmbPhoneTypePhone.getSelectedItem().getValue());
+                    phonePerson2.setIndMainPhone(indPrincipalPhone);
+                    phonePerson2 = personEJB.savePhonePerson(phonePerson2);
+                }
+            }
+            
             this.showMessage("sp.common.save.success", false, null);
             if (eventType == WebConstants.EVENT_ADD) {
                 btnSave.setVisible(false);
@@ -494,10 +625,28 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadCmbCivilState(eventType);
                 loadCmbPhoneType(eventType);
                 loadCmbProfession(eventType);
+                onChange$cmbCountryPhone();
+                onChange$cmbCountryPhoneL();
                 break;
             default:
                 break;
         }
+    }
+    
+    public void onChange$cmbCountryPhoneL() {
+        this.clearMessage();        
+        txtCodeCountryPhoneL.setVisible(true);
+        txtCodeCountryPhoneL.setValue("");        
+        Country country = (Country) cmbCountryPhoneL.getSelectedItem().getValue();
+        txtCodeCountryPhoneL.setValue(country.getCode());
+    }
+    
+    public void onChange$cmbCountryPhone() {
+        this.clearMessage();        
+        txtCodeCountryPhone.setVisible(true);
+        txtCodeCountryPhone.setValue("");        
+        Country country = (Country) cmbCountryPhone.getSelectedItem().getValue();
+        txtCodeCountryPhone.setValue(country.getCode());
     }
 
     private void loadCmbCountry(Integer evenInteger) {
@@ -506,6 +655,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));
+            loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
@@ -573,7 +724,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         List<PhoneType> phoneType;
         try {
             phoneType = personEJB.getPhoneType(request1);
-            loadGenericCombobox(phoneType, cmbPhoneType, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));
+            loadGenericCombobox(phoneType, cmbPhoneTypePhoneL, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));
+            loadGenericCombobox(phoneType, cmbPhoneTypePhone, "description", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
