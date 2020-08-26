@@ -331,12 +331,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     }
 
     public Boolean validateEmpty() {
-        Calendar today = Calendar.getInstance();
-        today.add(Calendar.YEAR, -18);
-        Calendar cumpleCalendar = Calendar.getInstance();
-        if (!(txtBirthDay.getText().isEmpty())) {
-            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());
-        } else if (cmbCountry.getSelectedItem() == null) {
+//        Calendar today = Calendar.getInstance();
+//        today.add(Calendar.YEAR, -18);
+//        Calendar cumpleCalendar = Calendar.getInstance();
+//        if (txtBirthDay.getValue() != null) {
+//            cumpleCalendar.setTime((txtBirthDay).getValue());
+//        } else 
+            if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
         } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
@@ -360,9 +361,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (txtBirthDay.getText().isEmpty()) {
             txtBirthDay.setFocus(true);
             this.showMessage("cms.error.field.txtBirthDay", true, null);
-        } else if (cumpleCalendar.compareTo(today) > 0) {
-            txtBirthDay.setFocus(true);
-            this.showMessage("cms.error.field.errorDayBith", true, null);
+//        } else if (cumpleCalendar.compareTo(today) > 0) {
+//            txtBirthDay.setFocus(true);
+//            this.showMessage("cms.error.field.errorDayBith", true, null);
         } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
             this.showMessage("cms.error.field.gener", true, null);
         } else if (cmbCivilState.getSelectedItem() == null) {
@@ -580,8 +581,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     //Guarda el Telefono Celular
                     phonePerson2 = new PhonePerson();
                     phonePerson2.setPersonId(person);
+                    phonePerson2.setCountryId((Country) cmbCountryPhone.getSelectedItem().getValue());
+                    phonePerson2.setCountryCode(txtCodeCountryPhone.getText());
+                    phonePerson2.setAreaCode(txtAreaCodePhone.getText());
                     phonePerson2.setPhoneTypeId(phonePersonC);
                     phonePerson2.setNumberPhone(txtPhoneCel.getText());
+                    phonePerson2.setIndMainPhone(indPrincipalPhone);
                     phonePerson2 = personEJB.savePhonePerson(phonePerson2);
                     this.showMessage("sp.common.save.success", false, null);
                 }
@@ -680,7 +685,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(0));
                 loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(0));
             } else if (applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM ){
-                loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam.getPersonId().getCountryId().getId()));    
+                loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam.getPersonId().getPhonePerson() != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));    
             } else if (applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE ){
                 loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam.getPersonId().getCountryId().getId()));      
             }
