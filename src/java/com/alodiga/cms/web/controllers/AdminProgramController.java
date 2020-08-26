@@ -202,6 +202,14 @@ public class AdminProgramController extends GenericAbstractAdminController {
         txtBinIin.setReadonly(true);
         txtOtheResponsibleNetwoork.setReadonly(true);
         dtbExpectedLaunchDate.setDisabled(true);
+        rBrandedYes.setDisabled(true);
+        rBrandedNo.setDisabled(true);
+        rReloadableYes.setDisabled(true);
+        rReloadableNo.setDisabled(true);
+        rCashAccesYes.setDisabled(true);
+        rCashAccesNo.setDisabled(true);
+        rInternationalYes.setDisabled(true);
+        rInternationalNo.setDisabled(true);
         website.setReadonly(true);
         btnSave.setVisible(false);
     }
