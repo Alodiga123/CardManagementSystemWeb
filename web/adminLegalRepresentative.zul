@@ -18,6 +18,16 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
+                                                <hlayout>
+                                                    <div align="left" width="400px">
+                                                        <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
+                                                    </div>                                                
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblexample" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout> 
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -41,15 +51,12 @@
                                                         <row>
                                                             <hlayout>
                                                               <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" /> 
-                                                              <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                             <hlayout>
                                                               <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                              <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                             <hlayout>
                                                                <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/> 
-                                                               <label value="*" sclass="lblreq" />
                                                             </hlayout>    
                                                         </row>
                                                         <row>
@@ -60,15 +67,12 @@
                                                         <row>
                                                             <hlayout>
                                                                <datebox id="txtDueDateIdentification" constraint="no empty: ${c:l('error.field.required')}" width="250px"/>
-                                                               <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                             <hlayout>
                                                                <textbox id="txtFullName" value="" width="250px" maxlength="40"/> 
-                                                               <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
                                                                <textbox id="txtFullLastName" value="" width="250px" maxlength="40"/> 
-                                                               <label value="*" sclass="lblreq" />
                                                             </hlayout> 
                                                         </row>
                                                         <row>
@@ -79,9 +83,7 @@
                                                         <row>
                                                             <hlayout>
                                                                <datebox id="txtBirthDay" width="250px"/> 
-                                                               <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            
+                                                            </hlayout>                                                            
                                                             <hbox>
                                                                 <radiogroup id="gender" onCheck="choice1.value = self.selectedItem.label" />
                                                                 <grid>
@@ -92,9 +94,7 @@
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hbox>
-                                                            
+                                                            </hbox>                                                            
                                                             <label id="txtAge" value="" width="250px" style="color:#837E76;"/>
                                                         </row>                                                       
                                                         <row>
@@ -105,15 +105,12 @@
                                                         <row>
                                                             <hlayout>
                                                               <combobox id="cmbCivilState" width="250px" mold="rounded" readonly="true" />
-                                                              <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                             <hlayout>
                                                               <textbox id="txtBirthPlace" value="" width="250px" maxlength="45" constraint="no empty: ${c:l('error.field.required')}"/>
-                                                              <label value="*" sclass="lblreq" />  
                                                             </hlayout>
                                                             <hlayout>
                                                               <combobox id="cmbPhoneType" width="250px" mold="rounded" readonly="true" />  
-                                                              <label value="*" sclass="lblreq" />  
                                                             </hlayout>
                                                         </row>
                                                         <row>
@@ -122,7 +119,6 @@
                                                         <row>
                                                             <hlayout>
                                                                <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/> 
-                                                               <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                         </row>
                                                     </rows>
