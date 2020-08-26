@@ -131,6 +131,15 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
         }
         return false;
     }
+    
+    public boolean validateProjectAnnualVolume() {
+        if (intActiveCardNumber.getValue() > intAccountsNumber.getValue()) {
+                intActiveCardNumber.setFocus(true);
+                this.showMessage("cms.error.activeCardNumber>AccountNumber.valid", true, null);
+                return false;
+            }
+        return true;
+    }
 
     private void saveProjectAnnualVolume(ProjectAnnualVolume _projectAnnualVolume) throws RegisterNotFoundException, NullParameterException, GeneralException {
         Program program = null;
@@ -190,7 +199,7 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
     }
 
     public void onClick$btnSave() throws RegisterNotFoundException, NullParameterException, GeneralException {
-        if (validateEmpty()) {
+        if (validateEmpty() && validateProjectAnnualVolume()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveProjectAnnualVolume(null);
@@ -218,10 +227,6 @@ public class AdminProjectAnnualVolumeController extends GenericAbstractAdminCont
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(projectAnnualVolumeParam);
-//                intAccountsNumber.setDisabled(true);
-//                intActiveCardNumber.setDisabled(true);
-//                dbxAverageLoad.setDisabled(true);
-//                dbxAverageCardBalance.setDisabled(true);
                 loadCmbYear(eventType);
                 blockFields();
                 break;
