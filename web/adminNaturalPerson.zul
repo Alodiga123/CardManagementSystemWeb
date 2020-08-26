@@ -129,8 +129,8 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.naturalperson.profession')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.phoneType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.naturalperson.familyResponsibilities')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -138,26 +138,125 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
-                                                                <combobox id="cmbPhoneType" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <textbox id="txtPhoneNumber" value="" width="250px" maxlength="30"/>
-                                                                <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                        </row>
-                                                        <row> 
-                                                            <label value="${c:l('cms.common.naturalperson.familyResponsibilities')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
-                                                            <intbox id="txtFamilyResponsibilities" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="2"/>
+                                                                <intbox id="txtFamilyResponsibilities" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="2"/>
+                                                            </hlayout> 
                                                             <hlayout>
                                                                 <textbox id="txtEmail" value="" width="250px" maxlength="60" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
                                                     </rows>
+                                                </grid>
+                                                
+                                                 <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows> 
+                                                        <group label="${c:l('cms.common.naturalperson.familyReferences.localPhone')}"/>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.areaCode')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountryPhoneL" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtCodeCountryPhoneL" width="250px" maxlength="120"/>
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtAreaCodePhoneL" width="250px" maxlength="120"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.menu.phoneTypeEmployee')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.menu.phonEmployee.MainPhone')}" sclass="lblbold"/>     
+                                                        </row>
+                                                        <row>
+                                                            <hlayout>
+                                                                <textbox id="txtPhoneCelL" width="250px" maxlength="80"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbPhoneTypePhoneL" width="250px" mold="rounded" readonly="true"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hbox>
+                                                                <radiogroup id="isPrincipalNumberL" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rIsPrincipalNumberLYes" label="${c:l('cms.commom.Yes')}" radiogroup="isPrincipalNumberL" />
+                                                                            <radio id="rIsPrincipalNumerLNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumberL" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
+                                                        </row>
+                                                    </rows>
+                                                </grid>  
+                                                
+                                                
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                        <column label="" width="290px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('cms.common.naturalperson.familyReferences.cellPhone')}"/>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.codeCountry')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.areaCode')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <hlayout>
+                                                                <combobox id="cmbCountryPhone" width="250px" mold="rounded" readonly="true"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtCodeCountryPhone" width="250px" maxlength="120"/>
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <textbox id="txtAreaCodePhone" width="250px" maxlength="120"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.menu.phoneTypeEmployee')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.menu.phonEmployee.MainPhone')}" sclass="lblbold"/>     
+                                                        </row>
+                                                        <row>
+                                                            <hlayout>
+                                                                <textbox id="txtPhoneCel" width="250px" maxlength="80"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <combobox id="cmbPhoneTypePhone" width="250px" mold="rounded" readonly="true"/>
+                                                             <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hbox>
+                                                                <radiogroup id="isPrincipalNumber" onCheck="value = self.selectedItem.label"/>
+                                                                <grid>
+                                                                    <rows>
+                                                                        <row>
+                                                                            <radio id="rIsPrincipalNumberYes" label="${c:l('cms.commom.Yes')}" radiogroup="isPrincipalNumber" />
+                                                                            <radio id="rIsPrincipalNumerNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumber" />
+                                                                        </row>
+                                                                    </rows>
+                                                                </grid>
+                                                            </hbox>
+                                                        </row>
+                                                    </rows> 
                                                 </grid>
                                             </vlayout>
                                         </div>

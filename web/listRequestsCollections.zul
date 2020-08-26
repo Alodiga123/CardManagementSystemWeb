@@ -17,8 +17,8 @@
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                            <!--Filters for Searching-->
                                             <vlayout>
+                                                 <!--Filters for Searching-->   
                                                 <hlayout style="text-align:right">
                                                     <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
@@ -26,7 +26,7 @@
                                                 <hlayout>
                                                     <!--Add button-->
                                                     <div align="left" width="490px">
-                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="false"/>
+                                                        <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}"/>
                                                     </div>
                                                     <!--Filters button-->
                                                     <div align="right" width="390px">
@@ -39,9 +39,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="300px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="225px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionProductType')}" width="260px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.requestCollection.collectionTypes')}" width="320px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.countryName')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.descriptionProductType')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.requestCollection.collectionTypes')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.status')}" width="95px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
