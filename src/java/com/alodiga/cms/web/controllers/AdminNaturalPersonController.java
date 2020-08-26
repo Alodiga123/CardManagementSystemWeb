@@ -123,7 +123,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                             request1.setParams(params);
                             phonePersonList = personEJB.getPhoneByPerson(request1);
                             for (PhonePerson phone : phonePersonList) {
-                                applicantNaturalPerson.getPersonId().setPhonePerson(phone);
+                                if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                                    applicantNaturalPerson.getPersonId().setPhonePerson(phone);
+                                }
                             }
                         }
                         applicantNaturalPersonParam = applicantNaturalPerson;
@@ -580,8 +582,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     //Guarda el Telefono de Habitacion
                     phonePerson1 = new PhonePerson();
                     phonePerson1.setPersonId(person);
+                    phonePerson1.setCountryId((Country) cmbCountryPhoneL.getSelectedItem().getValue());
+                    phonePerson1.setCountryCode(txtCodeCountryPhoneL.getText());
+                    phonePerson1.setAreaCode(txtAreaCodePhoneL.getText());
                     phonePerson1.setPhoneTypeId(phonePersonH);
                     phonePerson1.setNumberPhone(txtPhoneCelL.getText());
+                    phonePerson1.setIndMainPhone(indPrincipalPhoneL);
                     phonePerson1 = personEJB.savePhonePerson(phonePerson1);
                     //Guarda el Telefono Celular
                     phonePerson2 = new PhonePerson();
@@ -685,6 +691,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));
+            
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
