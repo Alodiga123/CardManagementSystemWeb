@@ -24,6 +24,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -40,14 +42,23 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private RequestEJB requestEJB = null;
     private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList = null;
     private Tab tabRequestbyCollection;
+    private AdminRequestController adminRequest = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         initialize();
+        startListener();
     }
 
     public void startListener() {
+        EventQueue que = EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true);
+        que.subscribe(new EventListener() {
+            public void onEvent(Event evt) {
+                getData();
+                loadDataList(requestHasCollectionsRequestList);
+            }
+        });
     }
 
     @Override
@@ -60,6 +71,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             permissionRead = true;
             adminPage = "adminRequestCollections.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
+            adminRequest = new AdminRequestController();
             getData();
             loadDataList(requestHasCollectionsRequestList);
         } catch (Exception ex) {
@@ -77,7 +89,6 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
 
     public void loadDataList(List<RequestHasCollectionsRequest> list) {
         String applicantName = "";
-        //requestHasCollectionsRequestList
         RequestHasCollectionsRequest requestHasCollectionsRequest = null;
         Request request = null;
         try {
@@ -90,12 +101,8 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCountryId().getName()));
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getProductTypeId().getName()));
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCollectionTypeId().getDescription()));
-                    item.appendChild(new Listcell(requestCollectionsRequest.getIndApproved().toString()));
-                    AdminRequestController adminRequest = new AdminRequestController();
-                    if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                    }
-                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                    item.appendChild(new Listcell((requestCollectionsRequest.getIndApproved().toString()).equals("1")?"Aprobado":"Rechazado"));
+                    if((adminRequest.getRequest().getStatusRequestId().getId() != 6) && (adminRequest.getRequest().getStatusRequestId().getId() != 2)){
                         item.appendChild(createButtonEditModal(requestCollectionsRequest));
                         item.appendChild(createButtonViewModal(requestCollectionsRequest));
                     } else {
@@ -188,8 +195,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
 
     public void getData() {;
         requestHasCollectionsRequestList = new ArrayList<RequestHasCollectionsRequest>();
-        Request requestCard = null;
-        
+        Request requestCard = null;        
         AdminRequestController adminRequestController = new AdminRequestController();
         if (adminRequestController.getRequest().getId() != null) {
             requestCard = adminRequestController.getRequest();
@@ -197,7 +203,7 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         try {
             Map params = new HashMap();
             EJBRequest request1 = new EJBRequest();
-            params.put(Constants.REQUEST_KEY, requestCard.getId());
+            params.put(Constants.REQUESTS_KEY, requestCard.getId());
             request1.setParams(params);
             requestHasCollectionsRequestList = requestEJB.getRequestsHasCollectionsRequestByRequest(request1);
         } catch (NullParameterException ex) {

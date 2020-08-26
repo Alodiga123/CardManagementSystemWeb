@@ -9,6 +9,7 @@ import static com.alodiga.cms.web.controllers.AdminRequestController.eventType;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.CollectionType;
 import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.PersonType;
@@ -29,6 +30,8 @@ import java.util.Map;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -56,7 +59,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     private Label lblInfo;
     private Label txtPrograms;
     private Label txtProductType;
-    private Combobox cmbCollectionType;
+    private Combobox cmbCollectionsRequest;
     private Textbox txtObservations;
     private Label lblPersonType;
     private Label lblCountry;
@@ -121,11 +124,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             showError(ex);
         }
     }
- 
-//    private void loadFieldC(RequestHasCollectionsRequest requestHasCollectionsRequest) {
-//      txtPrograms.setValue(requestCard.getProgramId().getName());
-//      txtProductType.setValue(collectionsRequest.getProductTypeId().getName());
-//    }
 
     private void loadFields(RequestHasCollectionsRequest requestHasCollectionsRequest) {
         if (requestHasCollectionsRequest != null) {
@@ -187,8 +185,12 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     }
 
     public void blockFields() {
-        btnSave.setVisible(false);
-        btnUpload.setDisabled(true);
+        rApprovedYes.setDisabled(true);
+        rApprovedNo.setDisabled(true);
+        cmbCollectionsRequest.setDisabled(true);
+        txtObservations.setDisabled(true);
+        btnUpload.setVisible(false);
+        btnSave.setVisible(false);        
     }
 
     public void onClick$btnBack() {
@@ -219,8 +221,8 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 RequestId = adminRequestController.getRequest();
             }
 
-            //Guarda la solicitud en requestHasCollectionsRequest
-            requestHasCollectionsRequest.setCollectionsRequestid(collectionsRequestParam);
+            //Guarda la revisión del Recaudo asociado a la solicitud
+            requestHasCollectionsRequest.setCollectionsRequestid((CollectionsRequest) cmbCollectionsRequest.getSelectedItem().getValue());
             requestHasCollectionsRequest.setRequestId(RequestId);
             requestHasCollectionsRequest.setIndApproved(indApproved);
             requestHasCollectionsRequest.setObservations(txtObservations.getText());
@@ -232,6 +234,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             }
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
             this.showMessage("sp.common.save.success", false, null);
+            EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -257,15 +260,16 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(requestHasCollectionsRequestParam);
                 loadField(requestParam);
-                loadCmbCollectionType(eventType);
+                loadCmbCollectionsRequest(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(requestHasCollectionsRequestParam);
                 loadField(requestParam);
+                loadCmbCollectionsRequest(eventType);
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:
-                loadCmbCollectionType(eventType);
+                loadCmbCollectionsRequest(eventType);
                 loadField(requestParam);
                 break;
             default:
@@ -273,7 +277,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         }
     }
     
-    private void loadCmbCollectionType(Integer evenInteger) {
+    private void loadCmbCollectionsRequest(Integer evenInteger) {
         Request requestCard = null;
         String descriptionType = "";
         
@@ -298,10 +302,10 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 item.setValue(collectionsRequest.get(i));
                 descriptionType = collectionsRequest.get(i).getCollectionTypeId().getDescription();
                 item.setLabel(descriptionType);
-                item.setParent(cmbCollectionType);
+                item.setParent(cmbCollectionsRequest);
                 if (eventType != 1) {
                     if (collectionsRequest.get(i).getId().equals(requestHasCollectionsRequestParam.getCollectionsRequestid().getId())) {
-                        cmbCollectionType.setSelectedItem(item);
+                        cmbCollectionsRequest.setSelectedItem(item);
                     }
                 }
             }
