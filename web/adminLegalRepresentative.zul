@@ -35,7 +35,6 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                 </grid>
-                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
