@@ -162,7 +162,8 @@ public class AdminUserController extends GenericAbstractAdminController {
                 rEnabledNo.setChecked(true);
             }
             btnSave.setVisible(true);
-
+            cmbEmployee.setDisabled(true);
+            cmbAuthorizeEmployee.setDisabled(true);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -348,11 +349,7 @@ public class AdminUserController extends GenericAbstractAdminController {
                     } 
                 break;
                 case WebConstants.EVENT_EDIT:
-                    if (validateUser()) {
-                        saveUser(userParam);
-                    }                    
-                break;
-                default:
+                    saveUser(userParam);                  
                 break;
             }
         }

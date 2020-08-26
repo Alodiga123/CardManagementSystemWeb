@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="900px" align="left" height="580px">
+                        <div width="900px" align="left" height="800px">
                             <hlayout>
                                 <div width="890px">
                                     <vlayout>
@@ -108,7 +108,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <datebox id="txtBirthDay" width="250px"/>
+                                                                <datebox id="txtBirthDay" width="210px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
@@ -258,8 +258,6 @@
                                                         </row>
                                                     </rows> 
                                                 </grid>
-                                                
-                                                         
                                             </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>

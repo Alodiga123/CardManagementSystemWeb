@@ -13,8 +13,7 @@
             </north>
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
                 <div align="center" >
-                    <hlayout >
-                        <div></div>
+                    <hlayout>
                         <div width="1200px" align="left" height="780px">
                             <hlayout>
                                 <div>
@@ -35,15 +34,6 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.legalPersonMain')}" />

@@ -18,7 +18,20 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <hlayout>
+                                                    <div align="left" width="400px">
+                                                       <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                    </div>
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
+                                                            <separator/>
+                                                            <label value="*" sclass="lblreq" />
+                                                            <separator/>
+                                                            <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout>                                                
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -93,28 +106,42 @@
                                                                 <combobox id="cmbCardIssuanceType" width="265px" mold="rounded" readonly="true"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                            <hbox>
-                                                                <radiogroup id="branded" onCheck="value = self.selectedItem.label"/>
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rBrandedYes" label="${c:l('cms.commom.Yes')}" radiogroup="branded" />
-                                                                            <radio id="rBrandedNo" label="${c:l('cms.commom.No')} " radiogroup="branded" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
-                                                            <hbox>
-                                                                <radiogroup id="reloadable" onCheck="value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rReloadableYes" label="${c:l('cms.commom.Yes')}" radiogroup="reloadable" />
-                                                                            <radio id="rReloadableNo" label="${c:l('cms.commom.No')}" radiogroup="reloadable" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox>
+                                                            <hlayout>
+                                                                <div align="left" width="260px">
+                                                                    <hbox>
+                                                                        <radiogroup id="branded" onCheck="value = self.selectedItem.label"/>
+                                                                        <grid>
+                                                                            <rows>
+                                                                                <row>
+                                                                                    <radio id="rBrandedYes" label="${c:l('cms.commom.Yes')}" radiogroup="branded" />
+                                                                                    <radio id="rBrandedNo" label="${c:l('cms.commom.No')} " radiogroup="branded" checked = "true"/>
+                                                                                </row>
+                                                                            </rows>
+                                                                        </grid>
+                                                                    </hbox>
+                                                                </div>    
+                                                                <div align="left" width="20px">
+                                                                    <label value="*" sclass="lblreq" />
+                                                                </div>                        
+                                                             </hlayout>
+                                                             <hlayout>
+                                                                 <div align="left" width="260px">
+                                                                    <hbox>
+                                                                        <radiogroup id="reloadable" onCheck="value = self.selectedItem.label" />
+                                                                        <grid>
+                                                                            <rows>
+                                                                                <row>
+                                                                                    <radio id="rReloadableYes" label="${c:l('cms.commom.Yes')}" radiogroup="reloadable" />
+                                                                                    <radio id="rReloadableNo" label="${c:l('cms.commom.No')}" radiogroup="reloadable" checked = "true"/>
+                                                                                </row>
+                                                                            </rows>
+                                                                        </grid>
+                                                                    </hbox>
+                                                                 </div>
+                                                                 <div align="left" width="20px">
+                                                                    <label value="*" sclass="lblreq" />
+                                                                 </div>                                                             
+                                                             </hlayout>
                                                         </row> 
                                                         <row>
                                                             <label value="${c:l('cms.common.SourceOfFound')}" sclass="lblbold"/>
@@ -129,17 +156,24 @@
                                                             <hlayout>
                                                                 <textbox id="txtOtherSourceOfFound" width="265px" maxlength="250" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             </hlayout>
-                                                            <hbox>
-                                                                <radiogroup id="cashAcces" onCheck="value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rCashAccesYes" label="${c:l('cms.commom.Yes')}"  radiogroup="cashAcces" />
-                                                                            <radio id="rCashAccesNo" label="${c:l('cms.commom.No')}"   radiogroup="cashAcces" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox> 
+                                                            <hlayout>
+                                                                <div align="left" width="260px">
+                                                                    <hbox>
+                                                                        <radiogroup id="cashAcces" onCheck="value = self.selectedItem.label" />
+                                                                        <grid>
+                                                                            <rows>
+                                                                                <row>
+                                                                                    <radio id="rCashAccesYes" label="${c:l('cms.commom.Yes')}"  radiogroup="cashAcces" />
+                                                                                    <radio id="rCashAccesNo" label="${c:l('cms.commom.No')}"   radiogroup="cashAcces" checked = "true" />
+                                                                                </row>
+                                                                            </rows>
+                                                                        </grid>
+                                                                    </hbox>
+                                                                </div>
+                                                                <div align="left" width="20px">
+                                                                    <label value="*" sclass="lblreq" />
+                                                                </div>
+                                                            </hlayout>                                                              
                                                         </row> 
                                                         <row>
                                                             <label value="${c:l('cms.common.international.Use')}" sclass="lblbold"/>
@@ -147,17 +181,24 @@
                                                             <label value="${c:l('cms.common.currency')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <hbox>
-                                                                <radiogroup id="international" onCheck="choice1.value = self.selectedItem.label" />
-                                                                <grid>
-                                                                    <rows>
-                                                                        <row>
-                                                                            <radio id="rInternationalYes" label="${c:l('cms.commom.Yes')}"  radiogroup="international" />
-                                                                            <radio id="rInternationalNo" label="${c:l('cms.commom.No')}"   radiogroup="international" />
-                                                                        </row>
-                                                                    </rows>
-                                                                </grid>
-                                                            </hbox> 
+                                                            <hlayout>
+                                                                <div align="left" width="260px">
+                                                                    <hbox>
+                                                                        <radiogroup id="international" onCheck="choice1.value = self.selectedItem.label" />
+                                                                        <grid>
+                                                                            <rows>
+                                                                                <row>
+                                                                                    <radio id="rInternationalYes" label="${c:l('cms.commom.Yes')}"  radiogroup="international" />
+                                                                                    <radio id="rInternationalNo" label="${c:l('cms.commom.No')}"   radiogroup="international"  checked = "true"/>
+                                                                                </row>
+                                                                            </rows>
+                                                                        </grid>
+                                                                    </hbox> 
+                                                                </div>
+                                                                <div align="left" width="20px">
+                                                                    <label value="*" sclass="lblreq" />
+                                                                </div>
+                                                            </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtBinIin" width="265px" maxlength="6" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
                                                                 <label value="*" sclass="lblreq" />
@@ -179,7 +220,6 @@
                                                             </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtOtheResponsibleNetwoork" width="265px" maxlength="50" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
                                                                 <datebox id="dtbExpectedLaunchDate" width="265px"/>
