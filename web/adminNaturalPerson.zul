@@ -175,19 +175,14 @@
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.menu.phoneTypeEmployee')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>                                                           
                                                             <label value="${c:l('cms.menu.phonEmployee.MainPhone')}" sclass="lblbold"/>     
                                                         </row>
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtPhoneCelL" width="250px" maxlength="80"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbPhoneTypePhoneL" width="250px" mold="rounded" readonly="true"/>
-                                                             <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            </hlayout>                                                            
                                                             <hbox>
                                                                 <radiogroup id="isPrincipalNumberL" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>
@@ -232,18 +227,13 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.menu.phoneTypeEmployee')}" sclass="lblbold"/> 
                                                             <label value="${c:l('cms.menu.phonEmployee.MainPhone')}" sclass="lblbold"/>     
                                                         </row>
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtPhoneCel" width="250px" maxlength="80"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>
-                                                            <hlayout>
-                                                                <combobox id="cmbPhoneTypePhone" width="250px" mold="rounded" readonly="true"/>
-                                                             <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            </hlayout>                                       
                                                             <hbox>
                                                                 <radiogroup id="isPrincipalNumber" onCheck="value = self.selectedItem.label"/>
                                                                 <grid>

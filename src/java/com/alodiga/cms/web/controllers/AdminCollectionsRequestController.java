@@ -99,6 +99,11 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         cmbCollectionType.setVisible(true);
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
         loadCmbCollectionType(eventType, country.getId());
+        
+        this.clearMessage();
+        cmbPrograms.setVisible(true);
+        cmbPrograms.setValue("");
+        loadCmbPrograms(eventType, country.getId());
     }
 
     public void onChange$cmbPrograms() {
@@ -214,7 +219,6 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 loadFields(collectionsRequestParam);
                 loadCmbCountry(eventType);
-                loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 onChange$cmbCountry();
                 onChange$cmbPrograms();
@@ -223,14 +227,12 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
                 loadFields(collectionsRequestParam);
                 blockFields();
                 loadCmbCountry(eventType);
-                loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 onChange$cmbCountry();
                 onChange$cmbPrograms();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
-                loadCmbPrograms(eventType);
                 loadCmbPersonType(eventType);
                 onChange$cmbCountry();
                 onChange$cmbPrograms();
@@ -258,13 +260,16 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
             ex.printStackTrace();
         }
     }
-
-    private void loadCmbPrograms(Integer evenInteger) {
+    
+    private void loadCmbPrograms(Integer evenInteger, int countryId) {
         EJBRequest request1 = new EJBRequest();
+        cmbPrograms.getItems().clear();
+        Map params = new HashMap();
+        params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
+        request1.setParams(params);
         List<Program> programs;
-
         try {
-            programs = programEJB.getProgram(request1);
+            programs = programEJB.getProgramByCountry(request1);
             loadGenericCombobox(programs, cmbPrograms, "name", evenInteger, Long.valueOf(collectionsRequestParam != null ? collectionsRequestParam.getProgramId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
