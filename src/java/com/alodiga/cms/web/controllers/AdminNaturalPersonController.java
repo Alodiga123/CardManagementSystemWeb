@@ -121,9 +121,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                             request1.setParams(params);
                             phonePersonList = personEJB.getPhoneByPerson(request1);
                             for (PhonePerson phone : phonePersonList) {
+                                if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
+                                    applicantNaturalPerson.getPersonId().setPhonePerson(phone);
+                                }
                                 if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
                                     applicantNaturalPerson.getPersonId().setPhonePerson(phone);
                                 }
+                                
                             }
                         }
                         applicantNaturalPersonParam = applicantNaturalPerson;
