@@ -137,6 +137,23 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
         cmbPrograms.setReadonly(true);
         btnSave.setVisible(false);
     }
+    
+    public Boolean validateEmpty() {
+        if (dtbRequestDate.getValue() == null) {
+            dtbRequestDate.setFocus(true);
+            this.showMessage("cms.error.deliveryRequest.date", true, null);
+        } else if (cmbShippingCompany.getSelectedItem() == null) {
+            cmbShippingCompany.setFocus(true);
+            this.showMessage("cms.error.deliveryRequest.business", true, null);
+        } else if (cmbPrograms.getSelectedItem() == null) {
+            cmbPrograms.setFocus(true);
+            this.showMessage("cms.error.program.notSelected", true, null);
+        }  else {
+            return true;
+        }
+        return false;
+
+    }
 
     private void saveDeliveryRequest(DeliveryRequest _deliveryRequest) {
         String numberRequest = "";
@@ -185,6 +202,7 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
     }
 
     public void onClick$btnSave() {
+        if (validateEmpty()) {
         switch (eventType) {
             case WebConstants.EVENT_ADD:
                 saveDeliveryRequest(null);
@@ -195,6 +213,7 @@ public class AdminDeliveryRequestController extends GenericAbstractAdminControll
             default:
                 break;
         }
+      }
     }
 
     public void loadData() {
