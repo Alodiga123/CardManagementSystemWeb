@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="900px" align="left" height="800px">
+                        <div width="900px" align="left" height="840px">
                             <hlayout>
                                 <div width="890px">
                                     <vlayout>
@@ -189,7 +189,7 @@
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rIsPrincipalNumberLYes" label="${c:l('cms.commom.Yes')}" radiogroup="isPrincipalNumberL" />
-                                                                            <radio id="rIsPrincipalNumerLNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumberL" />
+                                                                            <radio id="rIsPrincipalNumerLNo" label="${c:l('cms.commom.No')}" radiogroup="isPrincipalNumberL" checked = "true"/>
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
@@ -240,7 +240,7 @@
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rIsPrincipalNumberYes" label="${c:l('cms.commom.Yes')}" radiogroup="isPrincipalNumber" />
-                                                                            <radio id="rIsPrincipalNumerNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumber" />
+                                                                            <radio id="rIsPrincipalNumerNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumber" checked = "true"/>
                                                                         </row>
                                                                     </rows>
                                                                 </grid>

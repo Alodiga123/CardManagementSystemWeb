@@ -203,9 +203,8 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
                 request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK));
             }
             request = requestEJB.saveRequest(request);
-            getData();
-            loadDataList(applicantList);
             this.showMessage("sp.common.finishReviewOFAC", false, null);
+            onSelect$tabApplicantOFAC();
 	} catch (RemoteException e) {
             e.printStackTrace();
 	} catch (Exception ex) {
