@@ -96,6 +96,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     public ApplicantNaturalPerson applicantNaturalPersonParam;
     private List<PhonePerson> phonePersonList = null;
     List<ApplicantNaturalPerson> applicantNaturalPersonList = null;
+    private PhonePerson cellPhone = null;
+    private PhonePerson localPhone = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -121,9 +123,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                             request1.setParams(params);
                             phonePersonList = personEJB.getPhoneByPerson(request1);
                             for (PhonePerson phone : phonePersonList) {
-                                if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
-                                    applicantNaturalPerson.getPersonId().setPhonePerson(phone);
-                                }
                                 if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
                                     applicantNaturalPerson.getPersonId().setPhonePerson(phone);
                                 }
@@ -268,6 +267,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                         } else {
                                 rIsPrincipalNumerLNo.setChecked(true);
                         }
+                        localPhone = p;
                     }
                     if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {                         
                          txtPhoneCel.setText(p.getNumberPhone());
@@ -278,6 +278,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                          } else {
                              rIsPrincipalNumerNo.setChecked(true);
                          }
+                         cellPhone = p;
                     }
                 }
             }            
@@ -334,14 +335,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         btnSave.setVisible(false);
     }
 
-    public Boolean validateEmpty() {
-//        Calendar today = Calendar.getInstance();
-//        today.add(Calendar.YEAR, -18);
-//        Calendar cumpleCalendar = Calendar.getInstance();
-//        if (txtBirthDay.getValue() != null) {
-//            cumpleCalendar.setTime((txtBirthDay).getValue());
-//        } else 
-            if (cmbCountry.getSelectedItem() == null) {
+    public Boolean validateEmpty() {     
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.YEAR, -18);
+        Calendar cumpleCalendar = Calendar.getInstance();
+        if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
         } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
@@ -365,6 +363,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (txtBirthDay.getText().isEmpty()) {
             txtBirthDay.setFocus(true);
             this.showMessage("cms.error.field.txtBirthDay", true, null);
+//        } else if (!(txtBirthDay.getText().isEmpty())) {
+//            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());  
 //        } else if (cumpleCalendar.compareTo(today) > 0) {
 //            txtBirthDay.setFocus(true);
 //            this.showMessage("cms.error.field.errorDayBith", true, null);
@@ -414,6 +414,14 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             return true;
         }
         return false;
+    }
+    
+    public Boolean validateNaturalApplicant() {
+        if (rIsPrincipalNumberLYes.isChecked() && rIsPrincipalNumberYes.isChecked()) {
+            this.showMessage("cms.error.principalPhoneError", true, null);
+            return false;
+        }
+        return true;
     }
 
     private void saveNaturalPerson(ApplicantNaturalPerson _applicantNaturalPerson) {
@@ -605,7 +613,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     }
 
     public void onClick$btnSave() {
-        if (validateEmpty()) {
+        if (validateEmpty() && validateNaturalApplicant()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
                     saveNaturalPerson(null);
@@ -623,28 +631,28 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFieldR(adminRequest.getRequest());
-                loadCmbCountry(eventType);
                 if (applicantNaturalPersonParam != null) {
                     applicantNaturalPersonParent = applicantNaturalPersonParam;
                     applicant = applicantNaturalPersonParam.getPersonId();
                     loadFieldsRequest(adminRequest.getRequest());
                     loadFields(applicantNaturalPersonParam);
-                    onChange$cmbCountry();
                 }
+                loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
-                loadFieldR(adminRequest.getRequest());
-                loadCmbCountry(eventType);
+                loadFieldR(adminRequest.getRequest());                
                 if (applicantNaturalPersonParam != null) {
                     applicantNaturalPersonParent = applicantNaturalPersonParam;
                     applicant = applicantNaturalPersonParam.getPersonId();
                     loadFieldsRequest(adminRequest.getRequest());
                     loadFields(applicantNaturalPersonParam);
                     blockFields();
-                    onChange$cmbCountry();
                 }
+                loadCmbCountry(eventType);
+                onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
                 break;
@@ -688,11 +696,14 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             if (applicantNaturalPersonParam == null){
                 loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(0));
                 loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(0));
-            } else if (applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM ){
-                loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam.getPersonId().getPhonePerson() != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));    
-            } else if (applicantNaturalPersonParam.getPersonId().getPhonePerson().getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE ){
-                loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam.getPersonId().getCountryId().getId()));      
-            }
+            } else {
+                if (localPhone != null) {
+                    loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(localPhone.getCountryId() != null ? localPhone.getCountryId().getId() : 0)); 
+                }
+                if (cellPhone != null) {
+                    loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(cellPhone.getCountryId() != null ? cellPhone.getCountryId().getId() : 0)); 
+                }                
+            } 
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
