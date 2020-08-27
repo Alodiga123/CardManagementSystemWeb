@@ -267,7 +267,7 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
         request1.setParams(params);
-        List<Program> programs;
+        List<Program> programs = null;
         try {
             programs = programEJB.getProgramByCountry(request1);
             loadGenericCombobox(programs, cmbPrograms, "name", evenInteger, Long.valueOf(collectionsRequestParam != null ? collectionsRequestParam.getProgramId().getId() : 0));
@@ -280,7 +280,11 @@ public class AdminCollectionsRequestController extends GenericAbstractAdminContr
         } catch (NullParameterException ex) {
             showError(ex);
             ex.printStackTrace();
-        }
+        } finally {
+            if (programs  == null) {
+                this.showMessage("cms.msj.collectionsRequestNull", false, null);
+            }            
+        } 
     }
 
     private void loadCmbPersonType(Integer evenInteger) {
