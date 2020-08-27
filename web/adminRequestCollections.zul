@@ -86,6 +86,7 @@
                                                                         </row>
                                                                     </rows>
                                                                 </grid>
+                                                                <label value="*" sclass="lblreq" /> 
                                                             </hbox>
                                                         </row>
                                                         <row>
@@ -112,7 +113,7 @@
                                                             <vbox>
                                                                 <button label="${c:l('sp.common.attacht.file')}" upload="true" id="btnUpload" visible="true" ></button>
                                                                 <vbox id="divPreview" width="890px"/>
-                                                            </vbox>
+                                                            </vbox>     
                                                         </row>
                                                     </rows>
                                                 </grid>
