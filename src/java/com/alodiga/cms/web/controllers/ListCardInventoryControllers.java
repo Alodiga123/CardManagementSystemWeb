@@ -35,6 +35,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -49,6 +50,7 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
     private User currentUser;
     private AdminDeliveryRequestController adminDeliveryRequest = null;
     private DeliveryRequest deliveryRequest = null;
+    private Tab tabListInventoryCard;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -88,6 +90,14 @@ public class ListCardInventoryControllers extends GenericAbstractListController<
             cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
             getDataDeliveryRequetsHasCard();
             loadDataList(cardList);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+    }
+    
+    public void onSelect$tabListInventoryCard() {
+        try {
+            doAfterCompose(self);
         } catch (Exception ex) {
             showError(ex);
         }
