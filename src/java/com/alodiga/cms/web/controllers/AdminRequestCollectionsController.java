@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +73,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     String format = "";
     Request RequestNumber = null;
     private boolean uploaded = false;
+    List<RequestHasCollectionsRequest> requestHasCollectionsRequest = new ArrayList<RequestHasCollectionsRequest>();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -161,6 +163,33 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         }
         return false;
     }
+    
+    public Boolean validateCollectionsRequet(){
+        requestHasCollectionsRequest.clear();
+        Request requestCard = null;
+        try{
+            AdminRequestController adminRequestController = new AdminRequestController();
+            if (adminRequestController.getRequest().getId() != null) {
+                requestCard = adminRequestController.getRequest();
+            }
+            CollectionsRequest collectionsRequest = (CollectionsRequest) cmbCollectionsRequest.getSelectedItem().getValue();
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.REQUESTS_KEY, requestCard.getId());
+            params.put(Constants.COLLECTIONS_REQUEST_KEY, collectionsRequest.getId());
+            request1.setParams(params);
+            requestHasCollectionsRequest = requestEJB.getRequestsHasCollectionsRequestByRequestByCollectionRequest(request1);
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
+            if (requestHasCollectionsRequest.size() > 0) {
+                this.showMessage("sp.error.collectionsType.duplicate", true, null);
+                cmbCollectionsRequest.setFocus(true);
+                return false;
+            }
+        }    
+        return true;
+    }
 
     public void onUpload$btnUpload(org.zkoss.zk.ui.event.UploadEvent event) throws Throwable {
         org.zkoss.util.media.Media media = event.getMedia();
@@ -244,7 +273,9 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveRequest(null);
+                 if(validateCollectionsRequet()){
+                        saveRequest(null);
+                    }  
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveRequest(requestHasCollectionsRequestParam);

@@ -198,9 +198,7 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         } else if (txtEmailContact.getText().isEmpty()) {
             txtEmailContact.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
-        } else if ((!rActiveYes.isChecked()) && (!rActiveYes.isChecked())) {
-            this.showMessage("cms.error.field.active", true, null);
-        } else {
+        }  else {
             return true;
         }
         return false;
