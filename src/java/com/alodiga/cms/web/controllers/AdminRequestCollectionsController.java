@@ -221,7 +221,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         btnUpload.setVisible(false);
         btnSave.setVisible(false);        
     }
-
+   
     public void onClick$btnBack() {
         winAdminRequestCollections.detach();
     }
@@ -292,6 +292,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 loadFields(requestHasCollectionsRequestParam);
                 loadField(requestParam);
                 loadCmbCollectionsRequest(eventType);
+                cmbCollectionsRequest.setDisabled(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(requestHasCollectionsRequestParam);
