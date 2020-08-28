@@ -24,16 +24,25 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 public class AdminLimitAndRestrictionsController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
 
-    private Combobox cmbProductUse;
     private Combobox cmbTransaction;
     private Combobox cmbChannel;
+    private Label txtProductUse;
     private Label txtProduct;
+    private Label lblReqInternational1;
+    private Label lblReqInternational2;
+    private Label lblReqInternational3;
+    private Label lblReqInternational4;
+    private Label lblReqDomestic1;
+    private Label lblReqDomestic2;
+    private Label lblReqDomestic3;
+    private Label lblReqDomestic4;
     private Intbox txtMaxNumbTransDaily;
     private Intbox txtMaxNumbTransMont;
     private Doublebox txtAmountMinTransDomestic;
@@ -49,6 +58,8 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
     private Button btnSave;
     private Integer eventType;
     public Window winAdminLimitAndRestrictions;
+    private Product product = null;
+    private ProductUse productUse = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -65,6 +76,7 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
                 productHasChannelHasTransactionParam = null;
                 break;
         }
+        getProductData();
         initialize();
     }
 
@@ -78,7 +90,7 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
             showError(ex);
         }
     }
-
+    
     public void clearFields() {
         txtMaxNumbTransDaily.setRawValue(null);
         txtMaxNumbTransMont.setRawValue(null);
@@ -90,6 +102,18 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         txtMonthlyAmountLimitDomestic.setRawValue(null);
         txtDailyAmountLimitInt.setRawValue(null);
         txtMonthlyAmountLimitInt.setRawValue(null);
+    }
+    
+    public void getProductData(){
+        //Se obtiene el Producto y el tipo de uso del Producto
+        AdminProductController adminProduct = new AdminProductController();
+        if (adminProduct.getProductParent().getId() != null) {
+            product = adminProduct.getProductParent();
+            productUse = adminProduct.getProductParent().getProductUseId();
+            txtProduct.setValue(product.getName());    
+            txtProductUse.setValue(product.getProductUseId().getDescription());
+            validateProductUse(product.getProductUseId().getId());
+        }
     }
 
     private void loadFields(ProductHasChannelHasTransaction productHasChannelHasTransaction) {
@@ -125,15 +149,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         }
     }
 
-    private void loadField(ProductHasChannelHasTransaction productHasChannelHasTransaction) {
-        Product product = null;
-        AdminProductController adminProduct = new AdminProductController();
-        if (adminProduct.getProductParent().getId() != null) {
-            product = adminProduct.getProductParent();
-        }
-        txtProduct.setValue(product.getName());
-    }
-
     public void blockFields() {
         txtMaxNumbTransDaily.setReadonly(true);
         txtMaxNumbTransMont.setReadonly(true);
@@ -149,20 +164,14 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
     }
 
     public Boolean validateEmpty() {
-        ProductUse productUse = null;
-        if ((cmbProductUse.getSelectedItem() != null)) {
-            productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
-        }
         if (cmbChannel.getSelectedItem() == null) {
             cmbChannel.setFocus(true);
             this.showMessage("cms.error.chanel.noSelected", true, null);
         } else if (cmbTransaction.getSelectedItem() == null) {
             cmbTransaction.setFocus(true);
             this.showMessage("cms.error.transaction.noSelected", true, null);
-        } else if (cmbProductUse.getSelectedItem() == null) {
-            cmbProductUse.setFocus(true);
-            this.showMessage("cms.error.use.notSelected", true, null);
-        } else if (txtMaxNumbTransDaily.getText().isEmpty()) {
+        } 
+        else if (txtMaxNumbTransDaily.getText().isEmpty()) {
             txtMaxNumbTransDaily.setFocus(true);
             this.showMessage("cms.error.maxNumbTransDaily", true, null);
         } else if (txtMaxNumbTransMont.getText().isEmpty()) {
@@ -257,11 +266,6 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         return false;
     }
 
-    public void onChange$cmbProductUse() {
-        ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
-        validateProductUse(productUse.getId());
-    }
-
     public void validateProductUse(int productUseId) {
         switch (productUseId) {
             case 1:
@@ -277,6 +281,14 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
                 txtAmountMinTransInt.setDisabled(true);
                 txtDailyAmountLimitInt.setDisabled(true);
                 txtMonthlyAmountLimitInt.setDisabled(true);
+                lblReqDomestic1.setVisible(true);
+                lblReqDomestic2.setVisible(true);
+                lblReqDomestic3.setVisible(true);
+                lblReqDomestic4.setVisible(true);
+                lblReqInternational1.setVisible(false);
+                lblReqInternational2.setVisible(false);
+                lblReqInternational3.setVisible(false);
+                lblReqInternational4.setVisible(false);
                 break;
             case 2:
                 txtAmountMaxTransInt.setDisabled(false);
@@ -291,6 +303,14 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
                 txtAmountMinTransDomestic.setDisabled(true);
                 txtDailyAmountLimitDomestic.setDisabled(true);
                 txtMonthlyAmountLimitDomestic.setDisabled(true);
+                lblReqDomestic1.setVisible(false);
+                lblReqDomestic2.setVisible(false);
+                lblReqDomestic3.setVisible(false);
+                lblReqDomestic4.setVisible(false);
+                lblReqInternational1.setVisible(true);
+                lblReqInternational2.setVisible(true);
+                lblReqInternational3.setVisible(true);
+                lblReqInternational4.setVisible(true);
                 break;
             case 3:
                 txtAmountMaxTransDomestic.setDisabled(false);
@@ -301,12 +321,19 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
                 txtAmountMinTransInt.setDisabled(false);
                 txtDailyAmountLimitInt.setDisabled(false);
                 txtMonthlyAmountLimitInt.setDisabled(false);
+                lblReqDomestic1.setVisible(true);
+                lblReqDomestic2.setVisible(true);
+                lblReqDomestic3.setVisible(true);
+                lblReqDomestic4.setVisible(true);
+                lblReqInternational1.setVisible(true);
+                lblReqInternational2.setVisible(true);
+                lblReqInternational3.setVisible(true);
+                lblReqInternational4.setVisible(true);
                 break;
         }
     }
 
     private void saveProductHasChannelHasTransaction(ProductHasChannelHasTransaction _productHasChannelHasTransaction) {
-        Product product = null;
         try {
             ProductHasChannelHasTransaction productHasChannelHasTransaction = null;
 
@@ -316,16 +343,9 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
                 productHasChannelHasTransaction = new ProductHasChannelHasTransaction();
             }
 
-            //Product
-            AdminProductController adminProduct = new AdminProductController();
-            if (adminProduct.getProductParent().getId() != null) {
-                product = adminProduct.getProductParent();
-            }
-
             productHasChannelHasTransaction.setMaximumNumberTransactionsDaily(txtMaxNumbTransDaily.getValue());
             productHasChannelHasTransaction.setMaximumNumberTransactionsMonthly(txtMaxNumbTransMont.getValue());
-            productHasChannelHasTransaction.setProductUseId((ProductUse) cmbProductUse.getSelectedItem().getValue());
-            ProductUse productUse = (ProductUse) cmbProductUse.getSelectedItem().getValue();
+            productHasChannelHasTransaction.setProductUseId(productUse);
             if (productUse.getId() == WebConstants.PRODUCT_USE_DOMESTIC) {
                 productHasChannelHasTransaction.setAmountMaximumTransactionDomestic(txtAmountMaxTransDomestic.getValue().floatValue());
                 productHasChannelHasTransaction.setAmountMinimumTransactionDomestic(txtAmountMinTransDomestic.getValue().floatValue());
@@ -390,44 +410,21 @@ public class AdminLimitAndRestrictionsController extends GenericAbstractAdminCon
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFields(productHasChannelHasTransactionParam);
-                loadField(productHasChannelHasTransactionParam);
-                loadCmbProductUse(eventType);
                 loadCmbTransaction(eventType);
                 loadCmbChannel(eventType);
-                onChange$cmbProductUse();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(productHasChannelHasTransactionParam);
-                loadField(productHasChannelHasTransactionParam);
                 blockFields();
-                loadCmbProductUse(eventType);
                 loadCmbTransaction(eventType);
                 loadCmbChannel(eventType);
                 break;
             case WebConstants.EVENT_ADD:
-                loadField(productHasChannelHasTransactionParam);
-                loadCmbProductUse(eventType);
                 loadCmbTransaction(eventType);
                 loadCmbChannel(eventType);
                 break;
             default:
                 break;
-        }
-    }
-
-    private void loadCmbProductUse(Integer evenInteger) {
-        //cmbProductUse
-        EJBRequest request1 = new EJBRequest();
-        List<ProductUse> productUses;
-        try {
-            productUses = productEJB.getProductUse(request1);
-            loadGenericCombobox(productUses, cmbProductUse, "description", evenInteger, Long.valueOf(productHasChannelHasTransactionParam != null ? productHasChannelHasTransactionParam.getProductUseId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-        } catch (GeneralException ex) {
-            showError(ex);
-        } catch (NullParameterException ex) {
-            showError(ex);
         }
     }
 
