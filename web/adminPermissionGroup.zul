@@ -35,16 +35,16 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <hlayout>
+                                                    <div align="left" width="400px">
+                                                        <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
+                                                    </div>                                                
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout> 
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -56,14 +56,14 @@
                                                             <label value="${c:l('cms.common.indEnabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
-                                                            <textbox id="txtNamePermissionGroup" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
+                                                            <textbox id="txtNamePermissionGroup" width="270px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                             <hbox>
                                                             <radiogroup id="PermiGroupEnabled" onCheck="value = self.selectedItem.label"/>
                                                                  <grid>
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rEnabledYes" label="${c:l('cms.commom.Yes')}" radiogroup="PermiGroupEnabled" />
-                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="PermiGroupEnabled" />
+                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="PermiGroupEnabled" checked = "true"/>
                                                                         </row>
                                                                     </rows>
                                                                  </grid>

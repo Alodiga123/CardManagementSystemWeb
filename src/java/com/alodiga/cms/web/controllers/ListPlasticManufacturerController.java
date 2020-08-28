@@ -65,6 +65,9 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
             request.setFirst(0);
             request.setLimit(null);
             plasticManufacturerList = personEJB.getPlasticManufacturer(request);
+            for (PlasticManufacturer pm : plasticManufacturerList ){
+                
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

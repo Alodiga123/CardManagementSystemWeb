@@ -638,9 +638,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     loadFields(applicantNaturalPersonParam);
                 }
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFieldR(adminRequest.getRequest());                
@@ -652,9 +652,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     blockFields();
                 }
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
                 loadCmbCivilState(eventType);
                 loadCmbProfession(eventType);
+                onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:
                 loadFieldR(adminRequest.getRequest());
@@ -693,10 +693,12 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         try {
             countries = utilsEJB.getCountries(request1);
             loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getPersonId().getCountryId().getId() : 0));
-            if (applicantNaturalPersonParam == null){
+
+            if ((applicantNaturalPersonParam == null) || (localPhone == null)){
                 loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(0));
                 loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(0));
-            } else {
+            }    
+             else {
                 if (localPhone != null) {
                     loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(localPhone.getCountryId() != null ? localPhone.getCountryId().getId() : 0)); 
                 }
