@@ -8,6 +8,7 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.FamilyReferences;
@@ -47,6 +48,8 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
     private List<FamilyReferences> familyReferences = null;
     private Long optionMenu;
     private int indPersonTypeCustomer = 0;
+    Boolean statusEditView= false;
+    Request request = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -78,6 +81,22 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                  if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                   }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                  {
+                      statusEditView = true;
+                  } else{
+                      statusEditView= false;
+                      btnAdd.setVisible(false);
+                  }      
             getData();
             loadDataList(familyReferences);
         } catch (Exception ex) {
@@ -121,13 +140,12 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
                     if(adminRequest.getRequest().getStatusRequestId() != null){
                         request = adminRequest.getRequest();
                     }
-                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                    if(statusEditView == true){
                         item.appendChild(createButtonEditModal(familyReferences));
                         item.appendChild(createButtonViewModal(familyReferences));
                     } else {
                         item.appendChild(new Listcell(" "));
                         item.appendChild(createButtonViewModal(familyReferences));
-                        btnAdd.setVisible(false);
                     }
                     item.setParent(lbxRecords);
                 }
