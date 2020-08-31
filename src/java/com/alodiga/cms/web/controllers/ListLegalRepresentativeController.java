@@ -9,6 +9,7 @@ import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
@@ -50,6 +51,8 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     private Integer eventType;
     private List<LegalPersonHasLegalRepresentatives> legalRepresentatives = null;
     private Long optionMenu = 0L;
+    Boolean statusEditView= false;
+    Request request = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -83,6 +86,22 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             adminPage = "/adminLegalRepresentative.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                  if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                   }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                  {
+                      statusEditView = true;
+                  } else{
+                      statusEditView= false;
+                      btnAdd.setVisible(false);
+                  }  
             getData();
             loadDataList(legalRepresentatives);
         } catch (Exception ex) {
@@ -103,6 +122,9 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     }
 
     public void loadDataList(List<LegalPersonHasLegalRepresentatives> list) {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Request request = null;
@@ -122,17 +144,13 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDueDateDocumentIdentification())));
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDateBirth())));
                     
-                    AdminRequestController adminRequest = new AdminRequestController();
-                    if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                    }
-                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                    
+                     if(statusEditView == true){ 
                         item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
                         item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
                     } else {
                         item.appendChild(new Listcell(" "));
                         item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));
-                        btnAdd.setVisible(false);
                     }
                     item.setParent(lbxRecords);
                 }

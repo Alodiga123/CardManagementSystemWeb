@@ -12,13 +12,19 @@ import static com.alodiga.cms.web.generic.controllers.GenericDistributionControl
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import com.cms.commons.enumeraciones.StatusRequestE;
+import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.util.QueryConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zkoss.util.resource.Labels;
@@ -87,6 +93,9 @@ public class ListRequestController extends GenericAbstractListController<Request
     public void loadList(List<Request> list) {
         String applicantNameLegal = "";
         String tipo = "";
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -108,8 +117,11 @@ public class ListRequestController extends GenericAbstractListController<Request
                             applicantNameNatural.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
                             item.appendChild(new Listcell(applicantNameNatural.toString()));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
-                            adminPage = "TabNaturalPerson.zul";
-                            if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                            adminPage = "TabNaturalPerson.zul";                                     
+                            if(!(request.getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                            {   
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());   
                             }  else {
@@ -124,7 +136,10 @@ public class ListRequestController extends GenericAbstractListController<Request
                             item.appendChild(new Listcell(applicantNameLegal));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
-                            if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                            if(!(request.getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                            {
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                             }  else {
@@ -139,7 +154,10 @@ public class ListRequestController extends GenericAbstractListController<Request
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabNaturalPerson.zul";
-                            if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                            if(!(request.getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                            {
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                             }  else {
@@ -152,7 +170,10 @@ public class ListRequestController extends GenericAbstractListController<Request
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                             item.appendChild(new Listcell(request.getStatusRequestId().getDescription()));
                             adminPage = "TabLegalPerson.zul";
-                            if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                            if(!(request.getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+                                    && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                            {
                             item.appendChild(permissionEdit ? new ListcellEditButton(adminPage, request) : new Listcell());
                             item.appendChild(permissionRead ? new ListcellViewButton(adminPage, request) : new Listcell());
                             }  else {

@@ -7,6 +7,7 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
@@ -43,7 +44,6 @@ public class ListAddressController extends GenericAbstractListController<PersonH
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
-    private Button btnAdd;
     private Textbox txtName;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
@@ -55,6 +55,8 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private Long optionMenu;
     private Tab tabAddress;
     private int indPersonTypeCustomer = 0;
+    Boolean statusEditView= false;
+    Request request = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -86,6 +88,22 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                if(adminRequest.getRequest().getStatusRequestId() != null){
+                    request = adminRequest.getRequest();
+                }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+              {
+                  statusEditView = true;
+              } else{
+                  statusEditView= false;
+                  btnAdd.setVisible(false);
+              }
             getData();
             loadDataList(personHasAddress);
         } catch (Exception ex) {
@@ -118,7 +136,6 @@ public class ListAddressController extends GenericAbstractListController<PersonH
 
     public void loadDataList(List<PersonHasAddress> list) {
         String indAddressDelivery = "";
-        Request request = null;
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -136,19 +153,14 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                     }
                     item.appendChild(new Listcell(indAddressDelivery));
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getZipZoneId().getCode()));
-                    
-                    AdminRequestController adminRequest = new AdminRequestController();
-                    if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                    }
-                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                    if(statusEditView == true){
                         item.appendChild(createButtonEditModal(personHasAddress));
                         item.appendChild(createButtonViewModal(personHasAddress));
-                    } else {
+                    } else{
                         item.appendChild(new Listcell(" "));
                         item.appendChild(createButtonViewModal(personHasAddress));
-                        btnAdd.setVisible(false);
                     }
+                    
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -159,6 +171,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.setParent(lbxRecords);
+                
             }
 
         } catch (Exception ex) {

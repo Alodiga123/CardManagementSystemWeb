@@ -10,6 +10,7 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.LegalCustomer;
@@ -53,6 +54,8 @@ public class ListAdditionalCardsController extends GenericAbstractListController
     private User currentUser;
     private Button btnSave;
     private Long optionMenu;
+    Boolean statusEditView= false;
+    Request request = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -84,6 +87,22 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                if(adminRequest.getRequest().getStatusRequestId() != null){
+                    request = adminRequest.getRequest();
+                }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+              {
+                  statusEditView = true;
+              } else{
+                  statusEditView= false;
+                  btnAdd.setVisible(false);
+              }    
             getData();
             loadDataList(cardRequestNaturalPersonList);
         } catch (Exception ex) {
@@ -161,6 +180,9 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         NumberFormat numberFormat = NumberFormat.getInstance (locale);
         String proposedLimit = "";
         Request request = null;
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -177,18 +199,12 @@ public class ListAdditionalCardsController extends GenericAbstractListController
                     item.appendChild(new Listcell(cardRequestNaturalPerson.getPositionEnterprise()));
                     proposedLimit = numberFormat.format(cardRequestNaturalPerson.getProposedLimit().floatValue());
                     item.appendChild(new Listcell(proposedLimit));
-                    
-                    AdminRequestController adminRequest = new AdminRequestController();
-                    if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                    }
-                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                    if(statusEditView == true){   
                         item.appendChild(createButtonEditModal(cardRequestNaturalPerson));
                         item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
                     } else {
                         item.appendChild(new Listcell(" "));
                         item.appendChild(createButtonViewModal(cardRequestNaturalPerson));
-                        btnAdd.setVisible(false);
                     }
                     item.setParent(lbxRecords);
                 }

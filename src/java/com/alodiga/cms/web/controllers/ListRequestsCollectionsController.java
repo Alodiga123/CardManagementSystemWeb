@@ -7,6 +7,7 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.Request;
@@ -39,10 +40,14 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
+    private Button btnAdd;
     private RequestEJB requestEJB = null;
     private List<RequestHasCollectionsRequest> requestHasCollectionsRequestList = null;
     private Tab tabRequestbyCollection;
     private AdminRequestController adminRequest = null;
+    Boolean statusEditView= false;
+    Request request = null;
+
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,6 +77,22 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             adminPage = "adminRequestCollections.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             adminRequest = new AdminRequestController();
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                  if(adminRequest.getRequest().getStatusRequestId() != null){
+                        request = adminRequest.getRequest();
+                   }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+                  {
+                      statusEditView = true;
+                  } else{
+                      statusEditView= false;
+                      btnAdd.setVisible(false);
+                  } 
             getData();
             loadDataList(requestHasCollectionsRequestList);
         } catch (Exception ex) {
@@ -91,6 +112,9 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
         String applicantName = "";
         RequestHasCollectionsRequest requestHasCollectionsRequest = null;
         Request request = null;
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -102,13 +126,13 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getProductTypeId().getName()));
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCollectionTypeId().getDescription()));
                     item.appendChild(new Listcell((requestCollectionsRequest.getIndApproved().toString()).equals("1")?"Aprobado":"Rechazado"));
-                    if((adminRequest.getRequest().getStatusRequestId().getId() != 6) && (adminRequest.getRequest().getStatusRequestId().getId() != 2)){
+                    
+                    if(statusEditView == true){
                         item.appendChild(createButtonEditModal(requestCollectionsRequest));
                         item.appendChild(createButtonViewModal(requestCollectionsRequest));
                     } else {
                         item.appendChild(new Listcell(" "));
                         item.appendChild(createButtonViewModal(requestCollectionsRequest));
-                        btnAdd.setVisible(false);
                     }
                     item.setParent(lbxRecords);
                 }

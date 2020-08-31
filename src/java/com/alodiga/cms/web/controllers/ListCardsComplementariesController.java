@@ -7,6 +7,7 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.Request;
@@ -44,6 +45,8 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
     private List<ApplicantNaturalPerson> cardComplementaryList = null;
     private User currentUser;
     private Button btnSave;
+    Boolean statusEditView= false;
+    Request request = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,6 +75,22 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
             permissionRead = true;
             adminPage = "/TabCardsComplementaries.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                if(adminRequest.getRequest().getStatusRequestId() != null){
+                    request = adminRequest.getRequest();
+                }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+              {
+                  statusEditView = true;
+              } else{
+                  statusEditView= false;
+                  btnAdd.setVisible(false);
+              }    
             getData();
             loadDataList(cardComplementaryList);
         } catch (Exception ex) {
@@ -114,6 +133,9 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
     }    
     
     public void loadDataList(List<ApplicantNaturalPerson> list) {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             Request request = null;
             lbxRecords.getItems().clear();
@@ -129,17 +151,12 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
                     item.appendChild(new Listcell(applicantNaturalPerson.getDocumentsPersonTypeId().getDescription()));
                     item.appendChild(new Listcell(applicantNaturalPerson.getIdentificationNumber()));
                     item.appendChild(new Listcell(applicantNaturalPerson.getKinShipApplicantId().getDescription()));
-                    AdminRequestController adminRequest = new AdminRequestController();
-                    if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                    }
-                    if((request.getStatusRequestId().getId() != 6) && (request.getStatusRequestId().getId() != 2)){
+                    if(statusEditView == true){
                         item.appendChild(createButtonEditModal(applicantNaturalPerson));
                         item.appendChild(createButtonViewModal(applicantNaturalPerson));
                     } else {
                         item.appendChild(new Listcell(" "));
                         item.appendChild(createButtonViewModal(applicantNaturalPerson));
-                        btnAdd.setVisible(false);
                     }
                     item.setParent(lbxRecords);
                 }
