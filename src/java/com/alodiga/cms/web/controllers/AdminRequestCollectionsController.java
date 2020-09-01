@@ -273,15 +273,13 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                 if(validateCollectionsRequet()){
+                    if (validateCollectionsRequet()) {
                         saveRequest(null);
-                    }  
-                    break;
+                    }
+                break;
                 case WebConstants.EVENT_EDIT:
                     saveRequest(requestHasCollectionsRequestParam);
-                    break;
-                default:
-                    break;
+                break;
             }
         }
     }
@@ -292,6 +290,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 loadFields(requestHasCollectionsRequestParam);
                 loadField(requestParam);
                 loadCmbCollectionsRequest(eventType);
+                cmbCollectionsRequest.setDisabled(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(requestHasCollectionsRequestParam);
