@@ -66,9 +66,8 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
     private Button btnReviewOFAC;
     private AdminRequestController adminRequest = null;
     private Tab tabApplicantOFAC;
-    Boolean statusEditView= false;
-    Request request = null;
-    private Button btnReviewOFAC;
+    private Boolean statusEditView= false;
+    private Request request = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -100,27 +99,31 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                if(adminRequest.getRequest().getStatusRequestId() != null){
-                    request = adminRequest.getRequest();
-                }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-              {
-                  statusEditView = true;
-              } else{
-                  statusEditView= false;
-                  btnReviewOFAC.setVisible(false);
-              }    
+            checkStatusRequest();               
             getData();
             loadDataList(applicantList);
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void checkStatusRequest() {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+        AdminRequestController adminRequest = new AdminRequestController();
+        if(adminRequest.getRequest().getStatusRequestId() != null){
+            request = adminRequest.getRequest();
+        }
+        if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+        {
+            statusEditView = true;
+        } else{
+            statusEditView= false;
+            btnReviewOFAC.setVisible(false);
+        } 
     }
     
     public void onSelect$tabApplicantOFAC() {
@@ -329,10 +332,10 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
             //Si algun(os) solicitante(s) coincide(n) con la Lista OFAC se actualiza estatus de la solicitud
             if (indBlackList == 1) {
                 request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_PENDING_APPROVAL));
-                btnReviewOFAC.setVisible(false);
             } else {
                 request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK));
             }
+            btnReviewOFAC.setVisible(false);
             request = requestEJB.saveRequest(request);
             this.showMessage("sp.common.finishReviewOFAC", false, null);
             onSelect$tabApplicantOFAC();
