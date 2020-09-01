@@ -15,6 +15,11 @@ import com.alodiga.ws.cumpliments.services.WsLoginResponse;
 import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
+import com.cms.commons.models.CardRequestNaturalPerson;
+import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
+import com.cms.commons.models.LegalRepresentatives;
+import com.cms.commons.models.Person;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.User;
@@ -44,7 +49,7 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ListApplicantOFACController extends GenericAbstractListController<ApplicantNaturalPerson> {
+public class ListApplicantOFACController extends GenericAbstractListController<Person> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
@@ -52,9 +57,13 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
     private PersonEJB personEJB = null;
     private RequestEJB requestEJB = null;
     private UtilsEJB utilsEJB = null;
-    private List<ApplicantNaturalPerson> applicantList = null;
+    private List<ApplicantNaturalPerson> applicantNaturalList = null;
+    private List<Person> applicantList = null;
+    private List<CardRequestNaturalPerson> applicantEmployeeList = null;
+    private List<LegalPersonHasLegalRepresentatives> legalRepresentativesList = null;
     private User currentUser;
     private Button btnSave;
+    private Button btnReviewOFAC;
     private AdminRequestController adminRequest = null;
     private Tab tabApplicantOFAC;
     Boolean statusEditView= false;
@@ -90,6 +99,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
             adminRequest = new AdminRequestController();
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
+            utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
             String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
             String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
@@ -122,8 +132,12 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
     }
 
     public void getData() {
-        applicantList = new ArrayList<ApplicantNaturalPerson>();
+        applicantList = new ArrayList<Person>();
+        applicantNaturalList = new ArrayList<ApplicantNaturalPerson>();
+        applicantEmployeeList = new ArrayList<CardRequestNaturalPerson>();
+        legalRepresentativesList = new ArrayList<LegalPersonHasLegalRepresentatives>();
         ApplicantNaturalPerson applicantNaturalPerson = null;
+        LegalPerson applicantLegalPerson = null;
         Request requestCard = null;
         try {
             //Solicitud de Tarjeta
@@ -131,18 +145,60 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
             if (adminRequestController.getRequest().getId() != null) {
                 requestCard = adminRequestController.getRequest();
             }
-            if (requestCard.getPersonId() != null) {
-                //Solicitante Principal de Tarjeta
-                AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-                if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-                    applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+            if (requestCard.getPersonTypeId().getIndNaturalPerson() == true) {
+                //Solicitante Natural
+                if (requestCard.getPersonId() != null) {
+                    //Solicitante Principal de Tarjeta
+                    AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+                    if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+                        applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+                    }
+                }   
+                //Se obtienen los solicitantes complementarios
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+                request1.setParams(params);
+                applicantNaturalList = personEJB.getCardComplementaryByApplicant(request1);
+                for (ApplicantNaturalPerson applicantNatural : applicantNaturalList) {
+                    applicantList.add(applicantNatural.getPersonId());
                 }
-            }            
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
-            request1.setParams(params);
-            applicantList = personEJB.getCardComplementaryByApplicant(request1);   
+            } else {
+                //Solicitante Jurídico
+                if (requestCard.getPersonId() != null) {
+                    //Solicitante Principal de Tarjeta
+                    AdminLegalPersonController adminLegalPerson = new AdminLegalPersonController();
+                    if (adminLegalPerson.getLegalPerson() != null) {
+                        applicantLegalPerson = adminLegalPerson.getLegalPerson();
+                    }
+                }
+                //Se obtienen los empleados asociados a la empresa
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicantLegalPerson.getId());
+                request1.setParams(params);
+                applicantEmployeeList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request1);
+                for (CardRequestNaturalPerson employees : applicantEmployeeList) {
+                    applicantList.add(employees.getPersonId());
+                }
+                //Se obtienen los representantes legales asociados a la empresa
+                request1 = new EJBRequest();
+                params = new HashMap();
+                params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, applicantLegalPerson.getId());
+                request1.setParams(params);
+                legalRepresentativesList = personEJB.getLegalRepresentativesesBylegalPerson(request1);
+                for (LegalPersonHasLegalRepresentatives lr : legalRepresentativesList) {
+                    request1 = new EJBRequest();
+                    params = new HashMap();
+                    params.put(Constants.PERSON_KEY, lr.getLegalRepresentativesid().getPersonId().getId());
+                    request1.setParams(params);
+                    List<LegalRepresentatives> legalRepresentativeList = utilsEJB.getLegalRepresentativesByPerson(request1);
+                    for (LegalRepresentatives legalRepresentative : legalRepresentativeList) {
+                        lr.setLegalRepresentativesid(legalRepresentative);
+                    }
+                    applicantList.add(lr.getLegalRepresentativesid().getPersonId());
+                }
+            }               
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -150,31 +206,40 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         } catch (GeneralException ex) {
             showError(ex);
         } finally {
-            try {
-                applicantList.add(applicantNaturalPerson);
-                for (ApplicantNaturalPerson applicant : applicantList) {
-                    Long haveReviewOFAC = requestEJB.haveReviewOFACByPerson(applicantNaturalPerson.getPersonId().getId());
-                    if (haveReviewOFAC > 0) {
-                        EJBRequest request = new EJBRequest();
-                        Map params = new HashMap();
-                        params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
-                        params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
-                        request.setParams(params);
-                        List<ReviewOFAC> reviewOFAC = requestEJB.getReviewOFACByApplicantByRequest(request);
-                        for (ReviewOFAC r: reviewOFAC) {
-                            applicant.getPersonId().setReviewOFAC(r);
-                        }
-                    }                    
-                }
-            } catch (NullParameterException ex) {
-                showError(ex);
-            } catch (EmptyListException ex) {
-                showError(ex);
-            } catch (GeneralException ex) {
-                showError(ex);
-            }            
+            if (requestCard.getPersonTypeId().getIndNaturalPerson() == true) {
+                applicantList.add(applicantNaturalPerson.getPersonId());
+                updateReviewOFAC();
+            } else {
+                applicantList.add(applicantLegalPerson.getPersonId());
+                updateReviewOFAC();
+            }         
         }
-    }  
+    } 
+    
+    public void updateReviewOFAC() {
+        try {
+            for (Person applicant : applicantList) {
+                Long haveReviewOFAC = requestEJB.haveReviewOFACByPerson(applicant.getId());
+                if (haveReviewOFAC > 0) {
+                    EJBRequest request = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PERSON_KEY, applicant.getId());
+                    params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                    request.setParams(params);
+                    List<ReviewOFAC> reviewOFAC = requestEJB.getReviewOFACByApplicantByRequest(request);
+                    for (ReviewOFAC r: reviewOFAC) {
+                        applicant.setReviewOFAC(r);
+                    }
+                } 
+            }
+        } catch (NullParameterException ex) {
+                showError(ex);
+        } catch (EmptyListException ex) {
+                showError(ex);
+        } catch (GeneralException ex) {
+                showError(ex);
+        }        
+    }
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
@@ -195,30 +260,76 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
             WsLoginResponse loginResponse = new WsLoginResponse();
             loginResponse = ofac.loginWS("alodiga", "d6f80e647631bb4522392aff53370502");
             WsExcludeListResponse ofacResponse = new WsExcludeListResponse();   
-            for (ApplicantNaturalPerson applicant: applicantList) {
-                lastName = applicant.getLastNames();
-                firstName = applicant.getFirstNames();
-                ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
-                
+            for (Person applicant: applicantList) {
+                if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
+                    lastName = applicant.getApplicantNaturalPerson().getLastNames();
+                    firstName = applicant.getApplicantNaturalPerson().getFirstNames();
+                    ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
+                } else {
+                    if (applicant.getPersonClassificationId().getId() == 4) {
+                        lastName = applicant.getLegalPerson().getEnterpriseName();
+                        firstName = applicant.getLegalPerson().getEnterpriseName();
+                        ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
+                    } else if (applicant.getPersonClassificationId().getId() == 8) {
+                        lastName = applicant.getCardRequestNaturalPerson().getLastNames();
+                        firstName = applicant.getCardRequestNaturalPerson().getFirstNames();
+                        ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
+                     } else if (applicant.getPersonClassificationId().getId() == 5) {
+                        lastName = applicant.getLegalRepresentatives().getLastNames();
+                        firstName = applicant.getLegalRepresentatives().getFirstNames();
+                        ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
+                     }
+                }                
                 //Guardar el resultado de revisión en lista OFAC para cada solicitante
                 ReviewOFAC reviewOFAC = new ReviewOFAC();
-                reviewOFAC.setPersonId(applicant.getPersonId());
+                reviewOFAC.setPersonId(applicant);
                 reviewOFAC.setRequestId(request);
                 reviewOFAC.setResultReview(ofacResponse.getPercentMatch());
                 reviewOFAC = requestEJB.saveReviewOFAC(reviewOFAC);
                 
-                //Actualizar el estatus del solicitante si tiene coincidencia con lista OFAC
-                if (Double.parseDouble(ofacResponse.getPercentMatch()) <= 0.75) {
-                    applicant.setStatusApplicantId(getStatusApplicant(applicant, Constants.STATUS_APPLICANT_BLACK_LIST));
-                    indBlackList = 1;
+                //Actualizar el estatus del solicitante si tiene coincidencia con lista OFAC                
+                if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
+                    if (Double.parseDouble(ofacResponse.getPercentMatch()) <= 0.75) {
+                        applicant.getApplicantNaturalPerson().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST));
+                        indBlackList = 1;
+                    } else {
+                      applicant.getApplicantNaturalPerson().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
+                    }
+                    ApplicantNaturalPerson applicantNatural = personEJB.saveApplicantNaturalPerson(applicant.getApplicantNaturalPerson());
                 } else {
-                  applicant.setStatusApplicantId(getStatusApplicant(applicant, Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
-                }
-                applicant = personEJB.saveApplicantNaturalPerson(applicant);
+                    if (applicant.getPersonClassificationId().getId() == 4) {
+                        if (Double.parseDouble(ofacResponse.getPercentMatch()) <= 0.75) {
+                            applicant.getLegalPerson().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST));
+                            indBlackList = 1;
+                        } else {
+                          applicant.getLegalPerson().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
+                        }
+                        LegalPerson applicantLegalPerson = personEJB.saveLegalegalPerson(applicant.getLegalPerson());
+                    }
+                    if (applicant.getPersonClassificationId().getId() == 8) {
+                        if (Double.parseDouble(ofacResponse.getPercentMatch()) <= 0.75) {
+                            applicant.getCardRequestNaturalPerson().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST));
+                            indBlackList = 1;
+                        } else {
+                          applicant.getCardRequestNaturalPerson().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
+                        }
+                        CardRequestNaturalPerson cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(applicant.getCardRequestNaturalPerson());
+                    }
+                    if (applicant.getPersonClassificationId().getId() == 5) {
+                        if (Double.parseDouble(ofacResponse.getPercentMatch()) <= 0.75) {
+                            applicant.getLegalRepresentatives().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST));
+                            indBlackList = 1;
+                        } else {
+                          applicant.getLegalRepresentatives().setStatusApplicantId(getStatusApplicant(Constants.STATUS_APPLICANT_BLACK_LIST_OK));  
+                        }
+                        LegalRepresentatives legalRepresentatives = utilsEJB.saveLegalRepresentatives(applicant.getLegalRepresentatives());
+                    }
+                }                
             }
             //Si algun(os) solicitante(s) coincide(n) con la Lista OFAC se actualiza estatus de la solicitud
             if (indBlackList == 1) {
                 request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_PENDING_APPROVAL));
+                btnReviewOFAC.setVisible(false);
             } else {
                 request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK));
             }
@@ -232,8 +343,8 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         }
     }
     
-    public StatusApplicant getStatusApplicant(ApplicantNaturalPerson applicant, int statusApplicantId) {
-        StatusApplicant statusApplicant = applicant.getStatusApplicantId();
+    public StatusApplicant getStatusApplicant(int statusApplicantId) {
+        StatusApplicant statusApplicant = null;
         try {
             EJBRequest request = new EJBRequest();
             request.setParam(statusApplicantId);
@@ -260,45 +371,99 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         txtName.setText("");
     }    
     
-    public void loadDataList(List<ApplicantNaturalPerson> list) {
+    public void loadDataList(List<Person> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (ApplicantNaturalPerson applicantNaturalPerson : list) {
+                for (Person applicant : list) {
                     item = new Listitem();
-                    item.setValue(applicantNaturalPerson);
-                    StringBuilder builder = new StringBuilder(applicantNaturalPerson.getFirstNames());
-                    builder.append(" ");
-                    builder.append(applicantNaturalPerson.getLastNames());                    
-                    item.appendChild(new Listcell(builder.toString()));
-                    item.appendChild(new Listcell(applicantNaturalPerson.getIdentificationNumber()));
-                    if (applicantNaturalPerson.getKinShipApplicantId() == null) {
-                        item.appendChild(new Listcell(WebConstants.MAIN_APPLICANT));
+                    item.setValue(applicant);
+                    if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
+                        StringBuilder builder = new StringBuilder(applicant.getApplicantNaturalPerson().getFirstNames());
+                        builder.append(" ");
+                        builder.append(applicant.getApplicantNaturalPerson().getLastNames());                    
+                        item.appendChild(new Listcell(builder.toString()));
+                        item.appendChild(new Listcell(applicant.getApplicantNaturalPerson().getIdentificationNumber()));
+                        if (applicant.getApplicantNaturalPerson().getKinShipApplicantId() == null) {
+                            item.appendChild(new Listcell(WebConstants.MAIN_APPLICANT));
+                        } else {
+                            item.appendChild(new Listcell(applicant.getApplicantNaturalPerson().getKinShipApplicantId().getDescription()));
+                        }
+                        if (applicant.getApplicantNaturalPerson().getStatusApplicantId() != null) {
+                            item.appendChild(new Listcell(applicant.getApplicantNaturalPerson().getStatusApplicantId().getDescription()));
+                        } else {
+                            item.appendChild(new Listcell("SIN REGISTRAR"));
+                        }
+                        if (applicant.getApplicantNaturalPerson().getPersonId().getReviewOFAC() != null) {
+                            item.appendChild(new Listcell(applicant.getApplicantNaturalPerson().getPersonId().getReviewOFAC().getResultReview()));
+                        } else {
+                            item.appendChild(new Listcell(""));
+                        }
+                        item.appendChild(createButtonEditModal(applicant));
+                        item.appendChild(createButtonViewModal(applicant));
+                        item.setParent(lbxRecords);
                     } else {
-                        item.appendChild(new Listcell(applicantNaturalPerson.getKinShipApplicantId().getDescription()));
-                    }
-                    if (applicantNaturalPerson.getStatusApplicantId() != null) {
-                        item.appendChild(new Listcell(applicantNaturalPerson.getStatusApplicantId().getDescription()));
-                    } else {
-                        item.appendChild(new Listcell("SIN REGISTRAR"));
-                    }
-                    if (applicantNaturalPerson.getPersonId().getReviewOFAC() != null) {
-                        item.appendChild(new Listcell(applicantNaturalPerson.getPersonId().getReviewOFAC().getResultReview()));
-                    } else {
-                        item.appendChild(new Listcell(""));
-                    }
-                    
-                     if(statusEditView == true){
-                        item.appendChild(createButtonEditModal(applicantNaturalPerson));
-                        item.appendChild(createButtonViewModal(applicantNaturalPerson));
-                    } else {
-                        item.appendChild(new Listcell(" "));
-                        item.appendChild(createButtonViewModal(applicantNaturalPerson));
-                    }
-                    
-                    item.setParent(lbxRecords);
-                }
+                        if (applicant.getPersonClassificationId().getId() == 4) {
+                            item.appendChild(new Listcell(applicant.getLegalPerson().getEnterpriseName()));
+                            item.appendChild(new Listcell(applicant.getLegalPerson().getIdentificationNumber()));
+                            item.appendChild(new Listcell(WebConstants.MAIN_APPLICANT));
+                            if (applicant.getLegalPerson().getStatusApplicantId() != null) {
+                                item.appendChild(new Listcell(applicant.getLegalPerson().getStatusApplicantId().getDescription()));
+                            } else {
+                                item.appendChild(new Listcell("SIN REGISTRAR"));
+                            } 
+                            if (applicant.getLegalPerson().getPersonId().getReviewOFAC() != null) {
+                                item.appendChild(new Listcell(applicant.getLegalPerson().getPersonId().getReviewOFAC().getResultReview()));
+                            } else {
+                                item.appendChild(new Listcell(""));
+                            }
+                            item.appendChild(createButtonEditModal(applicant));
+                            item.appendChild(createButtonViewModal(applicant));
+                            item.setParent(lbxRecords);
+                        } else if (applicant.getPersonClassificationId().getId() == 8) {
+                            StringBuilder builder = new StringBuilder(applicant.getCardRequestNaturalPerson().getFirstNames());
+                            builder.append(" ");
+                            builder.append(applicant.getCardRequestNaturalPerson().getLastNames());
+                            item.appendChild(new Listcell(builder.toString()));
+                            item.appendChild(new Listcell(applicant.getCardRequestNaturalPerson().getIdentificationNumber()));
+                            item.appendChild(new Listcell(WebConstants.CARD_REQUEST_NATURAL_PERSON));
+                            if (applicant.getCardRequestNaturalPerson().getStatusApplicantId() != null) {
+                                item.appendChild(new Listcell(applicant.getCardRequestNaturalPerson().getStatusApplicantId().getDescription()));
+                            } else {
+                                item.appendChild(new Listcell("SIN REGISTRAR"));
+                            }
+                            if (applicant.getCardRequestNaturalPerson().getPersonId().getReviewOFAC() != null) {
+                                item.appendChild(new Listcell(applicant.getCardRequestNaturalPerson().getPersonId().getReviewOFAC().getResultReview()));
+                            } else {
+                                item.appendChild(new Listcell(""));
+                            }
+                            item.appendChild(createButtonEditModal(applicant));
+                            item.appendChild(createButtonViewModal(applicant));
+                            item.setParent(lbxRecords);
+                        } else if (applicant.getPersonClassificationId().getId() == 5) {
+                            StringBuilder builder = new StringBuilder(applicant.getLegalRepresentatives().getFirstNames());
+                            builder.append(" ");
+                            builder.append(applicant.getLegalRepresentatives().getLastNames());                    
+                            item.appendChild(new Listcell(builder.toString()));
+                            item.appendChild(new Listcell(applicant.getLegalRepresentatives().getIdentificationNumber()));
+                            item.appendChild(new Listcell(WebConstants.LEGAL_REPRESENTATIVE));
+                            if (applicant.getLegalRepresentatives().getStatusApplicantId() != null) {
+                                item.appendChild(new Listcell(applicant.getLegalRepresentatives().getStatusApplicantId().getDescription()));
+                            } else {
+                                item.appendChild(new Listcell("SIN REGISTRAR"));
+                            }
+                            if (applicant.getLegalRepresentatives().getPersonId().getReviewOFAC() != null) {
+                                item.appendChild(new Listcell(applicant.getLegalRepresentatives().getPersonId().getReviewOFAC().getResultReview()));
+                            } else {
+                                item.appendChild(new Listcell(""));
+                            }
+                            item.appendChild(createButtonEditModal(applicant));
+                            item.appendChild(createButtonViewModal(applicant));
+                            item.setParent(lbxRecords);
+                        }                        
+                    }      
+                }                   
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
@@ -365,33 +530,34 @@ public class ListApplicantOFACController extends GenericAbstractListController<A
         return listcellViewModal;
     }
 
-    public List<ApplicantNaturalPerson> getFilterList(String filter) {
-        List<ApplicantNaturalPerson> applicantNaturalPersonList_ = new ArrayList<ApplicantNaturalPerson>();
-        ApplicantNaturalPerson applicantNaturalPerson = null;
-
-        try {
-            if (filter != null && !filter.equals("")) {
-            //Solicitante de Tarjeta
-            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
-            }
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
-            params.put(Constants.PARAM_APPLICANT_NATURAL_PERSON_NAME_KEY, filter);
-
-            request1.setParams(params);
-            //applicantList = personEJB.getCardComplementaryByApplicant(request1); 
-            applicantNaturalPersonList_ = personEJB.searchCardComplementaryByApplicantOFAC(request1);
-                  
-            } else {
-                return applicantList;
-            }
-        } catch (Exception ex) {
-            showError(ex);
-        }
-        return applicantNaturalPersonList_;  
+    public List<Person> getFilterList(String filter) {
+//        List<ApplicantNaturalPerson> applicantNaturalPersonList_ = new ArrayList<ApplicantNaturalPerson>();
+//        ApplicantNaturalPerson applicantNaturalPerson = null;
+//
+//        try {
+//            if (filter != null && !filter.equals("")) {
+//            //Solicitante de Tarjeta
+//            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
+//            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
+//                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
+//            }
+//            EJBRequest request1 = new EJBRequest();
+//            Map params = new HashMap();
+//            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
+//            params.put(Constants.PARAM_APPLICANT_NATURAL_PERSON_NAME_KEY, filter);
+//
+//            request1.setParams(params);
+//            //applicantList = personEJB.getCardComplementaryByApplicant(request1); 
+//            applicantNaturalPersonList_ = personEJB.searchCardComplementaryByApplicantOFAC(request1);
+//                  
+//            } else {
+//                return applicantNaturalList;
+//            }
+//        } catch (Exception ex) {
+//            showError(ex);
+//        }
+//        return applicantNaturalPersonList_; 
+          return applicantList;
     }
     
     
