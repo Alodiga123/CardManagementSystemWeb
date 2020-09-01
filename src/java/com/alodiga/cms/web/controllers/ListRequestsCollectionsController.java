@@ -77,27 +77,31 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
             adminPage = "adminRequestCollections.zul";
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             adminRequest = new AdminRequestController();
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                  if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                   }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-                  {
-                      statusEditView = true;
-                  } else{
-                      statusEditView= false;
-                      btnAdd.setVisible(false);
-                  } 
+            checkStatusRequest();
             getData();
             loadDataList(requestHasCollectionsRequestList);
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void checkStatusRequest() {
+       String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+       String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+       String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+       AdminRequestController adminRequest = new AdminRequestController();
+       if(adminRequest.getRequest().getStatusRequestId() != null){
+            request = adminRequest.getRequest();
+       }
+       if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+        {
+         statusEditView = true;
+        } else{
+              statusEditView= false;
+              btnAdd.setVisible(false);
+          }  
     }
     
     public void onSelect$tabRequestbyCollection() {
@@ -111,10 +115,6 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
     public void loadDataList(List<RequestHasCollectionsRequest> list) {
         String applicantName = "";
         RequestHasCollectionsRequest requestHasCollectionsRequest = null;
-        Request request = null;
-        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -126,7 +126,6 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getProductTypeId().getName()));
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCollectionTypeId().getDescription()));
                     item.appendChild(new Listcell((requestCollectionsRequest.getIndApproved().toString()).equals("1")?"Aprobado":"Rechazado"));
-                    
                     if(statusEditView == true){
                         item.appendChild(createButtonEditModal(requestCollectionsRequest));
                         item.appendChild(createButtonViewModal(requestCollectionsRequest));

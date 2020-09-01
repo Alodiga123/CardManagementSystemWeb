@@ -75,27 +75,31 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
             permissionRead = true;
             adminPage = "/TabCardsComplementaries.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                if(adminRequest.getRequest().getStatusRequestId() != null){
-                    request = adminRequest.getRequest();
-                }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-              {
-                  statusEditView = true;
-              } else{
-                  statusEditView= false;
-                  btnAdd.setVisible(false);
-              }    
+            checkStatusRequest();    
             getData();
             loadDataList(cardComplementaryList);
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void checkStatusRequest() {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+        AdminRequestController adminRequest = new AdminRequestController();
+            if(adminRequest.getRequest().getStatusRequestId() != null){
+                request = adminRequest.getRequest();
+            }
+        if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+          {
+              statusEditView = true;
+          } else{
+              statusEditView= false;
+              btnAdd.setVisible(false);
+          } 
     }
 
     public void getData() {
@@ -133,9 +137,6 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
     }    
     
     public void loadDataList(List<ApplicantNaturalPerson> list) {
-        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             Request request = null;
             lbxRecords.getItems().clear();
