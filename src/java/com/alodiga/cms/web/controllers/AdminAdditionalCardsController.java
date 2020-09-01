@@ -1,6 +1,7 @@
 package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
@@ -16,6 +17,7 @@ import com.cms.commons.models.LegalPerson;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -52,6 +54,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Combobox cmbDocumentsPersonType;
     private UtilsEJB utilsEJB = null;
     private PersonEJB personEJB = null;
+    private RequestEJB requestEJB = null;
     private CardRequestNaturalPerson cardRequestNaturalPersonParam;
     public Window winAdminAdditionalCards;
     private Button btnSave;
@@ -85,6 +88,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -197,6 +201,11 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
                 legalCustomer = adminLegalCustomerPerson.getLegalCustomer();
             }
             
+            //Obtiene el estatus del solicitante ACTIVO
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
+            StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);
+            
             //Obtener la clasificacion del solicitante de tarjeta adicional
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_CARD_REQUEST_NATURAL_PERSON);
@@ -225,6 +234,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             cardRequestNaturalPerson.setPositionEnterprise(txtPositionEnterprise.getText());
             cardRequestNaturalPerson.setProposedLimit(dbxProposedLimit.getValue().floatValue());
             cardRequestNaturalPerson.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
+            cardRequestNaturalPerson.setStatusApplicantId(statusApplicant);
             if (legalCustomer != null) {
                 cardRequestNaturalPerson.setLegalCustomerId(legalCustomer);
             }
