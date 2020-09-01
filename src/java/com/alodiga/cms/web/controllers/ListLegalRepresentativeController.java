@@ -86,28 +86,32 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
             adminPage = "/adminLegalRepresentative.zul";
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                  if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                   }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-                  {
-                      statusEditView = true;
-                  } else{
-                      statusEditView= false;
-                      btnAdd.setVisible(false);
-                  }  
+            checkStatusRequest();
             getData();
             loadDataList(legalRepresentatives);
         } catch (Exception ex) {
             showError(ex);
         }
     } 
+    
+    public void checkStatusRequest() {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+        AdminRequestController adminRequest = new AdminRequestController();
+              if(adminRequest.getRequest().getStatusRequestId() != null){
+                    request = adminRequest.getRequest();
+               }
+        if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+              {
+                  statusEditView = true;
+              } else{
+                  statusEditView= false;
+                  btnAdd.setVisible(false);
+              }
+    }
     
     public void onClick$btnAdd() throws InterruptedException {
         try {
@@ -122,9 +126,6 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
     }
 
     public void loadDataList(List<LegalPersonHasLegalRepresentatives> list) {
-        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Request request = null;
@@ -143,8 +144,6 @@ public class ListLegalRepresentativeController extends GenericAbstractListContro
                     item.appendChild(new Listcell(legalRepresentatives.getLegalRepresentativesid().getIdentificationNumber()));
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDueDateDocumentIdentification())));
                     item.appendChild(new Listcell(simpleDateFormat.format(legalRepresentatives.getLegalRepresentativesid().getDateBirth())));
-                    
-                    
                      if(statusEditView == true){ 
                         item.appendChild(createButtonEditModal(legalRepresentatives.getLegalRepresentativesid()));
                         item.appendChild(createButtonViewModal(legalRepresentatives.getLegalRepresentativesid()));

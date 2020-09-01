@@ -86,28 +86,32 @@ public class ListAdditionalCardsController extends GenericAbstractListController
             adminPage = "adminAdditionalCards.zul";
             optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                if(adminRequest.getRequest().getStatusRequestId() != null){
-                    request = adminRequest.getRequest();
-                }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-              {
-                  statusEditView = true;
-              } else{
-                  statusEditView= false;
-                  btnAdd.setVisible(false);
-              }    
+            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);  
+            checkStatusRequest();
             getData();
             loadDataList(cardRequestNaturalPersonList);
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void checkStatusRequest() {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+        AdminRequestController adminRequest = new AdminRequestController();
+            if(adminRequest.getRequest().getStatusRequestId() != null){
+                request = adminRequest.getRequest();
+            }
+        if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+          {
+              statusEditView = true;
+          } else{
+              statusEditView= false;
+              btnAdd.setVisible(false);
+          } 
     }
 
     public void getData() {
@@ -179,10 +183,6 @@ public class ListAdditionalCardsController extends GenericAbstractListController
         Locale locale = new Locale ("es", "ES");
         NumberFormat numberFormat = NumberFormat.getInstance (locale);
         String proposedLimit = "";
-        Request request = null;
-        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;

@@ -403,8 +403,14 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                         } else {
                             item.appendChild(new Listcell(""));
                         }
-                        item.appendChild(createButtonEditModal(applicant));
-                        item.appendChild(createButtonViewModal(applicant));
+                        if(statusEditView == true){
+                            item.appendChild(createButtonEditModal(applicant));
+                            item.appendChild(createButtonViewModal(applicant));   
+                        } else {
+                            item.appendChild(new Listcell(""));
+                            item.appendChild(createButtonViewModal(applicant));
+                        }
+                        
                         item.setParent(lbxRecords);
                     } else {
                         if (applicant.getPersonClassificationId().getId() == 4) {
@@ -441,8 +447,13 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
-                            item.appendChild(createButtonEditModal(applicant));
-                            item.appendChild(createButtonViewModal(applicant));
+                            if(statusEditView == true){
+                                item.appendChild(createButtonEditModal(applicant));
+                                item.appendChild(createButtonViewModal(applicant));   
+                            } else {
+                                item.appendChild(new Listcell(""));
+                                item.appendChild(createButtonViewModal(applicant));
+                            }
                             item.setParent(lbxRecords);
                         } else if (applicant.getPersonClassificationId().getId() == 5) {
                             StringBuilder builder = new StringBuilder(applicant.getLegalRepresentatives().getFirstNames());
@@ -461,8 +472,13 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
-                            item.appendChild(createButtonEditModal(applicant));
-                            item.appendChild(createButtonViewModal(applicant));
+                            if(statusEditView == true){
+                                item.appendChild(createButtonEditModal(applicant));
+                                item.appendChild(createButtonViewModal(applicant));   
+                            } else {
+                                item.appendChild(new Listcell(""));
+                                item.appendChild(createButtonViewModal(applicant));
+                            }
                             item.setParent(lbxRecords);
                         }                        
                     }      
