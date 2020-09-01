@@ -19,15 +19,15 @@
                                         <div>
                                             <vlayout>
                                                 <hlayout>
-                                                <div align="left" width="400px">
-                                                    <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
-                                                </div>                                                
-                                                <div align="right" width="485px">
-                                                    <hlayout>
-                                                        <label value="${c:l('cms.common.field.required.full')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
-                                            </hlayout>                                                
+                                                    <div align="left" width="400px">
+                                                        <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
+                                                    </div>                                                
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblexample" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout>                                                
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>

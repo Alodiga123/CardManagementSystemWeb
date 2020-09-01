@@ -9,8 +9,10 @@ import com.alodiga.cms.web.custom.components.ListcellViewButton;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.DocumentsPersonType;
 import com.cms.commons.models.PersonType;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
 import com.cms.commons.models.PlasticManufacturer;
 import com.cms.commons.models.User;
@@ -20,7 +22,9 @@ import com.cms.commons.util.EjbConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -61,10 +65,23 @@ public class ListPlasticManufacturerController extends GenericAbstractListContro
     
    public void getData() {
     plasticManufacturerList = new ArrayList<PlasticManufacturer>();
+    List<PhonePerson> phonePersonList = null; 
         try {
             request.setFirst(0);
             request.setLimit(null);
             plasticManufacturerList = personEJB.getPlasticManufacturer(request);
+            for (PlasticManufacturer pm : plasticManufacturerList ){
+                if (pm.getPersonId().getPhonePerson() == null) {
+                    EJBRequest request = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PERSON_KEY, pm.getPersonId().getId());
+                    request.setParams(params);
+                    phonePersonList = personEJB.getPhoneByPerson(request);
+                        for (PhonePerson phone : phonePersonList ){
+                            pm.getPersonId().setPhonePerson(phone);
+                        }
+                }
+            }
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {

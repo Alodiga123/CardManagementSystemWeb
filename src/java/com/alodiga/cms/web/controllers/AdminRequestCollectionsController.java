@@ -221,7 +221,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         btnUpload.setVisible(false);
         btnSave.setVisible(false);        
     }
-
+   
     public void onClick$btnBack() {
         winAdminRequestCollections.detach();
     }

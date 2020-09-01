@@ -35,16 +35,16 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
-                                                </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <hlayout>
+                                                    <div align="left" width="400px">
+                                                        <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
+                                                    </div>                                                
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -61,11 +61,9 @@
                                                             <combobox id="cmbPermissionGroup" width="250px" mold="rounded" readonly="true"/> 
                                                             <hlayout>
                                                                 <textbox id="txtAction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtEntity" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row> 
                                                         <row>   
@@ -75,7 +73,6 @@
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtNamePermission" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
                                                             <radiogroup id="PermissionEnabled" onCheck="value = self.selectedItem.label"/>

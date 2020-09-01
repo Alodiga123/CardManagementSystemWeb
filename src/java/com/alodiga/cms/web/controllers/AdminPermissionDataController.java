@@ -127,13 +127,19 @@ public class AdminPermissionDataController extends GenericAbstractAdminControlle
     }
             
         public Boolean validateEmpty() {
-        if (txtDescription.getText().isEmpty()) {
+        if (cmbPermission.getSelectedItem() == null) {
+            cmbPermission.setFocus(true);
+            this.showMessage("cms.error.documentType.notSelected", true, null);
+        } else if (cmbLanguage.getSelectedItem() == null) {
+            cmbLanguage.setFocus(true);
+            this.showMessage("sp.error.language.notSelected", true, null);
+        }  else if (txtDescription.getText().isEmpty()) {
             txtDescription.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);
         } else if (txtAlias.getText().isEmpty()) {
             txtAlias.setFocus(true);
             this.showMessage("sp.error.field.cannotNull", true, null);    
-        } else {
+        }  else {
             return true;
         }
         return false;

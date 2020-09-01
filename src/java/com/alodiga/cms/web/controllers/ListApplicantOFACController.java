@@ -12,6 +12,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.alodiga.ws.cumpliments.services.OFACMethodWSProxy;
 import com.alodiga.ws.cumpliments.services.WsExcludeListResponse;
 import com.alodiga.ws.cumpliments.services.WsLoginResponse;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CardRequestNaturalPerson;
@@ -65,7 +66,10 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
     private Button btnReviewOFAC;
     private AdminRequestController adminRequest = null;
     private Tab tabApplicantOFAC;
-
+    Boolean statusEditView= false;
+    Request request = null;
+    private Button btnReviewOFAC;
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -96,6 +100,22 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
+            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+            AdminRequestController adminRequest = new AdminRequestController();
+                if(adminRequest.getRequest().getStatusRequestId() != null){
+                    request = adminRequest.getRequest();
+                }
+            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+              {
+                  statusEditView = true;
+              } else{
+                  statusEditView= false;
+                  btnReviewOFAC.setVisible(false);
+              }    
             getData();
             loadDataList(applicantList);
         } catch (Exception ex) {
