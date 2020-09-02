@@ -44,7 +44,7 @@
                                                     </div>                                                
                                                     <div align="right" width="485px">
                                                         <hlayout>
-                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblexample" />
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
                                                         </hlayout>
                                                     </div>
                                                 </hlayout> 
