@@ -2,6 +2,7 @@ package com.alodiga.cms.web.controllers;
 
 import com.alodiga.cms.commons.ejb.UtilsEJB;
 import com.alodiga.cms.commons.ejb.PersonEJB;
+import com.alodiga.cms.commons.ejb.RequestEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
@@ -21,6 +22,7 @@ import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonClassification;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.PhoneType;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -63,6 +65,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
     private Person person;
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
+    private RequestEJB requestEJB = null;
     private LegalRepresentatives legalRepresentativesParam;
     private Button btnSave;
     private Integer eventType;
@@ -91,6 +94,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -260,12 +264,16 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             } else {
                 edad = 0;
             }
-            //------------------------------------------
 
             //Obtener la clasificacion del Representante Legal
             EJBRequest request1 = new EJBRequest();
             request1.setParam(Constants.CLASSIFICATION_PERSON_LEGAL_REPRESENTATIVES);
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
+            
+            //Obtener el estatus ACTIVO del solicitante
+            EJBRequest request = new EJBRequest();
+            request.setParam(Constants.STATUS_APPLICANT_ACTIVE);
+            StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);
 
             //Guardar la persona
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
@@ -299,6 +307,7 @@ public class AdminLegalRepresentativesCardProgramManagerController extends Gener
             legalRepresentatives.setDateBirth(txtBirthDay.getValue());
             legalRepresentatives.setDocumentsPersonTypeId((DocumentsPersonType) cmbDocumentsPersonType.getSelectedItem().getValue());
             legalRepresentatives.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
+            legalRepresentatives.setStatusApplicantId(statusApplicant);
             legalRepresentatives = utilsEJB.saveLegalRepresentatives(legalRepresentatives);
             legalRepresentativesParam = legalRepresentatives;
 
