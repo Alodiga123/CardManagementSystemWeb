@@ -420,6 +420,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         if (rIsPrincipalNumberLYes.isChecked() && rIsPrincipalNumberYes.isChecked()) {
             this.showMessage("cms.error.principalPhoneError", true, null);
             return false;
+        } else if(rIsPrincipalNumerLNo.isChecked() && rIsPrincipalNumerNo.isChecked()){
+            this.showMessage("cms.error.noPrincipalPhoneError", true, null);
+            return false;
         }
         return true;
     }
