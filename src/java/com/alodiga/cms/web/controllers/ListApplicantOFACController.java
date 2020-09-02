@@ -565,7 +565,15 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                 personList_ = personEJB.searchPersonByApplicantNaturalPerson(request1);
             } 
          } else {
-                return applicantList;
+                if (filter != null && !filter.equals("")) {;
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getLegalPerson().getId());
+                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                params.put(Constants.PARAM_PERSON_NAME, filter);
+                request1.setParams(params);
+                personList_ = personEJB.searchPersonByLegalPerson(request1);
+                } 
             }
         } catch (Exception ex) {
             showError(ex);
