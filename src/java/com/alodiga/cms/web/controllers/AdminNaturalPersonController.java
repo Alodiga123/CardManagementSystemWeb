@@ -571,7 +571,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             } else {
                 btnSave.setVisible(true);
             }
-            tabAddress.setDisabled(false);
             tabFamilyReferencesMain.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
 
@@ -601,6 +600,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     phonePerson2.setIndMainPhone(indPrincipalPhone);
                     phonePerson2 = personEJB.savePhonePerson(phonePerson2);
                     this.showMessage("sp.common.save.success", false, null);
+                    tabFamilyReferencesMain.setDisabled(false);
+                    tabAdditionalCards.setDisabled(false);
                 }
             } catch (RegisterNotFoundException ex) {
                 showError(ex);

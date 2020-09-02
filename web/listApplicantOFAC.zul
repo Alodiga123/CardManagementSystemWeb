@@ -38,7 +38,7 @@
                                             
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="885px" mold="paging" pageSize="10" height="300px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="885px" mold="paging" pageSize="5" height="300px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.nameLastName')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.identificationNumberSmall')}" width="130px" sort="auto"/>

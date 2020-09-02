@@ -50,54 +50,46 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
     private PersonEJB personEJB = null;
     private UtilsEJB utilsEJB = null;
     private Address addressParam;
-    private AdminCardComplementariesController adminNaturalPerson = null;
-    private List<PersonHasAddress> personHasAddressList;
+    private ApplicantNaturalPerson applicantNaturalPerson = null;
+    private List<PersonHasAddress> personHasAddressList = null;
     private Button btnSave;
     private Integer eventType;
+    private Integer indHaveAddress = 0;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
+        personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
         try {
-            switch (eventType) {
-            case WebConstants.EVENT_EDIT:
-                adminNaturalPerson = new AdminCardComplementariesController();
+            if (eventType != WebConstants.EVENT_ADD) {
                 if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
-                    ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
+                    applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
                     if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
+                        indHaveAddress = 1;
                         addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
                     } else {
                         EJBRequest request1 = new EJBRequest();
                         Map params = new HashMap();
-                        params.put(Constants.PERSON_KEY, adminNaturalPerson.getPersonCardComplementary().getId());
+                        params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
                         request1.setParams(params);
                         personHasAddressList = personEJB.getPersonHasAddressesByPerson(request1);                                               
                         for (PersonHasAddress pha : personHasAddressList) {
-                            adminNaturalPerson.getPersonCardComplementary().getNaturalPerson().getPersonId().setPersonHasAddress(pha);
+                            applicantNaturalPerson.getPersonId().setPersonHasAddress(pha);
                         }
-                        addressParam = adminNaturalPerson.getPersonCardComplementary().getPersonHasAddress().getAddressId();
-                    }
-                }
-                break;
-            case WebConstants.EVENT_VIEW:
-                if (((ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object")) != null) {
-                    ApplicantNaturalPerson applicantNaturalPerson = (ApplicantNaturalPerson) Sessions.getCurrent().getAttribute("object");
-                    if (applicantNaturalPerson.getPersonId().getPersonHasAddress() != null) {
                         addressParam = applicantNaturalPerson.getPersonId().getPersonHasAddress().getAddressId();
-                    } else {
-                        addressParam = null;
+                        indHaveAddress = 1;
                     }
                 }
-                break;
-            case WebConstants.EVENT_ADD:
+            } else {
                 addressParam = null;
-                break;
             }
         } catch (Exception ex) {
             showError(ex);
         } finally {
-            addressParam = null;
+            if (indHaveAddress == 0) {
+                addressParam = null;
+            }
         }        
         initialize();
         
@@ -108,7 +100,6 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
         super.initialize();
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -143,13 +134,11 @@ public class AdminCardComplementariesAddressController extends GenericAbstractAd
 
     private void loadFields(Address address) {
         try {
-
             txtUbanization.setText(address.getUrbanization());
             txtNameStreet.setText(address.getNameStreet());
             txtNameEdification.setText(address.getNameEdification());
             txtTower.setText(address.getTower());
             txtFloor.setText(address.getFloor().toString());
-
             btnSave.setVisible(true);
         } catch (Exception ex) {
             showError(ex);
