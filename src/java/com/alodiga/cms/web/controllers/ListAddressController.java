@@ -88,27 +88,31 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                if(adminRequest.getRequest().getStatusRequestId() != null){
-                    request = adminRequest.getRequest();
-                }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-              {
-                  statusEditView = true;
-              } else{
-                  statusEditView= false;
-                  btnAdd.setVisible(false);
-              }
+            checkStatusRequest();
             getData();
             loadDataList(personHasAddress);
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public void checkStatusRequest() {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+        AdminRequestController adminRequest = new AdminRequestController();
+        if(adminRequest.getRequest().getStatusRequestId() != null){
+            request = adminRequest.getRequest();
+        }
+        if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+        {
+            statusEditView = true;
+        } else{
+            statusEditView= false;
+            btnAdd.setVisible(false);
+        } 
     }
     
     public void onSelect$tabAddress() {

@@ -413,8 +413,14 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                         } else {
                             item.appendChild(new Listcell(""));
                         }
-                        item.appendChild(createButtonEditModal(applicant));
-                        item.appendChild(createButtonViewModal(applicant));
+                        if(statusEditView == true){
+                            item.appendChild(createButtonEditModal(applicant));
+                            item.appendChild(createButtonViewModal(applicant));   
+                        } else {
+                            item.appendChild(new Listcell(""));
+                            item.appendChild(createButtonViewModal(applicant));
+                        }
+                        
                         item.setParent(lbxRecords);
                     } else {
                         if (applicant.getPersonClassificationId().getId() == 4) {
@@ -451,8 +457,13 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
-                            item.appendChild(createButtonEditModal(applicant));
-                            item.appendChild(createButtonViewModal(applicant));
+                            if(statusEditView == true){
+                                item.appendChild(createButtonEditModal(applicant));
+                                item.appendChild(createButtonViewModal(applicant));   
+                            } else {
+                                item.appendChild(new Listcell(""));
+                                item.appendChild(createButtonViewModal(applicant));
+                            }
                             item.setParent(lbxRecords);
                         } else if (applicant.getPersonClassificationId().getId() == 5) {
                             StringBuilder builder = new StringBuilder(applicant.getLegalRepresentatives().getFirstNames());
@@ -471,8 +482,13 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
-                            item.appendChild(createButtonEditModal(applicant));
-                            item.appendChild(createButtonViewModal(applicant));
+                            if(statusEditView == true){
+                                item.appendChild(createButtonEditModal(applicant));
+                                item.appendChild(createButtonViewModal(applicant));   
+                            } else {
+                                item.appendChild(new Listcell(""));
+                                item.appendChild(createButtonViewModal(applicant));
+                            }
                             item.setParent(lbxRecords);
                         }                        
                     }      
@@ -542,40 +558,39 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
         }
         return listcellViewModal;
     }
-
+    
+    
+    
     public List<Person> getFilterList(String filter) {
-//        List<ApplicantNaturalPerson> applicantNaturalPersonList_ = new ArrayList<ApplicantNaturalPerson>();
-//        ApplicantNaturalPerson applicantNaturalPerson = null;
-//
-//        try {
-//            if (filter != null && !filter.equals("")) {
-//            //Solicitante de Tarjeta
-//            AdminNaturalPersonController adminNaturalPerson = new AdminNaturalPersonController();
-//            if (adminNaturalPerson.getApplicantNaturalPerson() != null) {
-//                applicantNaturalPerson = adminNaturalPerson.getApplicantNaturalPerson();
-//            }
-//            EJBRequest request1 = new EJBRequest();
-//            Map params = new HashMap();
-//            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, applicantNaturalPerson.getId());
-//            params.put(Constants.PARAM_APPLICANT_NATURAL_PERSON_NAME_KEY, filter);
-//
-//            request1.setParams(params);
-//            //applicantList = personEJB.getCardComplementaryByApplicant(request1); 
-//            applicantNaturalPersonList_ = personEJB.searchCardComplementaryByApplicantOFAC(request1);
-//                  
-//            } else {
-//                return applicantNaturalList;
-//            }
-//        } catch (Exception ex) {
-//            showError(ex);
-//        }
-//        return applicantNaturalPersonList_; 
-          return applicantList;
+        List<Person> personList_ = new ArrayList<Person>();
+        try {
+            if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
+            if (filter != null && !filter.equals("")) {;
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getId());
+                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                params.put(Constants.PARAM_PERSON_NAME, filter);
+                request1.setParams(params);
+                personList_ = personEJB.searchPersonByApplicantNaturalPerson(request1);
+            } 
+         } else {
+                if (filter != null && !filter.equals("")) {;
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getLegalPerson().getId());
+                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                params.put(Constants.PARAM_PERSON_NAME, filter);
+                request1.setParams(params);
+                personList_ = personEJB.searchPersonByLegalPerson(request1);
+                } 
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return personList_;
     }
     
-    
-      
-
      public void onClick$btnSearch() throws InterruptedException {
         try {
             loadDataList(getFilterList(txtName.getText()));

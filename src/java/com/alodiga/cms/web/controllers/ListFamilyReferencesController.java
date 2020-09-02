@@ -81,29 +81,33 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
             optionMenu = (Long) session.getAttribute(WebConstants.OPTION_MENU);
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
-            String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
-            String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
-            AdminRequestController adminRequest = new AdminRequestController();
-                  if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                   }
-            if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
-              && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
-                  {
-                      statusEditView = true;
-                  } else{
-                      statusEditView= false;
-                      btnAdd.setVisible(false);
-                  }      
+            checkStatusRequest();     
             getData();
             loadDataList(familyReferences);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
+    
+    public void checkStatusRequest() {
+        String statusRequestCodeRejected= StatusRequestE.SOLREC.getStatusRequestCode();
+        String statusRequestCodeApproved= StatusRequestE.SOLAPR.getStatusRequestCode();
+        String statusRequestCodeAssignedClient = StatusRequestE.TAASCL.getStatusRequestCode();
+        AdminRequestController adminRequest = new AdminRequestController();
+        if(adminRequest.getRequest().getStatusRequestId() != null){
+            request = adminRequest.getRequest();
+        }
+        if(!(adminRequest.getRequest().getStatusRequestId().getId().equals(statusRequestCodeApproved)) 
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeRejected))
+          && !(request.getStatusRequestId().getCode().equals(statusRequestCodeAssignedClient)))
+        {
+         statusEditView = true;
+        } else{
+         statusEditView= false;
+         btnAdd.setVisible(false);
+        } 
+    }
+    
     public void onClick$btnAdd() throws InterruptedException {
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
@@ -135,11 +139,6 @@ public class ListFamilyReferencesController extends GenericAbstractListControlle
                     item.appendChild(new Listcell(familyReferences.getLocalPhone()));
                     item.appendChild(new Listcell(familyReferences.getCellPhone()));
                     item.appendChild(new Listcell(familyReferences.getCity()));
-                    
-                    AdminRequestController adminRequest = new AdminRequestController();
-                    if(adminRequest.getRequest().getStatusRequestId() != null){
-                        request = adminRequest.getRequest();
-                    }
                     if(statusEditView == true){
                         item.appendChild(createButtonEditModal(familyReferences));
                         item.appendChild(createButtonViewModal(familyReferences));

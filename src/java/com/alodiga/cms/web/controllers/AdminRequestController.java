@@ -11,6 +11,8 @@ import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
+import com.cms.commons.models.Person;
+import com.cms.commons.models.PersonHasAddress;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
@@ -24,6 +26,7 @@ import com.cms.commons.util.EjbConstants;
 import com.cms.commons.util.QueryConstants;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,10 +73,12 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public Tabbox tb;
     private ListRequestController listRequest = null;
     private boolean indNaturalPerson;
-
+    private List<PersonHasAddress> personHasAddress = null;
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
         listRequest = new ListRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
@@ -95,9 +100,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-                        tabApplicantOFAC.setDisabled(false);
-                        tabRequestbyCollection.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
+                        activeTabOFAC();
+                        tabRequestbyCollection.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
@@ -136,7 +141,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabAddress.setDisabled(false);
                     tabFamilyReferencesMain.setDisabled(false);
                     tabAdditionalCards.setDisabled(false);
-                    tabApplicantOFAC.setDisabled(false);
+                    activeTabOFAC();
                     tabRequestbyCollection.setDisabled(false);
                     tabApplicationReview.setDisabled(false);
                     blockFields();
@@ -179,7 +184,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
-            personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
@@ -194,7 +198,27 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public Integer getEventType() {
         return this.eventType;
     }
-
+    
+    public void activeTabOFAC(){
+        Person person = null;
+        personHasAddress = new ArrayList<PersonHasAddress>();
+        person = requestParam.getPersonId();
+        try{
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, person.getId());
+            request1.setParams(params);
+            personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
+            } catch (Exception ex) {
+            showError(ex);
+            }
+            if (personHasAddress.size() > 0){
+                 tabApplicantOFAC.setDisabled(false);
+            } else{
+                 tabApplicantOFAC.setDisabled(true);   
+            }
+    }
+    
     public void onChange$cmbCountry() {
         this.clearMessage();
         cmbPersonType.setVisible(true);
