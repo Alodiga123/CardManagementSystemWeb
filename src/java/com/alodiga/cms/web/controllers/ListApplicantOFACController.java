@@ -565,25 +565,29 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
         List<Person> personList_ = new ArrayList<Person>();
         try {
             if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
-            if (filter != null && !filter.equals("")) {;
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getId());
-                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
-                params.put(Constants.PARAM_PERSON_NAME, filter);
-                request1.setParams(params);
-                personList_ = personEJB.searchPersonByApplicantNaturalPerson(request1);
-            } 
-         } else {
-                if (filter != null && !filter.equals("")) {;
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getLegalPerson().getId());
-                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
-                params.put(Constants.PARAM_PERSON_NAME, filter);
-                request1.setParams(params);
-                personList_ = personEJB.searchPersonByLegalPerson(request1);
+                if (filter != null && !filter.equals("")) {
+                    EJBRequest request1 = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getId());
+                    params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                    params.put(Constants.PARAM_PERSON_NAME, filter);
+                    request1.setParams(params);
+                    personList_ = personEJB.searchPersonByApplicantNaturalPerson(request1);
+                } else {
+                    return applicantList;
                 } 
+            } else {
+                if (filter != null && !filter.equals("")) {;
+                    EJBRequest request1 = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getLegalPerson().getId());
+                    params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                    params.put(Constants.PARAM_PERSON_NAME, filter);
+                    request1.setParams(params);
+                    personList_ = personEJB.searchPersonByLegalPerson(request1);
+                } else {
+                    return applicantList;
+                }    
             }
         } catch (Exception ex) {
             showError(ex);
