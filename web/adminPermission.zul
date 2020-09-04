@@ -80,7 +80,7 @@
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rEnabledYes" label="${c:l('cms.commom.Yes')}" radiogroup="PermissionEnabled" />
-                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="PermissionEnabled" />
+                                                                            <radio id="rEnabledNo" label="${c:l('cms.commom.No')} " radiogroup="PermissionEnabled" checked="true"/>
                                                                         </row>
                                                                     </rows>
                                                                  </grid>
