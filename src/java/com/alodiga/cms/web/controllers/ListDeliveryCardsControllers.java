@@ -138,8 +138,6 @@ public class ListDeliveryCardsControllers extends GenericAbstractListController<
             getDataCard();
             loadDataList(card);
             ListCardInventoryControllers listCardInventory = new ListCardInventoryControllers();
-//            listCardInventory.doAfterCompose(self);
-//            listCardInventory.loadDataList(listCardInventory.getDataDeliveryRequetsHasCard());
         } catch (Exception ex) {
             showError(ex);
         }

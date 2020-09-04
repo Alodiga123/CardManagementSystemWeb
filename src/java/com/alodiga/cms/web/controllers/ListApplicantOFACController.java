@@ -164,6 +164,16 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                 request1.setParams(params);
                 applicantNaturalList = personEJB.getCardComplementaryByApplicant(request1);
                 for (ApplicantNaturalPerson applicantNatural : applicantNaturalList) {
+                    if (applicantNatural.getPersonId().getApplicantNaturalPerson() == null) {
+                        request1 = new EJBRequest();
+                        params = new HashMap();
+                        params.put(Constants.PERSON_KEY, applicantNatural.getPersonId().getId());
+                        request1.setParams(params);
+                        List<ApplicantNaturalPerson> applicantNaturalList = personEJB.getApplicantByPerson(request1);
+                        for (ApplicantNaturalPerson an : applicantNaturalList) {
+                            applicantNatural.getPersonId().setApplicantNaturalPerson(an);
+                        }
+                    }
                     applicantList.add(applicantNatural.getPersonId());
                 }
             } else {
@@ -399,7 +409,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                         }
                         if (applicant.getApplicantNaturalPerson().getPersonId().getReviewOFAC() != null) {
-                            item.appendChild(new Listcell(applicant.getApplicantNaturalPerson().getPersonId().getReviewOFAC().getResultReview()));
+                            item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
                         } else {
                             item.appendChild(new Listcell(""));
                         }
@@ -423,7 +433,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                                 item.appendChild(new Listcell("SIN REGISTRAR"));
                             } 
                             if (applicant.getLegalPerson().getPersonId().getReviewOFAC() != null) {
-                                item.appendChild(new Listcell(applicant.getLegalPerson().getPersonId().getReviewOFAC().getResultReview()));
+                                item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
@@ -443,7 +453,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                                 item.appendChild(new Listcell("SIN REGISTRAR"));
                             }
                             if (applicant.getCardRequestNaturalPerson().getPersonId().getReviewOFAC() != null) {
-                                item.appendChild(new Listcell(applicant.getCardRequestNaturalPerson().getPersonId().getReviewOFAC().getResultReview()));
+                                item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
@@ -468,7 +478,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                                 item.appendChild(new Listcell("SIN REGISTRAR"));
                             }
                             if (applicant.getLegalRepresentatives().getPersonId().getReviewOFAC() != null) {
-                                item.appendChild(new Listcell(applicant.getLegalRepresentatives().getPersonId().getReviewOFAC().getResultReview()));
+                                item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
@@ -555,25 +565,29 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
         List<Person> personList_ = new ArrayList<Person>();
         try {
             if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
-            if (filter != null && !filter.equals("")) {;
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getId());
-                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
-                params.put(Constants.PARAM_PERSON_NAME, filter);
-                request1.setParams(params);
-                personList_ = personEJB.searchPersonByApplicantNaturalPerson(request1);
-            } 
-         } else {
-                if (filter != null && !filter.equals("")) {;
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getLegalPerson().getId());
-                params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
-                params.put(Constants.PARAM_PERSON_NAME, filter);
-                request1.setParams(params);
-                personList_ = personEJB.searchPersonByLegalPerson(request1);
+                if (filter != null && !filter.equals("")) {
+                    EJBRequest request1 = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getId());
+                    params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                    params.put(Constants.PARAM_PERSON_NAME, filter);
+                    request1.setParams(params);
+                    personList_ = personEJB.searchPersonByApplicantNaturalPerson(request1);
+                } else {
+                    return applicantList;
                 } 
+            } else {
+                if (filter != null && !filter.equals("")) {;
+                    EJBRequest request1 = new EJBRequest();
+                    Map params = new HashMap();
+                    params.put(Constants.PERSON_KEY , adminRequest.getRequest().getPersonId().getLegalPerson().getId());
+                    params.put(Constants.REQUESTS_KEY, adminRequest.getRequest().getId());
+                    params.put(Constants.PARAM_PERSON_NAME, filter);
+                    request1.setParams(params);
+                    personList_ = personEJB.searchPersonByLegalPerson(request1);
+                } else {
+                    return applicantList;
+                }    
             }
         } catch (Exception ex) {
             showError(ex);

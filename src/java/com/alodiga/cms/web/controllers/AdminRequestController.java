@@ -116,14 +116,14 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-                        tabApplicantOFAC.setDisabled(false);
-                        tabRequestbyCollection.setDisabled(false);
-                        tabApplicationReview.setDisabled(false);
+                        tabApplicantOFAC.setDisabled(true);
+                        tabRequestbyCollection.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
                     }
                 } else {
                     if (requestParam.getIndPersonNaturalRequest() == true) {
                         tabMain.setDisabled(false);
-                        tabAddress.setDisabled(true);
+                        tabAddress.setDisabled(false);
                         tabFamilyReferencesMain.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicantOFAC.setDisabled(true);
@@ -132,7 +132,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     } else {
                         //OJO Validar que la solicitud tenga al menos una tarjeta adicional 
                         tabMain.setDisabled(false);
-                        tabAddress.setDisabled(true);
+                        tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicantOFAC.setDisabled(true);
@@ -372,6 +372,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
             loadFields(requestParam);
             
             tabMain.setDisabled(false);
+            tabAddress.setDisabled(false);
             requestCard = request;
         } catch (Exception ex) {
             showError(ex);

@@ -136,7 +136,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             if (rModificationCardHolderYes.isChecked()) {
                 indModificationCardHolder = true;
             } else {
-                indModificationCardHolder = true;
+                indModificationCardHolder = false;
             }
             
             //Guarda las tarifas del programa en la BD

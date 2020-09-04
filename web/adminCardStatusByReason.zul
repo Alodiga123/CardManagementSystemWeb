@@ -45,6 +45,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.cardStatusByReason.updateReason')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.chekBox.cardStatusByReason')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
