@@ -17,7 +17,16 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <hlayout>
+                                                    <div align="left" width="400px">
+                                                        <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
+                                                    </div>                                                
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -34,14 +43,12 @@
                                                         <row> 
                                                             <hlayout>
                                                                 <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             
-                                                                <textbox id="txtCodeCountry" width="150px" maxlength="120"/>
+                                                                <label id="txtCodeCountry" value=" " width="150px" maxlength="120"/>
                                                                 
                                                             <hlayout>
                                                                 <textbox id="txtAreaCode" width="150px" maxlength="120" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
-                                                             <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>  
                                                         <row>
@@ -53,15 +60,12 @@
                                                         <row>
                                                             <hlayout>
                                                                 <textbox id="txtPhone" width="260px" maxlength="80" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtPhoneExtension" width="260px" maxlength="80" constraint="/[0-9]+/: ${c:l('cms.common.number')}"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
                                                                 <combobox id="cmbPhoneType" width="265px" mold="rounded" readonly="true"/>
-                                                             <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row> 
                                                         <row>
@@ -74,7 +78,7 @@
                                                                     <rows>
                                                                         <row>
                                                                             <radio id="rIsPrincipalNumberYes" label="${c:l('cms.commom.Yes')}" radiogroup="isPrincipalNumber" />
-                                                                            <radio id="rIsPrincipalNumerNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumber" />
+                                                                            <radio id="rIsPrincipalNumerNo" label="${c:l('cms.commom.No')} " radiogroup="isPrincipalNumber" checked="true" />
                                                                         </row>
                                                                     </rows>
                                                                 </grid>

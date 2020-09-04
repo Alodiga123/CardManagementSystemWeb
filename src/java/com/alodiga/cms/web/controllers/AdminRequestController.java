@@ -221,28 +221,22 @@ public class AdminRequestController extends GenericAbstractAdminController {
             }
             if (personHasAddress.size() > 0){
                  tabApplicantOFAC.setDisabled(false);
-            } else{
-                 tabApplicantOFAC.setDisabled(true);   
             }
     }
     
     public void activeTabRequestsCollections(){
-        String statusApplicantCodeLineOK= StatusApplicantE.LINEOK.getStatusApplicantCode();
-        
-        if (requestParam.getStatusRequestId().getCode().equals(statusApplicantCodeLineOK)){
+        String statusRequestCodeLineOK= StatusRequestE.LINEOK.getStatusRequestCode();
+        // Hacer validacion de que si esta un status arriba de lineOk igual desbloquee el tab
+        if (requestParam.getStatusRequestId().getCode().equals(statusRequestCodeLineOK)){
                 tabRequestbyCollection.setDisabled(false);
-         } else {
-                tabRequestbyCollection.setDisabled(true); 
          }
     }
     
     public void activateTabApplicationReview(){
          String statusRequestApproved= StatusRequestE.RECAPR.getStatusRequestCode(); 
-         
+         // Hacer validacion de que si esta un status arriba de lineOk igual desbloquee el tab
          if(requestParam.getStatusRequestId().getCode().equals(statusRequestApproved)){
                 tabApplicationReview.setDisabled(false);
-         } else {
-                tabApplicationReview.setDisabled(true); 
          }
   
     }

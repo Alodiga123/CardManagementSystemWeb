@@ -33,14 +33,12 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <div align="right">
-                                                    <hlayout>
-                                                        <label value="${c:l('sp.common.field.required1')}" sclass="lblexample" />
-                                                        <separator/>
-                                                        <label value="*" sclass="lblreq" />
-                                                        <separator/>
-                                                        <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
-                                                    </hlayout>
+                                                <div align="right">                                              
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
+                                                        </hlayout>
+                                                    </div>
                                                 </div>
                                                 <grid fixedLayout="true">
                                                     <columns>
@@ -58,7 +56,6 @@
                                                         <row>
                                                             <hlayout>
                                                                 <combobox id="cmbEmployee" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <label id="lblPosition" width="250px"/> 
                                                             <label id="lblUserExtAlodiga" width="250px"/>
@@ -100,7 +97,6 @@
                                                         <row>                                                            
                                                             <hlayout>
                                                                 <combobox id="cmbAuthorizeEmployee" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <label id="lblAuthorizeExtAlodiga" width="250px"/>
                                                         </row> 
@@ -122,11 +118,9 @@
                                                         <row>                                                            
                                                             <hlayout>
                                                                 <textbox id="txtLogin" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtPassword" type="password" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
-                                                                <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <hbox>
                                                                 <radiogroup id="EnabledActive" onCheck="value = self.selectedItem.label"/>
@@ -139,7 +133,6 @@
                                                                     </rows>
                                                                 </grid>
                                                             </hbox>
-                                                            <label value="*" sclass="lblreq" />
                                                         </row> 
                                                     </rows>
                                                 </grid> 
