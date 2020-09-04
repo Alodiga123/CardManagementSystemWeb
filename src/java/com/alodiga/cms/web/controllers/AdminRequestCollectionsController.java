@@ -15,6 +15,7 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -40,6 +41,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
@@ -74,6 +76,8 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     Request RequestNumber = null;
     private boolean uploaded = false;
     List<RequestHasCollectionsRequest> requestHasCollectionsRequest = new ArrayList<RequestHasCollectionsRequest>();
+    private AdminRequestController adminRequest = null;
+    private Tab tabApplicationReview;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -102,7 +106,6 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         super.initialize();
         utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
-        activateTabApplicationReview();
         loadData();
     }
 
@@ -226,8 +229,21 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     public void onClick$btnBack() {
         winAdminRequestCollections.detach();
     }
+    
+    public StatusRequest getStatusRequest(Request requestCard, int statusRequestId) {
+        StatusRequest statusRequest = requestCard.getStatusRequestId();
+        try {
+            EJBRequest request = new EJBRequest();
+            request.setParam(statusRequestId);
+            statusRequest = requestEJB.loadStatusRequest(request);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return statusRequest;
+    }
 
     private void saveRequest(RequestHasCollectionsRequest _requestHasCollectionsRequest) {
+        Request request = adminRequest.getRequest();
         Request RequestId = null;
         short indApproved = 0;
         try {
@@ -263,6 +279,12 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 requestHasCollectionsRequest.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
+            
+            if (activateTabApplicationReview() == 0) {
+                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK)); 
+                    request = requestEJB.saveRequest(request);
+                    tabApplicationReview.setDisabled(false);
+                }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
