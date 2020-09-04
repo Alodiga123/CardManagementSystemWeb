@@ -82,9 +82,9 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequestController = new AdminRequestController();
-        if (adminRequestController.getRequest().getId() != null) {
-            requestParam = adminRequestController.getRequest();
+        adminRequest = new AdminRequestController();
+        if (adminRequest.getRequest().getId() != null) {
+            requestParam = adminRequest.getRequest();
         }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
@@ -261,10 +261,9 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 indApproved = 0;
             }
 
-            //Se obtiene la persona asociada al solicitante de tarjeta
-            AdminRequestController adminRequestController = new AdminRequestController();
-            if (adminRequestController.getRequest().getId() != null) {
-                RequestId = adminRequestController.getRequest();
+            //Se obtiene la solicitud de tarjeta
+            if (adminRequest.getRequest().getId() != null) {
+                RequestId = adminRequest.getRequest();
             }
 
             //Guarda la revisión del Recaudo asociado a la solicitud
@@ -284,7 +283,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                     request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK)); 
                     request = requestEJB.saveRequest(request);
                     tabApplicationReview.setDisabled(false);
-                }
+            }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
