@@ -8,17 +8,22 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusApplicantE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CardRequestNaturalPerson;
 import com.cms.commons.models.LegalPerson;
+import com.cms.commons.models.LegalPersonHasLegalRepresentatives;
 import com.cms.commons.models.LegalRepresentatives;
 import com.cms.commons.models.Person;
+import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewOFAC;
 import com.cms.commons.models.StatusApplicant;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +57,10 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
     private RequestEJB requestEJB = null;
     private UtilsEJB utilsEJB = null;
     private AdminRequestController adminRequest = null;
+    private List<ApplicantNaturalPerson> applicantCardsComplementariesPersonList = null;
+    private List<LegalPersonHasLegalRepresentatives> legalRepresentativesList = null;
+    private List<CardRequestNaturalPerson> applicantEmployeeList = null;
+    private Tab tabRequestbyCollection;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -139,6 +148,18 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
         }
     }
     
+    public StatusRequest getStatusRequest(Request requestCard, int statusRequestId) {
+        StatusRequest statusRequest = requestCard.getStatusRequestId();
+        try {
+            EJBRequest request = new EJBRequest();
+            request.setParam(statusRequestId);
+            statusRequest = requestEJB.loadStatusRequest(request);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return statusRequest;
+    }
+    
     public ReviewOFAC getReviewOFAC(Person applicant) {
         ReviewOFAC reviewOFAC = null;
         try {
@@ -162,6 +183,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
 
     private void saveApplicantOFAC(Person _person) {
         try {
+            Request request = adminRequest.getRequest();
             Person person = _person;
             //Guarda el cambio del estatus en el solicitante
             if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
@@ -180,12 +202,86 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
                 LegalRepresentatives legalRepresentative = person.getLegalRepresentatives();
                 legalRepresentative.setStatusApplicantId((StatusApplicant) cmbStatusApplicant.getSelectedItem().getValue());
                 legalRepresentative = utilsEJB.saveLegalRepresentatives(legalRepresentative);
+            }
+            if (adminRequest.getRequest().getPersonTypeId().getIndNaturalPerson() == true) {
+                if (activeTabRequestsCollectionsNaturalPerson() == 0) {
+                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK)); 
+                    request = requestEJB.saveRequest(request);
+                    tabRequestbyCollection.setDisabled(false);
+                }
+            } else {
+                if (activeTabRequestsCollectionsLegalPerson() == 0) {
+                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK)); 
+                    request = requestEJB.saveRequest(request);
+                    tabRequestbyCollection.setDisabled(false);
+                }   
             }            
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateApplicantOFAC", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public int activeTabRequestsCollectionsNaturalPerson(){
+        String statusApplicantBlackList = StatusApplicantE.LISNEG.getStatusApplicantCode();
+        ApplicantNaturalPerson applicantNaturalPerson = null;
+        int indBlackList = 0;
+        try {
+            //Revision de solicitante principal
+            if (adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getCode().equals(statusApplicantBlackList)) {
+                indBlackList = 1;
+            }
+            //Revision de solicitantes complementarios
+            applicantCardsComplementariesPersonList = new ArrayList<ApplicantNaturalPerson>();
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_NATURAL_PERSON_KEY, adminRequest.getRequest().getPersonId().getApplicantNaturalPerson().getId());
+            request1.setParams(params);
+            applicantCardsComplementariesPersonList = personEJB.getCardComplementaryByApplicant(request1);
+            for (ApplicantNaturalPerson applicantNatural : applicantCardsComplementariesPersonList) {
+                if (applicantNatural.getStatusApplicantId().getCode().equals(statusApplicantBlackList)) {
+                    indBlackList = 1;
+                } 
+            }
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return indBlackList;
+    }
+    
+    public int activeTabRequestsCollectionsLegalPerson(){
+        String statusApplicantBlackList = StatusApplicantE.LISNEG.getStatusApplicantCode();
+        legalRepresentativesList = new ArrayList<LegalPersonHasLegalRepresentatives>();
+        int indBlackList = 0;
+        try {
+            //Revision del Solicitante Juridico principal
+            if (adminRequest.getRequest().getPersonId().getLegalPerson().getStatusApplicantId().getCode().equals(statusApplicantBlackList)) {
+                indBlackList = 1;
+            }
+            
+            //Se revisa si algun empleado tiene el estatus LISTA NEGRA
+            Long employee = personEJB.cardRequestNaturalPersonBlackList(adminRequest.getRequest().getPersonId().getLegalPerson().getId());
+            if(employee > 0){
+                indBlackList = 1;
+            }                    
+                
+            //Se revisa sin algun representante legal esta en estatus LISTA NEGRA
+            applicantCardsComplementariesPersonList = new ArrayList<ApplicantNaturalPerson>();
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, adminRequest.getRequest().getPersonId().getLegalPerson().getId());
+            request1.setParams(params);
+            legalRepresentativesList = personEJB.getLegalRepresentativesesBylegalPerson(request1);
+            for (LegalPersonHasLegalRepresentatives lr : legalRepresentativesList) {
+                if(lr.getLegalPersonId().getStatusApplicantId().getCode().equals(statusApplicantBlackList)){
+                    indBlackList = 1;
+                }
+            }            
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return indBlackList;
     }
 
     public void onClick$btnSave() {

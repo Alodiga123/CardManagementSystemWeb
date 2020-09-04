@@ -9,7 +9,11 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusApplicantE;
+import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.models.ApplicantNaturalPerson;
+import com.cms.commons.models.CollectionsRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.Person;
 import com.cms.commons.models.PersonHasAddress;
@@ -17,6 +21,7 @@ import com.cms.commons.models.PersonType;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.Request;
+import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.models.RequestType;
 import com.cms.commons.models.Sequences;
 import com.cms.commons.models.StatusRequest;
@@ -74,11 +79,14 @@ public class AdminRequestController extends GenericAbstractAdminController {
     private ListRequestController listRequest = null;
     private boolean indNaturalPerson;
     private List<PersonHasAddress> personHasAddress = null;
+    private List<ApplicantNaturalPerson> applicantNaturalPersonList = null;
+    private List<ApplicantNaturalPerson> applicantCardsComplementariesPersonList = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
+        requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
         listRequest = new ListRequestController();
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
@@ -101,8 +109,8 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
                         activeTabOFAC();
-                        tabRequestbyCollection.setDisabled(false);
-                        tabApplicationReview.setDisabled(false);
+                        activeTabRequestsCollections();
+                        activateTabApplicationReview();
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
@@ -142,8 +150,8 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     tabFamilyReferencesMain.setDisabled(false);
                     tabAdditionalCards.setDisabled(false);
                     activeTabOFAC();
-                    tabRequestbyCollection.setDisabled(false);
-                    tabApplicationReview.setDisabled(false);
+                    activeTabRequestsCollections();
+                    activateTabApplicationReview();
                     blockFields();
                 } else {
                      tabMain.setDisabled(false);
@@ -184,7 +192,6 @@ public class AdminRequestController extends GenericAbstractAdminController {
         try {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             programEJB = (ProgramEJB) EJBServiceLocator.getInstance().get(EjbConstants.PROGRAM_EJB);
-            requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
             loadData();
         } catch (Exception ex) {
             showError(ex);
@@ -217,6 +224,27 @@ public class AdminRequestController extends GenericAbstractAdminController {
             } else{
                  tabApplicantOFAC.setDisabled(true);   
             }
+    }
+    
+    public void activeTabRequestsCollections(){
+        String statusApplicantCodeLineOK= StatusApplicantE.LINEOK.getStatusApplicantCode();
+        
+        if (requestParam.getStatusRequestId().getCode().equals(statusApplicantCodeLineOK)){
+                tabRequestbyCollection.setDisabled(false);
+         } else {
+                tabRequestbyCollection.setDisabled(true); 
+         }
+    }
+    
+    public void activateTabApplicationReview(){
+         String statusRequestApproved= StatusRequestE.RECAPR.getStatusRequestCode(); 
+         
+         if(requestParam.getStatusRequestId().getCode().equals(statusRequestApproved)){
+                tabApplicationReview.setDisabled(false);
+         } else {
+                tabApplicationReview.setDisabled(true); 
+         }
+  
     }
     
     public void onChange$cmbCountry() {

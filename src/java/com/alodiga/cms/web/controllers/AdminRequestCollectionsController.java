@@ -102,6 +102,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
         super.initialize();
         utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
+        activateTabApplicationReview();
         loadData();
     }
 
@@ -268,6 +269,29 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             showError(ex);
         }
     }
+    
+    public int activateTabApplicationReview(){
+    requestHasCollectionsRequestList = new ArrayList<RequestHasCollectionsRequest>();
+    int indApproved = 0;
+     try {
+            Map params = new HashMap();
+            EJBRequest request1 = new EJBRequest();
+            params.put(Constants.REQUESTS_KEY, requestParam.getId());
+            request1.setParams(params);
+            requestHasCollectionsRequestList = requestEJB.getRequestsHasCollectionsRequestByRequest(request1);
+            for (RequestHasCollectionsRequest requestHasCollections : requestHasCollectionsRequestList ){
+                if(requestHasCollections.getIndApproved() == 0){
+                    indApproved = 1;   
+                }
+            }
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {      
+        } catch (GeneralException ex) {
+        }
+    
+    return indApproved;
+    }
 
     public void onClick$btnSave() {
         if (validateEmpty()) {
@@ -334,7 +358,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 item.setLabel(descriptionType);
                 item.setParent(cmbCollectionsRequest);
                 if (eventType != 1) {
-                    if (collectionsRequest.get(i).getId().equals(requestHasCollectionsRequestParam.getCollectionsRequestid().getId())) {
+                    if (collectionsRequest.get(i).getCollectionTypeId().getId().equals(requestHasCollectionsRequestParam.getCollectionsRequestid().getCollectionTypeId().getId())) {
                         cmbCollectionsRequest.setSelectedItem(item);
                     }
                 }
