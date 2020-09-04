@@ -15,6 +15,7 @@ import com.cms.commons.models.Country;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
+import com.cms.commons.models.StatusRequest;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -40,6 +41,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
@@ -74,13 +76,15 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     Request RequestNumber = null;
     private boolean uploaded = false;
     List<RequestHasCollectionsRequest> requestHasCollectionsRequest = new ArrayList<RequestHasCollectionsRequest>();
+    private AdminRequestController adminRequest = null;
+    private Tab tabApplicationReview;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        AdminRequestController adminRequestController = new AdminRequestController();
-        if (adminRequestController.getRequest().getId() != null) {
-            requestParam = adminRequestController.getRequest();
+        adminRequest = new AdminRequestController();
+        if (adminRequest.getRequest().getId() != null) {
+            requestParam = adminRequest.getRequest();
         }
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         switch (eventType) {
@@ -225,8 +229,21 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     public void onClick$btnBack() {
         winAdminRequestCollections.detach();
     }
+    
+    public StatusRequest getStatusRequest(Request requestCard, int statusRequestId) {
+        StatusRequest statusRequest = requestCard.getStatusRequestId();
+        try {
+            EJBRequest request = new EJBRequest();
+            request.setParam(statusRequestId);
+            statusRequest = requestEJB.loadStatusRequest(request);
+        } catch (Exception ex) {
+            showError(ex);
+        }
+        return statusRequest;
+    }
 
     private void saveRequest(RequestHasCollectionsRequest _requestHasCollectionsRequest) {
+        Request request = adminRequest.getRequest();
         Request RequestId = null;
         short indApproved = 0;
         try {
@@ -244,10 +261,9 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 indApproved = 0;
             }
 
-            //Se obtiene la persona asociada al solicitante de tarjeta
-            AdminRequestController adminRequestController = new AdminRequestController();
-            if (adminRequestController.getRequest().getId() != null) {
-                RequestId = adminRequestController.getRequest();
+            //Se obtiene la solicitud de tarjeta
+            if (adminRequest.getRequest().getId() != null) {
+                RequestId = adminRequest.getRequest();
             }
 
             //Guarda la revisión del Recaudo asociado a la solicitud
@@ -262,11 +278,40 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 requestHasCollectionsRequest.setUpdateDate(new Timestamp(new Date().getTime()));
             }
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
+            
+            if (activateTabApplicationReview() == 0) {
+                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK)); 
+                    request = requestEJB.saveRequest(request);
+                    tabApplicationReview.setDisabled(false);
+            }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public int activateTabApplicationReview(){
+    requestHasCollectionsRequestList = new ArrayList<RequestHasCollectionsRequest>();
+    int indApproved = 0;
+     try {
+            Map params = new HashMap();
+            EJBRequest request1 = new EJBRequest();
+            params.put(Constants.REQUESTS_KEY, requestParam.getId());
+            request1.setParams(params);
+            requestHasCollectionsRequestList = requestEJB.getRequestsHasCollectionsRequestByRequest(request1);
+            for (RequestHasCollectionsRequest requestHasCollections : requestHasCollectionsRequestList ){
+                if(requestHasCollections.getIndApproved() == 0){
+                    indApproved = 1;   
+                }
+            }
+        } catch (NullParameterException ex) {
+            showError(ex);
+        } catch (EmptyListException ex) {      
+        } catch (GeneralException ex) {
+        }
+    
+    return indApproved;
     }
 
     public void onClick$btnSave() {
@@ -334,7 +379,7 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
                 item.setLabel(descriptionType);
                 item.setParent(cmbCollectionsRequest);
                 if (eventType != 1) {
-                    if (collectionsRequest.get(i).getId().equals(requestHasCollectionsRequestParam.getCollectionsRequestid().getId())) {
+                    if (collectionsRequest.get(i).getCollectionTypeId().getId().equals(requestHasCollectionsRequestParam.getCollectionsRequestid().getCollectionTypeId().getId())) {
                         cmbCollectionsRequest.setSelectedItem(item);
                     }
                 }
