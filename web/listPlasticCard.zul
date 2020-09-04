@@ -46,9 +46,10 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="8" height="330px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.cardNumber')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.expirationDate')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.cardHolder')}" width="240px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.plasticRequest.status')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.expirationDate')}" width="145px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.cardHolder')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.plasticRequest.status')}" width="210px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.indReceivedCard')}" width="85px"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
@@ -58,6 +59,7 @@
                                         <!--Download button-->
                                         <div align="right">
                                             <button id="btnAssigment" width="150px" label="${c:l('cms.menu.btncardAssigment')}" class="open orange"/>
+                                            <button id="btnReceivedCard" width="150px" label="${c:l('cms.menu.btnReceivedCard')}" class="open orange"/>
                                         </div>
                                     </vlayout>
                                 </div>
