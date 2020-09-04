@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
@@ -73,6 +74,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     private Product product = null;
     private Button btnViewCard;
     private Button btnAssigment;
+    private Button btnReceivedCard;
     public int optionList = 0;
     private Tab tabPlasticCard;
 
@@ -161,9 +163,11 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     private void loadField() {
         if (eventType == WebConstants.EVENT_ADD) {
             if (plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard() != null) {
+                btnReceivedCard.setVisible(true);
                 lblProduct.setValue(plasticCustomizingRequestParam.getPlastiCustomizingRequestHasCard().getCardId().getProductId().getName());
             } else {
                 loadCmbProductByProgram();
+                btnReceivedCard.setVisible(false);
             }            
         } else {
             plasticCustomerCard = getDataPlastic(plasticCustomizingRequestParam);
@@ -174,8 +178,10 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
                 loadDataPlasticList(plasticCustomerCard);
                 btnViewCard.setVisible(false);
                 btnAssigment.setVisible(false);
+                btnReceivedCard.setVisible(true);              
             } else {
                 loadCmbProductByProgram();
+                btnReceivedCard.setVisible(false);
             }
         }
     }
@@ -217,6 +223,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
 
     public void loadDataList(List<Card> list) {
         try {
+            Listcell cell = new Listcell();
             optionList = 1;
             Sessions.getCurrent().setAttribute(WebConstants.OPTION_LIST, optionList);
             lbxRecords.getItems().clear();
@@ -278,6 +285,7 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
     }
 
     public void loadDataPlasticList(List<PlastiCustomizingRequestHasCard> list) {
+        Listcell cell = new Listcell();
         try {
             optionList = 2;
             Sessions.getCurrent().setAttribute(WebConstants.OPTION_LIST, optionList);
@@ -293,6 +301,19 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
                     item.appendChild(new Listcell(simpleDateFormat.format(plasticCard.getCardId().getExpirationDate())));
                     item.appendChild(new Listcell(plasticCard.getCardId().getCardHolder()));
                     item.appendChild(new Listcell(plasticCard.getCardId().getCardStatusId().getDescription()));
+                    cell = new Listcell();
+                    Checkbox chkReceived = new Checkbox();
+                    chkReceived.setParent(cell);
+                    if ((plasticCard.getCardId().getIndReceivedCard() != null) && (eventType != WebConstants.EVENT_ADD)) {
+                        chkReceived.setChecked(true);
+                        item.appendChild(cell);
+                    } else {
+                        item.appendChild(cell);
+                    }
+                    if (eventType == WebConstants.EVENT_ADD) {
+                        item.appendChild(cell);
+                    }
+                    item.appendChild(cell);
                     item.appendChild(createButtonEditModal(plasticCard));
                     item.appendChild(createButtonViewModal(plasticCard));
                     item.setParent(lbxRecords);
@@ -386,6 +407,8 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
                     plastiCustomizingRequestHasCard = requestEJB.savePlastiCustomizingRequestHasCard(plastiCustomizingRequestHasCard);
                 }
                 this.showMessage("cms.common.msj.assignPlasticCard", false, null);
+                btnAssigment.setVisible(false);
+                btnReceivedCard.setVisible(true);
             }
         } catch (GeneralException ex) {
             Logger.getLogger(ListCardAssigmentControllers.class.getName()).log(Level.SEVERE, null, ex);
@@ -409,6 +432,33 @@ public class ListPlasticCardControllers extends GenericAbstractListController<Ca
             showError(ex);
         }
         return card;
+    }
+    
+    public void onClick$btnReceivedCard() throws InterruptedException {
+        plasticCustomerCard = lbxRecords.getItems();
+        int countRecords = plasticCustomerCard.size();
+        try {
+            for (int i = 0; i < countRecords; i++) {
+                List<Listcell> listCells = ((Listitem) lbxRecords.getItems().get(i)).getChildren();
+                for (Listcell l : listCells) {
+                    for (Object cell : ((Listcell) l).getChildren()) {
+                        if (cell instanceof Checkbox) {
+                            Checkbox myCheckbox = (Checkbox) cell;
+                            if (myCheckbox.isChecked()) {
+                                PlastiCustomizingRequestHasCard plastiCustomizingRequestHasCard = new PlastiCustomizingRequestHasCard();
+                                plastiCustomizingRequestHasCard = (PlastiCustomizingRequestHasCard) ((Listitem) lbxRecords.getItems().get(i)).getValue();
+                                Card card = plastiCustomizingRequestHasCard.getCardId();
+                                card.setIndReceivedCard(true);
+                                card = cardEJB.saveCard(card);
+                            }
+                        }
+                    }
+                }                
+            }
+            this.showMessage("cms.receivedCard.success", false, null);
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     private void showEmptyList() {
