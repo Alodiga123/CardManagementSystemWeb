@@ -234,7 +234,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             txtIdentificationNumberOld.setText(applicantNaturalPerson.getIdentificationNumberOld());
             txtFullName.setText(applicantNaturalPerson.getFirstNames());
             txtFullLastName.setText(applicantNaturalPerson.getLastNames());
-            txtMarriedLastName.setText(applicantNaturalPerson.getMarriedLastName());
+            if (txtMarriedLastName != null) {
+                txtMarriedLastName.setText(applicantNaturalPerson.getMarriedLastName());
+            }
             if (applicantNaturalPerson.getPlaceBirth() != null) {
                 txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
             }
@@ -273,11 +275,13 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                          txtPhoneCel.setText(p.getNumberPhone());
                          txtCodeCountryPhone.setText(p.getCountryCode());
                          txtAreaCodePhone.setText(p.getAreaCode());
-                         if (p.getIndMainPhone() == true) {
-                             rIsPrincipalNumberYes.setChecked(true);
-                         } else {
-                             rIsPrincipalNumerNo.setChecked(true);
-                         }
+                         if (p.getIndMainPhone() != null) {
+                            if (p.getIndMainPhone() == true) {
+                                 rIsPrincipalNumberYes.setChecked(true);
+                             } else {
+                                 rIsPrincipalNumerNo.setChecked(true);
+                             }
+                         }                         
                          cellPhone = p;
                     }
                 }
@@ -643,7 +647,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 }
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
+                if (adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId() == Constants.ORIGIN_APPLICATION_CMS_ID) {
+                    loadCmbProfession(eventType);
+                }                
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_VIEW:
@@ -657,7 +663,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 }
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
+                if (adminRequest.getRequest().getPersonTypeId().getOriginApplicationId().getId() == Constants.ORIGIN_APPLICATION_CMS_ID) {
+                    loadCmbProfession(eventType);
+                } 
                 onChange$cmbCountry();
                 break;
             case WebConstants.EVENT_ADD:

@@ -57,6 +57,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
     private int indPersonTypeCustomer = 0;
     Boolean statusEditView= false;
     Request request = null;
+    private Tab tabApplicantOFAC;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -72,6 +73,7 @@ public class ListAddressController extends GenericAbstractListController<PersonH
             public void onEvent(Event evt) {
                 getData();
                 loadDataList(personHasAddress);
+                tabApplicantOFAC.setDisabled(false);
             }
         });
     }
