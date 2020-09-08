@@ -45,7 +45,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             
     private static final long serialVersionUID = -9145887024839938515L;
     private Textbox txtPhone;
-    private Textbox txtCodeCountry;
+    private Label txtCodeCountry;
     private Textbox txtAreaCode;
     private Textbox txtPhoneExtension;
     private PersonEJB personEJB = null;
@@ -102,7 +102,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     private void loadFields(PhonePerson phonePerson) {
         try {
             txtPhone.setText(phonePerson.getNumberPhone());
-            txtCodeCountry.setText(phonePerson.getCountryCode());
+            txtCodeCountry.setValue(phonePerson.getCountryCode());
             txtAreaCode.setText(phonePerson.getAreaCode());
             txtPhoneExtension.setText(phonePerson.getExtensionPhoneNumber()); 
             if (phonePerson.getIndMainPhone() == true) {
@@ -117,7 +117,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     }
 
     public void blockFields() {
-        txtCodeCountry.setReadonly(true);
         txtPhone.setReadonly(true);
         txtAreaCode.setReadonly(true);
         txtPhoneExtension.setReadonly(true);
@@ -134,9 +133,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         if (cmbCountry.getSelectedItem()  == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);     
-        } else if (txtCodeCountry.getText().isEmpty()) {
-            txtCodeCountry.setFocus(true);
-            this.showMessage("cms.error.employee.areaCountry", true, null);
         } else if (txtAreaCode.getText().isEmpty()) {
             txtAreaCode.setFocus(true);
             this.showMessage("cms.error.employee.areaCode", true, null);
@@ -208,7 +204,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
             //Guardar telefono
             phonePerson.setPersonId(employee.getPersonId());
             phonePerson.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
-            phonePerson.setCountryCode(txtCodeCountry.getText());
+            phonePerson.setCountryCode(txtCodeCountry.getValue());
             phonePerson.setAreaCode(txtAreaCode.getText());
             phonePerson.setNumberPhone(txtPhone.getText());
             phonePerson.setExtensionPhoneNumber(txtPhoneExtension.getText());
@@ -250,7 +246,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
                 loadFields(phonePersonParam);
                 loadcmbPhoneType(eventType);
                 loadCmbCountry(eventType);
-                txtCodeCountry.setReadonly(true);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(phonePersonParam);
@@ -263,7 +258,6 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
                 loadcmbPhoneType(eventType);
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
-                txtCodeCountry.setReadonly(true);
                 break;
             default:
                 break;

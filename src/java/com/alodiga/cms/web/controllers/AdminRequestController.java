@@ -118,9 +118,9 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-                        tabApplicantOFAC.setDisabled(false);
-                        tabRequestbyCollection.setDisabled(false);
-                        tabApplicationReview.setDisabled(false);
+                        activeTabOFAC();
+                        tabRequestbyCollection.setDisabled(true);
+                        tabApplicationReview.setDisabled(true);
                     }
                 } else {
                     if (requestParam.getIndPersonNaturalRequest() == true) {
@@ -213,38 +213,44 @@ public class AdminRequestController extends GenericAbstractAdminController {
         personHasAddress = new ArrayList<PersonHasAddress>();
         person = requestParam.getPersonId();
         try{
-            EJBRequest request1 = new EJBRequest();
-            Map params = new HashMap();
-            params.put(Constants.PERSON_KEY, person.getId());
-            request1.setParams(params);
-            personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
-            } catch (Exception ex) {
+            if (requestParam.getIndPersonNaturalRequest() == true) {
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY, person.getId());
+                request1.setParams(params);
+                personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
+
+                if (personHasAddress.size() > 0){
+                     tabApplicantOFAC.setDisabled(false);
+                }
+            } else {
+                EJBRequest request1 = new EJBRequest();
+                Map params = new HashMap();
+                params.put(Constants.PERSON_KEY, requestParam.getPersonId().getLegalPerson().getPersonId().getId());
+                request1.setParams(params);
+                personHasAddress = personEJB.getPersonHasAddressesByPerson(request1); 
+                if (personHasAddress.size() > 0){
+                     tabApplicantOFAC.setDisabled(false);
+                }
+            } 
+        } catch (Exception ex) {
             showError(ex);
-            }
-            if (personHasAddress.size() > 0){
-                 tabApplicantOFAC.setDisabled(false);
-            } else{
-                 tabApplicantOFAC.setDisabled(true);   
             }
     }
     
     public void activeTabRequestsCollections(){
-        String statusApplicantCodeLineOK= StatusApplicantE.LINEOK.getStatusApplicantCode();
-        
-        if (requestParam.getStatusRequestId().getCode().equals(statusApplicantCodeLineOK)){
+        String statusRequestCodeLineOK= StatusRequestE.LINEOK.getStatusRequestCode();
+        // Hacer validacion de que si esta un status arriba de lineOk igual desbloquee el tab
+        if (requestParam.getStatusRequestId().getCode().equals(statusRequestCodeLineOK)){
                 tabRequestbyCollection.setDisabled(false);
-         } else {
-                tabRequestbyCollection.setDisabled(true); 
          }
     }
     
     public void activateTabApplicationReview(){
          String statusRequestApproved= StatusRequestE.RECAPR.getStatusRequestCode(); 
-         
+         // Hacer validacion de que si esta un status arriba de lineOk igual desbloquee el tab
          if(requestParam.getStatusRequestId().getCode().equals(statusRequestApproved)){
                 tabApplicationReview.setDisabled(false);
-         } else {
-                tabApplicationReview.setDisabled(true); 
          }
   
     }
