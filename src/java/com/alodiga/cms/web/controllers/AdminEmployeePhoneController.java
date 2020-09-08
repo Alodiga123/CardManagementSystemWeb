@@ -129,8 +129,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
     public void onClick$btnBack() {
         winAdminPhoneEmployee.detach();
     }
-    //cms.error.employee.areaCode
-    //txtAreaCode
+
     public Boolean validateEmpty() {
         if (cmbCountry.getSelectedItem()  == null) {
             cmbCountry.setFocus(true);
@@ -295,7 +294,7 @@ public class AdminEmployeePhoneController extends GenericAbstractAdminController
         List<Country> countryList;
         try {
             countryList = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countryList, cmbCountry, "name", evenInteger, Long.valueOf(phonePersonParam != null ? phonePersonParam.getPersonId().getCountryId().getId() : 0));
+            loadGenericCombobox(countryList, cmbCountry, "name", evenInteger, Long.valueOf(phonePersonParam != null ? phonePersonParam.getCountryId().getId() : 0));
         } catch (EmptyListException ex) {
             showError(ex);
         } catch (GeneralException ex) {

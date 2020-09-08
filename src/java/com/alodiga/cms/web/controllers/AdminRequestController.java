@@ -109,16 +109,18 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
                         activeTabOFAC();
-                        activeTabRequestsCollections();
-                        activateTabApplicationReview();
+//                        activeTabRequestsCollections();
+//                        activateTabApplicationReview();
+                        tabRequestbyCollection.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
                         tabLegalRepresentatives.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
-                        tabApplicantOFAC.setDisabled(true);
-                        tabRequestbyCollection.setDisabled(true);
-                        tabApplicationReview.setDisabled(true);
+                        tabApplicantOFAC.setDisabled(false);
+                        tabRequestbyCollection.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     }
                 } else {
                     if (requestParam.getIndPersonNaturalRequest() == true) {

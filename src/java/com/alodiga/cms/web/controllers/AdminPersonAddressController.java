@@ -76,7 +76,6 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private Request requestCard;
     private Long optionMenu;
     Map params = null;
-    private Tab tabApplicantOFAC;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -342,9 +341,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
             personHasAddress.setPersonId(person);
             personHasAddress = personEJB.savePersonHasAddress(personHasAddress);
             personHasAddressParam = personHasAddress;
-            
             this.showMessage("sp.common.save.success", false, null);
-            tabApplicantOFAC.setDisabled(false);
             EventQueues.lookup("updateAddress", EventQueues.APPLICATION, true).publish(new Event(""));
             loadFields(personHasAddress);
             
