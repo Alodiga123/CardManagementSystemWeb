@@ -279,11 +279,11 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             }
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
             
-            if (activateTabApplicationReview() == 0) {
-                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK)); 
-                    request = requestEJB.saveRequest(request);
-                    tabApplicationReview.setDisabled(false);
-            }
+//            if (activateTabApplicationReview() == 0) {
+//                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK)); 
+//                    request = requestEJB.saveRequest(request);
+//                    tabApplicationReview.setDisabled(false);
+//            }
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {

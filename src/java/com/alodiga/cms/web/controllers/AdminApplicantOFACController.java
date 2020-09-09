@@ -207,13 +207,11 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
                 if (activeTabRequestsCollectionsNaturalPerson() == 0) {
                     request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK)); 
                     request = requestEJB.saveRequest(request);
-                    tabRequestbyCollection.setDisabled(false);
                 }
             } else {
                 if (activeTabRequestsCollectionsLegalPerson() == 0) {
                     request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_BLACK_LIST_OK)); 
                     request = requestEJB.saveRequest(request);
-                    tabRequestbyCollection.setDisabled(false);
                 }   
             }            
             this.showMessage("sp.common.save.success", false, null);

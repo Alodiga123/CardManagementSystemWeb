@@ -109,8 +109,10 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
                         activeTabOFAC();
-                        activeTabRequestsCollections();
-                        activateTabApplicationReview();
+//                        activeTabRequestsCollections();
+//                        activateTabApplicationReview();
+                        tabRequestbyCollection.setDisabled(false);
+                        tabApplicationReview.setDisabled(false);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
