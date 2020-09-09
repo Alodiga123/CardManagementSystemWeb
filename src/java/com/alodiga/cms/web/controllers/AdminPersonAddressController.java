@@ -8,6 +8,7 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
+import com.cms.commons.enumeraciones.EdificationTypeE;
 import com.cms.commons.models.Address;
 import com.cms.commons.models.AddressType;
 import com.cms.commons.models.City;
@@ -75,6 +76,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private AdminRequestController adminRequest = null;
     private Request requestCard;
     private Long optionMenu;
+    private EdificationType edificationType = null;
     Map params = null;
 
     @Override
@@ -141,7 +143,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     private void loadFieldR(Request requestData) {
         try {
 
-            String pattern = "yyyy-MM-dd";
+            String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             if (requestData.getRequestNumber() != null) {
@@ -205,6 +207,13 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
     }
 
     public Boolean validateEmpty() {
+        String edificiationTypeCode = "";
+        EdificationType edificationType = (EdificationType) cmbEdificationType.getSelectedItem().getValue();
+        String edificationTypeComercial = EdificationTypeE.CECOM.getEdificationTypeCode();
+        String edificationTypeResidencia = EdificationTypeE.RESCIA.getEdificationTypeCode();
+        String edificationTypeEdif = EdificationTypeE.EDFCIO.getEdificationTypeCode();
+        edificiationTypeCode = edificationType.getCode();
+        
         if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
             this.showMessage("cms.error.country.notSelected", true, null);
@@ -229,23 +238,58 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         } else if (txtNameEdification.getText().isEmpty()) {
             txtNameEdification.setFocus(true);
             this.showMessage("cms.error.field.nameEdification", true, null);
-        } else if ((txtTower.getText().isEmpty())){
-            txtTower.setFocus(true);
-            this.showMessage("cms.error.field.tower", true, null);
-        } else if ((txtFloor.getText().isEmpty())) {
-            txtFloor.setFocus(true);
-            this.showMessage("cms.error.floor.noSelected", true, null);
         } else if (cmbZipZone.getSelectedItem() == null){
             this.showMessage("cms.error.zipZone.notSelected", true, null);
         } else if (cmbAddressTypes.getSelectedItem() == null){
             this.showMessage("cms.error.request.addressDeliveryType", true, null);
         } else if ((!rAddressDeliveryYes.isChecked()) && (!rAddressDeliveryNo.isChecked())){
             this.showMessage("cms.error.request.addressDeliveryCheck", true, null);
+        } else if ((edificiationTypeCode.equals(edificationTypeResidencia)) || 
+          (edificiationTypeCode.equals(edificationTypeComercial)) ){
+            if (txtTower.getText().isEmpty()){
+                txtTower.setFocus(true);
+                this.showMessage("cms.error.field.tower", true, null);
+            } else {
+                return true;
+            }
+        } else if((edificiationTypeCode.equals(edificationTypeResidencia)) || (edificiationTypeCode.equals(edificationTypeComercial)) 
+            || (edificiationTypeCode.equals(edificationTypeEdif))){
+            if ((txtFloor.getText().isEmpty())) {
+                txtFloor.setFocus(true);
+                this.showMessage("cms.error.floor.noSelected", true, null);
+            } else {
+                return true;
+            }
         } else {
             return true;
         }
         return false;
     }
+    
+    public void onChange$cmbEdificationType() {
+        String edificationTypeResidencia = EdificationTypeE.RESCIA.getEdificationTypeCode();
+        String edificationTypeComercial = EdificationTypeE.CECOM.getEdificationTypeCode();
+        String edificationTypeEdif = EdificationTypeE.EDFCIO.getEdificationTypeCode();
+        String edificiationTypeCode = "";
+        
+        EdificationType edificationType = (EdificationType) cmbEdificationType.getSelectedItem().getValue();
+        edificiationTypeCode = edificationType.getCode();
+        
+        if((edificiationTypeCode.equals(edificationTypeResidencia)) || (edificiationTypeCode.equals(edificationTypeComercial)) ){
+            txtTower.setDisabled(false);
+        } else{
+            txtTower.setDisabled(true);
+        }
+        
+        if((edificiationTypeCode.equals(edificationTypeResidencia)) || (edificiationTypeCode.equals(edificationTypeComercial)) 
+            || (edificiationTypeCode.equals(edificationTypeEdif))){
+            txtFloor.setDisabled(false);
+        } else{
+            txtFloor.setDisabled(true);
+        }
+        
+    }
+    
 
     private void saveAddress(PersonHasAddress _personHasAddress) {
         Person person = null;
@@ -359,10 +403,12 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
+                    onChange$cmbEdificationType();
                     saveAddress(null);
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveAddress(personHasAddressParam);
+                    onChange$cmbEdificationType();
                     break;
                 default:
                     break;
@@ -392,6 +438,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 onChange$cmbCountry();
                 onChange$cmbState();
                 onChange$cmbCity();
+                onChange$cmbEdificationType();
                 break;
             case WebConstants.EVENT_VIEW:
                 if (requestCard != null) {
@@ -405,6 +452,7 @@ public class AdminPersonAddressController extends GenericAbstractAdminController
                 onChange$cmbCountry();
                 onChange$cmbState();
                 onChange$cmbCity();
+                onChange$cmbEdificationType();
                 blockFields();
                 break;
             case WebConstants.EVENT_ADD:

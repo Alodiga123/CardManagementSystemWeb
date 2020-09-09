@@ -275,7 +275,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
 
     private void loadFields(Request requestData) {
         try {
-            String pattern = "yyyy-MM-dd";
+            String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             
             if (requestData.getRequestNumber() != null) {
@@ -291,6 +291,17 @@ public class AdminRequestController extends GenericAbstractAdminController {
     public void blockFields() {
         btnSave.setVisible(false);
     }
+    
+    public void blockCmbs(){
+        cmbCountry.setDisabled(true);
+        cmbPrograms.setDisabled(true);
+        cmbPersonType.setDisabled(true);
+        cmbProductType.setDisabled(true);
+        cmbRequestType.setDisabled(true);
+        btnSave.setVisible(false);
+    }
+    
+    
     
     public Boolean validateEmpty() {
         if (cmbCountry.getSelectedItem()  == null) {
@@ -412,6 +423,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 loadCmbRequestType(eventType);
                 onChange$cmbCountry();
                 onChange$cmbProductType();
+                blockCmbs();
                 break;
             case WebConstants.EVENT_VIEW:
                 requestCard = requestParam;
