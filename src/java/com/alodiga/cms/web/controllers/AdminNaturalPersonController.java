@@ -49,19 +49,18 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Label lblRequestNumber;
     private Label lblRequestDate;
     private Label lblStatusRequest;
+    private Label txtCodeCountryPhoneL;
+    private Label txtCodeCountryPhone; 
+    private Intbox txtAreaCodePhone;
+    private Intbox txtPhoneCel;
+    private Intbox txtAreaCodePhoneL;
+    private Intbox txtPhoneCelL;          
     private Textbox txtIdentificationNumber;
     private Textbox txtIdentificationNumberOld;
     private Textbox txtFullName;
     private Textbox txtFullLastName;
     private Textbox txtMarriedLastName;
     private Textbox txtBirthPlace;
-    private Textbox txtPhoneNumber;
-    private Textbox txtCodeCountryPhoneL;
-    private Textbox txtAreaCodePhoneL;
-    private Textbox txtPhoneCelL;
-    private Textbox txtCodeCountryPhone;       
-    private Textbox txtAreaCodePhone;
-    private Textbox txtPhoneCel;
     private Intbox txtFamilyResponsibilities;
     private Textbox txtEmail;
     private Combobox cmbCountry;
@@ -208,12 +207,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtBirthDay.setRawValue(null);
         txtFamilyResponsibilities.setRawValue(null);
         txtEmail.setRawValue(null);
-        txtPhoneNumber.setRawValue(null);
     }
 
     private void loadFieldR(Request requestData) {
         try {
-            String pattern = "yyyy-MM-dd";
+            String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             if (requestData.getRequestNumber() != null) {
@@ -262,7 +260,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 for (PhonePerson p : phonePersonList) {
                     if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_ROOM) {
                         txtPhoneCelL.setText(p.getNumberPhone());
-                        txtCodeCountryPhoneL.setText(p.getCountryCode());
+                        txtCodeCountryPhoneL.setValue(p.getCountryCode());
                         txtAreaCodePhoneL.setText(p.getAreaCode());
                         if (p.getIndMainPhone() == true) {
                                 rIsPrincipalNumberLYes.setChecked(true);
@@ -273,7 +271,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     }
                     if (p.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {                         
                          txtPhoneCel.setText(p.getNumberPhone());
-                         txtCodeCountryPhone.setText(p.getCountryCode());
+                         txtCodeCountryPhone.setValue(p.getCountryCode());
                          txtAreaCodePhone.setText(p.getAreaCode());
                          if (p.getIndMainPhone() != null) {
                             if (p.getIndMainPhone() == true) {
@@ -299,7 +297,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
 
     private void loadFieldsRequest(Request requestData) {
         try {
-            String pattern = "yyyy-MM-dd";
+            String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
             if (requestData.getRequestNumber() != null) {
@@ -323,10 +321,8 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         txtBirthDay.setReadonly(true);
         txtFamilyResponsibilities.setReadonly(true);
         txtEmail.setReadonly(true);
-        txtCodeCountryPhoneL.setReadonly(true);
         txtAreaCodePhoneL.setReadonly(true);
         txtPhoneCelL.setReadonly(true);        
-        txtCodeCountryPhone.setReadonly(true);
         txtAreaCodePhone.setReadonly(true);
         txtPhoneCel.setReadonly(true);        
         genderFemale.setDisabled(true);
@@ -377,9 +373,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (cmbCivilState.getSelectedItem() == null) {
             cmbCivilState.setFocus(true);
             this.showMessage("cms.error.civilState.notSelected", true, null);
-        } else if (cmbProfession.getSelectedItem() == null) {
-            cmbProfession.setFocus(true);
-            this.showMessage("cms.error.naturalperson.notSelected", true, null);
         } else if (txtFamilyResponsibilities.getText().isEmpty()) {
             txtFamilyResponsibilities.setFocus(true);
             this.showMessage("cms.error.familyResponsibilities", true, null);
@@ -389,10 +382,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (cmbCountryPhoneL.getSelectedItem()  == null) {
             cmbCountryPhoneL.setFocus(true);
             this.showMessage("cms.error.country.notSelected.PhoneLocal", true, null);     
-        } else if (txtCodeCountryPhoneL.getText().isEmpty()) {
-            txtCodeCountryPhoneL.setFocus(true);
-            this.showMessage("cms.error.employee.areaCountry.PhoneLocal", true, null);
-        } else if (txtAreaCodePhoneL.getText().isEmpty()) {
+        }  else if (txtAreaCodePhoneL.getText().isEmpty()) {
             txtAreaCodePhoneL.setFocus(true);
             this.showMessage("cms.error.employee.areaCode.PhoneLocal", true, null);
         } else if (txtPhoneCelL.getText().isEmpty()) {
@@ -403,9 +393,6 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (cmbCountryPhone.getSelectedItem()  == null) {
             cmbCountryPhone.setFocus(true);
             this.showMessage("cms.error.country.notSelected.CellPhone", true, null);     
-        } else if (txtCodeCountryPhone.getText().isEmpty()) {
-            txtCodeCountryPhone.setFocus(true);
-            this.showMessage("cms.error.employee.areaCountry.CellPhone", true, null);
         } else if (txtAreaCodePhone.getText().isEmpty()) {
             txtAreaCodePhone.setFocus(true);
             this.showMessage("cms.error.employee.areaCode.CellPhone", true, null);
@@ -514,7 +501,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setDateBirth(txtBirthDay.getValue());
             applicantNaturalPerson.setFamilyResponsibilities(txtFamilyResponsibilities.getValue());
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
-            applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
+            if(cmbProfession.getSelectedItem() != null){
+              applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());  
+            }
             if (eventType == WebConstants.EVENT_ADD) {
                 applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
             } else {
@@ -553,7 +542,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     //Telefono Local         
                     phonePerson1.setPersonId(person);
                     phonePerson1.setCountryId((Country) cmbCountryPhoneL.getSelectedItem().getValue());
-                    phonePerson1.setCountryCode(txtCodeCountryPhoneL.getText());
+                    phonePerson1.setCountryCode(txtCodeCountryPhoneL.getValue());
                     phonePerson1.setAreaCode(txtAreaCodePhoneL.getText());
                     phonePerson1.setNumberPhone(txtPhoneCelL.getText());
                     phonePerson1.setPhoneTypeId(phonePersonH);
@@ -563,7 +552,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     //Telefono Celular
                     phonePerson2.setPersonId(person);
                     phonePerson2.setCountryId((Country) cmbCountryPhone.getSelectedItem().getValue());
-                    phonePerson2.setCountryCode(txtCodeCountryPhone.getText());
+                    phonePerson2.setCountryCode(txtCodeCountryPhone.getValue());
                     phonePerson2.setAreaCode(txtAreaCodePhone.getText());
                     phonePerson2.setNumberPhone(txtPhoneCel.getText());
                     phonePerson2.setPhoneTypeId(phonePersonC);
@@ -590,7 +579,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     phonePerson1 = new PhonePerson();
                     phonePerson1.setPersonId(person);
                     phonePerson1.setCountryId((Country) cmbCountryPhoneL.getSelectedItem().getValue());
-                    phonePerson1.setCountryCode(txtCodeCountryPhoneL.getText());
+                    phonePerson1.setCountryCode(txtCodeCountryPhoneL.getValue());
                     phonePerson1.setAreaCode(txtAreaCodePhoneL.getText());
                     phonePerson1.setPhoneTypeId(phonePersonH);
                     phonePerson1.setNumberPhone(txtPhoneCelL.getText());
@@ -600,7 +589,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                     phonePerson2 = new PhonePerson();
                     phonePerson2.setPersonId(person);
                     phonePerson2.setCountryId((Country) cmbCountryPhone.getSelectedItem().getValue());
-                    phonePerson2.setCountryCode(txtCodeCountryPhone.getText());
+                    phonePerson2.setCountryCode(txtCodeCountryPhone.getValue());
                     phonePerson2.setAreaCode(txtAreaCodePhone.getText());
                     phonePerson2.setPhoneTypeId(phonePersonC);
                     phonePerson2.setNumberPhone(txtPhoneCel.getText());

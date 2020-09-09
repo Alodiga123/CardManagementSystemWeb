@@ -18,6 +18,16 @@
                                         <div height="5px" width="890px" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
+                                                <hlayout>
+                                                    <div align="left" width="400px">
+                                                        
+                                                    </div>                                                
+                                                    <div align="right" width="485px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
