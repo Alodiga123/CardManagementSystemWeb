@@ -357,6 +357,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         Calendar today = Calendar.getInstance();
         today.add(Calendar.YEAR, -18);
         Calendar cumpleCalendar = Calendar.getInstance();
+        if (!(txtBirthDay.getText().isEmpty())) {
+            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());  
+        }
+        
          if (cmbDocumentsPersonType.getSelectedItem() == null) {
             cmbDocumentsPersonType.setFocus(true);
             this.showMessage("cms.error.documentType.notSelected", true, null);
@@ -378,11 +382,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         } else if (txtBirthDay.getText().isEmpty()) {
             txtBirthDay.setFocus(true);
             this.showMessage("cms.error.field.txtBirthDay", true, null);
-//        } else if (!(txtBirthDay.getText().isEmpty())) {
-//            cumpleCalendar.setTime(((Datebox) txtBirthDay).getValue());  
-//        } else if (cumpleCalendar.compareTo(today) > 0) {
-//            txtBirthDay.setFocus(true);
-//            this.showMessage("cms.error.field.errorDayBith", true, null);
+        } else if (cumpleCalendar.compareTo(today) > 0) {
+            txtBirthDay.setFocus(true);
+            this.showMessage("cms.error.field.errorDayBith", true, null);
         } else if ((!genderFemale.isChecked()) && (!genderMale.isChecked())) {
             this.showMessage("cms.error.field.gener", true, null);
         } else if (cmbCivilState.getSelectedItem() == null) {
@@ -786,11 +788,11 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         List<Profession> profession;
         try {
             profession = personEJB.getProfession(request1);
-            if (applicantNaturalPersonParam.getProfessionId() == null){
+            if ((applicantNaturalPersonParam == null) || (applicantNaturalPersonParam.getProfessionId() == null)) {
                 loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(0));
             } else {
                 loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getProfessionId().getId() : 0));
-            }
+                }
 
         } catch (EmptyListException ex) {
             showError(ex);
