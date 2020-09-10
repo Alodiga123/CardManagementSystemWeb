@@ -42,6 +42,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Label lblRequestNumber;
     private Label lblRequestDate;
     private Label lblStatusRequest;
+    private Label lblCountry;
     private Textbox txtIdentificationNumber;
     private Textbox txtTradeName;
     private Textbox txtEnterpriseName;
@@ -50,12 +51,12 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private Doublebox dbxPaidInCapital;
     private Textbox txtPersonId;
     private Textbox txtWebSite;
+    private Tab tabMain;
     private Tab tabAddress;
     private Tab tabLegalRepresentatives;
     private Tab tabAdditionalCards;
     private Tab tabRequestbyCollection;
     private Textbox txtEmail;
-    private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbEconomicActivity;
     private Datebox txtDateInscriptionRegister;
@@ -69,6 +70,8 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     private AdminRequestController adminRequest = null;
     public static LegalPerson legalPersonParent = null;
     private List<LegalPerson> legalPersonList = null;
+    private Request request = null;
+    private Country requestCountry = null;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -131,6 +134,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             }
         }
         initialize();
+        getCountryRequest();
     }
 
     @Override
@@ -147,13 +151,23 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
     public LegalPerson getLegalPerson() {
         return legalPersonParent;
     }
-
-    public void onChange$cmbCountry() {
-        this.clearMessage();
-        cmbDocumentsPersonType.setVisible(true);
-        cmbDocumentsPersonType.setValue("");
-        Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbDocumentsPersonType(eventType, country.getId());
+    
+    public void getCountryRequest(){
+        AdminRequestController  adminRequest = new AdminRequestController();
+        if(adminRequest.getRequest().getId() != null){
+            request = adminRequest.getRequest();
+            requestCountry = request.getCountryId();
+            lblCountry.setValue(request.getCountryId().getName());
+            loadCmbDocumentsPersonType(eventType, request.getCountryId().getId());
+        }
+    }
+    
+    public void onSelect$tabMain() {
+        try {
+            doAfterCompose(self);
+        } catch (Exception ex) {
+            showError(ex);
+        }
     }
 
     public void clearFields() {
@@ -212,17 +226,13 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         cmbEconomicActivity.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
         txtIdentificationNumber.setReadonly(true);
-        cmbCountry.setDisabled(true);
         btnSave.setVisible(false);
     }
 
     public Boolean validateEmpty() {
         Date today = new Date();
 
-        if (cmbCountry.getSelectedItem() == null) {
-            cmbCountry.setFocus(true);
-            this.showMessage("cms.error.country.notSelected", true, null);
-        } else if (cmbDocumentsPersonType.getSelectedItem() == null) {
+        if (cmbDocumentsPersonType.getSelectedItem() == null) {
             cmbDocumentsPersonType.setFocus(true);
             this.showMessage("cms.error.documentType.notSelected", true, null);
         } else if (txtIdentificationNumber.getText().isEmpty()) {
@@ -288,7 +298,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request);
 
             //Guardar Person
-            person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
+            person.setCountryId(requestCountry);
             person.setEmail(txtEmail.getText());
             if (adminRequest.getRequest().getPersonId() != null) {
                 person.setUpdateDate(new Timestamp(new Date().getTime()));
@@ -355,52 +365,28 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
                 loadFieldR(adminRequest.getRequest());
-                loadCmbCountry(eventType);
                 if (legalPersonParam != null) {
                     legalPersonParent = legalPersonParam;
                     loadFields(legalPersonParam);
-                    onChange$cmbCountry();
                 }
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFieldR(adminRequest.getRequest());
-                loadCmbCountry(eventType);
                 if (legalPersonParam != null) {
                     legalPersonParent = legalPersonParam;
                     loadFields(legalPersonParam);
                     blockFields();
-                    onChange$cmbCountry();
                 }
                 loadCmbEconomicActivity(eventType);
                 break;
             case WebConstants.EVENT_ADD:
                 loadFieldR(adminRequest.getRequest());
                 legalPersonParent = null;
-                loadCmbCountry(eventType);
                 loadCmbEconomicActivity(eventType);
                 break;
             default:
                 break;
-        }
-    }
-
-    private void loadCmbCountry(Integer evenInteger) {
-        //cmbCountry
-        EJBRequest request1 = new EJBRequest();
-        List<Country> countries;
-        try {
-            countries = utilsEJB.getCountries(request1);
-            loadGenericCombobox(countries, cmbCountry, "name", evenInteger, Long.valueOf(legalPersonParam != null ? legalPersonParam.getPersonId().getCountryId().getId() : 0));
-        } catch (EmptyListException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (GeneralException ex) {
-            showError(ex);
-            ex.printStackTrace();
-        } catch (NullParameterException ex) {
-            showError(ex);
-            ex.printStackTrace();
         }
     }
 
