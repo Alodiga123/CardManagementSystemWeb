@@ -155,6 +155,12 @@ public class ListCollectionTypesControllers extends GenericAbstractListControlle
                     item.setValue(collectionType);
                     item.appendChild(new Listcell(collectionType.getCountryId().getName()));
                     item.appendChild(new Listcell(collectionType.getDescription()));
+                    
+                    if (collectionType.getPersonTypeId() != null) {
+                        item.appendChild(new Listcell(collectionType.getPersonTypeId().getDescription()));
+                    } else {
+                        item.appendChild(new Listcell(""));
+                    }
                     item.appendChild( new ListcellEditButton(adminPage, collectionType));
                     item.appendChild(new ListcellViewButton(adminPage, collectionType,true));
                     item.setParent(lbxRecords);
