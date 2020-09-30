@@ -111,7 +111,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     
     private void loadFieldR(Request requestData) {
         try {
-            String pattern = "yyyy-MM-dd";
+            String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             
             if (requestData.getRequestNumber() != null) {

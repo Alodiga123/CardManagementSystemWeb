@@ -17,21 +17,15 @@
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
-                                            <!--Filters for Searching-->
                                             <vlayout>
-                                                <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
-                                                    <textbox id="txtName" value="" width="100px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
-                                                </hlayout>
                                                 <hlayout>
                                                     <!--Add button-->
-                                                    <div align="left" width="490px">
+                                                    <div align="left" width="490px" style="margin-left:25px">
                                                         <button id="btnAdd" label="${c:l('sp.common.actions.add')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.add.tooltip')}" visible="true"/>
                                                     </div>
                                                     <!--Filters button-->
-                                                    <div align="right" width="390px">
-                                                        <button id="btnSearch" label="${c:l('sp.common.actions.search')}" width="80px" class="open orange" tooltiptext="${c:l('sp.common.actions.search.filter.tooltip')}"/>
-                                                        <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
+                                                    <div align="right" width="350px" style="margin-right:20px">
+                                                        <button  id="btnBack" width="80px"  label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listRequest.zul&quot;)"/>
                                                     </div>
                                                 </hlayout>
                                             </vlayout>
@@ -39,7 +33,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.countryName')}" width="245px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.city')}" width="140px" sort="auto"/>                                                    
                                                     <listheader label="${c:l('cms.crud.address.addressTypes')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.address.addressDelivery')}" width="140px" sort="auto"/>

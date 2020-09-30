@@ -38,7 +38,16 @@
                                                         </row>
                                                     </rows> 
                                                 </grid>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <hlayout>
+                                                    <div align="left" width="410px">
+                                                       <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/> 
+                                                    </div>                                                
+                                                    <div align="right" width="475px">
+                                                        <hlayout>
+                                                            <label value="${c:l('cms.common.field.required.full')}" sclass="lblbold" />
+                                                        </hlayout>
+                                                    </div>
+                                                </hlayout>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -53,16 +62,13 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true"/>
-                                                                <label value="*" sclass="lblreq" />
+                                                                <label id="lblCountry" width="250px" value=" "/>
                                                             </hlayout>
                                                             <hlayout>
                                                                 <combobox id="cmbDocumentsPersonType" width="250px" mold="rounded" readonly="true" />
-                                                                <label value="*" sclass="lblreq" />  
                                                             </hlayout>
                                                             <hlayout>
-                                                                 <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/> 
-                                                                 <label value="*" sclass="lblreq" />    
+                                                                 <textbox id="txtIdentificationNumber" value="" width="250px" maxlength="40"/>  
                                                             </hlayout>
                                                             
                                                         </row>
@@ -73,16 +79,13 @@
                                                         </row>
                                                         <row> 
                                                             <hlayout>
-                                                                <textbox id="txtTradeName" value="" width="250px" maxlength="60"/> 
-                                                                <label value="*" sclass="lblreq" />   
+                                                                <textbox id="txtTradeName" value="" width="250px" maxlength="60"/>   
                                                             </hlayout>
                                                             <hlayout>
-                                                              <textbox id="txtEnterpriseName" value="" width="250px" maxlength="45"/> 
-                                                              <label value="*" sclass="lblreq" /> 
+                                                              <textbox id="txtEnterpriseName" value="" width="250px" maxlength="45"/>  
                                                             </hlayout> 
                                                             <hlayout>
-                                                                <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45"/>
-                                                                <label value="*" sclass="lblreq" />     
+                                                                <textbox id="txtPhoneNumber" value="" width="250px" maxlength="45"/>    
                                                             </hlayout>
                                                         </row>
                                                         <row>
@@ -92,16 +95,13 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                              <combobox id="cmbEconomicActivity" width="250px" mold="rounded" readonly="true" />
-                                                              <label value="*" sclass="lblreq" />    
+                                                              <combobox id="cmbEconomicActivity" width="250px" mold="rounded" readonly="true" />   
                                                             </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtRegistryNumber" value="" width="250px" maxlength="45"/>
-                                                                <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                             <hlayout>
-                                                               <datebox id="txtDateInscriptionRegister" width="250px" constraint="no empty"/>
-                                                               <label value="*" sclass="lblreq" />  
+                                                               <datebox id="txtDateInscriptionRegister" width="250px" constraint="no empty"/> 
                                                             </hlayout>
                                                         </row>
                                                         <row> 
@@ -111,16 +111,13 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <doublebox id="dbxPaidInCapital" width="250px" constraint="no negative"  format="#,##0.##" maxlength="40"/>
-                                                                <label value="*" sclass="lblreq" />  
+                                                                <doublebox id="dbxPaidInCapital" width="250px" constraint="no negative"  format="#,##0.##" maxlength="40"/> 
                                                             </hlayout>
                                                             <hlayout>
                                                                 <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>
-                                                                <label value="*" sclass="lblreq" /> 
                                                             </hlayout>
                                                             <hlayout>
-                                                               <textbox id="txtEmail" value="" width="250px" maxlength="45" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>
-                                                               <label value="*" sclass="lblreq" />  
+                                                               <textbox id="txtEmail" value="" width="250px" maxlength="45" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/> 
                                                             </hlayout>
                                                         </row>
                                                     </rows>
