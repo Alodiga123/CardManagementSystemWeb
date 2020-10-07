@@ -152,12 +152,16 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getCountryId().getName()));
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getCityId().getName()));
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getAddressTypeId().getDescription()));
-                    if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
-                        indAddressDelivery = "Yes";
+                    if (personHasAddress.getAddressId().getIndAddressDelivery() != null ) {
+                        if (personHasAddress.getAddressId().getIndAddressDelivery() == true) {
+                            indAddressDelivery = "Yes";
+                        } else {
+                            indAddressDelivery = "No";
+                        }
+                        item.appendChild(new Listcell(indAddressDelivery));
                     } else {
-                        indAddressDelivery = "No";
-                    }
-                    item.appendChild(new Listcell(indAddressDelivery));
+                        item.appendChild(new Listcell("No"));
+                    }                    
                     item.appendChild(new Listcell(personHasAddress.getAddressId().getZipZoneId().getCode()));
                     if(statusEditView == true){
                         item.appendChild(createButtonEditModal(personHasAddress));

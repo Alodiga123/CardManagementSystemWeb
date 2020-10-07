@@ -52,10 +52,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Label txtCodeCountryPhoneL;
     private Label txtCodeCountryPhone; 
     private Label lblCountry;
-    private Intbox txtAreaCodePhone;
-    private Intbox txtPhoneCel;
-    private Intbox txtAreaCodePhoneL;
-    private Intbox txtPhoneCelL;          
+    private Textbox txtAreaCodePhone;
+    private Textbox txtPhoneCel;
+    private Textbox txtAreaCodePhoneL;
+    private Textbox txtPhoneCelL;          
     private Textbox txtIdentificationNumber;
     private Textbox txtIdentificationNumberOld;
     private Textbox txtFullName;
@@ -128,8 +128,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                             for (PhonePerson phone : phonePersonList) {
                                 if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
                                     applicantNaturalPerson.getPersonId().setPhonePerson(phone);
-                                }
-                                
+                                }                                
                             }
                         }
                         applicantNaturalPersonParam = applicantNaturalPerson;
