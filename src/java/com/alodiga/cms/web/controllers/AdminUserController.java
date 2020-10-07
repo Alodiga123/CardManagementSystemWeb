@@ -291,11 +291,14 @@ public class AdminUserController extends GenericAbstractAdminController {
         boolean indEnabled = true;
         try {
             User user = null;
+            Person person = null;
 
             if (_user != null) {
                 user = _user;
+                person = user.getPersonId();
             } else {
                 user = new User();
+                person = new Person();
             }
 
             if (rEnabledYes.isChecked()) {
@@ -310,7 +313,6 @@ public class AdminUserController extends GenericAbstractAdminController {
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
 
             //Guardar la persona
-            Person person = new Person();
             person.setCountryId(employee.getPersonId().getCountryId());
             person.setPersonTypeId(employee.getDocumentsPersonTypeId().getPersonTypeId());
             person.setEmail(lblEmailEmployee.getValue().toString());

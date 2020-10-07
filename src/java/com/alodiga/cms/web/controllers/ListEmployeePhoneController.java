@@ -83,7 +83,8 @@ public class ListEmployeePhoneController extends GenericAbstractListController<P
             adminPage = "adminEmployeePhone.zul";
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
-            getData();
+            startListener();
+            getData();            
             if (phonePersonList != null) {
                loadDataList(phonePersonList);
             }

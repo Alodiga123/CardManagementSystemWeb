@@ -184,11 +184,14 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
        
         try {
             Employee employee = null;
+            Person person = null;
 
             if (_employee != null) {
                 employee = _employee;
+                person = employee.getPersonId();
             } else {
                 employee = new Employee();
+                person = new Person();
             }
             
             //Obtener la clasificacion del Empleado
@@ -197,7 +200,6 @@ public class AdminEmployeeController extends GenericAbstractAdminController {
             PersonClassification personClassification = utilsEJB.loadPersonClassification(request1);
             
             //Guardar la persona
-            Person person = new Person();
             person.setCountryId((Country) cmbCountry.getSelectedItem().getValue());
             person.setPersonTypeId(((DocumentsPersonType) cmbDocumentPersonType.getSelectedItem().getValue()).getPersonTypeId());
             person.setEmail(txtEmail.getText());
