@@ -10,6 +10,8 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
+import cmscredentialservicesclient.CMSCredentialServicesClient;
+import com.alodiga.cms.json.card.AssignVirtualCardResponse;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountCard;
@@ -22,6 +24,7 @@ import com.cms.commons.models.Channel;
 import com.cms.commons.models.Request;
 import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.NaturalCustomer;
+import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.StatusAccount;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.models.Transaction;
@@ -90,13 +93,14 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
             getData();
-            loadList(requests);
+            loadDataList(requests);
         } catch (Exception ex) {
             showError(ex);
         }
     }
-
-    public void loadList(List<Request> list) {
+    
+    @Override
+    public void loadDataList(List<Request> list) {
         applicantName = "";
         try {
             lbxRecords.getItems().clear();
@@ -167,13 +171,13 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
 
     public void onClick$btnAssigment() throws InterruptedException {
         try {
-            loadDataList(requests);
+            assignCard(requests);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
-    public Card createCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request, CardStatus cardStatus) {
+    public Card createCard(ReviewRequest reviewRequest, String cardNumber, Request request, CardStatus cardStatus) {
         Card card = new Card();
         boolean indRenewal = true;
 
@@ -190,13 +194,13 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
             cardHolder = cardHolder + apellido;
 
-            card.setCardNumber(cardNumber.getCardNumber());
+            card.setCardNumber(cardNumber);
             card.setProgramId(request.getProgramId());
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(cardHolder);
             card.setIssueDate(new Timestamp(new Date().getTime()));
             card.setExpirationDate(expirationDateCard);
-            card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
+            card.setSecurityCodeCard(cardNumber);
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
             card.setCreateDate(new Timestamp(new Date().getTime()));
@@ -208,16 +212,15 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         return card;
     }
 
-    public Card createLegalCard(ReviewRequest reviewRequest, CardNumberCredential cardNumber, Request request, CardStatus cardStatus) {
+    public Card createLegalCard(ReviewRequest reviewRequest, String cardNumber, Request request, CardStatus cardStatus) {
         Card card = new Card();
         try {
-            card.setCardNumber(cardNumber.getCardNumber());
+            card.setCardNumber(cardNumber);
             card.setProgramId(request.getProgramId());
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(request.getPersonId().getLegalPerson().getEnterpriseName());
             card.setIssueDate(new Timestamp(new Date().getTime()));
             card.setExpirationDate(expirationDateCard);
-            card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
             card.setCreateDate(new Timestamp(new Date().getTime()));
@@ -227,8 +230,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         return card;
     }
 
-    @Override
-    public void loadDataList(List<Request> list) {
+    public void assignCard(List<Request> list) {
         Card card = null;
         boolean indRenewal = true;
         CardStatus cardStatus = null;
@@ -236,32 +238,30 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         List<ReviewRequest> reviewRequestList = null;
         List<NaturalCustomer> cardComplementaryList = null;
         List<CardRequestNaturalPerson> cardRequestList = null;
-        CardNumberCredential cardNumber = null;
-        Long countCardComplementary = 0L;       
+        List<PhonePerson> phonePersonList = null;
+        String cardNumber = null;
+        Long countCardComplementary = 0L;  
         int i = 0;
-
+        String movilPhone = "";
+        
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-
+                
+                //Se instancia el WebService de Credencial para alta de las tarjetas
+                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
+                
                 //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_REQUESTED);
-                cardStatus = utilsEJB.loadCardStatus(request1);
+                cardStatus = utilsEJB.loadCardStatus(request1);        
 
-                //se obtienen las tarjetas que este disponibles para asignar
-                EJBRequest request2 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.USE_KEY, Constants.USE_NUMBER_CARD);
-                request2.setParams(params);
-                cardNumberCredentialList = cardEJB.getCardNumberCredentialByUse(request2);
-                cardNumber = cardNumberCredentialList.get(i);           
-
-                //Se asignan las tarjetas a las solicitudes aprobadas
+                //Se asignan las tarjetas virtuales y físicas a las solicitudes aprobadas
                 for (Request r : list) {
                     //Se busca el producto por medio de ReviewRequest
                     EJBRequest request3 = new EJBRequest();
+                    Map params = new HashMap();
                     params = new HashMap();
                     params.put(QueryConstants.PARAM_REQUEST_ID, r.getId());
                     params.put(QueryConstants.PARAM_REVIEW_REQUEST_TYPE_ID, Constants.REVIEW_REQUEST_TYPE_COLLECTIONS);
@@ -286,10 +286,53 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                     //Caso Solicitante Natural
                     if (r.getPersonTypeId().getIndNaturalPerson() == true) {
                         //Asignar tarjeta al solicitante principal
-                        cardNumber = cardNumberCredentialList.get(i);
+                        String operationType = Constants.OPERATION_TYPE_REGALW;
+                        String entityCode = Constants.ENTITY_CODE;
+                        String initialsDocumentType = r.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
+                        String countryCode = r.getCountryId().getCodeIso3();
+                        String identificationNumber = r.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
+                        String pattern = "yyyy-MM-dd";
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                        Date dateCard = new Date();
+                        String highDateCard = simpleDateFormat.format(dateCard);
+                        String dateBirthApplicant = simpleDateFormat.format(r.getPersonId().getApplicantNaturalPerson().getDateBirth());
+                        String addressApplicant = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                        String stateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                        String city = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
+                        city = city.replace(" ", "%2B");
+                        String zipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                        //Buscar el teléfono móvil del solicitante
+                        params = new HashMap();
+                        params.put(Constants.PERSON_KEY, r.getPersonId().getId());
+                        request1.setParams(params);
+                        phonePersonList = personEJB.getPhoneByPerson(request1);
+                        for (PhonePerson phone : phonePersonList) {
+                            if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                                movilPhone = phone.getNumberPhone();
+                            }                                
+                        }
+                        if (movilPhone.length() == Constants.SIZE_NOT_VALID_NUMBER_PHONE) {
+                            movilPhone.concat("0");
+                        }
+                        String email = r.getPersonId().getEmail();
+                        String gender = r.getPersonId().getApplicantNaturalPerson().getGender();
+                        String lastName = r.getPersonId().getApplicantNaturalPerson().getLastNames();
+                        String firstName = r.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                        String taxInformationRegistry = r.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
+                        String productCode = Constants.PRODUCT_CODE;
+                        String recordingCard = Constants.NOT_RECORDING_CARD;
+                        String annualLimitAmount = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
+                        String cardDeliveryAddress = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                        String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                        String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                        String deliveryFloor = Integer.toString(r.getPersonId().getPersonHasAddress().getAddressId().getFloor());
+                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
+                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(operationType, entityCode, countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, 
+                                                                                           addressApplicant, stateCode, city, zipCode, movilPhone, email, lastName, firstName, taxInformationRegistry, productCode,
+                                                                                           recordingCard, annualLimitAmount, cardDeliveryAddress, deliveryStateCode, deliverZipCode, deliveryFloor);
+                        cardNumber = assignVirtualCardResponse.getAlias();
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
                         card = saveCard(card);
-                        updateCardNumberAssigned(cardNumber);
                         createAccount(card,r);
                         //Actualiza el estatus de la solicitud
                         updateStatusRequest(r);
@@ -310,7 +353,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 for (NaturalCustomer cardComplementaries : cardComplementaryList) {
                                     card = new Card();
 
-                                    cardNumber = cardNumberCredentialList.get(i);
+                                    cardNumber = assignVirtualCardResponse.getAlias();
                                     StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
                                     applicantName.append(" ");
                                     applicantName.append(cardComplementaries.getLastNames());
@@ -322,20 +365,18 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
                                     cardHolder = cardHolder + apellido;
 
-                                    card.setCardNumber(cardNumber.getCardNumber());
+                                    card.setCardNumber(cardNumber);
                                     card.setProgramId(r.getProgramId());
                                     card.setProductId(reviewRequestParam.getProductId());
                                     card.setCardHolder(cardHolder);
                                     card.setIssueDate(new Timestamp(new Date().getTime()));
                                     card.setExpirationDate(expirationDateCard);
-                                    card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
                                     card.setCardStatusId(cardStatus);
                                     card.setPersonCustomerId(cardComplementaries.getPersonId());
                                     card.setCreateDate(new Timestamp(new Date().getTime()));
                                     card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
                                     card.setIndRenewal(indRenewal);
                                     card = saveCard(card);
-                                    updateCardNumberAssigned(cardNumber);
                                     createAccount(card, r);
                                     i++;
                                 }
@@ -352,10 +393,10 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         cardRequestList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request5);
 
                         //Asigna tarjeta a solicitante juridico
-                        cardNumber = cardNumberCredentialList.get(i);
+                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
+                        cardNumber = assignVirtualCardResponse.getAlias();;
                         card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
                         card = saveCard(card);
-                        updateCardNumberAssigned(cardNumber);
                         createAccount(card,r);
                         //Actualiza el estatus de la solicitud
                         updateStatusRequest(r);
@@ -364,7 +405,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         if (cardRequestList != null) {
                             for (CardRequestNaturalPerson additionalCards : cardRequestList) {
                                 card = new Card();
-                                cardNumber = cardNumberCredentialList.get(i);
+//                                cardNumber = cardNumberCredentialList.get(i);
                                 StringBuilder applicantName = new StringBuilder(additionalCards.getFirstNames());
                                 applicantName.append(" ");
                                 applicantName.append(additionalCards.getLastNames());
@@ -375,21 +416,18 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 applicantLastName.append(additionalCards.getLastNames());
                                 String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
                                 cardHolder = cardHolder + apellido;
-
-                                card.setCardNumber(cardNumber.getCardNumber());
+                                card.setCardNumber(cardNumber);
                                 card.setProgramId(r.getProgramId());
                                 card.setProductId(reviewRequestParam.getProductId());
                                 card.setCardHolder(cardHolder);
                                 card.setIssueDate(new Timestamp(new Date().getTime()));
                                 card.setExpirationDate(expirationDateCard);
-                                card.setSecurityCodeCard(cardNumber.getSecurityCodeCard());
                                 card.setCardStatusId(cardStatus);
                                 card.setPersonCustomerId(r.getPersonCustomerId());
                                 card.setCreateDate(new Timestamp(new Date().getTime()));
                                 card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
                                 card.setIndRenewal(indRenewal);
                                 card = saveCard(card);
-                                updateCardNumberAssigned(cardNumber);
                                 createAccount(card, r);
                                 i++;
                             }
@@ -541,16 +579,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         return numberAccount;
     }
 
-    public void updateCardNumberAssigned(CardNumberCredential cardNumber) {
-        try {
-            cardNumber.setIndUse(true);
-            cardNumber.setUpdateDate(new Timestamp(new Date().getTime()));
-            cardNumber = cardEJB.saveCardNumberCredential(cardNumber);
-        } catch (Exception ex) {
-            showError(ex);
-        }
-    }
-
       public void onClick$btnClear() throws InterruptedException {
       txtRequestNumber.setText("");
 
@@ -577,7 +605,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
 
       public void onClick$btnSearch() throws InterruptedException {
         try {
-            loadList(getFilterList(txtRequestNumber.getText()));
+            loadDataList(getFilterList(txtRequestNumber.getText()));
         } catch (Exception ex) {
             showError(ex);
         }
