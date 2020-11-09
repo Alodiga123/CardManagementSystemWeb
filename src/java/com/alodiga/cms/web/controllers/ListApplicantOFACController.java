@@ -234,6 +234,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
             for (Person applicant : applicantList) {
                 Long haveReviewOFAC = requestEJB.haveReviewOFACByPerson(applicant.getId());
                 if (haveReviewOFAC > 0) {
+                    btnReviewOFAC.setVisible(false);
                     EJBRequest request = new EJBRequest();
                     Map params = new HashMap();
                     params.put(Constants.PERSON_KEY, applicant.getId());
@@ -243,7 +244,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                     for (ReviewOFAC r: reviewOFAC) {
                         applicant.setReviewOFAC(r);
                     }
-                } 
+                }
             }
         } catch (NullParameterException ex) {
                 showError(ex);
@@ -349,8 +350,6 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
             request = requestEJB.saveRequest(request);
             this.showMessage("sp.common.finishReviewOFAC", false, null);
             onSelect$tabApplicantOFAC();
-	} catch (RemoteException e) {
-            e.printStackTrace();
 	} catch (Exception ex) {
             showError(ex);
         }

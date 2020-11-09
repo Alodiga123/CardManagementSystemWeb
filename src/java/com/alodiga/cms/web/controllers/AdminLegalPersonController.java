@@ -338,6 +338,7 @@ public class AdminLegalPersonController extends GenericAbstractAdminController {
             } else {
                 btnSave.setVisible(true);
             }
+            tabAddress.setDisabled(false);
             tabLegalRepresentatives.setDisabled(false);
             tabAdditionalCards.setDisabled(false);
             tabRequestbyCollection.setDisabled(false);

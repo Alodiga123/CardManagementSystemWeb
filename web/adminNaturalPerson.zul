@@ -168,7 +168,7 @@
                                                                 <label id="txtCodeCountryPhoneL" value=" " width="250px" maxlength="120"/>
                                                             </hlayout>
                                                             <hlayout>
-                                                                <intbox id="txtAreaCodePhoneL" width="250px" maxlength="5"/>
+                                                                <textbox id="txtAreaCodePhoneL" width="250px" maxlength="5"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
@@ -178,7 +178,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <intbox id="txtPhoneCelL" width="250px" maxlength="10"/>
+                                                                <textbox id="txtPhoneCelL" width="250px" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>                                                            
                                                             <hbox>
@@ -220,7 +220,7 @@
                                                                 <label id="txtCodeCountryPhone" value=" " width="250px" maxlength="120"/>
                                                             </hlayout>
                                                             <hlayout>
-                                                                <intbox id="txtAreaCodePhone" width="250px" maxlength="5"/>
+                                                                <textbox id="txtAreaCodePhone" width="250px" maxlength="5"/>
                                                              <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
@@ -230,7 +230,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <intbox id="txtPhoneCel" width="250px" maxlength="10"/>
+                                                                <textbox id="txtPhoneCel" width="250px" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>                                       
                                                             <hbox>

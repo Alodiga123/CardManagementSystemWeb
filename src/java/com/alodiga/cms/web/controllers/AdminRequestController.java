@@ -109,10 +109,10 @@ public class AdminRequestController extends GenericAbstractAdminController {
                         tabFamilyReferencesMain.setDisabled(false);
                         tabAdditionalCards.setDisabled(false);
                         activeTabOFAC();
-//                        activeTabRequestsCollections();
-//                        activateTabApplicationReview();
-                        tabRequestbyCollection.setDisabled(false);
-                        tabApplicationReview.setDisabled(false);
+                        activeTabRequestsCollections();
+                        activateTabApplicationReview();
+//                        tabRequestbyCollection.setDisabled(false);
+//                        tabApplicationReview.setDisabled(false);
                     } else {
                         tabMain.setDisabled(false);
                         tabAddress.setDisabled(false);
@@ -125,7 +125,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                 } else {
                     if (requestParam.getIndPersonNaturalRequest() == true) {
                         tabMain.setDisabled(false);
-                        tabAddress.setDisabled(false);
+                        tabAddress.setDisabled(true);
                         tabFamilyReferencesMain.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicantOFAC.setDisabled(true);
@@ -134,7 +134,7 @@ public class AdminRequestController extends GenericAbstractAdminController {
                     } else {
                         //OJO Validar que la solicitud tenga al menos una tarjeta adicional 
                         tabMain.setDisabled(false);
-                        tabAddress.setDisabled(false);
+                        tabAddress.setDisabled(true);
                         tabLegalRepresentatives.setDisabled(true);
                         tabAdditionalCards.setDisabled(true);
                         tabApplicantOFAC.setDisabled(true);
@@ -213,44 +213,39 @@ public class AdminRequestController extends GenericAbstractAdminController {
         personHasAddress = new ArrayList<PersonHasAddress>();
         person = requestParam.getPersonId();
         try{
-            if (requestParam.getIndPersonNaturalRequest() == true) {
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY, person.getId());
-                request1.setParams(params);
-                personHasAddress = personEJB.getPersonHasAddressesByPerson(request1);
-
-                if (personHasAddress.size() > 0){
-                     tabApplicantOFAC.setDisabled(false);
-                }
-            } else {
-                EJBRequest request1 = new EJBRequest();
-                Map params = new HashMap();
-                params.put(Constants.PERSON_KEY, requestParam.getPersonId().getLegalPerson().getPersonId().getId());
-                request1.setParams(params);
-                personHasAddress = personEJB.getPersonHasAddressesByPerson(request1); 
-                if (personHasAddress.size() > 0){
-                     tabApplicantOFAC.setDisabled(false);
-                }
-            } 
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PERSON_KEY, person.getId());
+            request1.setParams(params);
+            personHasAddress = personEJB.getPersonHasAddressesByPerson(request1); 
         } catch (Exception ex) {
             showError(ex);
+        } finally {
+            if (personHasAddress.size() > 0){
+                tabApplicantOFAC.setDisabled(false);
+            } else {
+                tabApplicantOFAC.setDisabled(true);
             }
+        }
     }
     
     public void activeTabRequestsCollections(){
         String statusRequestCodeLineOK= StatusRequestE.LINEOK.getStatusRequestCode();
         // Hacer validacion de que si esta un status arriba de lineOk igual desbloquee el tab
         if (requestParam.getStatusRequestId().getCode().equals(statusRequestCodeLineOK)){
-                tabRequestbyCollection.setDisabled(false);
-         }
+            tabRequestbyCollection.setDisabled(false);
+        } else {
+            tabRequestbyCollection.setDisabled(true);
+        }
     }
     
     public void activateTabApplicationReview(){
          String statusRequestApproved= StatusRequestE.RECAPR.getStatusRequestCode(); 
          // Hacer validacion de que si esta un status arriba de lineOk igual desbloquee el tab
          if(requestParam.getStatusRequestId().getCode().equals(statusRequestApproved)){
-                tabApplicationReview.setDisabled(false);
+            tabApplicationReview.setDisabled(false);
+         } else {
+            tabApplicationReview.setDisabled(true); 
          }
   
     }
@@ -387,11 +382,8 @@ public class AdminRequestController extends GenericAbstractAdminController {
             } else {
                 btnSave.setVisible(true);
             }
-            
             loadFields(requestParam);
-            
             tabMain.setDisabled(false);
-            tabAddress.setDisabled(false);
             requestCard = request;
         } catch (Exception ex) {
             showError(ex);
