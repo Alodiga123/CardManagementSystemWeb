@@ -9,6 +9,7 @@ import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Country;
 import com.cms.commons.models.DocumentsPersonType;
+import com.cms.commons.models.OriginApplication;
 import com.cms.commons.models.PersonType;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -33,6 +34,7 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     private DocumentsPersonType documentsPersonTypeParam;
     private Combobox cmbPersonType;
     private Combobox cmbCountry;
+    private Combobox cmbOriginApplication;
     private Textbox txtDocumentPerson;
     private Textbox txtIdentityCode;
     private Button btnSave;
@@ -76,12 +78,20 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         }
     }
     
-    public void onChange$cmbCountry() {
-        this.clearMessage();
-        cmbPersonType.setVisible(true);
-        cmbPersonType.setValue("");
+    public void onChange$cmbOriginApplication() {
         Country country = (Country) cmbCountry.getSelectedItem().getValue();
-        loadCmbPersonType(eventType, country.getId());
+        OriginApplication origin = (OriginApplication) cmbOriginApplication.getSelectedItem().getValue();
+        loadCmbPersonType(eventType, country.getId().intValue(), origin.getId());
+    }
+    
+    public void onChange$cmbCountry() {
+        if (cmbCountry.getSelectedItem() == null) {
+           cmbOriginApplication.setDisabled(true);
+           cmbPersonType.setDisabled(true);
+        } else {
+            cmbOriginApplication.setDisabled(false);
+            cmbPersonType.setDisabled(false);
+        } 
     }
 
     public void clearFields() {
@@ -165,7 +175,8 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
             case WebConstants.EVENT_EDIT:
                 loadFields(documentsPersonTypeParam);
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
+                loadCmbOriginApplication(eventType);
+                onChange$cmbOriginApplication();
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(documentsPersonTypeParam);
@@ -173,10 +184,13 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
                 txtIdentityCode.setDisabled(true);
                 blockFields();
                 loadCmbCountry(eventType);
-                onChange$cmbCountry();
+                loadCmbOriginApplication(eventType);
+                onChange$cmbOriginApplication();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbCountry(eventType);
+                loadCmbOriginApplication(eventType);
+                onChange$cmbCountry();
                 break;
             default:
                 break;
@@ -201,20 +215,16 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         }
     }
     
-    private void loadCmbPersonType(Integer evenInteger, int countryId) {
+    private void loadCmbPersonType(Integer evenInteger, int countryId , int originApplicationId) {
         EJBRequest request1 = new EJBRequest();
         cmbPersonType.getItems().clear();
         Map params = new HashMap();
         params.put(QueryConstants.PARAM_COUNTRY_ID, countryId);
-        if (evenInteger == WebConstants.EVENT_ADD) {
-            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, Constants.ORIGIN_APPLICATION_CMS_ID);
-        } else {
-            params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, documentsPersonTypeParam.getPersonTypeId().getOriginApplicationId().getId());
-        }        
+        params.put(QueryConstants.PARAM_ORIGIN_APPLICATION_ID, originApplicationId);
         request1.setParams(params);
         List<PersonType> personTypes = null;
         try {
-            personTypes = utilsEJB.getPersonTypeByCountry(request1);
+            personTypes = utilsEJB.getPersonTypeByCountryByOriginApplication(request1);
             loadGenericCombobox(personTypes,cmbPersonType, "description",evenInteger,Long.valueOf(documentsPersonTypeParam != null? documentsPersonTypeParam.getPersonTypeId().getId(): 0) );            
         } catch (EmptyListException ex) {
             showError(ex);
@@ -233,4 +243,24 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
     
       }
     
+    private void loadCmbOriginApplication(Integer evenInteger) {
+        //cmbOriginAplication
+        EJBRequest request1 = new EJBRequest();
+        List<OriginApplication> originAplication;
+
+        try {
+            originAplication = utilsEJB.getOriginApplication(request1);
+            loadGenericCombobox(originAplication, cmbOriginApplication, "name", evenInteger, Long.valueOf(documentsPersonTypeParam != null ? documentsPersonTypeParam .getPersonTypeId().getOriginApplicationId().getId() : 0));
+        } catch (EmptyListException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (GeneralException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        } catch (NullParameterException ex) {
+            showError(ex);
+            ex.printStackTrace();
+        }
     }
+    
+}

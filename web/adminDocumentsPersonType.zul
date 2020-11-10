@@ -56,21 +56,28 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.collectionsType.origin')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.document')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.identityCode')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
-                                                            <combobox id="cmbCountry" width="190px" mold="rounded" readonly="true"/>                                                            
+                                                            <combobox id="cmbCountry" width="190px" mold="rounded" readonly="true"/> 
+                                                            <combobox id="cmbOriginApplication" width="190px" mold="rounded" readonly="true"/>                                                             
+                                                            
                                                             <combobox id="cmbPersonType" width="190px" mold="rounded" readonly="true"/>
                                                             <hbox>
                                                                 <textbox id="txtDocumentPerson" width="190px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hbox>
-                                                            <hlayout>        
+                                                            </hbox> 
+                                                        </row> 
+                                                        <row>
+                                                           <label value="${c:l('cms.common.identityCode')}" sclass="lblbold"/> 
+                                                        </row>
+                                                        <row> 
+                                                          <hlayout>        
                                                                 <textbox id="txtIdentityCode" width="190px" constraint="no empty: ${c:l('error.field.required')}"  onChange="self.setValue(self.getValue().toUpperCase().trim());" maxlength="60"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                          </hlayout>  
                                                         </row>
                                                     </rows>
                                                 </grid>
