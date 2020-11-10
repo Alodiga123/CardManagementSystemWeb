@@ -709,8 +709,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         List<Country> countries;
         try {
             countries = utilsEJB.getCountries(request1);
-
-            if ((applicantNaturalPersonParam == null) || (localPhone == null)){
+            if ((applicantNaturalPersonParam == null) || (phonePersonList.size() == 0)){
                 loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(0));
                 loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(0));
             }    
