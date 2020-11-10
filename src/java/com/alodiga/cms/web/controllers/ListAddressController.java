@@ -161,8 +161,13 @@ public class ListAddressController extends GenericAbstractListController<PersonH
                         item.appendChild(new Listcell(indAddressDelivery));
                     } else {
                         item.appendChild(new Listcell("No"));
-                    }                    
-                    item.appendChild(new Listcell(personHasAddress.getAddressId().getZipZoneId().getCode()));
+                    }    
+                    if (request.getPersonId().getPersonTypeId().getOriginApplicationId().getId() == Constants.ORIGIN_APPLICATION_CMS_ID) {
+                        item.appendChild(new Listcell(personHasAddress.getAddressId().getZipZoneId().getCode()));
+                    }
+                    if (request.getPersonId().getPersonTypeId().getOriginApplicationId().getId() == Constants.ORIGIN_APPLICATION_WALLET_ID) {
+                        item.appendChild(new Listcell(personHasAddress.getAddressId().getZipZoneCode()));
+                    }
                     if(statusEditView == true){
                         item.appendChild(createButtonEditModal(personHasAddress));
                         item.appendChild(createButtonViewModal(personHasAddress));
