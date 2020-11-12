@@ -188,8 +188,16 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                     item.appendChild(new Listcell (r.getCardId().getProductId().getCountryId().getName()));
                     item.appendChild(new Listcell(r.getChannelId().getName()));
                     item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(r.getFixedRate().toString()));
-                    item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                    if (r.getFixedRate() != null) {
+                        item.appendChild(new Listcell(r.getFixedRate().toString()));
+                    }else{
+                        item.appendChild(new Listcell("-"));
+                    }
+                    if (r.getPercentageRate() != null) {
+                        item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                    }else{
+                        item.appendChild(new Listcell("-"));
+                    }  
                     item.appendChild(createButtonEditModal(r));
                     item.appendChild(createButtonViewModal(r));
                     item.setParent(lbxRecords);
@@ -242,8 +250,16 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             item.appendChild(new Listcell(r.getCardId().getProductId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                            item.appendChild(new Listcell(r.getFixedRate().toString()));
-                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            if (r.getFixedRate() != null) {
+                                item.appendChild(new Listcell(r.getFixedRate().toString()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }
+                            if (r.getPercentageRate() != null) {
+                                item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }  
                             item.appendChild(createButtonEditModal(r));
                             item.appendChild(createButtonViewModal(r));
                             item.setParent(lbxRecords);
