@@ -9,9 +9,9 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.alodiga.ws.cumpliments.services.OFACMethodWSProxy;
-import com.alodiga.ws.cumpliments.services.WsExcludeListResponse;
-import com.alodiga.ws.cumpliments.services.WsLoginResponse;
+import com.alodiga.ws.remittance.services.WSOFACMethodProxy;
+import com.alodiga.ws.remittance.services.WsExcludeListResponse;
+import com.alodiga.ws.remittance.services.WsLoginResponse;
 import com.cms.commons.enumeraciones.StatusRequestE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
@@ -269,7 +269,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
         String firstName = "";
         float ofacPercentege = 0.5F;
         Request request = adminRequest.getRequest();
-        OFACMethodWSProxy ofac = new OFACMethodWSProxy();
+        WSOFACMethodProxy ofac = new WSOFACMethodProxy();
         try {
             WsLoginResponse loginResponse = new WsLoginResponse();
             loginResponse = ofac.loginWS("alodiga", "d6f80e647631bb4522392aff53370502");
@@ -281,18 +281,17 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                     ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
                 } else {
                     if (applicant.getPersonClassificationId().getId() == 4) {
-                        lastName = applicant.getLegalPerson().getEnterpriseName();
                         firstName = applicant.getLegalPerson().getEnterpriseName();
-                        ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
+                        ofacResponse = ofac.queryOFACLegalPersonList(loginResponse.getToken(),firstName, ofacPercentege);
                     } else if (applicant.getPersonClassificationId().getId() == 8) {
                         lastName = applicant.getCardRequestNaturalPerson().getLastNames();
                         firstName = applicant.getCardRequestNaturalPerson().getFirstNames();
                         ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
-                     } else if (applicant.getPersonClassificationId().getId() == 5) {
+                    } else if (applicant.getPersonClassificationId().getId() == 5) {
                         lastName = applicant.getLegalRepresentatives().getLastNames();
                         firstName = applicant.getLegalRepresentatives().getFirstNames();
                         ofacResponse = ofac.queryOFACList(loginResponse.getToken(),lastName, firstName, null, null, null, null, ofacPercentege);
-                     }
+                    }
                 }                
                 //Guardar el resultado de revisión en lista OFAC para cada solicitante
                 ReviewOFAC reviewOFAC = new ReviewOFAC();
