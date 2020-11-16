@@ -177,12 +177,11 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         }
     }
 
-    public Card createCard(ReviewRequest reviewRequest, String cardNumber, Request request, CardStatus cardStatus) {
+    public Card createCard(ReviewRequest reviewRequest, String cardNumber, Request request, CardStatus cardStatus, String accountAssigned) {
         Card card = new Card();
         boolean indRenewal = true;
 
         try {
-
             StringBuilder applicantName = new StringBuilder(request.getPersonId().getApplicantNaturalPerson().getFirstNames());
             applicantName.append(" ");
             applicantName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
@@ -193,14 +192,13 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             applicantLastName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
             String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
             cardHolder = cardHolder + apellido;
-
-            card.setCardNumber(cardNumber);
+            card.setAlias(cardNumber);
+            card.setAssignedAccount(accountAssigned);
             card.setProgramId(request.getProgramId());
             card.setProductId(reviewRequestParam.getProductId());
             card.setCardHolder(cardHolder);
             card.setIssueDate(new Timestamp(new Date().getTime()));
             card.setExpirationDate(expirationDateCard);
-            card.setSecurityCodeCard(cardNumber);
             card.setCardStatusId(cardStatus);
             card.setPersonCustomerId(request.getPersonCustomerId());
             card.setCreateDate(new Timestamp(new Date().getTime()));
@@ -240,6 +238,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         List<CardRequestNaturalPerson> cardRequestList = null;
         List<PhonePerson> phonePersonList = null;
         String cardNumber = null;
+        String accountAssigned = null;
         Long countCardComplementary = 0L;  
         int i = 0;
         String movilPhone = "";
@@ -291,12 +290,13 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         String initialsDocumentType = r.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
                         String countryCode = r.getCountryId().getCodeIso3();
                         String identificationNumber = r.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
-                        String pattern = "yyyy-MM-dd";
+                        String pattern = "yyyyMMdd";
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                         Date dateCard = new Date();
                         String highDateCard = simpleDateFormat.format(dateCard);
                         String dateBirthApplicant = simpleDateFormat.format(r.getPersonId().getApplicantNaturalPerson().getDateBirth());
                         String addressApplicant = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                        addressApplicant = addressApplicant.replace(" ", "%2B");
                         String stateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
                         String city = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
                         city = city.replace(" ", "%2B");
@@ -317,23 +317,27 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         String email = r.getPersonId().getEmail();
                         String gender = r.getPersonId().getApplicantNaturalPerson().getGender();
                         String lastName = r.getPersonId().getApplicantNaturalPerson().getLastNames();
+                        lastName = lastName.replace(" ", "%2B");
                         String firstName = r.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                        firstName = firstName.replace(" ", "%2B");
                         String taxInformationRegistry = r.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
                         String productCode = Constants.PRODUCT_CODE;
+                        String affinityCode = Constants.AFFINITY_CODE;
                         String recordingCard = Constants.NOT_RECORDING_CARD;
                         String annualLimitAmount = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
                         String cardDeliveryAddress = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                        cardDeliveryAddress = cardDeliveryAddress.replace(" ", "%2B");
                         String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
                         String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
-                        String deliveryFloor = Integer.toString(r.getPersonId().getPersonHasAddress().getAddressId().getFloor());
                         AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
-                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(operationType, entityCode, countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, 
-                                                                                           addressApplicant, stateCode, city, zipCode, movilPhone, email, lastName, firstName, taxInformationRegistry, productCode,
-                                                                                           recordingCard, annualLimitAmount, cardDeliveryAddress, deliveryStateCode, deliverZipCode, deliveryFloor);
+                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
+                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
+                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
                         cardNumber = assignVirtualCardResponse.getAlias();
-                        card = createCard(reviewRequestParam, cardNumber, r, cardStatus);
+                        accountAssigned = assignVirtualCardResponse.getCtasig();
+                        card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
                         card = saveCard(card);
-                        createAccount(card,r);
+                        createAccount(card,r,accountAssigned);
                         //Actualiza el estatus de la solicitud
                         updateStatusRequest(r);
                         i++;                        
@@ -377,7 +381,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
                                     card.setIndRenewal(indRenewal);
                                     card = saveCard(card);
-                                    createAccount(card, r);
+                                    createAccount(card, r, accountAssigned);
                                     i++;
                                 }
                             }
@@ -397,7 +401,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         cardNumber = assignVirtualCardResponse.getAlias();;
                         card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
                         card = saveCard(card);
-                        createAccount(card,r);
+                        createAccount(card,r, accountAssigned);
                         //Actualiza el estatus de la solicitud
                         updateStatusRequest(r);
                         i++;
@@ -428,7 +432,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
                                 card.setIndRenewal(indRenewal);
                                 card = saveCard(card);
-                                createAccount(card, r);
+                                createAccount(card, r, accountAssigned);
                                 i++;
                             }
                         }
@@ -479,7 +483,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         return card;
     }
 
-    public void createAccount(Card cardNumber, Request request) {
+    public void createAccount(Card cardNumber, Request request, String accountAssigned) {
         AccountCard accountCard = new AccountCard();
         StatusAccount statusAccount = null;
         Transaction transactionAccount = null;
@@ -522,7 +526,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                 for (AccountProperties accountProperties : accountPropertiesList) {
                     accountCard.setAccountPropertiesId(accountProperties);
                     lenghtAccount = accountProperties.getLenghtAccount();
-                    accountCard.setAccountNumber(createNumberAccount(lenghtAccount));
+                    accountCard.setAccountNumber(accountAssigned);
                     accountCard.setStatusAccountId(statusAccount);
                     accountCard.setCardId(cardNumber);
                     accountCard.setTransactionId(transactionAccount);
