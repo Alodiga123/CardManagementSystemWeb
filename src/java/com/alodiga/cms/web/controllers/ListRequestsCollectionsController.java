@@ -125,7 +125,11 @@ public class ListRequestsCollectionsController extends GenericAbstractListContro
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCountryId().getName()));
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getProductTypeId().getName()));
                     item.appendChild(new Listcell(requestCollectionsRequest.getCollectionsRequestid().getCollectionTypeId().getDescription()));
-                    item.appendChild(new Listcell((requestCollectionsRequest.getIndApproved().toString()).equals("1")?"Aprobado":"Rechazado"));
+                    if (requestCollectionsRequest.getIndApproved() != null) {
+                        item.appendChild(new Listcell((requestCollectionsRequest.getIndApproved().toString()).equals("1")?"Aprobado":"Rechazado"));
+                    } else {
+                        item.appendChild(new Listcell("Pendiente"));
+                    }                    
                     if(statusEditView == true){
                         item.appendChild(createButtonEditModal(requestCollectionsRequest));
                         item.appendChild(createButtonViewModal(requestCollectionsRequest));
