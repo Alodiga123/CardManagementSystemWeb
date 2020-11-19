@@ -163,6 +163,7 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             rateByCard.setChannelId(rp.getChannelId());
                             rateByCard.setFixedRate(rp.getFixedRate());
                             rateByCard.setPercentageRate(rp.getPercentageRate());
+                            rateByCard.setIndCardHolderModification(rp.getIndCardHolderModification());
                             rateByCard.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByCard.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByCard.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
@@ -187,6 +188,11 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                     item.setValue(r);
                     item.appendChild(new Listcell (r.getCardId().getProductId().getCountryId().getName()));
                     item.appendChild(new Listcell(r.getChannelId().getName()));
+                    if(r.getTransactionId().getCode() != null){
+                        item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                    }else{
+                        item.appendChild(new Listcell("-"));
+                    }
                     item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                     if (r.getFixedRate() != null) {
                         item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -198,7 +204,12 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                     }else{
                         item.appendChild(new Listcell("-"));
                     }  
-                    item.appendChild(createButtonEditModal(r));
+                    if(r.getApprovalCardRateId() != null){
+                         item.appendChild(new Listcell(r.getApprovalCardRateId().getIndApproved()?"Si":"No"));
+                    } else {
+                        item.appendChild(new Listcell("No"));
+                    }
+                    item.appendChild(r.getIndCardHolderModification()?createButtonEditModal(r):new Listcell());
                     item.appendChild(createButtonViewModal(r));
                     item.setParent(lbxRecords);
                 }
@@ -233,6 +244,7 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             rateByCard.setFixedRate(rp.getFixedRate());
                             rateByCard.setPercentageRate(rp.getPercentageRate());
                             rateByCard.setRateApplicationTypeId(rp.getRateApplicationTypeId());
+                            rateByCard.setIndCardHolderModification(rp.getIndCardHolderModification());
                             rateByCard.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByCard.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
                             rateByCard.setTransactionId(rp.getTransactionId());
@@ -249,6 +261,7 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             item.setValue(r);
                             item.appendChild(new Listcell(r.getCardId().getProductId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
                             if (r.getFixedRate() != null) {
                                 item.appendChild(new Listcell(r.getFixedRate().toString()));
@@ -260,6 +273,11 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             }else{
                                 item.appendChild(new Listcell("-"));
                             }  
+                            if(r.getApprovalCardRateId() != null){
+                                item.appendChild(new Listcell(r.getApprovalCardRateId().getIndApproved()?"Si":"No"));
+                            } else {
+                                item.appendChild(new Listcell("No"));
+                            }
                             item.appendChild(createButtonEditModal(r));
                             item.appendChild(createButtonViewModal(r));
                             item.setParent(lbxRecords);

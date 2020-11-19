@@ -125,6 +125,7 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
                     builder.append(approvalProductRate.getUserId().getLastNames());                    
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(approvalProductRate.getUserId().getComercialAgencyId().getName()));
+                    item.appendChild(new Listcell(approvalProductRate.getProductId().getName()));
                     item.appendChild(new Listcell(simpleDateFormat.format(approvalProductRate.getApprovalDate())));               
                     item.appendChild(createButtonEditModal(approvalProductRate));
                     item.appendChild(createButtonViewModal(approvalProductRate));
@@ -134,6 +135,7 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());

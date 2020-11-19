@@ -194,6 +194,9 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
                 case WebConstants.EVENT_EDIT:
                     saveApprovalRates(approvalProductRateParam);
                     break;
+                case WebConstants.EVENT_VIEW:
+                    blockFields();
+                    break;
                 default:
                     break;
             }
@@ -221,6 +224,7 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
                     txtCommercialAssessorUserCode.setValue(user.getCode());
                     txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
                     txtIdentification.setValue(user.getIdentificationNumber());
+                    blockFields();
                 break;
             }
         } catch (EmptyListException ex) {

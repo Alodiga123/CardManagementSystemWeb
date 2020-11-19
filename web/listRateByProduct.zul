@@ -41,11 +41,13 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.country')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.channel')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.transaction')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.fixedRate')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.percentageRate')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="130px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.channel')}" width="60px" sort="auto"/>
+                                                    <listheader label="${c:l('sp.common.code')}" width="60px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.transaction')}" width="210px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.fixedRate')}" width="80px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.percentageRate')}" width="120px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.approved')}" width="145px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

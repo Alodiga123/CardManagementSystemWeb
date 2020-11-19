@@ -123,6 +123,7 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
                     builder.append(approvalProgramRate.getUserId().getLastNames());                    
                     item.appendChild(new Listcell(builder.toString()));
                     item.appendChild(new Listcell(approvalProgramRate.getUserId().getComercialAgencyId().getName()));
+                    item.appendChild(new Listcell(approvalProgramRate.getProgramId().getName()));
                     item.appendChild(new Listcell(simpleDateFormat.format(approvalProgramRate.getApprovalDate())));               
                     item.appendChild(createButtonViewModal(approvalProgramRate));
                     item.setParent(lbxRecords);
@@ -131,6 +132,7 @@ public class ListApprovalRateByProgramController extends GenericAbstractListCont
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
