@@ -111,7 +111,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
                 } else {
                     lblKinShipApplicant.setValue(WebConstants.MAIN_APPLICANT);
                 }
-                percentageMatchApplicant = Float.parseFloat(getReviewOFAC(applicant).getResultReview())*100;
+                percentageMatchApplicant = (getReviewOFAC(applicant).getResultReview())*100;
                 lblPercentageMatchApplicant.setValue(percentageMatchApplicant.toString());
             } else {
                 if (applicant.getPersonClassificationId().getId() == 4) {
@@ -119,7 +119,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
                     lblDocumentTypeApplicant.setValue(applicant.getLegalPerson().getDocumentsPersonTypeId().getDescription());
                     lblNoIdentificationApplicant.setValue(applicant.getLegalPerson().getIdentificationNumber());
                     lblKinShipApplicant.setValue(WebConstants.MAIN_APPLICANT);
-                    percentageMatchApplicant = Float.parseFloat(getReviewOFAC(applicant).getResultReview())*100;
+                    percentageMatchApplicant = (getReviewOFAC(applicant).getResultReview())*100;
                     lblPercentageMatchApplicant.setValue(percentageMatchApplicant.toString());
                 } else if (applicant.getPersonClassificationId().getId() == 8) {
                     StringBuilder builder = new StringBuilder(applicant.getCardRequestNaturalPerson().getFirstNames());
@@ -129,7 +129,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
                     lblDocumentTypeApplicant.setValue(applicant.getCardRequestNaturalPerson().getDocumentsPersonTypeId().getDescription());
                     lblNoIdentificationApplicant.setValue(applicant.getCardRequestNaturalPerson().getIdentificationNumber());
                     lblKinShipApplicant.setValue(WebConstants.CARD_REQUEST_NATURAL_PERSON);
-                    percentageMatchApplicant = Float.parseFloat(getReviewOFAC(applicant).getResultReview())*100;
+                    percentageMatchApplicant = (getReviewOFAC(applicant).getResultReview())*100;
                     lblPercentageMatchApplicant.setValue(percentageMatchApplicant.toString());
                 } else if (applicant.getPersonClassificationId().getId() == 5) {
                     StringBuilder builder = new StringBuilder(applicant.getLegalRepresentatives().getFirstNames());
@@ -139,7 +139,7 @@ public class AdminApplicantOFACController extends GenericAbstractAdminController
                     lblDocumentTypeApplicant.setValue(applicant.getLegalRepresentatives().getDocumentsPersonTypeId().getDescription());
                     lblNoIdentificationApplicant.setValue(applicant.getLegalRepresentatives().getIdentificationNumber());
                     lblKinShipApplicant.setValue(WebConstants.LEGAL_REPRESENTATIVE);
-                    percentageMatchApplicant = Float.parseFloat(getReviewOFAC(applicant).getResultReview())*100;
+                    percentageMatchApplicant = (getReviewOFAC(applicant).getResultReview())*100;
                     lblPercentageMatchApplicant.setValue(percentageMatchApplicant.toString());
                 }
             }            
