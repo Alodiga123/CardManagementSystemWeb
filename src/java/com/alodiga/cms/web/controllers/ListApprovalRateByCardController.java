@@ -7,7 +7,7 @@ import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
 import com.alodiga.cms.web.utils.Utils;
 import com.alodiga.cms.web.utils.WebConstants;
-import com.cms.commons.models.ApprovalProductRate;
+import com.cms.commons.models.ApprovalCardRate;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.ProductType;
 import com.cms.commons.models.Program;
@@ -34,19 +34,19 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ListApprovalRateByProductController extends GenericAbstractListController<ApprovalProductRate> {
+public class ListApprovalRateByCardController extends GenericAbstractListController<ApprovalCardRate> {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Listbox lbxRecords;
     private Textbox txtName;
     private ProductEJB productEJB = null;
-    private List<ApprovalProductRate> approvalProductRateList = null;
+    private List<ApprovalCardRate> approvalCardRateList = null;
     private User currentUser;
     private Button btnSave;
     public Program program = null;
     public Product product = null;
     private ProductType productType = null;
-    private ListRateByProgramController listRateByProgram = null;
+    private ListRateByProgramController listRateByCard = null;
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -56,11 +56,11 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
     }
 
     public void startListener() {
-        EventQueue que = EventQueues.lookup("updateApprovalProductRate", EventQueues.APPLICATION, true);
+        EventQueue que = EventQueues.lookup("updateApprovalCardRate", EventQueues.APPLICATION, true);
         que.subscribe(new EventListener() {
             public void onEvent(Event evt) { 
                 getData();
-                loadDataList(approvalProductRateList);
+                loadDataList(approvalCardRateList);
             }
         });
     }
@@ -74,21 +74,21 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
             permissionAdd = true;
             permissionRead = true;
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
-            adminPage = "/adminApprovalProductRate.zul";
+            adminPage = "/adminApprovalCardRate.zul";
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);             
             getData();
-            loadDataList(approvalProductRateList);
+            loadDataList(approvalCardRateList);
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void getData() {
-        approvalProductRateList = new ArrayList<ApprovalProductRate>();
+        approvalCardRateList = new ArrayList<ApprovalCardRate>();
         try {
             request.setFirst(0);
             request.setLimit(null);
-            approvalProductRateList = productEJB.getApprovalProductRate(request);   
+            approvalCardRateList = productEJB.getApprovalCardRate(request);   
         } catch (NullParameterException ex) {
             showError(ex);
         } catch (EmptyListException ex) {
@@ -110,25 +110,25 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
         txtName.setText("");
     }    
     
-    public void loadDataList(List<ApprovalProductRate> list) {
+    public void loadDataList(List<ApprovalCardRate> list) {
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
             if (list != null && !list.isEmpty()) {
-                for (ApprovalProductRate approvalProductRate : list) {
+                for (ApprovalCardRate approvalCardRate : list) {
                     item = new Listitem();
-                    item.setValue(approvalProductRate);
+                    item.setValue(approvalCardRate);
                     String pattern = "dd/MM/yyyy";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    StringBuilder builder = new StringBuilder(approvalProductRate.getUserId().getFirstNames());
+                    StringBuilder builder = new StringBuilder(approvalCardRate.getUserId().getFirstNames());
                     builder.append(" ");
-                    builder.append(approvalProductRate.getUserId().getLastNames());                    
+                    builder.append(approvalCardRate.getUserId().getLastNames());                    
                     item.appendChild(new Listcell(builder.toString()));
-                    item.appendChild(new Listcell(approvalProductRate.getUserId().getComercialAgencyId().getName()));
-                    item.appendChild(new Listcell(approvalProductRate.getProductId().getName()));
-                    item.appendChild(new Listcell(simpleDateFormat.format(approvalProductRate.getApprovalDate())));               
-                    item.appendChild(createButtonEditModal(approvalProductRate));
-                    item.appendChild(createButtonViewModal(approvalProductRate));
+                    item.appendChild(new Listcell(approvalCardRate.getUserId().getComercialAgencyId().getName()));
+                    item.appendChild(new Listcell(approvalCardRate.getCardId().getCardHolder()));
+                    item.appendChild(new Listcell(simpleDateFormat.format(approvalCardRate.getApprovalDate())));               
+                    item.appendChild(createButtonEditModal(approvalCardRate));
+                    item.appendChild(createButtonViewModal(approvalCardRate));
                     item.setParent(lbxRecords);
                 }
             } else {
@@ -151,7 +151,7 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
         try {
             Sessions.getCurrent().setAttribute(WebConstants.EVENTYPE, WebConstants.EVENT_ADD);
             Map<String, Object> paramsPass = new HashMap<String, Object>();
-            paramsPass.put("object", approvalProductRateList);
+            paramsPass.put("object", approvalCardRateList);
             final Window window = (Window) Executions.createComponents(adminPage, null, paramsPass);
             window.doModal();
         } catch (Exception ex) {
@@ -211,7 +211,7 @@ public class ListApprovalRateByProductController extends GenericAbstractListCont
     }
 
     @Override
-    public List<ApprovalProductRate> getFilterList(String filter) {
+    public List<ApprovalCardRate> getFilterList(String filter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

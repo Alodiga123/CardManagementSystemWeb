@@ -104,7 +104,6 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
 
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
-        btnApprove.setVisible(false);
         if (eventType != WebConstants.EVENT_ADD) {
             btnApprove.setVisible(false);
         }
@@ -154,8 +153,10 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
         ListGeneralRateController listGeneralRate = new ListGeneralRateController();
         List<GeneralRate> generalRateList = listGeneralRate.getGeneralRateList();            
         for (GeneralRate generalRate : generalRateList) {
-            generalRate.setApprovalGeneralRateId(approvalGeneralRate);
-            productEJB.saveGeneralRate(generalRate);
+            if (generalRate.getApprovalGeneralRateId()== null){
+                generalRate.setApprovalGeneralRateId(approvalGeneralRate);
+                productEJB.saveGeneralRate(generalRate);
+            }
         }     
     }
     
@@ -195,6 +196,7 @@ public class AdminApprovalRatesController extends GenericAbstractAdminController
                     txtCommercialAssessorUserCode.setValue(user.getCode());
                     txtAssessorName.setValue(user.getFirstNames() + " " + user.getLastNames());
                     txtIdentification.setValue(user.getIdentificationNumber());
+                    blockFields();
                     break;
             }
         } catch (EmptyListException ex) {

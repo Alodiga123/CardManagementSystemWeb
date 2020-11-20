@@ -1,21 +1,20 @@
 package com.alodiga.cms.web.controllers;
 
+import com.alodiga.cms.commons.ejb.CardEJB;
 import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import static com.alodiga.cms.web.controllers.ListRateByProgramController.program;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.ApprovalGeneralRate;
+import com.cms.commons.models.ApprovalCardRate;
 import com.cms.commons.models.ApprovalProductRate;
-import com.cms.commons.models.ApprovalProgramRate;
-import com.cms.commons.models.Product;
+import com.cms.commons.models.Card;
 import com.cms.commons.models.Program;
+import com.cms.commons.models.RateByCard;
 import com.cms.commons.models.RateByProduct;
-import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -37,7 +36,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
 
-public class AdminApprovalProductRateController extends GenericAbstractAdminController {
+public class AdminApprovalCardRateController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
     private Label lblProgram;
@@ -50,22 +49,23 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
     private Radio rApprovedYes;
     private Radio rApprovedNo;
     private ProductEJB productEJB = null;
+    private CardEJB cardEJB = null;
     private User user = null;
-    private ApprovalProductRate approvalProductRateParam;
+    private ApprovalCardRate approvalCardRateParam;
     private Button btnSave;
-    public Window winAdminApprovalProductRate;
+    public Window winAdminApprovalCardRate;
     private Program program;
-    private List<RateByProduct> rateByProductByProductList = new ArrayList<RateByProduct>();
-    private Product product;
+    private List<RateByCard> rateByCardByProductList = new ArrayList<RateByCard>();
+    private Card card;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         eventType = (Integer) Sessions.getCurrent().getAttribute(WebConstants.EVENTYPE);
         if (eventType == WebConstants.EVENT_ADD) {
-            approvalProductRateParam = null;                    
+            approvalCardRateParam = null;                    
         } else {
-            approvalProductRateParam = (ApprovalProductRate) Sessions.getCurrent().getAttribute("object");            
+            approvalCardRateParam = (ApprovalCardRate) Sessions.getCurrent().getAttribute("object");            
         }
         initialize();
     }
@@ -76,7 +76,8 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         try {
             user = (User) session.getAttribute(Constants.USER_OBJ_SESSION);
             productEJB = (ProductEJB) EJBServiceLocator.getInstance().get(EjbConstants.PRODUCT_EJB);
-            product = (Product) session.getAttribute(WebConstants.PRODUCT);
+            cardEJB = (CardEJB) EJBServiceLocator.getInstance().get(EjbConstants.CARD_EJB);
+            card = (Card) session.getAttribute(WebConstants.CARD);
             loadData();
             this.clearMessage();
         } catch (Exception ex) {
@@ -90,18 +91,18 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         txtApprovalDate.setRawValue(null);
     }
 
-    private void loadFields(ApprovalProductRate approvalProductRate) throws EmptyListException, GeneralException, NullParameterException {
+    private void loadFields(ApprovalCardRate approvalCardRate) throws EmptyListException, GeneralException, NullParameterException {
         try {
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
             lblProgram.setValue(program.getName());
-            txtCity.setValue(approvalProductRate.getUserId().getComercialAgencyId().getCityId().getName());
-            txtAgency.setValue(approvalProductRate.getUserId().getComercialAgencyId().getName());
-            txtCommercialAssessorUserCode.setValue(approvalProductRate.getUserId().getCode());
-            txtAssessorName.setValue(approvalProductRate.getUserId().getFirstNames() + " " + approvalProductRate.getUserId().getLastNames());
-            txtIdentification.setValue(approvalProductRate.getUserId().getIdentificationNumber());
-            txtApprovalDate.setValue(approvalProductRate.getApprovalDate());
-            if (approvalProductRate.getIndApproved() != null) {
-                if (approvalProductRate.getIndApproved() == true) {
+            txtCity.setValue(approvalCardRate.getUserId().getComercialAgencyId().getCityId().getName());
+            txtAgency.setValue(approvalCardRate.getUserId().getComercialAgencyId().getName());
+            txtCommercialAssessorUserCode.setValue(approvalCardRate.getUserId().getCode());
+            txtAssessorName.setValue(approvalCardRate.getUserId().getFirstNames() + " " + approvalCardRate.getUserId().getLastNames());
+            txtIdentification.setValue(approvalCardRate.getUserId().getIdentificationNumber());
+            txtApprovalDate.setValue(approvalCardRate.getApprovalDate());
+            if (approvalCardRate.getIndApproved() != null) {
+                if (approvalCardRate.getIndApproved() == true) {
                     rApprovedYes.setChecked(true);    
                 } else {
                     rApprovedNo.setChecked(true);
@@ -129,14 +130,14 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         return false;
     }
 
-    private void saveApprovalRates(ApprovalProductRate _approvalProductRate) {
-        ApprovalProductRate approvalProductRate = null;
+    private void saveApprovalRates(ApprovalCardRate _approvalCardRate) {
+        ApprovalCardRate approvalCardRate = null;
         boolean indApproved;
         try {
-            if (_approvalProductRate != null) {
-                approvalProductRate = _approvalProductRate;
+            if (_approvalCardRate != null) {
+                approvalCardRate = _approvalCardRate;
             } else {
-                approvalProductRate = new ApprovalProductRate();
+                approvalCardRate = new ApprovalCardRate();
             }
             
             if (rApprovedYes.isChecked()) {
@@ -146,15 +147,15 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
             }
             
             //Guarda la aprobación de las tarifas por programa
-            approvalProductRate.setProductId(product);
-            approvalProductRate.setApprovalDate(txtApprovalDate.getValue());
-            approvalProductRate.setIndApproved(indApproved);
-            approvalProductRate.setUserId(user);
-            approvalProductRate.setCreateDate(new Timestamp(new Date().getTime()));
-            approvalProductRate = productEJB.saveApprovalProductRate(approvalProductRate);
+            approvalCardRate.setCardId(card);
+            approvalCardRate.setApprovalDate(txtApprovalDate.getValue());
+            approvalCardRate.setIndApproved(indApproved);
+            approvalCardRate.setUserId(user);
+            approvalCardRate.setCreateDate(new Timestamp(new Date().getTime()));
+            approvalCardRate = productEJB.saveApprovalCardRate(approvalCardRate);
             
             //Actualiza las tarifas del programa que se está aprobando
-            updateProductRate(approvalProductRate);
+            updateCardRate(approvalCardRate);
             
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateApprovalProductRate", EventQueues.APPLICATION, true).publish(new Event(""));
@@ -163,16 +164,16 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         }
     }
     
-    public void updateProductRate(ApprovalProductRate approvalProductRate) {
+    public void updateCardRate(ApprovalCardRate approvalCardRate) {
         try {
             Map params = new HashMap();
             EJBRequest request1 = new EJBRequest();
-            params.put(QueryConstants.PARAM_PRODUCT_ID, product.getId());
+            params.put(QueryConstants.PARAM_CARD_ID, card.getId());
             request1.setParams(params);
-            rateByProductByProductList = productEJB.getRateByProductByProduct(request1);
-            for (RateByProduct rateByProduct: rateByProductByProductList) {
-                rateByProduct.setApprovalProductRateId(approvalProductRate);
-                rateByProduct = productEJB.saveRateByProduct(rateByProduct);
+            rateByCardByProductList = cardEJB.getRateByCardByCard(request1);
+            for (RateByCard rateByCard: rateByCardByProductList) {
+                rateByCard.setApprovalCardRateId(approvalCardRate);
+                rateByCard = cardEJB.saveRateByCard(rateByCard);
             }
         } catch (NullParameterException ex) {
             showError(ex);
@@ -192,7 +193,7 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
                     saveApprovalRates(null);
                     break;
                 case WebConstants.EVENT_EDIT:
-                    saveApprovalRates(approvalProductRateParam);
+                    saveApprovalRates(approvalCardRateParam);
                     break;
                 case WebConstants.EVENT_VIEW:
                     blockFields();
@@ -204,17 +205,17 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
     }
     
     public void onClick$btnBack() {
-        winAdminApprovalProductRate.detach();
+        winAdminApprovalCardRate.detach();
     }
 
     public void loadData() {
         try {
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
-                    loadFields(approvalProductRateParam);
+                    loadFields(approvalCardRateParam);
                 break;
                 case WebConstants.EVENT_VIEW:
-                    loadFields(approvalProductRateParam);
+                    loadFields(approvalCardRateParam);
                     blockFields();
                 break;
                 case WebConstants.EVENT_ADD:

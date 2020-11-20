@@ -198,35 +198,37 @@ public class ListRateByProgramController extends GenericAbstractListController<R
                 Listitem item = null;
                 if (rateByProgramList != null && !rateByProgramList.isEmpty()) {
                     for (RateByProgram r : rateByProgramList) {
-                        item = new Listitem();
-                        item.setValue(r);
-                        item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
-                        item.appendChild(new Listcell(r.getChannelId().getName()));
-                        if(r.getTransactionId().getCode() != null){
-                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
-                        }else{
-                            item.appendChild(new Listcell("-"));
-                        }
-                        
-                        item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                        if (r.getFixedRate() != null) {
-                            item.appendChild(new Listcell(r.getFixedRate().toString()));
-                        }else{
-                            item.appendChild(new Listcell("-"));
-                        }
-                        if (r.getPercentageRate() != null) {
-                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
-                        }else{
-                            item.appendChild(new Listcell("-"));
-                        }  
-                        if(r.getApprovalProgramRateId() != null){
-                            item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
-                        } else {
-                            item.appendChild(new Listcell("No"));
-                        }
-                        item.appendChild(createButtonEditModal(r));
-                        item.appendChild(createButtonViewModal(r));
-                        item.setParent(lbxRecords);
+//                        if (r.getApprovalProgramRateId()!= null && r.getApprovalProgramRateId().getIndApproved()){
+                            item = new Listitem();
+                            item.setValue(r);
+                            item.appendChild(new Listcell(r.getProgramId().getCardProgramManagerId().getCountryId().getName()));
+                            item.appendChild(new Listcell(r.getChannelId().getName()));
+                            if(r.getTransactionId().getCode() != null){
+                                item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }
+
+                            item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                            if (r.getFixedRate() != null) {
+                                item.appendChild(new Listcell(r.getFixedRate().toString()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }
+                            if (r.getPercentageRate() != null) {
+                                item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }  
+                            if(r.getApprovalProgramRateId() != null){
+                                item.appendChild(new Listcell((r.getApprovalProgramRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
+                            } else {
+                                item.appendChild(new Listcell("No"));
+                            }
+                            item.appendChild(createButtonEditModal(r));
+                            item.appendChild(createButtonViewModal(r));
+                            item.setParent(lbxRecords);
+//                        }
                     }
                 } else {
                     btnDownload.setVisible(false);

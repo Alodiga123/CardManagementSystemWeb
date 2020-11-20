@@ -8,6 +8,7 @@ import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.RateByCard;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -18,6 +19,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Window;
 
 public class AdminRateByCardController extends GenericAbstractAdminController {
 
@@ -30,6 +32,8 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
     private Label lblProductType;
     private Label lblProduct;
     private Label lblChannel;
+    private Label lblTransactionCode;
+    private Label lblStatus;
     private Label lblTransaction;
     private Label lblRateApplicationType;
     private Textbox txtFixedRate;
@@ -38,6 +42,7 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
     private Textbox txtTotalTransactionExemptPerMonth;
     private Button btnSave;
     private Toolbarbutton tbbTitle;
+    public Window winAdminRateByCard;
     private Float fixedRate;
     private Float percentageRate;
     private int totalTransactionInitialExempt;
@@ -81,14 +86,25 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
             lblProductType.setValue(rateByCard.getCardId().getProductId().getProgramId().getProductTypeId().getName());
             lblProduct.setValue(rateByCard.getCardId().getProductId().getName());
             lblChannel.setValue(rateByCard.getChannelId().getName());
+            lblTransactionCode.setValue(rateByCard.getTransactionId().getCode());
+            if (rateByCard.getApprovalCardRateId() != null) {
+                lblStatus.setValue(Labels.getLabel("cms.common.approved"));
+            }else{
+                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+            }   
             lblTransaction.setValue(rateByCard.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByCard.getRateApplicationTypeId().getDescription());
-            txtFixedRate.setText(rateByCard.getFixedRate().toString());
-            txtPercentageRate.setText(rateByCard.getPercentageRate().toString());
+            if (rateByCard.getFixedRate() != null) {
+                txtFixedRate.setText(rateByCard.getFixedRate().toString());
+                fixedRate = rateByCard.getFixedRateCR();
+                txtPercentageRate.setDisabled(true);
+            } else {
+                txtPercentageRate.setText(rateByCard.getPercentageRate().toString());
+                percentageRate = rateByCard.getPercentageRateCR();
+                txtFixedRate.setDisabled(true);
+            }    
             txtTotalTransactionInitialExempt.setText(rateByCard.getTotalInitialTransactionsExempt().toString());
-            txtTotalTransactionExemptPerMonth.setText(rateByCard.getTotalTransactionsExemptPerMonth().toString()); 
-            fixedRate = rateByCard.getFixedRateCR();
-            percentageRate = rateByCard.getPercentageRateCR();
+            txtTotalTransactionExemptPerMonth.setText(rateByCard.getTotalTransactionsExemptPerMonth().toString());            
             totalTransactionInitialExempt = rateByCard.getTotalInitialTransactionsExemptCR();
             totalTransactionExemptPerMonth = rateByCard.getTotalTransactionsExemptPerMonthCR();
         } catch (Exception ex) {
@@ -174,20 +190,24 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveRateByCard(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveRateByCard(rateByCardParam);
-                break;
-            default:
-                break;
+        this.clearMessage();
+        if (validateEmpty() && validateRateByCard()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveRateByCard(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveRateByCard(rateByCardParam);
+                    break;
+                default:
+                    break;
+            }
         }
     }
     
     public void onclick$btnBack() {
-        Executions.getCurrent().sendRedirect("listRateByProduct.zul");
+        winAdminRateByCard.detach();
+//        Executions.getCurrent().sendRedirect("listRateByProduct.zul");
     }
 
     public void loadData() {
@@ -206,6 +226,79 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
             default:
                 break;
         }
+    }
+    
+    public Boolean validateEmpty() {
+        if (txtFixedRate.isDisabled() == false) {
+            if (txtFixedRate.getText().equalsIgnoreCase("") ) {
+               txtFixedRate.setFocus(true);
+               this.showMessage("cms.common.fixedRate.error2", true, null);
+               return false;
+        }
+            if (Float.parseFloat(txtFixedRate.getText())<=0 ) {
+               txtFixedRate.setFocus(true);
+               this.showMessage("sp.error.invalid.amount", true, null);
+               return false;
+            }
+        }
+        
+        if (txtPercentageRate.isDisabled() == false) {
+            if (txtPercentageRate.getText().equalsIgnoreCase("") ) {
+               txtPercentageRate.setFocus(true);
+               this.showMessage("cms.common.percentageRate.error", true, null); 
+               return false;
+            }
+            if (Float.parseFloat(txtPercentageRate.getText())<=0 ) {
+               txtPercentageRate.setFocus(true);
+               this.showMessage("sp.error.invalid.amount", true, null);
+               return false;
+            }
+        }
+        
+        if (txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionInitialExempt.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+           return false;
+        }
+        if (txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionExemptPerMonth.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+           return false;
+        }           
+   
+        return true;
+    }
+    
+    public boolean validateRateByCard() {
+        if (txtPercentageRate.isDisabled() == false) {
+            if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
+                this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
+                txtPercentageRate.setFocus(true);
+                return false;
+            }
+        }              
+        if (txtFixedRate.isDisabled() == false) {
+            if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
+                this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
+                txtFixedRate.setFocus(true);
+                return false;
+            }
+        }       
+        if(!txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")){
+            if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
+                this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
+                txtTotalTransactionInitialExempt.setFocus(true);
+                return false;
+            } 
+        }        
+        if(!txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")){
+            if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
+                this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
+                txtTotalTransactionExemptPerMonth.setFocus(true);
+                return false;
+            }
+        }
+        return true;
     }
     
 }
