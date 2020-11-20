@@ -132,7 +132,7 @@ public class ListApprovalRateByCardController extends GenericAbstractListControl
                     item.setParent(lbxRecords);
                 }
             } else {
-                btnDownload.setVisible(false);
+//                btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
                 item.appendChild(new Listcell());

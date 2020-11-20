@@ -12,7 +12,7 @@
                     <hlayout>
                         <div width="1200px" align="left" height="670px">
                             <hlayout>
-                                <div width="900px">
+                                <div width="890px">
                                     <vlayout>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
@@ -39,7 +39,7 @@
                                             </grid>  
                                             <separator/>
                                             <!--Record Listbox-->
-                                            <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
+                                            <listbox id="lbxRecords" fixedLayout="true" width="885px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                   <listheader label="${c:l('cms.common.country')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.channel')}" width="60px" sort="auto"/>
@@ -47,7 +47,7 @@
                                                     <listheader label="${c:l('cms.common.transaction')}" width="210px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.fixedRate')}" width="80px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.percentageRate')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.approved')}" width="145px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.approved')}" width="135px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>
