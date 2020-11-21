@@ -285,8 +285,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                     //Caso Solicitante Natural
                     if (r.getPersonTypeId().getIndNaturalPerson() == true) {
                         //Asignar tarjeta al solicitante principal
-                        String operationType = Constants.OPERATION_TYPE_REGALW;
-                        String entityCode = Constants.ENTITY_CODE;
                         String initialsDocumentType = r.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
                         String countryCode = r.getCountryId().getCodeIso3();
                         String identificationNumber = r.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
@@ -321,7 +319,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         String firstName = r.getPersonId().getApplicantNaturalPerson().getFirstNames();
                         firstName = firstName.replace(" ", "%2B");
                         String taxInformationRegistry = r.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
-                        String productCode = Constants.PRODUCT_CODE;
                         String affinityCode = Constants.AFFINITY_CODE;
                         String recordingCard = Constants.NOT_RECORDING_CARD;
                         String annualLimitAmount = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
