@@ -338,6 +338,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
                 loadCmbChannel(eventType);
                 loadCmbTransaction(eventType);
                 loadCmbRateApplicationType(eventType);
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 loadCmbTransaction(eventType);

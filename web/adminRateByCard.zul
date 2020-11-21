@@ -48,21 +48,24 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.channel')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.transaction')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.transaction.code2')}" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
                                                             <label id="lblChannel" width="250px"/>
                                                             <label id="lblTransaction" width="250px"/>
-                                                            <label id="lblRateApplicationType" width="250px"/>
-                                                            
+                                                            <label id="lblTransactionCode" width="250px"/>
+   
                                                         </row>
                                                         <row>
+                                                            <label value="${c:l('cms.common.applicationRateType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fixedRate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.percentageRate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.totalTransactionInitialExempt')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
+                                                                <label id="lblRateApplicationType" width="250px"/>
+                                                            </hlayout> 
+                                                             <hlayout>
                                                                 <textbox id="txtFixedRate" width="230px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout> 
@@ -70,19 +73,22 @@
                                                                 <textbox id="txtPercentageRate" width="230px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout> 
-                                                            <hlayout>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.totalTransactionInitialExempt')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>                           
+                                                        </row>
+                                                        <row>
+                                                             <hlayout>
                                                                 <textbox id="txtTotalTransactionInitialExempt" width="230px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout> 
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.totalTransactionExemptperMonth')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
                                                             <hlayout> 
                                                                 <textbox id="txtTotalTransactionExemptPerMonth" width="230px"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout> 
+                                                            <label id="lblStatus" width="250px"/>
                                                         </row>
                                                     </rows>
                                                 </grid>

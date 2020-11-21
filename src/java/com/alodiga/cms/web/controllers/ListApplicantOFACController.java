@@ -29,6 +29,7 @@ import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -297,7 +298,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                 ReviewOFAC reviewOFAC = new ReviewOFAC();
                 reviewOFAC.setPersonId(applicant);
                 reviewOFAC.setRequestId(request);
-                reviewOFAC.setResultReview(ofacResponse.getPercentMatch());
+                reviewOFAC.setResultReview(Float.valueOf(ofacResponse.getPercentMatch()));
                 reviewOFAC = requestEJB.saveReviewOFAC(reviewOFAC);
                 
                 //Actualizar el estatus del solicitante si tiene coincidencia con lista OFAC                
@@ -383,6 +384,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
     }    
     
     public void loadDataList(List<Person> list) {
+    NumberFormat formatoPorcentaje = NumberFormat.getPercentInstance(); 
         try {
             lbxRecords.getItems().clear();
             Listitem item = null;
@@ -407,7 +409,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                             item.appendChild(new Listcell("SIN REGISTRAR"));
                         }
                         if (applicant.getApplicantNaturalPerson().getPersonId().getReviewOFAC() != null) {
-                            item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
+                            item.appendChild(new Listcell(formatoPorcentaje.format(applicant.getReviewOFAC().getResultReview())));
                         } else {
                             item.appendChild(new Listcell(""));
                         }
@@ -431,7 +433,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                                 item.appendChild(new Listcell("SIN REGISTRAR"));
                             } 
                             if (applicant.getLegalPerson().getPersonId().getReviewOFAC() != null) {
-                                item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
+                                item.appendChild(new Listcell(formatoPorcentaje.format(applicant.getReviewOFAC().getResultReview())));
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
@@ -451,7 +453,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                                 item.appendChild(new Listcell("SIN REGISTRAR"));
                             }
                             if (applicant.getCardRequestNaturalPerson().getPersonId().getReviewOFAC() != null) {
-                                item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
+                                item.appendChild(new Listcell(formatoPorcentaje.format(applicant.getReviewOFAC().getResultReview())));
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
@@ -476,7 +478,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
                                 item.appendChild(new Listcell("SIN REGISTRAR"));
                             }
                             if (applicant.getLegalRepresentatives().getPersonId().getReviewOFAC() != null) {
-                                item.appendChild(new Listcell(applicant.getReviewOFAC().getResultReview()));
+                                item.appendChild(new Listcell(formatoPorcentaje.format(applicant.getReviewOFAC().getResultReview())));
                             } else {
                                 item.appendChild(new Listcell(""));
                             }
