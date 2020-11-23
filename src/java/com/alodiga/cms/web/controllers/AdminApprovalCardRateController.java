@@ -101,12 +101,10 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
             txtAssessorName.setValue(approvalCardRate.getUserId().getFirstNames() + " " + approvalCardRate.getUserId().getLastNames());
             txtIdentification.setValue(approvalCardRate.getUserId().getIdentificationNumber());
             txtApprovalDate.setValue(approvalCardRate.getApprovalDate());
-            if (approvalCardRate.getIndApproved() != null) {
-                if (approvalCardRate.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);    
-                } else {
-                    rApprovedNo.setChecked(true);
-                }
+            if (approvalCardRate.getIndApproved() == true) {
+                rApprovedYes.setChecked(true);    
+            } else {
+                rApprovedNo.setChecked(true);
             }
         } catch (Exception ex) {
             showError(ex);

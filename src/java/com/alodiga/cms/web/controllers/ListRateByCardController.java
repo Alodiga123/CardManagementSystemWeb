@@ -161,15 +161,23 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             rateByCard = new RateByCard();
                             rateByCard.setCardId(card);
                             rateByCard.setChannelId(rp.getChannelId());
-                            rateByCard.setFixedRate(rp.getFixedRate());
-                            rateByCard.setPercentageRate(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByCard.setFixedRate(rp.getFixedRate());
+                            }
+                            if (rp.getPercentageRate() != null) {
+                                rateByCard.setPercentageRate(rp.getPercentageRate());
+                            }                            
                             rateByCard.setIndCardHolderModification(rp.getIndCardHolderModification());
                             rateByCard.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByCard.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByCard.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
                             rateByCard.setTransactionId(rp.getTransactionId());
-                            rateByCard.setFixedRateCR(rp.getFixedRate());
-                            rateByCard.setPercentageRateCR(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByCard.setFixedRateCR(rp.getFixedRate());
+                            }    
+                            if (rp.getPercentageRate() != null) {
+                                rateByCard.setPercentageRateCR(rp.getPercentageRate());
+                            }                            
                             rateByCard.setTotalInitialTransactionsExemptCR(rp.getTotalInitialTransactionsExempt());
                             rateByCard.setTotalTransactionsExemptPerMonthCR(rp.getTotalTransactionsExemptPerMonth());
                             rateByCard.setCreateDate(new Timestamp(new Date().getTime()));
@@ -241,8 +249,12 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
                             rateByCard = new RateByCard();
                             rateByCard.setCardId(card);
                             rateByCard.setChannelId(rp.getChannelId());
-                            rateByCard.setFixedRate(rp.getFixedRate());
-                            rateByCard.setPercentageRate(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByCard.setFixedRate(rp.getFixedRate());
+                            }
+                            if (rp.getPercentageRate() != null) {
+                                rateByCard.setPercentageRate(rp.getPercentageRate());
+                            } 
                             rateByCard.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByCard.setIndCardHolderModification(rp.getIndCardHolderModification());
                             rateByCard.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
