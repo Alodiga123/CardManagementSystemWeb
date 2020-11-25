@@ -6,15 +6,14 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
+import static com.alodiga.cms.web.controllers.AdminApprovalProgramRateController.approvalProgramRateParam;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApprovalCardRate;
-import com.cms.commons.models.ApprovalProductRate;
 import com.cms.commons.models.Card;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByCard;
-import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -52,7 +51,7 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
     private CardEJB cardEJB = null;
     private User user = null;
     private ApprovalCardRate approvalCardRateParam;
-    private Button btnSave;
+    private Button btnApprove;
     public Window winAdminApprovalCardRate;
     private Program program;
     private List<RateByCard> rateByCardByProductList = new ArrayList<RateByCard>();
@@ -91,6 +90,10 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
         txtApprovalDate.setRawValue(null);
     }
 
+    public ApprovalCardRate getApprovalCardRate() {
+        return approvalCardRateParam;
+    }
+
     private void loadFields(ApprovalCardRate approvalCardRate) throws EmptyListException, GeneralException, NullParameterException {
         try {
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
@@ -101,13 +104,7 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
             txtAssessorName.setValue(approvalCardRate.getUserId().getFirstNames() + " " + approvalCardRate.getUserId().getLastNames());
             txtIdentification.setValue(approvalCardRate.getUserId().getIdentificationNumber());
             txtApprovalDate.setValue(approvalCardRate.getApprovalDate());
-            if (approvalCardRate.getIndApproved() != null) {
-                if (approvalCardRate.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);    
-                } else {
-                    rApprovedNo.setChecked(true);
-                }
-            }
+           
         } catch (Exception ex) {
             showError(ex);
         }
@@ -115,9 +112,9 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
 
     public void blockFields() {
         txtApprovalDate.setDisabled(true);
-        rApprovedYes.setDisabled(true);
-        rApprovedNo.setDisabled(true);        
-        btnSave.setVisible(false);
+        if (eventType != WebConstants.EVENT_ADD) {
+            btnApprove.setVisible(false);
+        }
     }
 
     public Boolean validateEmpty() {
@@ -132,7 +129,7 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
 
     private void saveApprovalRates(ApprovalCardRate _approvalCardRate) {
         ApprovalCardRate approvalCardRate = null;
-        boolean indApproved;
+        boolean indApproved = true;
         try {
             if (_approvalCardRate != null) {
                 approvalCardRate = _approvalCardRate;
@@ -140,11 +137,6 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
                 approvalCardRate = new ApprovalCardRate();
             }
             
-            if (rApprovedYes.isChecked()) {
-                indApproved = true;
-            } else {
-                indApproved = false;
-            }
             
             //Guarda la aprobación de las tarifas por programa
             approvalCardRate.setCardId(card);
@@ -153,12 +145,14 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
             approvalCardRate.setUserId(user);
             approvalCardRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalCardRate = productEJB.saveApprovalCardRate(approvalCardRate);
+            approvalCardRateParam = approvalCardRate;
+            btnApprove.setVisible(false);
             
             //Actualiza las tarifas del programa que se está aprobando
             updateCardRate(approvalCardRate);
             
             this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateApprovalProductRate", EventQueues.APPLICATION, true).publish(new Event(""));
+            EventQueues.lookup("updateRateByCard", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -186,7 +180,7 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
         }           
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnApprove() {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
@@ -209,6 +203,7 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
     }
 
     public void loadData() {
+        Date today = new Timestamp(new Date().getTime());
         try {
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
@@ -219,6 +214,7 @@ public class AdminApprovalCardRateController extends GenericAbstractAdminControl
                     blockFields();
                 break;
                 case WebConstants.EVENT_ADD:
+                     txtApprovalDate.setValue(today);
                     lblProgram.setValue(program.getName());
                     txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
                     txtAgency.setValue(user.getComercialAgencyId().getName());

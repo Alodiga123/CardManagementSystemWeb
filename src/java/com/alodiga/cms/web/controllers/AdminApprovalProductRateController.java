@@ -5,17 +5,13 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import static com.alodiga.cms.web.controllers.ListRateByProgramController.program;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.ApprovalGeneralRate;
 import com.cms.commons.models.ApprovalProductRate;
-import com.cms.commons.models.ApprovalProgramRate;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByProduct;
-import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -34,25 +30,22 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
 
 public class AdminApprovalProductRateController extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Label lblProgram;
+    private Label lblProduct;
     private Label txtCity;
     private Label txtAgency;
     private Label txtCommercialAssessorUserCode;
     private Label txtAssessorName;
     private Label txtIdentification;
     private Datebox txtApprovalDate;
-    private Radio rApprovedYes;
-    private Radio rApprovedNo;
     private ProductEJB productEJB = null;
     private User user = null;
     private ApprovalProductRate approvalProductRateParam;
-    private Button btnSave;
+    private Button btnApprove;
     public Window winAdminApprovalProductRate;
     private Program program;
     private List<RateByProduct> rateByProductByProductList = new ArrayList<RateByProduct>();
@@ -90,39 +83,36 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         txtApprovalDate.setRawValue(null);
     }
 
+    public ApprovalProductRate getApprovalProductRateParam() {
+        return approvalProductRateParam;
+    }
+    
     private void loadFields(ApprovalProductRate approvalProductRate) throws EmptyListException, GeneralException, NullParameterException {
         try {
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
-            lblProgram.setValue(program.getName());
+            lblProduct.setValue(product.getName());
             txtCity.setValue(approvalProductRate.getUserId().getComercialAgencyId().getCityId().getName());
             txtAgency.setValue(approvalProductRate.getUserId().getComercialAgencyId().getName());
             txtCommercialAssessorUserCode.setValue(approvalProductRate.getUserId().getCode());
             txtAssessorName.setValue(approvalProductRate.getUserId().getFirstNames() + " " + approvalProductRate.getUserId().getLastNames());
             txtIdentification.setValue(approvalProductRate.getUserId().getIdentificationNumber());
             txtApprovalDate.setValue(approvalProductRate.getApprovalDate());
-            if (approvalProductRate.getIndApproved() != null) {
-                if (approvalProductRate.getIndApproved() == true) {
-                    rApprovedYes.setChecked(true);    
-                } else {
-                    rApprovedNo.setChecked(true);
-                }
-            }
         } catch (Exception ex) {
             showError(ex);
         }
     }
 
     public void blockFields() {
-        txtApprovalDate.setDisabled(true);
-        rApprovedYes.setDisabled(true);
-        rApprovedNo.setDisabled(true);        
-        btnSave.setVisible(false);
+        txtApprovalDate.setDisabled(true);      
+        if (eventType != WebConstants.EVENT_ADD) {
+            btnApprove.setVisible(false);
+        }
     }
 
     public Boolean validateEmpty() {
         if (txtApprovalDate.getText().isEmpty()) {
             txtApprovalDate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.approvalDate", true, null);
         } else {
             return true;
         }
@@ -131,18 +121,12 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
 
     private void saveApprovalRates(ApprovalProductRate _approvalProductRate) {
         ApprovalProductRate approvalProductRate = null;
-        boolean indApproved;
+        boolean indApproved = true;
         try {
             if (_approvalProductRate != null) {
                 approvalProductRate = _approvalProductRate;
             } else {
                 approvalProductRate = new ApprovalProductRate();
-            }
-            
-            if (rApprovedYes.isChecked()) {
-                indApproved = true;
-            } else {
-                indApproved = false;
             }
             
             //Guarda la aprobación de las tarifas por programa
@@ -152,12 +136,13 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
             approvalProductRate.setUserId(user);
             approvalProductRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalProductRate = productEJB.saveApprovalProductRate(approvalProductRate);
-            
-            //Actualiza las tarifas del programa que se está aprobando
+            approvalProductRateParam = approvalProductRate;
+             btnApprove.setVisible(false);
+            //Actualiza las tarifas del producto que se está aprobando
             updateProductRate(approvalProductRate);
             
-            this.showMessage("sp.common.save.success", false, null);
-            EventQueues.lookup("updateApprovalProductRate", EventQueues.APPLICATION, true).publish(new Event(""));
+            this.showMessage("cms.common.Approve.success", false, null);
+            EventQueues.lookup("updateRateByProduct", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
@@ -185,7 +170,7 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         }           
     }
 
-    public void onClick$btnSave() {
+    public void onClick$btnApprove() {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
@@ -208,6 +193,7 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
     }
 
     public void loadData() {
+        Date today = new Timestamp(new Date().getTime());
         try {
             switch (eventType) {
                 case WebConstants.EVENT_EDIT:
@@ -218,7 +204,8 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
                     blockFields();
                 break;
                 case WebConstants.EVENT_ADD:
-                    lblProgram.setValue(program.getName());
+                    txtApprovalDate.setValue(today);
+                    lblProduct.setValue(product.getName());
                     txtCity.setValue(user.getComercialAgencyId().getCityId().getName());
                     txtAgency.setValue(user.getComercialAgencyId().getName());
                     txtCommercialAssessorUserCode.setValue(user.getCode());
