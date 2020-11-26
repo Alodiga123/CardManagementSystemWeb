@@ -5,17 +5,13 @@ import com.alodiga.cms.commons.exception.EmptyListException;
 import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
-import static com.alodiga.cms.web.controllers.ListRateByProgramController.program;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
-import com.cms.commons.models.ApprovalGeneralRate;
 import com.cms.commons.models.ApprovalProductRate;
-import com.cms.commons.models.ApprovalProgramRate;
 import com.cms.commons.models.Product;
 import com.cms.commons.models.Program;
 import com.cms.commons.models.RateByProduct;
-import com.cms.commons.models.RateByProgram;
 import com.cms.commons.models.User;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
@@ -34,7 +30,6 @@ import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Radio;
 import org.zkoss.zul.Window;
 
 public class AdminApprovalProductRateController extends GenericAbstractAdminController {
@@ -88,6 +83,10 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
         txtApprovalDate.setRawValue(null);
     }
 
+    public ApprovalProductRate getApprovalProductRateParam() {
+        return approvalProductRateParam;
+    }
+    
     private void loadFields(ApprovalProductRate approvalProductRate) throws EmptyListException, GeneralException, NullParameterException {
         try {
             program = (Program) session.getAttribute(WebConstants.PROGRAM);
@@ -113,7 +112,7 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
     public Boolean validateEmpty() {
         if (txtApprovalDate.getText().isEmpty()) {
             txtApprovalDate.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.approvalDate", true, null);
         } else {
             return true;
         }
@@ -137,12 +136,13 @@ public class AdminApprovalProductRateController extends GenericAbstractAdminCont
             approvalProductRate.setUserId(user);
             approvalProductRate.setCreateDate(new Timestamp(new Date().getTime()));
             approvalProductRate = productEJB.saveApprovalProductRate(approvalProductRate);
-            
+            approvalProductRateParam = approvalProductRate;
+             btnApprove.setVisible(false);
             //Actualiza las tarifas del producto que se está aprobando
             updateProductRate(approvalProductRate);
             
             this.showMessage("cms.common.Approve.success", false, null);
-            EventQueues.lookup("updateApprovalProductRate", EventQueues.APPLICATION, true).publish(new Event(""));
+            EventQueues.lookup("updateRateByProduct", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }

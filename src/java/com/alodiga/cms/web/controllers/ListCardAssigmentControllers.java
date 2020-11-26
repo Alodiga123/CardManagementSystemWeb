@@ -327,9 +327,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
                         String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
                         AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
-                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
-                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
-                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
+//                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
+//                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
+//                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
                         cardNumber = assignVirtualCardResponse.getAlias();
                         accountAssigned = assignVirtualCardResponse.getCtasig();
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);

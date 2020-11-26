@@ -153,7 +153,10 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             } else {
                 genderMale.setChecked(true);
             }
-            txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
+            if(applicantNaturalPerson.getPlaceBirth() != null){
+                txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
+            }
+            
             txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
             if (applicantNaturalPerson.getPersonId().getEmail() != null) {
                 if (applicantNaturalPerson.getPersonId().getEmail().contains("@")) {
@@ -454,8 +457,8 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbRelationship(eventType);
+                loadCmbProfession(eventType);               
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFieldR(adminRequest.getRequest());
@@ -464,15 +467,15 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbRelationship(eventType);
+                loadCmbProfession(eventType); 
                 break;
             case WebConstants.EVENT_ADD:
                 loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbRelationship(eventType);
+                loadCmbProfession(eventType);
                 break;
             default:
                 break;
@@ -554,7 +557,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
         try {
             profession = personEJB.getProfession(request1);
-            loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getProfessionId().getId() : 0));
+            if((applicantNaturalPersonParam == null) || (applicantNaturalPersonParam.getProfessionId() == null)){
+                loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(0));
+            } else {
+                loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getProfessionId().getId() : 0));
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();

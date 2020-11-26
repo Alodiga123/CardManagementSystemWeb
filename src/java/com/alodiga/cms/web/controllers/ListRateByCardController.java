@@ -139,6 +139,7 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
         String rbc;
         String rbp;
         int indExist = 0;
+         AdminApprovalCardRateController adminApprovalCardRate = new AdminApprovalCardRateController();
         try {
             params.put(QueryConstants.PARAM_CARD_ID, card.getId());
             request1.setParams(params);
@@ -146,6 +147,9 @@ public class ListRateByCardController extends GenericAbstractListController<Requ
             if (rateByCardByCardList != null) {
                 indLoadList = 1;                
                 for (RateByCard r : rateByCardByCardList) {
+                    if (r.getApprovalCardRateId() == null) {
+                        r.setApprovalCardRateId(adminApprovalCardRate.getApprovalCardRate());
+                    }
                     rateByCardList.add(r);
                 }
                 if (list != null && !list.isEmpty()) {

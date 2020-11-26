@@ -140,6 +140,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         String rbp1;
         String rbp2;
         int indExist = 0;
+        AdminApprovalProductRateController adminApprovalProductRate = new AdminApprovalProductRateController();
         try {
             params.put(QueryConstants.PARAM_PRODUCT_ID, product.getId());
             request1.setParams(params);
@@ -147,6 +148,9 @@ public class ListRateByProductController extends GenericAbstractListController<R
             if (rateByProductByProductList != null) {
                 indLoadList = 1;
                 for (RateByProduct r : rateByProductByProductList) {
+                    if (r.getApprovalProductRateId() == null) {
+                        r.setApprovalProductRateId(adminApprovalProductRate.getApprovalProductRateParam());
+                    }
                     rateByProductList.add(r);
                 }
                 if (list != null && !list.isEmpty()) {
@@ -162,15 +166,23 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             rateByProduct = new RateByProduct();
                             rateByProduct.setProductId(product);
                             rateByProduct.setChannelId(rp.getChannelId());
-                            rateByProduct.setFixedRate(rp.getFixedRate());
-                            rateByProduct.setPercentageRate(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByProduct.setFixedRate(rp.getFixedRate());
+                            }
+                            if (rp.getPercentageRate() != null) {
+                                rateByProduct.setPercentageRate(rp.getPercentageRate());
+                            }
                             rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
                             rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
                             rateByProduct.setTransactionId(rp.getTransactionId());
-                            rateByProduct.setFixedRatePR(rp.getFixedRate());
-                            rateByProduct.setPercentageRatePR(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByProduct.setFixedRatePR(rp.getFixedRate());
+                            }
+                            if (rp.getPercentageRate() != null) {
+                                rateByProduct.setPercentageRatePR(rp.getPercentageRate());
+                            }    
                             rateByProduct.setTotalInitialTransactionsExemptPR(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonthPR(rp.getTotalTransactionsExemptPerMonth());
                             rateByProduct.setCreateDate(new Timestamp(new Date().getTime()));
@@ -220,6 +232,8 @@ public class ListRateByProductController extends GenericAbstractListController<R
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
