@@ -195,6 +195,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFields(rateByProgramParam);
+                blockFields();
                 break;
             case WebConstants.EVENT_ADD:
                 break;

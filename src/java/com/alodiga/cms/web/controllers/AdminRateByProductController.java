@@ -7,6 +7,7 @@ import com.cms.commons.models.RateByProduct;
 import com.cms.commons.models.RateByProgram;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -18,6 +19,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 
 import org.zkoss.zul.Toolbarbutton;
+import org.zkoss.zul.Window;
 
 public class AdminRateByProductController extends GenericAbstractAdminController {
 
@@ -29,6 +31,8 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     private Label lblProgram;
     private Label lblProductType;
     private Label lblProduct;
+    private Label lblTransactionCode;
+    private Label lblStatus;
     private Label lblChannel;
     private Label lblTransaction;
     private Label lblRateApplicationType;
@@ -40,6 +44,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     private Radio rModificationCardHolderNo;
     private Button btnSave;
     private Toolbarbutton tbbTitle;
+    public Window winAdminRateByProduct;
     private Float fixedRate;
     private Float percentageRate;
     private int totalTransactionInitialExempt;
@@ -83,12 +88,23 @@ public class AdminRateByProductController extends GenericAbstractAdminController
             lblProductType.setValue(rateByProduct.getProductId().getProgramId().getProductTypeId().getName());
             lblProduct.setValue(rateByProduct.getProductId().getName());
             lblChannel.setValue(rateByProduct.getChannelId().getName());
+            lblTransactionCode.setValue(rateByProduct.getTransactionId().getCode());
+            if (rateByProduct.getApprovalProductRateId() != null) {
+                lblStatus.setValue(Labels.getLabel("cms.common.approved"));
+            }else{
+                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+            }   
             lblTransaction.setValue(rateByProduct.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProduct.getRateApplicationTypeId().getDescription());
-            txtFixedRate.setText(rateByProduct.getFixedRate().toString());
-            fixedRate = rateByProduct.getFixedRatePR();
-            txtPercentageRate.setText(rateByProduct.getPercentageRate().toString());
-            percentageRate = rateByProduct.getPercentageRatePR();
+             if (rateByProduct.getFixedRate() != null) {
+                txtFixedRate.setText(rateByProduct.getFixedRate().toString());
+                fixedRate = rateByProduct.getFixedRatePR();
+                txtPercentageRate.setDisabled(true);
+            } else {
+                txtPercentageRate.setText(rateByProduct.getPercentageRate().toString());
+                percentageRate = rateByProduct.getPercentageRatePR();
+                txtFixedRate.setDisabled(true);
+            }    
             txtTotalTransactionInitialExempt.setText(rateByProduct.getTotalInitialTransactionsExempt().toString());
             totalTransactionInitialExempt = rateByProduct.getTotalInitialTransactionsExemptPR();
             txtTotalTransactionExemptPerMonth.setText(rateByProduct.getTotalTransactionsExemptPerMonth().toString());
@@ -189,20 +205,24 @@ public class AdminRateByProductController extends GenericAbstractAdminController
     }
 
     public void onClick$btnSave() {
-        switch (eventType) {
-            case WebConstants.EVENT_ADD:
-                saveRateByProduct(null);
-                break;
-            case WebConstants.EVENT_EDIT:
-                saveRateByProduct(rateByProductParam);
-                break;
-            default:
-                break;
-        }
+        this.clearMessage();
+        if (validateEmpty() && validateRateByProduct()) {
+            switch (eventType) {
+                case WebConstants.EVENT_ADD:
+                    saveRateByProduct(null);
+                    break;
+                case WebConstants.EVENT_EDIT:
+                    saveRateByProduct(rateByProductParam);
+                    break;
+                default:
+                    break;
+            }
+         }
     }
     
     public void onclick$btnBack() {
-        Executions.getCurrent().sendRedirect("listRateByProduct.zul");
+        winAdminRateByProduct.detach();
+//        Executions.getCurrent().sendRedirect("listRateByProduct.zul");
     }
 
     public void loadData() {
@@ -221,6 +241,85 @@ public class AdminRateByProductController extends GenericAbstractAdminController
                 rModificationCardHolderNo.setDisabled(true);
             break;
         }
+    }
+    
+    public Boolean validateEmpty() {
+        if (txtFixedRate.isDisabled() == false) {
+            if (txtFixedRate.getText().equalsIgnoreCase("") ) {
+               txtFixedRate.setFocus(true);
+               this.showMessage("cms.common.fixedRate.error2", true, null);
+               return false;
+        }
+            if (Float.parseFloat(txtFixedRate.getText())<=0 ) {
+               txtFixedRate.setFocus(true);
+               this.showMessage("sp.error.invalid.amount", true, null);
+               return false;
+            }
+        }
+        
+        if (txtPercentageRate.isDisabled() == false) {
+            if (txtPercentageRate.getText().equalsIgnoreCase("") ) {
+               txtPercentageRate.setFocus(true);
+               this.showMessage("cms.common.percentageRate.error", true, null); 
+               return false;
+            }
+            if (Float.parseFloat(txtPercentageRate.getText())<=0 ) {
+               txtPercentageRate.setFocus(true);
+               this.showMessage("sp.error.invalid.amount", true, null);
+               return false;
+            }
+        }
+        
+        if (txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionInitialExempt.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+           return false;
+        }
+        if (txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")) {
+           txtTotalTransactionExemptPerMonth.setFocus(true);
+           this.showMessage("sp.error.field.cannotNull", true, null);
+           return false;
+        }
+        
+        if(!(rModificationCardHolderYes.isChecked() || rModificationCardHolderNo.isChecked())){
+            this.showMessage("cms.common.indModificationCardHolder.error", true, null);
+            rModificationCardHolderYes.setFocus(true);
+            return false;
+        }
+   
+        return true;
+    }
+    
+    public boolean validateRateByProduct() {
+        if (txtPercentageRate.isDisabled() == false) {
+            if (Float.parseFloat(txtPercentageRate.getText()) > percentageRate ) {
+                this.showMessage("cms.rateByProgram.Validation.percentageRate", false, null);
+                txtPercentageRate.setFocus(true);
+                return false;
+            }
+        }              
+        if (txtFixedRate.isDisabled() == false) {
+            if (Float.parseFloat(txtFixedRate.getText()) > fixedRate ) {
+                this.showMessage("cms.rateByProgram.Validation.fixedRate", false, null);
+                txtFixedRate.setFocus(true);
+                return false;
+            }
+        }       
+        if(!txtTotalTransactionInitialExempt.getText().equalsIgnoreCase("")){
+            if (Float.parseFloat(txtTotalTransactionInitialExempt.getText()) > totalTransactionInitialExempt ) {
+                this.showMessage("cms.rateByProgram.Validation.totalTransactionInitialExempt", false, null);
+                txtTotalTransactionInitialExempt.setFocus(true);
+                return false;
+            } 
+        }        
+        if(!txtTotalTransactionExemptPerMonth.getText().equalsIgnoreCase("")){
+            if (Float.parseFloat(txtTotalTransactionExemptPerMonth.getText()) > totalTransactionExemptPerMonth ) {
+                this.showMessage("cms.rateByProgram.Validation.totalTransactionExemptPerMonth", false, null);
+                txtTotalTransactionExemptPerMonth.setFocus(true);
+                return false;
+            }
+        }
+        return true;
     }
     
 }

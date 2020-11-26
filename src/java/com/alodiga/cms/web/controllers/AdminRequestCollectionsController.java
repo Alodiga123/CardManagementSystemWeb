@@ -279,16 +279,29 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
             }
             requestHasCollectionsRequest = requestEJB.saveRequestHasCollectionsRequest(requestHasCollectionsRequest);
             
-//            if (activateTabApplicationReview() == 0) {
-//                    request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK)); 
-//                    request = requestEJB.saveRequest(request);
-//                    tabApplicationReview.setDisabled(false);
-//            }
+            //Verificar si todos los recaudos están aprobados
+            if (requestHasCollectionRequestCheck() == 0) {
+                request.setStatusRequestId(getStatusRequest(request,Constants.STATUS_REQUEST_COLLECTIONS_OK));
+                request = requestEJB.saveRequest(request);
+            }
+
             this.showMessage("sp.common.save.success", false, null);
             EventQueues.lookup("updateCollectionsRequest", EventQueues.APPLICATION, true).publish(new Event(""));
         } catch (Exception ex) {
             showError(ex);
         }
+    }
+    
+    public Long requestHasCollectionRequestCheck() {
+        Long requestHasCollectionsRequestCheck = 0L;
+        try {
+            requestHasCollectionsRequestCheck = requestEJB.getRequestsHasCollectionsRequestCheck(requestParam.getId());
+        } catch (GeneralException ex) {
+            showError(ex);
+        } catch (NullParameterException ex) {
+            showError(ex);
+        }    
+        return requestHasCollectionsRequestCheck;     
     }
     
     public int activateTabApplicationReview(){

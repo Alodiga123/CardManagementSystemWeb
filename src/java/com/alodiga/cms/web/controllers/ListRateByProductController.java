@@ -140,6 +140,7 @@ public class ListRateByProductController extends GenericAbstractListController<R
         String rbp1;
         String rbp2;
         int indExist = 0;
+        AdminApprovalProductRateController adminApprovalProductRate = new AdminApprovalProductRateController();
         try {
             params.put(QueryConstants.PARAM_PRODUCT_ID, product.getId());
             request1.setParams(params);
@@ -147,6 +148,9 @@ public class ListRateByProductController extends GenericAbstractListController<R
             if (rateByProductByProductList != null) {
                 indLoadList = 1;
                 for (RateByProduct r : rateByProductByProductList) {
+                    if (r.getApprovalProductRateId() == null) {
+                        r.setApprovalProductRateId(adminApprovalProductRate.getApprovalProductRateParam());
+                    }
                     rateByProductList.add(r);
                 }
                 if (list != null && !list.isEmpty()) {
@@ -162,15 +166,23 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             rateByProduct = new RateByProduct();
                             rateByProduct.setProductId(product);
                             rateByProduct.setChannelId(rp.getChannelId());
-                            rateByProduct.setFixedRate(rp.getFixedRate());
-                            rateByProduct.setPercentageRate(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByProduct.setFixedRate(rp.getFixedRate());
+                            }
+                            if (rp.getPercentageRate() != null) {
+                                rateByProduct.setPercentageRate(rp.getPercentageRate());
+                            }
                             rateByProduct.setIndCardHolderModification(rp.getIndCardHolderModification());
                             rateByProduct.setRateApplicationTypeId(rp.getRateApplicationTypeId());
                             rateByProduct.setTotalInitialTransactionsExempt(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonth(rp.getTotalTransactionsExemptPerMonth());
                             rateByProduct.setTransactionId(rp.getTransactionId());
-                            rateByProduct.setFixedRatePR(rp.getFixedRate());
-                            rateByProduct.setPercentageRatePR(rp.getPercentageRate());
+                            if (rp.getFixedRate() != null) {
+                                rateByProduct.setFixedRatePR(rp.getFixedRate());
+                            }
+                            if (rp.getPercentageRate() != null) {
+                                rateByProduct.setPercentageRatePR(rp.getPercentageRate());
+                            }    
                             rateByProduct.setTotalInitialTransactionsExemptPR(rp.getTotalInitialTransactionsExempt());
                             rateByProduct.setTotalTransactionsExemptPerMonthPR(rp.getTotalTransactionsExemptPerMonth());
                             rateByProduct.setCreateDate(new Timestamp(new Date().getTime()));
@@ -185,21 +197,43 @@ public class ListRateByProductController extends GenericAbstractListController<R
             Listitem item = null;
             if (rateByProductList != null && !rateByProductList.isEmpty()) {
                 for (RateByProduct r : rateByProductList) {
-                    item = new Listitem();
-                    item.setValue(r);
-                    item.appendChild(new Listcell (r.getProductId().getCountryId().getName()));
-                    item.appendChild(new Listcell(r.getChannelId().getName()));
-                    item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                    item.appendChild(new Listcell(r.getFixedRate().toString()));
-                    item.appendChild(new Listcell(r.getPercentageRate().toString()));
-                    item.appendChild(createButtonEditModal(r));
-                    item.appendChild(createButtonViewModal(r));
-                    item.setParent(lbxRecords);
+//                   if (r.getApprovalProductRateId()!= null && r.getApprovalProductRateId().getIndApproved()){
+                        item = new Listitem();
+                        item.setValue(r);
+                        item.appendChild(new Listcell (r.getProductId().getCountryId().getName()));
+                        item.appendChild(new Listcell(r.getChannelId().getName()));
+                        if(r.getTransactionId().getCode() != null){
+                                item.appendChild(new Listcell(r.getTransactionId().getCode()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }
+                        item.appendChild(new Listcell(r.getTransactionId().getDescription()));
+                        if (r.getFixedRate() != null) {
+                            item.appendChild(new Listcell(r.getFixedRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        }
+                        if (r.getPercentageRate() != null) {
+                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                        }else{
+                            item.appendChild(new Listcell("-"));
+                        } 
+                        if(r.getApprovalProductRateId() != null){
+                                item.appendChild(new Listcell((r.getApprovalProductRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
+                        } else {
+                                item.appendChild(new Listcell("No"));
+                        }
+                        item.appendChild(createButtonEditModal(r));
+                        item.appendChild(createButtonViewModal(r));
+                        item.setParent(lbxRecords);
+//                   } 
                 }
             } else {
                 btnDownload.setVisible(false);
                 item = new Listitem();
                 item.appendChild(new Listcell(Labels.getLabel("sp.error.empty.list")));
+                item.appendChild(new Listcell());
+                item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
                 item.appendChild(new Listcell());
@@ -243,9 +277,23 @@ public class ListRateByProductController extends GenericAbstractListController<R
                             item.setValue(r);
                             item.appendChild(new Listcell(r.getProductId().getProgramId().getCardProgramManagerId().getCountryId().getName()));
                             item.appendChild(new Listcell(r.getChannelId().getName()));
+                            item.appendChild(new Listcell(r.getTransactionId().getCode()));
                             item.appendChild(new Listcell(r.getTransactionId().getDescription()));
-                            item.appendChild(new Listcell(r.getFixedRate().toString()));
-                            item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            if (r.getFixedRate() != null) {
+                                item.appendChild(new Listcell(r.getFixedRate().toString()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            }
+                            if (r.getPercentageRate() != null) {
+                                item.appendChild(new Listcell(r.getPercentageRate().toString()));
+                            }else{
+                                item.appendChild(new Listcell("-"));
+                            } 
+                            if(r.getApprovalProductRateId() != null){
+                                item.appendChild(new Listcell((r.getApprovalProductRateId().getIndApproved().toString()).equals("true")?"Si":"No"));
+                            } else {
+                                item.appendChild(new Listcell("No"));
+                            }
                             item.appendChild(createButtonEditModal(r));
                             item.appendChild(createButtonViewModal(r));
                             item.setParent(lbxRecords);
