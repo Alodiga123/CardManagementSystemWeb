@@ -60,6 +60,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private Textbox txtLocalPhone;
     private Textbox txtCellPhone;
     private Textbox txtEmail;
+    private Textbox txtObservations;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
@@ -163,6 +164,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                     txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
                 }
             }
+            
+            if(applicantNaturalPerson.getObservations() != null){
+                txtObservations.setText(applicantNaturalPerson.getObservations());
+            }
+            
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
@@ -214,6 +220,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
         cmbCountry.setReadonly(true);
         cmbCivilState.setReadonly(true);
         cmbProfession.setReadonly(true);
+        txtObservations.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -353,6 +360,9 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             applicantNaturalPerson.setDateBirth(txtBirthDay.getValue());
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
+            if(txtObservations.getValue() != null){
+                applicantNaturalPerson.setObservations(txtObservations.getText());
+            }
             if (eventType == WebConstants.EVENT_ADD) {
                 applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
             } else {

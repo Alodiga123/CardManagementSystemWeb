@@ -95,6 +95,21 @@
                                                         </row>
                                                     </rows>
                                                 </grid>
+                                                
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="880px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('sp.common.bank.observations')}"/>
+                                                        <row>
+                                                           <label value="${c:l('sp.common.bank.observations')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                           <textbox id="txtObservations"  value="" rows="2" width="880px"/>
+                                                        </row>
+                                                    </rows> 
+                                                </grid>
                                             </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
