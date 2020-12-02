@@ -11,7 +11,7 @@
                 <div align="center" >
                     <hlayout >
                         <div></div>
-                        <div width="1200px" align="left" height="780px">
+                        <div width="1200px" align="left" height="800px">
                             <hlayout>
                                 <div width="900px">
                                     <vlayout>
@@ -154,14 +154,29 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>                                                            
                                                         </row>
+
                                                     </rows>
+                                                </grid>
+                                                <grid fixedLayout="true">
+                                                    <columns>
+                                                        <column label="" width="880px"/>
+                                                    </columns>
+                                                    <rows>
+                                                        <group label="${c:l('sp.common.bank.observations')}"/>
+                                                        <row>
+                                                            <label value="${c:l('sp.common.bank.observations')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
+                                                            <textbox id="txtObservations"  value="" rows="2" width="880px"/>
+                                                        </row>
+                                                    </rows> 
                                                 </grid>
                                             </vlayout>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
-                                        <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" />
+                                        <div align="right" style="margin-right:10px;">
+                                            <button id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange" />
                                         </div>
                                     </vlayout>
                                 </div>

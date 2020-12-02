@@ -60,6 +60,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
     private Textbox txtLocalPhone;
     private Textbox txtCellPhone;
     private Textbox txtEmail;
+    private Textbox txtObservations;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
@@ -153,13 +154,21 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             } else {
                 genderMale.setChecked(true);
             }
-            txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
+            if(applicantNaturalPerson.getPlaceBirth() != null){
+                txtBirthPlace.setText(applicantNaturalPerson.getPlaceBirth());
+            }
+            
             txtBirthDay.setValue(applicantNaturalPerson.getDateBirth());
             if (applicantNaturalPerson.getPersonId().getEmail() != null) {
                 if (applicantNaturalPerson.getPersonId().getEmail().contains("@")) {
                     txtEmail.setText(applicantNaturalPerson.getPersonId().getEmail());
                 }
             }
+            
+            if(applicantNaturalPerson.getObservations() != null){
+                txtObservations.setText(applicantNaturalPerson.getObservations());
+            }
+            
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
@@ -211,6 +220,7 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
         cmbCountry.setReadonly(true);
         cmbCivilState.setReadonly(true);
         cmbProfession.setReadonly(true);
+        txtObservations.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -350,6 +360,9 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
             applicantNaturalPerson.setDateBirth(txtBirthDay.getValue());
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
             applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());
+            if(txtObservations.getValue() != null){
+                applicantNaturalPerson.setObservations(txtObservations.getText());
+            }
             if (eventType == WebConstants.EVENT_ADD) {
                 applicantNaturalPerson.setCreateDate(new Timestamp(new Date().getTime()));
             } else {
@@ -454,8 +467,8 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbRelationship(eventType);
+                loadCmbProfession(eventType);               
                 break;
             case WebConstants.EVENT_VIEW:
                 loadFieldR(adminRequest.getRequest());
@@ -464,15 +477,15 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
                 loadCmbCountry(eventType);
                 onChange$cmbCountry();
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbRelationship(eventType);
+                loadCmbProfession(eventType); 
                 break;
             case WebConstants.EVENT_ADD:
                 loadFieldR(adminRequest.getRequest());
                 loadCmbCountry(eventType);
                 loadCmbCivilState(eventType);
-                loadCmbProfession(eventType);
                 loadCmbRelationship(eventType);
+                loadCmbProfession(eventType);
                 break;
             default:
                 break;
@@ -554,7 +567,11 @@ public class AdminCardComplementariesController extends GenericAbstractAdminCont
 
         try {
             profession = personEJB.getProfession(request1);
-            loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getProfessionId().getId() : 0));
+            if((applicantNaturalPersonParam == null) || (applicantNaturalPersonParam.getProfessionId() == null)){
+                loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(0));
+            } else {
+                loadGenericCombobox(profession, cmbProfession, "name", evenInteger, Long.valueOf(applicantNaturalPersonParam != null ? applicantNaturalPersonParam.getProfessionId().getId() : 0));
+            }
         } catch (EmptyListException ex) {
             showError(ex);
             ex.printStackTrace();
