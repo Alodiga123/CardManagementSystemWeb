@@ -49,6 +49,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
     private Textbox txtFullName;
     private Textbox txtFullLastName;
     private Textbox txtPositionEnterprise;
+    private Textbox txtObservations;
     private Doublebox dbxProposedLimit;
     private Combobox cmbCountry;
     private Combobox cmbDocumentsPersonType;
@@ -131,6 +132,9 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             txtIdentificationNumber.setText(cardRequestNaturalPerson.getIdentificationNumber());
             txtPositionEnterprise.setText(cardRequestNaturalPerson.getPositionEnterprise());
             dbxProposedLimit.setValue(cardRequestNaturalPerson.getProposedLimit().floatValue());
+            if(cardRequestNaturalPerson.getObservations() != null){
+                txtObservations.setText(cardRequestNaturalPerson.getObservations());
+            }
         } catch (Exception ex) {
             showError(ex);
         }
@@ -141,6 +145,7 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
         txtFullLastName.setDisabled(true);
         txtIdentificationNumber.setDisabled(true);
         txtPositionEnterprise.setDisabled(true);
+        txtObservations.setDisabled(true);
         dbxProposedLimit.setDisabled(true);
         cmbCountry.setDisabled(true);
         cmbDocumentsPersonType.setDisabled(true);
@@ -237,6 +242,9 @@ public class AdminAdditionalCardsController extends GenericAbstractAdminControll
             cardRequestNaturalPerson.setStatusApplicantId(statusApplicant);
             if (legalCustomer != null) {
                 cardRequestNaturalPerson.setLegalCustomerId(legalCustomer);
+            }
+            if(txtObservations.getValue() != null){
+                cardRequestNaturalPerson.setObservations(txtObservations.getText());
             }
             cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             cardRequestNaturalPersonParam = cardRequestNaturalPerson;
