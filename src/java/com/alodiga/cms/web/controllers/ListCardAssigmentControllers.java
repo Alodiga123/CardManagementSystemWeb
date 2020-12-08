@@ -233,7 +233,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         Card card = null;
         boolean indRenewal = true;
         CardStatus cardStatus = null;
-        List<CardNumberCredential> cardNumberCredentialList = null;
         List<ReviewRequest> reviewRequestList = null;
         List<NaturalCustomer> cardComplementaryList = null;
         List<CardRequestNaturalPerson> cardRequestList = null;
@@ -591,9 +590,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             showError(ex);
         }
         finally {
-            if (cardNumberCredentialList == null) {
-                this.showMessage("cms.msj.notCardNumbersAvailable", false, null);
-            }
             if (i > 0) {
                 this.showMessage("cms.common.msj.assignCard", false, null);
             }            
