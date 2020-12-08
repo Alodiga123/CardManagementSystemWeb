@@ -719,9 +719,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             showError(ex);
         }
         finally {
-            if (cardNumberCredentialList == null) {
-                this.showMessage("cms.msj.notCardNumbersAvailable", false, null);
-            }
             if (i > 0) {
                 this.showMessage("cms.common.msj.assignCard", false, null);
             }            
