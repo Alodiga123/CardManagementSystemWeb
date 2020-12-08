@@ -232,7 +232,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         Card card = null;
         boolean indRenewal = true;
         CardStatus cardStatus = null;
-        List<CardNumberCredential> cardNumberCredentialList = null;
         List<ReviewRequest> reviewRequestList = null;
         List<NaturalCustomer> cardComplementaryList = null;
         List<CardRequestNaturalPerson> cardRequestList = null;
@@ -327,9 +326,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
                         String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
                         AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
-//                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
-//                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
-//                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
+                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
+                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
+                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
                         cardNumber = assignVirtualCardResponse.getAlias();
                         accountAssigned = assignVirtualCardResponse.getCtasig();
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
@@ -441,9 +440,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             showError(ex);
         }
         finally {
-            if (cardNumberCredentialList == null) {
-                this.showMessage("cms.msj.notCardNumbersAvailable", false, null);
-            }
             if (i > 0) {
                 this.showMessage("cms.common.msj.assignCard", false, null);
             }            
