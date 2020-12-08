@@ -64,6 +64,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
     private Textbox txtBirthPlace;
     private Intbox txtFamilyResponsibilities;
     private Textbox txtEmail;
+    private Textbox txtObservations;
     private Combobox cmbDocumentsPersonType;
     private Combobox cmbCivilState;
     private Combobox cmbProfession;
@@ -265,6 +266,10 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
                 genderFemale.setChecked(true);
             }
             
+            if(applicantNaturalPerson.getObservations() != null){
+                txtObservations.setText(applicantNaturalPerson.getObservations());
+            }
+            
             EJBRequest request = new EJBRequest();
             Map params = new HashMap();
             params.put(Constants.PERSON_KEY, applicantNaturalPerson.getPersonId().getId());
@@ -349,6 +354,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
         rIsPrincipalNumerLNo.setDisabled(true);
         rIsPrincipalNumberYes.setDisabled(true);
         rIsPrincipalNumerNo.setDisabled(true);
+        txtObservations.setDisabled(true);
         btnSave.setVisible(false);
     }
 
@@ -517,6 +523,9 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             applicantNaturalPerson.setDateBirth(txtBirthDay.getValue());
             applicantNaturalPerson.setFamilyResponsibilities(txtFamilyResponsibilities.getValue());
             applicantNaturalPerson.setCivilStatusId((CivilStatus) cmbCivilState.getSelectedItem().getValue());
+            if(txtObservations.getValue() != null){
+                applicantNaturalPerson.setObservations(txtObservations.getText());
+            }
             if(cmbProfession.getSelectedItem() != null){
               applicantNaturalPerson.setProfessionId((Profession) cmbProfession.getSelectedItem().getValue());  
             }
@@ -712,8 +721,7 @@ public class AdminNaturalPersonController extends GenericAbstractAdminController
             if ((applicantNaturalPersonParam == null) || (phonePersonList.size() == 0)){
                 loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(0));
                 loadGenericCombobox(countries, cmbCountryPhone, "name", evenInteger, Long.valueOf(0));
-            }    
-             else {
+            } else {
                 if (localPhone != null) {
                     loadGenericCombobox(countries, cmbCountryPhoneL, "name", evenInteger, Long.valueOf(localPhone.getCountryId() != null ? localPhone.getCountryId().getId() : 0)); 
                 }
