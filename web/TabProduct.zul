@@ -29,7 +29,7 @@
                                                 |
                                                 <toolbarbutton label="${c:l('cms.crud.product.list')}" onClick='Executions.sendRedirect(&quot;listProduct.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('sp.crud.product.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.product.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -38,7 +38,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.common.product')}" />
-                                                        <tab id="tabCommerceCategory" label="${c:l('cms.tab.commerceCategory')}"/>
+                                                        <tab id="tabCommerceCategory" label="${c:l('cms.common.commerceCategoryType')}"/>
                                                         <tab id="tabRestrictions" label="${c:l('cms.tab.limitAndRestrictions')}"/>
                                                         <tab id="tabActivationProduct" label="${c:l('cms.tab.applicationReview')}"/>
                                                     </tabs>

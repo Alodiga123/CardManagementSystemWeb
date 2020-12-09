@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.Program.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.program.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.name')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.name')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -55,8 +55,8 @@
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.programName')}" width="250px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.typeProgram')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.ProductType')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.Issuer')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.productType')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.issuer')}" width="250px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

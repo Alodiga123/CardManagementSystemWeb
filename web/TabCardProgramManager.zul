@@ -27,9 +27,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.legalPerson.list')}" onClick="Executions.sendRedirect(&quot;listCardProgramManager.zul&quot;)"/>
+                                                <toolbarbutton label="${c:l('cms.common.legalPerson')}" onClick="Executions.sendRedirect(&quot;listCardProgramManager.zul&quot;)"/>
                                                 |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.legalPerson.add')}"/>
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.card.manager.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -47,7 +47,7 @@
                                                 <tabbox id="tbxCardProgramManagerTabs" width="970px" height="490px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.CardProgramManagerMain')}" />
-                                                        <tab id="tabAddressCardProgramManager" label="${c:l('cms.tab.addressCardProgramManager')}"/>
+                                                        <tab id="tabAddressCardProgramManager" label="${c:l('cms.common.address')}"/>
                                                         <tab id="tabLegalRepresentativesCardProgramManager" label="${c:l('cms.tab.legalRepresentativesCardProgramManager')}" />
                                                     </tabs>
                                                     <tabpanels>

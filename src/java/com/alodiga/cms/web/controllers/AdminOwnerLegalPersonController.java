@@ -79,13 +79,13 @@ public class AdminOwnerLegalPersonController extends GenericAbstractAdminControl
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.common.programOwner.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.programOwner.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.common.programOwner.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.programOwner.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.common.programOwner.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.programOwner.add"));
                 break;
             default:
                 break;

@@ -212,7 +212,7 @@ public class ListCardRenewalRequestController extends GenericAbstractListControl
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.card.renewal.request.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.card.renewal.request.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

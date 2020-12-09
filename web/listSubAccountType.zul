@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.subAccountType')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.subAccountType')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.menu.subAccountType')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.subAccountType')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -53,8 +53,8 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.crud.accountType.account')}" width="400px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.menu.subAccountType')}" width="405px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.account')}" width="400px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.subAccountType')}" width="405px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

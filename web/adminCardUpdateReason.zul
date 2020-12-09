@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.cardUpdateReason.list')}" onClick='Executions.sendRedirect(&quot;listCardUpdateReason.zul&quot;)'/>                      
+                                                <toolbarbutton label="${c:l('cms.crud.cardUpdateReason.list')}" onClick='Executions.sendRedirect(&quot;listCardUpdateReason.zul&quot;)'/>                      
                                                  |
                                                 <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.cardUpdateReason.add')}"/>  
                                             </hlayout> 
@@ -34,7 +34,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="200px"/>
@@ -42,7 +42,7 @@
                                                     </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.description')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="320px" maxlength="50"  onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                              <label value="*" sclass="lblreq" />

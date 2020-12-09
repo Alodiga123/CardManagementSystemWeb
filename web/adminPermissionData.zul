@@ -54,7 +54,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.id.permission')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.language.id')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.language')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.alias.permission.group')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
@@ -63,7 +63,7 @@
                                                             <textbox id="txtAlias" width="270px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>                                                         
                                                        </row>
                                                       <row>
-                                                            <label value="${c:l('cms.common.description.permission')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                        </row>
                                                        <row>
                                                            <cell colspan="3">

@@ -73,7 +73,7 @@ public class ListPlasticRequestControllers extends GenericAbstractListController
            
    public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.plasticRequest.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.plasticRequest.listDownload"));
         } catch (Exception ex) {
             showError(ex);
         }

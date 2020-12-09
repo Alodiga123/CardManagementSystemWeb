@@ -129,7 +129,7 @@ public class ListCountryController extends GenericAbstractListController<Country
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.country.name.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.country.list"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

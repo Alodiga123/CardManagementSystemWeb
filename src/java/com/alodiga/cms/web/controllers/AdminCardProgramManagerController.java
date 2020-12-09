@@ -85,17 +85,17 @@ public class AdminCardProgramManagerController extends GenericAbstractAdminContr
             case WebConstants.EVENT_EDIT:
                 tabAddressCardProgramManager.setDisabled(false);
                 tabLegalRepresentativesCardProgramManager.setDisabled(false);
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.card.manager.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
                 tabAddressCardProgramManager.setDisabled(false);
                 tabLegalRepresentativesCardProgramManager.setDisabled(false);
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.card.manager.view"));
                 break;
             case WebConstants.EVENT_ADD:
                 tabAddressCardProgramManager.setDisabled(true);
                 tabLegalRepresentativesCardProgramManager.setDisabled(true);
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.legalPerson.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.card.manager.add"));
                 break;
             default:
                 break;

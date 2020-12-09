@@ -26,9 +26,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.activation.product')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.card')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.userActivation')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>         
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>         
                                                         </row>
                                                         <row>
                                                             <label id="lblProduct" value="" width="250px" style="color:#000000;"/>
@@ -36,9 +36,9 @@
                                                             <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>   
                                                         </row>                                                        
                                                         <row>
-                                                            <label value="${c:l('cms.common.activation.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.userCity')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.activation.agency')}" sclass="lblbold"/>  
-                                                            <label value="${c:l('cms.crud.activationDate')}" sclass="lblbold"/>   
+                                                            <label value="${c:l('cms.common.activationDate')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
                                                             <label id="lblCity" value="" width="250px" style="color:#837E76;"/>
@@ -46,7 +46,7 @@
                                                             <datebox id="dtbActivationDate" width="250px"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.indActivation')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indActivation')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>      
                                                             <hbox>
@@ -62,7 +62,7 @@
                                                             </hbox>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.activationProduct.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">

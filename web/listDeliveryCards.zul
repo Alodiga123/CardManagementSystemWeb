@@ -34,15 +34,15 @@
                                                     <listheader label="${c:l('cms.common.cardNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.product')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.cardHolder')}" width="180x" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.status')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.deliveryCard.selected')}" width="85px"/>
+                                                    <listheader label="${c:l('cms.common.cardStatus')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.selected')}" width="85px"/>
                                                 </listhead>
                                             </listbox>
                                         </div>
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Download button-->
                                         <div align="right">
-                                            <button id="btnAssigment" width="150px" label="${c:l('cms.menu.btncardAssigment')}" class="open orange"/>
+                                            <button id="btnAssigment" width="150px" label="${c:l('cms.common.assigment')}" class="open orange"/>
                                         </div>
                                     </vlayout>
                                 </div>

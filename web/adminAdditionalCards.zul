@@ -25,7 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.common.data.request')}"/> 
+                                                        <group label="${c:l('cms.common.request')}"/> 
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -47,9 +47,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -101,9 +101,9 @@
                                                         <column label="" width="880px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('sp.common.bank.observations')}"/>
+                                                        <group label="${c:l('cms.common.observations')}"/>
                                                         <row>
-                                                           <label value="${c:l('sp.common.bank.observations')}" sclass="lblbold"/>
+                                                           <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                            <textbox id="txtObservations"  value="" rows="2" width="880px"/>

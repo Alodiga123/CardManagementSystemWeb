@@ -26,7 +26,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -36,8 +36,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.state')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.state')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

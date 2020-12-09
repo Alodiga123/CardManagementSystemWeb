@@ -18,7 +18,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -42,7 +42,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.crud.loyalty.starDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.loyalty.endDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.programType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.typeProgram')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -57,7 +57,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.loyalty.conversionRatePoints')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -73,7 +73,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                                <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>

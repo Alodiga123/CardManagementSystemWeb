@@ -18,7 +18,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -44,7 +44,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.delivererRegister')}"/>                                                   
+                                                        <group label="${c:l('cms.common.delivererRegister')}"/>                                                   
                                                         <row>
                                                             <label value="${c:l('cms.menu.cardNumberAttemps')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.daliveryDate')}" sclass="lblbold"/>
@@ -86,7 +86,7 @@
                                                             </hbox>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">

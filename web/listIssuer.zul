@@ -34,7 +34,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.common.issuer.name')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.issuerName')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                             </hlayout>
                                             <!--Filters for Searching-->
@@ -56,8 +56,8 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.country')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.issuer.name')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.issuer.type')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.issuerName')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.issuerType')}" width="140px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.bin.number')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.swift.code')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>

@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crud.cardRequest.Type')}" onClick='Executions.sendRedirect(&quot;listCardRequestType.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.requestType.list')}" onClick='Executions.sendRedirect(&quot;listCardRequestType.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.request.Type.add')}"/>
+                                                <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.requestType.add')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -44,7 +44,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="200px"/>

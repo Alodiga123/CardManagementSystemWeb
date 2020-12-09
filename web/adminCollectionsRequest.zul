@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crumb.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.collectionsRequest.list')}" onClick='Executions.sendRedirect(&quot;listCollectionRequest.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton id="tbbTitle" label=""/>
                                             </hlayout>
@@ -52,9 +52,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.programName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -68,8 +68,8 @@
                                                             <label id="lblProductType" value="" width="260px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.collectionsRequest.requirement')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.collection')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

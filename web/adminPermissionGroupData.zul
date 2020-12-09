@@ -35,7 +35,7 @@
                                         <div height="7px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>

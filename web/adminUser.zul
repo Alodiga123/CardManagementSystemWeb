@@ -49,8 +49,8 @@
                                                     <rows>
                                                         <group label="${c:l('cms.common.data.EmployeeUser')}"/>
                                                         <row>
-                                                            <label value="${c:l('cms.common.user.employee')}" sclass="lblbold"/> 
-                                                            <label value="${c:l('cms.common.user.position')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.nameAndLastName')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.position')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.user.ext.alodiga')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -72,8 +72,8 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.employee.city')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.employee.email')}" sclass="lblbold"/>                                                            
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.email')}" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
                                                             <label id="lblComercialAgency" width="250px"/>
@@ -91,7 +91,7 @@
                                                     <rows>
                                                         <group label="${c:l('cms.common.data.EmployeeAuthorizesRegistration')}"/>
                                                         <row>
-                                                            <label value="${c:l('cms.common.authorize.registration')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.employee')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.aut.ext.alodiga')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>                                                            
@@ -111,7 +111,7 @@
                                                     <rows>
                                                         <group label="${c:l('cms.common.data.User')}"/>
                                                         <row>
-                                                            <label value="${c:l('cms.common.login')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.password')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>

@@ -18,7 +18,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -27,9 +27,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -47,7 +47,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumberOld')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumberOld')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.fullName')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -131,7 +131,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.phoneType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.phone')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

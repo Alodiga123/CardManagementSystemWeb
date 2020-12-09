@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.phoneType.list')}"/>
+                                                <toolbarbutton label="${c:l('cms.crud.phoneType.list')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -46,7 +46,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.phoneType')}" width="805px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.phoneTypes')}" width="805px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

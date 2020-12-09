@@ -26,12 +26,12 @@
                                                     </columns>
                                                     <rows>
                                                                                                     
-                                                        <group label="${c:l('cms.common.responsible.change.status')}"/> 
+                                                        <group label="${c:l('cms.common.responsibleUser')}"/> 
                                                                                                               
                                                         <row>
-                                                            <label value="${c:l('sp.common.user')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.number.identification')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblUser" value="" width="230px" style="color:#837E76;"/>
@@ -39,7 +39,7 @@
                                                             <label id="lblCity" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.agencyComercial')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>
                                                         </row>
                                                          <row>
                                                              <label id="lblComercial" value="" width="230px" style="color:#837E76;"/>
@@ -56,10 +56,10 @@
                                                     </columns>
                                                     <rows>
                                                                                                         
-                                                        <group label="${c:l('sp.common.data.basic')}"/> 
+                                                        <group label="${c:l('cms.common.data.basic')}"/> 
 
                                                         <row>
-                                                            <label value="${c:l('cms.product.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.number.identification')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
                                                         </row>
@@ -71,7 +71,7 @@
                                                         <row>
                                                             <label value="${c:l('sp.common.DateOfIssue')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardStatus')}" sclass="lblbold"/>
                                                         </row>
                                                          <row>
                                                              <label id="lblDateOfIssue" value="" width="230px" style="color:#837E76;"/>
@@ -91,9 +91,9 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.menu.cardStatusUpdate')}"/> 
+                                                        <group label="${c:l('cms.common.cardStatusUpdate')}"/> 
                                                         <row>
-                                                            <label value="${c:l('cms.common.reason.change.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.reason')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
 
                                                         </row>

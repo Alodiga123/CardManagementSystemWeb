@@ -29,8 +29,8 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameUser')}" width="300px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.agencyComercial')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameUserApproved')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.comercial.agency')}" width="300px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.approvalDate')}" width="200px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

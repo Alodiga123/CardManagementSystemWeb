@@ -52,7 +52,7 @@
                                                     <listheader label="${c:l('cms.common.cardNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.cardHolder')}" width="255px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.expirationDate')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.status')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.cardStatus')}" width="250px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

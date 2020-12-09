@@ -42,10 +42,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="890px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.id.profile')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.language.id')}" width="120px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.crud.profile.data.opcionSystem')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.language')}" width="120px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.alias.profile')}" width="240px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.description.profile')}" width="240px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.description')}" width="240px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

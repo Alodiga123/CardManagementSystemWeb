@@ -25,7 +25,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.documents.person.type.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.documentsPersonType.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -33,7 +33,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.common.document.name')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.document')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -53,7 +53,7 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.country')}" width="230px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionPersonType')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.personType')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.document')}" width="225px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identityCode')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>

@@ -41,7 +41,7 @@
                                                     <listheader label="${c:l('cms.common.cardNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.expirationDate')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.cardHolder')}" width="255px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.plasticRequest.status')}" width="290px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.status')}" width="290px" sort="auto"/>
 
                                                 </listhead>
                                             </listbox>

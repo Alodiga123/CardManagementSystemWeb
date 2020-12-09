@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.cardStatusByReason.list')}" onClick='Executions.sendRedirect(&quot;listCardStatusByReason.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.cardStatusByReason.list')}" onClick='Executions.sendRedirect(&quot;listCardStatusByReason.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton id= "tbbTitle" label=""/>  
                                             </hlayout> 
@@ -34,7 +34,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>

@@ -20,7 +20,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right" width="845px">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -39,7 +39,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="240px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameAndLastName')}" width="240px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.naturalperson.familyReferences.localPhone')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.naturalperson.familyReferences.cellPhone')}" width="170px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.city')}" width="225px" sort="auto"/>

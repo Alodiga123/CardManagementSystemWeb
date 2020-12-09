@@ -30,7 +30,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('sp.common.data.request')}"/> 
+                                                        <group label="${c:l('cms.common.request')}"/> 
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -41,7 +41,7 @@
                                                         </row>
                                                     </rows> 
                                                 </grid>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -51,8 +51,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.deliveryRequest.requestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.delivery.shippingCompany')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.deliveryRequest.descriptionProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.shippingCompany')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <datebox id="dtbRequestDate" width="250px"/>
@@ -60,7 +60,7 @@
                                                             <combobox id="cmbPrograms" width="250px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.delivery.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <cell colspan="2">

@@ -132,7 +132,7 @@ public class AdminAccountSegmentController extends GenericAbstractAdminControlle
 
             accountSegmentList = cardEJB.getAccountSegmentByAccountProperties(request);
             if (accountSegmentList != null) {
-                this.showMessage("cms.common.accountSegmentExist", false, null);
+                this.showMessage("cms.error.accountSegmentExist", false, null);
             }
         } catch (Exception ex) {
             showError(ex);

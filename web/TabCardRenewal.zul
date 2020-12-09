@@ -35,7 +35,7 @@
                                             <vlayout>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabCardRequestRenewal" label="${c:l('cms.common.data.renewal')}" />
+                                                        <tab id="tabCardRequestRenewal" label="${c:l('cms.common.requestData')}" />
                                                         <tab id="tabCardRenewalByRequest" label="${c:l('cms.common.data.card')}" />
                                                     </tabs>
                                                     <tabpanels>

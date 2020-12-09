@@ -24,10 +24,10 @@
                                                         <column label="" width="270px"/>
                                                     </columns>
                                                     <rows>
-                                                         <group label="${c:l('cms.crud.loyaltyProgram')}"/>
+                                                         <group label="${c:l('cms.common.loyaltyProgram')}"/>
                                                         <row>
-                                                            <label value="${c:l('cms.loyaltyProgram.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.loyalty.programType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.typeProgram')}" sclass="lblbold"/>
                                                             <label id="lblIndBonificationFixed" sclass="lblbold"/>                                                            
                                                         </row>
                                                         <row>
@@ -54,7 +54,7 @@
                                                         <column label="" width="270px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.crud.parameterTransaction')}"/>                                                        
+                                                        <group label="${c:l('cms.common.parameterTransaction')}"/>                                                        
                                                         <row>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.channel')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>

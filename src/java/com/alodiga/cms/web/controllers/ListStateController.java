@@ -130,7 +130,7 @@ public class ListStateController extends GenericAbstractListController<State> {
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.country.state.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.state.list"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());
