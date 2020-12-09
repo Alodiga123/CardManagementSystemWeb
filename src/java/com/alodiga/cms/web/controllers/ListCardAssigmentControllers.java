@@ -254,7 +254,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             if (lbxRecords.getItems() != null && !lbxRecords.getItems().isEmpty()) {
                 
                 //Se instancia el WebService de Credencial para alta de las tarjetas
-//                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
+                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
 //                
                 //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
