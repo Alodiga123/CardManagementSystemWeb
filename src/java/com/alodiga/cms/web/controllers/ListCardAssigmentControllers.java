@@ -344,6 +344,12 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 statusApplicant = requestEJB.loadStatusApplicant(request);  
                                 r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                 r = requestEJB.saveRequest(r);
+                                cardNumber = assignVirtualCardResponse.getAlias();
+                                accountAssigned = assignVirtualCardResponse.getCtasig();
+                                card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
+                                card = saveCard(card);
+                                createAccount(card,r,accountAssigned);
+                                i++; 
                                 //Se asigna la tarjeta fisica llamando al servicio de credencial
                                 AssignPhysicalCardResponse assignPhysicalCardResponse = credentialWebService.assignPhysicalCard(countryCode, assignVirtualCardResponse.getAlias(), movilPhone, 
                                         recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode, taxInformationRegistry, email);
@@ -362,12 +368,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     r = requestEJB.saveRequest(r);
                                     statusApproved = false;
                                 }                               
-                                cardNumber = assignVirtualCardResponse.getAlias();
-                                accountAssigned = assignVirtualCardResponse.getCtasig();
-                                card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
-                                card = saveCard(card);
-                                createAccount(card,r,accountAssigned);
-                                i++; 
+                             
                             }else{
                                  EJBRequest request = new EJBRequest();
                                  request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
@@ -447,24 +448,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                             statusApplicant = requestEJB.loadStatusApplicant(request);  
                                             cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                             cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
-                                            //Se asigna la tarjeta fisica al solicintante complementario llamando al servicio de credencial
-                                            AssignPhysicalCardResponse assignPhysicalCardComplementaryResponse = credentialWebService.assignPhysicalCard(countryCodeComplementary, assignVirtualComplementaryCardResponse.getAlias(), movilPhoneComplementary, 
-                                            recordingCardComplementary, cardDeliveryAddressComplementary, deliveryStateCodeComplementary, cityComplementary, deliverZipCodeComplementary, taxInformationRegistryComplementary, emailComplementary);
-                                            if (assignPhysicalCardComplementaryResponse.getCodigoRespuesta().equals("0")){
-                                                request = new EJBRequest();
-                                                request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
-                                                statusApplicant = requestEJB.loadStatusApplicant(request);  
-                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
-                                                cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
-                                            } else{
-                                                request = new EJBRequest();
-                                                request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
-                                                statusApplicant = requestEJB.loadStatusApplicant(request);  
-                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
-                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardComplementaryResponse.getErrorDescripcion());
-                                                cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
-                                                statusApproved = false;
-                                            }   
                                             card = new Card();
 
                                             cardNumber = assignVirtualComplementaryCardResponse.getAlias();
@@ -493,6 +476,25 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                             card = saveCard(card);
                                             createAccount(card, r, accountAssigned);
                                             i++;
+                                            //Se asigna la tarjeta fisica al solicintante complementario llamando al servicio de credencial
+                                            AssignPhysicalCardResponse assignPhysicalCardComplementaryResponse = credentialWebService.assignPhysicalCard(countryCodeComplementary, assignVirtualComplementaryCardResponse.getAlias(), movilPhoneComplementary, 
+                                            recordingCardComplementary, cardDeliveryAddressComplementary, deliveryStateCodeComplementary, cityComplementary, deliverZipCodeComplementary, taxInformationRegistryComplementary, emailComplementary);
+                                            if (assignPhysicalCardComplementaryResponse.getCodigoRespuesta().equals("0")){
+                                                request = new EJBRequest();
+                                                request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
+                                                statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                                cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
+                                            } else{
+                                                request = new EJBRequest();
+                                                request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                                statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardComplementaryResponse.getErrorDescripcion());
+                                                cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
+                                                statusApproved = false;
+                                            }   
+                                           
                                         }else{
                                             EJBRequest request = new EJBRequest();
                                             request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
