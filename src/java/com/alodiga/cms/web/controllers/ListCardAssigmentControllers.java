@@ -10,8 +10,9 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-//import cmscredentialservicesclient.CMSCredentialServicesClient;
-//import com.alodiga.cms.json.card.AssignVirtualCardResponse;
+import cmscredentialservicesclient.CMSCredentialServicesClient;
+import com.alodiga.cms.json.card.AssignPhysicalCardResponse;
+import com.alodiga.cms.json.card.AssignVirtualCardResponse;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountCard;
@@ -26,6 +27,7 @@ import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.NaturalCustomer;
 import com.cms.commons.models.PhonePerson;
 import com.cms.commons.models.StatusAccount;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.models.Transaction;
 import com.cms.commons.util.Constants;
@@ -67,6 +69,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     public static int indRequestOption = 1;
     private String applicantName = "";
     private ReviewRequest reviewRequestParam;
+    private boolean statusApproved = true;
 
 
     @Override
@@ -171,7 +174,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
 
     public void onClick$btnAssigment() throws InterruptedException {
         try {
-            assignCard(requests);
+            assignCard(lbxRecords);
         } catch (Exception ex) {
             showError(ex);
         }
@@ -228,10 +231,11 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         return card;
     }
 
-    public void assignCard(List<Request> list) {
+    public void assignCard(Listbox lbxRecords) {
         Card card = null;
         boolean indRenewal = true;
         CardStatus cardStatus = null;
+        StatusApplicant statusApplicant = null;
         List<CardNumberCredential> cardNumberCredentialList = null;
         List<ReviewRequest> reviewRequestList = null;
         List<NaturalCustomer> cardComplementaryList = null;
@@ -242,11 +246,12 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
         Long countCardComplementary = 0L;  
         int i = 0;
         String movilPhone = "";
+        String movilPhoneComplementary = "";
         
         try {
-            lbxRecords.getItems().clear();
-            Listitem item = null;
-            if (list != null && !list.isEmpty()) {
+//            lbxRecords.getItems().clear();
+//            Listitem item = null;
+            if (lbxRecords.getItems() != null && !lbxRecords.getItems().isEmpty()) {
                 
                 //Se instancia el WebService de Credencial para alta de las tarjetas
 //                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
@@ -257,7 +262,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                 cardStatus = utilsEJB.loadCardStatus(request1);        
 
                 //Se asignan las tarjetas virtuales y físicas a las solicitudes aprobadas
-                for (Request r : list) {
+                for (Object o: lbxRecords.getSelectedItems()) {
+                    Listitem item = (Listitem) o;
+                    Request r = (Request) item.getValue();
                     //Se busca el producto por medio de ReviewRequest
                     EJBRequest request3 = new EJBRequest();
                     Map params = new HashMap();
@@ -281,64 +288,97 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                     cal.setTime(expirationDateCard);
                     cal.add(Calendar.DATE, -reviewRequestParam.getProductId().getDaysBeforeExpiration());
                     cardAutomaticRenewalDate = cal.getTime();
-
+                    String pattern = "yyyyMMdd";
                     //Caso Solicitante Natural
                     if (r.getPersonTypeId().getIndNaturalPerson() == true) {
-                        //Asignar tarjeta al solicitante principal
-                        String initialsDocumentType = r.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
-                        String countryCode = r.getCountryId().getCodeIso3();
-                        String identificationNumber = r.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
-                        String pattern = "yyyyMMdd";
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                        Date dateCard = new Date();
-                        String highDateCard = simpleDateFormat.format(dateCard);
-                        String dateBirthApplicant = simpleDateFormat.format(r.getPersonId().getApplicantNaturalPerson().getDateBirth());
-                        String addressApplicant = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
-                        addressApplicant = addressApplicant.replace(" ", "%2B");
-                        String stateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
-                        String city = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
-                        city = city.replace(" ", "%2B");
-                        String zipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
-                        //Buscar el teléfono móvil del solicitante
-                        params = new HashMap();
-                        params.put(Constants.PERSON_KEY, r.getPersonId().getId());
-                        request1.setParams(params);
-                        phonePersonList = personEJB.getPhoneByPerson(request1);
-                        for (PhonePerson phone : phonePersonList) {
-                            if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
-                                movilPhone = phone.getNumberPhone();
-                            }                                
+                        if (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_ACTIVE) || 
+                            (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE))){
+                            //Asignar tarjeta al solicitante principal
+                            String initialsDocumentType = r.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
+                            String countryCode = r.getCountryId().getCodeIso3();
+                            String identificationNumber = r.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                            Date dateCard = new Date();
+                            String highDateCard = simpleDateFormat.format(dateCard);
+                            String dateBirthApplicant = simpleDateFormat.format(r.getPersonId().getApplicantNaturalPerson().getDateBirth());
+                            String addressApplicant = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                            addressApplicant = addressApplicant.replace(" ", "%2B");
+                            String stateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                            String city = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
+                            city = city.replace(" ", "%2B");
+                            String zipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                            //Buscar el teléfono móvil del solicitante
+                            params = new HashMap();
+                            params.put(Constants.PERSON_KEY, r.getPersonId().getId());
+                            request1.setParams(params);
+                            phonePersonList = personEJB.getPhoneByPerson(request1);
+                            for (PhonePerson phone : phonePersonList) {
+                                if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                                    movilPhone = phone.getNumberPhone();
+                                }                                
+                            }
+                            if (movilPhone.length() == Constants.SIZE_NOT_VALID_NUMBER_PHONE) {
+                                movilPhone.concat("0");
+                            }
+                            String email = r.getPersonId().getEmail();
+                            String gender = r.getPersonId().getApplicantNaturalPerson().getGender();
+                            String lastName = r.getPersonId().getApplicantNaturalPerson().getLastNames();
+                            lastName = lastName.replace(" ", "%2B");
+                            String firstName = r.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                            firstName = firstName.replace(" ", "%2B");
+                            String taxInformationRegistry = r.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
+                            String affinityCode = Constants.AFFINITY_CODE;
+                            String recordingCard = Constants.NOT_RECORDING_CARD;
+                            String annualLimitAmount = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
+                            String cardDeliveryAddress = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                            cardDeliveryAddress = cardDeliveryAddress.replace(" ", "%2B");
+                            String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                            String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                            AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
+                            assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
+                                                                                               stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
+                                                                                               affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
+                            if (assignVirtualCardResponse.getCodigoRespuesta().equals("0")){
+                                EJBRequest request = new EJBRequest();
+                                request.setParam(Constants.STATUS_APPLICANT_ASIGNADA_AL_CLIENTE);
+                                statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                r = requestEJB.saveRequest(r);
+                                //Se asigna la tarjeta fisica llamando al servicio de credencial
+                                AssignPhysicalCardResponse assignPhysicalCardResponse = credentialWebService.assignPhysicalCard(countryCode, assignVirtualCardResponse.getAlias(), movilPhone, 
+                                        recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode, taxInformationRegistry, email);
+                                if (assignPhysicalCardResponse.getCodigoRespuesta().equals("0")){
+                                    request = new EJBRequest();
+                                    request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
+                                    statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                    r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                    r = requestEJB.saveRequest(r);
+                                } else{
+                                    request = new EJBRequest();
+                                    request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                    statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                    r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                    r.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardResponse.getErrorDescripcion());
+                                    r = requestEJB.saveRequest(r);
+                                    statusApproved = false;
+                                }                               
+                                cardNumber = assignVirtualCardResponse.getAlias();
+                                accountAssigned = assignVirtualCardResponse.getCtasig();
+                                card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
+                                card = saveCard(card);
+                                createAccount(card,r,accountAssigned);
+                                i++; 
+                            }else{
+                                 EJBRequest request = new EJBRequest();
+                                 request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                 statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                 r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                 r.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualCardResponse.getErrorDescripcion());
+                                 r = requestEJB.saveRequest(r);
+                                 statusApproved = false;
+                            }
+                                                   
                         }
-                        if (movilPhone.length() == Constants.SIZE_NOT_VALID_NUMBER_PHONE) {
-                            movilPhone.concat("0");
-                        }
-                        String email = r.getPersonId().getEmail();
-                        String gender = r.getPersonId().getApplicantNaturalPerson().getGender();
-                        String lastName = r.getPersonId().getApplicantNaturalPerson().getLastNames();
-                        lastName = lastName.replace(" ", "%2B");
-                        String firstName = r.getPersonId().getApplicantNaturalPerson().getFirstNames();
-                        firstName = firstName.replace(" ", "%2B");
-                        String taxInformationRegistry = r.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
-                        String affinityCode = Constants.AFFINITY_CODE;
-                        String recordingCard = Constants.NOT_RECORDING_CARD;
-                        String annualLimitAmount = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
-                        String cardDeliveryAddress = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
-                        cardDeliveryAddress = cardDeliveryAddress.replace(" ", "%2B");
-                        String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
-                        String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
-//                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
-//                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
-//                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
-////                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
-//                        cardNumber = assignVirtualCardResponse.getAlias();
-//                        accountAssigned = assignVirtualCardResponse.getCtasig();
-                        card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
-                        card = saveCard(card);
-                        createAccount(card,r,accountAssigned);
-                        //Actualiza el estatus de la solicitud
-                        updateStatusRequest(r);
-                        i++;                        
-
                         //Se verifica si hay solicitantes complementarios
                         countCardComplementary = personEJB.countCardComplementaryByApplicant(r.getPersonId().getApplicantNaturalPerson().getId());
                         if (countCardComplementary > 0) {
@@ -352,36 +392,122 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             //Asignar tarjetas a solicitantes complementarios
                             if (cardComplementaryList != null) {
                                 for (NaturalCustomer cardComplementaries : cardComplementaryList) {
-                                    card = new Card();
+                                    //Asignar las tarjetas complementarias
+                                     if (cardComplementaries.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_ACTIVE) || 
+                                       (cardComplementaries.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE))){
+                                        String initialsDocumentTypeComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
+                                        String countryCodeComplementary = cardComplementaries.getDocumentsPersonTypeId().getPersonTypeId().getCountryId().getCodeIso3();
+                                        String identificationNumberComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                                        Date dateCard = new Date();
+                                        String highDateCardComplementary = simpleDateFormat.format(dateCard);
+                                        String dateBirthApplicantComplementary = simpleDateFormat.format(cardComplementaries.getPersonId().getApplicantNaturalPerson().getDateBirth());
+                                        String addressApplicantComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                                        addressApplicantComplementary = addressApplicantComplementary.replace(" ", "%2B");
+                                        String stateCodeComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                                        String cityComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
+                                        cityComplementary = cityComplementary.replace(" ", "%2B");
+                                        String zipCodeComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                                        //Buscar el teléfono móvil del solicitante
+                                        params = new HashMap();
+                                        params.put(Constants.PERSON_KEY, cardComplementaries.getPersonId().getId());
+                                        request1.setParams(params);
+                                        phonePersonList = personEJB.getPhoneByPerson(request1);
+                                        for (PhonePerson phone : phonePersonList) {
+                                            if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                                                movilPhoneComplementary = phone.getNumberPhone();
+                                            }                                
+                                        }
+                                        if (movilPhoneComplementary.length() == Constants.SIZE_NOT_VALID_NUMBER_PHONE) {
+                                            movilPhoneComplementary.concat("0");
+                                        }
+                                        String emailComplementary = cardComplementaries.getPersonId().getEmail();
+                                        String genderComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getGender();
+                                        String lastNameComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getLastNames();
+                                        lastNameComplementary = lastNameComplementary.replace(" ", "%2B");
+                                        String firstNameComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                                        firstNameComplementary = firstNameComplementary.replace(" ", "%2B");
+                                        String taxInformationRegistryComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
+                                        String affinityCodeComplementary = Constants.AFFINITY_CODE;
+                                        String recordingCardComplementary = Constants.NOT_RECORDING_CARD;
+                                        String annualLimitAmountComplementary = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
+                                        String cardDeliveryAddressComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                                        cardDeliveryAddressComplementary = cardDeliveryAddressComplementary.replace(" ", "%2B");
+                                        String deliveryStateCodeComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                                        String deliverZipCodeComplementary = cardComplementaries.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                                        AssignVirtualCardResponse assignVirtualComplementaryCardResponse = new AssignVirtualCardResponse();
+                                        //Se asigna la tarjeta vistual al solicintante complementario
+                                        assignVirtualComplementaryCardResponse = credentialWebService.assignVirtualCard(countryCodeComplementary, initialsDocumentTypeComplementary, identificationNumberComplementary, highDateCardComplementary,
+                                                dateBirthApplicantComplementary, addressApplicantComplementary, stateCodeComplementary, cityComplementary, zipCodeComplementary, movilPhoneComplementary, emailComplementary, genderComplementary,
+                                                lastNameComplementary, firstNameComplementary, taxInformationRegistryComplementary, affinityCodeComplementary, recordingCardComplementary, cardDeliveryAddressComplementary, deliveryStateCodeComplementary, cityComplementary, deliverZipCodeComplementary);
 
-//                                    cardNumber = assignVirtualCardResponse.getAlias();
-                                    StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
-                                    applicantName.append(" ");
-                                    applicantName.append(cardComplementaries.getLastNames());
-                                    String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
-                                    cardHolder = cardHolder + " ";
-                                    StringBuilder applicantLastName = new StringBuilder(cardComplementaries.getLastNames());
-                                    applicantLastName.append(" ");
-                                    applicantLastName.append(cardComplementaries.getLastNames());
-                                    String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
-                                    cardHolder = cardHolder + apellido;
+                                        if (assignVirtualComplementaryCardResponse.getCodigoRespuesta().equals("0")){
+                                            EJBRequest request = new EJBRequest();
+                                            request.setParam(Constants.STATUS_APPLICANT_ASIGNADA_AL_CLIENTE);
+                                            statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                            cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                            cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
+                                            //Se asigna la tarjeta fisica al solicintante complementario llamando al servicio de credencial
+                                            AssignPhysicalCardResponse assignPhysicalCardComplementaryResponse = credentialWebService.assignPhysicalCard(countryCodeComplementary, assignVirtualComplementaryCardResponse.getAlias(), movilPhoneComplementary, 
+                                            recordingCardComplementary, cardDeliveryAddressComplementary, deliveryStateCodeComplementary, cityComplementary, deliverZipCodeComplementary, taxInformationRegistryComplementary, emailComplementary);
+                                            if (assignPhysicalCardComplementaryResponse.getCodigoRespuesta().equals("0")){
+                                                request = new EJBRequest();
+                                                request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
+                                                statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                                cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
+                                            } else{
+                                                request = new EJBRequest();
+                                                request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                                statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                                cardComplementaries.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardComplementaryResponse.getErrorDescripcion());
+                                                cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
+                                                statusApproved = false;
+                                            }   
+                                            card = new Card();
 
-                                    card.setCardNumber(cardNumber);
-                                    card.setProgramId(r.getProgramId());
-                                    card.setProductId(reviewRequestParam.getProductId());
-                                    card.setCardHolder(cardHolder);
-                                    card.setIssueDate(new Timestamp(new Date().getTime()));
-                                    card.setExpirationDate(expirationDateCard);
-                                    card.setCardStatusId(cardStatus);
-                                    card.setPersonCustomerId(cardComplementaries.getPersonId());
-                                    card.setCreateDate(new Timestamp(new Date().getTime()));
-                                    card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
-                                    card.setIndRenewal(indRenewal);
-                                    card = saveCard(card);
-                                    createAccount(card, r, accountAssigned);
-                                    i++;
+                                            cardNumber = assignVirtualComplementaryCardResponse.getAlias();
+                                            StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
+                                            applicantName.append(" ");
+                                            applicantName.append(cardComplementaries.getLastNames());
+                                            String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
+                                            cardHolder = cardHolder + " ";
+                                            StringBuilder applicantLastName = new StringBuilder(cardComplementaries.getLastNames());
+                                            applicantLastName.append(" ");
+                                            applicantLastName.append(cardComplementaries.getLastNames());
+                                            String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
+                                            cardHolder = cardHolder + apellido;
+
+                                            card.setCardNumber(cardNumber);
+                                            card.setProgramId(r.getProgramId());
+                                            card.setProductId(reviewRequestParam.getProductId());
+                                            card.setCardHolder(cardHolder);
+                                            card.setIssueDate(new Timestamp(new Date().getTime()));
+                                            card.setExpirationDate(expirationDateCard);
+                                            card.setCardStatusId(cardStatus);
+                                            card.setPersonCustomerId(cardComplementaries.getPersonId());
+                                            card.setCreateDate(new Timestamp(new Date().getTime()));
+                                            card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
+                                            card.setIndRenewal(indRenewal);
+                                            card = saveCard(card);
+                                            createAccount(card, r, accountAssigned);
+                                            i++;
+                                        }else{
+                                            EJBRequest request = new EJBRequest();
+                                            request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                            statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                            cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                            cardComplementaries.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualComplementaryCardResponse.getErrorDescripcion());
+                                            cardComplementaries = personEJB.saveNaturalCustomer(cardComplementaries);
+                                            statusApproved = false;
+                                       }
+                                   }
                                 }
-                            }
+                            }                           
+                            //Actualiza el estatus de la solicitud
+                            if (statusApproved)
+                                updateStatusRequest(r);
                         }
 
                     } else {
@@ -392,47 +518,208 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         params.put(Constants.APPLICANT_LEGAL_PERSON_KEY, r.getPersonId().getLegalPerson().getId());
                         request5.setParams(params);
                         cardRequestList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request5);
-
-                        //Asigna tarjeta a solicitante juridico
-//                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
-//                        cardNumber = assignVirtualCardResponse.getAlias();;
-//                        card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
-//                        card = saveCard(card);
-                        createAccount(card,r, accountAssigned);
-                        //Actualiza el estatus de la solicitud
-                        updateStatusRequest(r);
-                        i++;
-
+                        if (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_ACTIVE) || 
+                                       (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE))){
+                        //Asigna tarjeta a solicitante juridico             
+                           String initialsDocumentType = r.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
+                           String countryCode = r.getCountryId().getCodeIso3();
+                           String identificationNumber = r.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
+                           SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                           Date dateCard = new Date();
+                           String highDateCard = simpleDateFormat.format(dateCard);
+                           String dateBirthApplicant = simpleDateFormat.format(r.getPersonId().getApplicantNaturalPerson().getDateBirth());
+                           String addressApplicant = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                           addressApplicant = addressApplicant.replace(" ", "%2B");
+                           String stateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                           String city = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
+                           city = city.replace(" ", "%2B");
+                           String zipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                           //Buscar el teléfono móvil del solicitante
+                           params = new HashMap();
+                           params.put(Constants.PERSON_KEY, r.getPersonId().getId());
+                           request1.setParams(params);
+                           phonePersonList = personEJB.getPhoneByPerson(request1);
+                           for (PhonePerson phone : phonePersonList) {
+                               if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                                   movilPhone = phone.getNumberPhone();
+                               }                                
+                           }
+                           if (movilPhone.length() == Constants.SIZE_NOT_VALID_NUMBER_PHONE) {
+                               movilPhone.concat("0");
+                           }
+                           String email = r.getPersonId().getEmail();
+                           String gender = r.getPersonId().getApplicantNaturalPerson().getGender();
+                           String lastName = r.getPersonId().getApplicantNaturalPerson().getLastNames();
+                           lastName = lastName.replace(" ", "%2B");
+                           String firstName = r.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                           firstName = firstName.replace(" ", "%2B");
+                           String taxInformationRegistry = r.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
+                           String affinityCode = Constants.AFFINITY_CODE;
+                           String recordingCard = Constants.NOT_RECORDING_CARD;
+                           String annualLimitAmount = Float.toString(reviewRequestParam.getMaximumRechargeAmount()*12);
+                           String cardDeliveryAddress = r.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                           cardDeliveryAddress = cardDeliveryAddress.replace(" ", "%2B");
+                           String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                           String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                           AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
+                           assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
+                                                                                              stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
+                                                                                              affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
+                           if (assignVirtualCardResponse.getCodigoRespuesta().equals("0")){
+                                   EJBRequest request = new EJBRequest();
+                                   request.setParam(Constants.STATUS_APPLICANT_ASIGNADA_AL_CLIENTE);
+                                   statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                   r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                   r = requestEJB.saveRequest(r);
+                               //Se asigna la tarjeta fisica llamando al servicio de credencial
+                               AssignPhysicalCardResponse assignPhysicalCardResponse = credentialWebService.assignPhysicalCard(countryCode, assignVirtualCardResponse.getAlias(), movilPhone, 
+                                       recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode, taxInformationRegistry, email);
+                               if (assignPhysicalCardResponse.getCodigoRespuesta().equals("0")){
+                                    request = new EJBRequest();
+                                    request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
+                                    statusApplicant = requestEJB.loadStatusApplicant(request);
+                                    r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                    r = requestEJB.saveRequest(r);
+                                } else {
+                                    request = new EJBRequest();
+                                    request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                    statusApplicant = requestEJB.loadStatusApplicant(request);
+                                    r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                    r.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardResponse.getErrorDescripcion());
+                                    r = requestEJB.saveRequest(r);
+                                    statusApproved = false;
+                                }
+                                cardNumber = assignVirtualCardResponse.getAlias();
+                               accountAssigned = assignVirtualCardResponse.getCtasig();
+                               card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
+                               card = saveCard(card);
+                               createAccount(card,r, accountAssigned);
+                               i++;
+                            }else{
+                                    EJBRequest request = new EJBRequest();
+                                    request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                    statusApplicant = requestEJB.loadStatusApplicant(request);  
+                                    r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                    r.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualCardResponse.getErrorDescripcion());
+                                    r = requestEJB.saveRequest(r);
+                                    statusApproved = false;
+                           }
+                        }
                         if (cardRequestList != null) {
                             for (CardRequestNaturalPerson additionalCards : cardRequestList) {
-                                card = new Card();
-//                                cardNumber = cardNumberCredentialList.get(i);
-                                StringBuilder applicantName = new StringBuilder(additionalCards.getFirstNames());
-                                applicantName.append(" ");
-                                applicantName.append(additionalCards.getLastNames());
-                                String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
-                                cardHolder = cardHolder + " ";
-                                StringBuilder applicantLastName = new StringBuilder(additionalCards.getLastNames());
-                                applicantLastName.append(" ");
-                                applicantLastName.append(additionalCards.getLastNames());
-                                String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
-                                cardHolder = cardHolder + apellido;
-                                card.setCardNumber(cardNumber);
-                                card.setProgramId(r.getProgramId());
-                                card.setProductId(reviewRequestParam.getProductId());
-                                card.setCardHolder(cardHolder);
-                                card.setIssueDate(new Timestamp(new Date().getTime()));
-                                card.setExpirationDate(expirationDateCard);
-                                card.setCardStatusId(cardStatus);
-                                card.setPersonCustomerId(r.getPersonCustomerId());
-                                card.setCreateDate(new Timestamp(new Date().getTime()));
-                                card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
-                                card.setIndRenewal(indRenewal);
-                                card = saveCard(card);
-                                createAccount(card, r, accountAssigned);
-                                i++;
+                                 //Asignar las tarjetas complementarias
+                                if (additionalCards.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_ACTIVE) || 
+                                       (additionalCards.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE))){
+                                    String initialsDocumentTypeComplementary = additionalCards.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
+                                    String countryCodeComplementary = additionalCards.getDocumentsPersonTypeId().getPersonTypeId().getCountryId().getCodeIso3();
+                                    String identificationNumberComplementary = additionalCards.getPersonId().getApplicantNaturalPerson().getIdentificationNumber();
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                                    Date dateCard = new Date();
+                                    String highDateCardComplementary = simpleDateFormat.format(dateCard);
+                                    String dateBirthApplicantComplementary = simpleDateFormat.format(additionalCards.getPersonId().getApplicantNaturalPerson().getDateBirth());
+                                    String addressApplicantComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                                    addressApplicantComplementary = addressApplicantComplementary.replace(" ", "%2B");
+                                    String stateCodeComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                                    String cityComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getCityId().getName();
+                                    cityComplementary = cityComplementary.replace(" ", "%2B");
+                                    String zipCodeComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                                    //Buscar el teléfono móvil del solicitante
+                                    params = new HashMap();
+                                    params.put(Constants.PERSON_KEY, additionalCards.getPersonId().getId());
+                                    request1.setParams(params);
+                                    phonePersonList = personEJB.getPhoneByPerson(request1);
+                                    for (PhonePerson phone : phonePersonList) {
+                                        if (phone.getPhoneTypeId().getId() == Constants.PHONE_TYPE_MOBILE) {
+                                            movilPhoneComplementary = phone.getNumberPhone();
+                                        }
+                                    }
+                                    if (movilPhoneComplementary.length() == Constants.SIZE_NOT_VALID_NUMBER_PHONE) {
+                                        movilPhoneComplementary.concat("0");
+                                    }
+                                    String emailComplementary = additionalCards.getPersonId().getEmail();
+                                    String genderComplementary = additionalCards.getPersonId().getApplicantNaturalPerson().getGender();
+                                    String lastNameComplementary = additionalCards.getPersonId().getApplicantNaturalPerson().getLastNames();
+                                    lastNameComplementary = lastNameComplementary.replace(" ", "%2B");
+                                    String firstNameComplementary = additionalCards.getPersonId().getApplicantNaturalPerson().getFirstNames();
+                                    firstNameComplementary = firstNameComplementary.replace(" ", "%2B");
+                                    String taxInformationRegistryComplementary = additionalCards.getPersonId().getApplicantNaturalPerson().getTaxInformationRegistry();
+                                    String affinityCodeComplementary = Constants.AFFINITY_CODE;
+                                    String recordingCardComplementary = Constants.NOT_RECORDING_CARD;
+                                    String annualLimitAmountComplementary = Float.toString(reviewRequestParam.getMaximumRechargeAmount() * 12);
+                                    String cardDeliveryAddressComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getAddressLine1();
+                                    cardDeliveryAddressComplementary = cardDeliveryAddressComplementary.replace(" ", "%2B");
+                                    String deliveryStateCodeComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
+                                    String deliverZipCodeComplementary = additionalCards.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
+                                    AssignVirtualCardResponse assignVirtualComplementaryCardResponse = new AssignVirtualCardResponse();
+                                    //Se asigna la tarjeta vistual al solicintante complementario
+                                    assignVirtualComplementaryCardResponse = credentialWebService.assignVirtualCard(countryCodeComplementary, initialsDocumentTypeComplementary, identificationNumberComplementary, highDateCardComplementary,
+                                            dateBirthApplicantComplementary, addressApplicantComplementary, stateCodeComplementary, cityComplementary, zipCodeComplementary, movilPhoneComplementary, emailComplementary, genderComplementary,
+                                            lastNameComplementary, firstNameComplementary, taxInformationRegistryComplementary, affinityCodeComplementary, recordingCardComplementary, cardDeliveryAddressComplementary, deliveryStateCodeComplementary, cityComplementary, deliverZipCodeComplementary);
+                                    if (assignVirtualComplementaryCardResponse.getCodigoRespuesta().equals("0")){
+                                        EJBRequest request = new EJBRequest();
+                                        request.setParam(Constants.STATUS_APPLICANT_ASIGNADA_AL_CLIENTE);
+                                        statusApplicant = requestEJB.loadStatusApplicant(request);
+                                        additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                        additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
+                                        //Se asigna la tarjeta fisica al solicintante complementario llamando al servicio de credencial
+                                        AssignPhysicalCardResponse assignPhysicalCardComplementaryResponse = credentialWebService.assignPhysicalCard(countryCodeComplementary, assignVirtualComplementaryCardResponse.getAlias(), movilPhoneComplementary,
+                                                recordingCardComplementary, cardDeliveryAddressComplementary, deliveryStateCodeComplementary, cityComplementary, deliverZipCodeComplementary, taxInformationRegistryComplementary, emailComplementary);
+                                        if (assignPhysicalCardComplementaryResponse.getCodigoRespuesta().equals("0")){
+                                            request = new EJBRequest();
+                                            request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
+                                            statusApplicant = requestEJB.loadStatusApplicant(request);
+                                            additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                            additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
+                                        } else {
+                                            request = new EJBRequest();
+                                            request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                            statusApplicant = requestEJB.loadStatusApplicant(request);
+                                            additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                            additionalCards.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardComplementaryResponse.getErrorDescripcion());
+                                            additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
+                                            statusApproved = false;
+                                        }   
+                                        card = new Card();
+        //                                cardNumber = cardNumberCredentialList.get(i);
+                                        StringBuilder applicantName = new StringBuilder(additionalCards.getFirstNames());
+                                        applicantName.append(" ");
+                                        applicantName.append(additionalCards.getLastNames());
+                                        String cardHolder = applicantName.substring(0, applicantName.indexOf(" "));
+                                        cardHolder = cardHolder + " ";
+                                        StringBuilder applicantLastName = new StringBuilder(additionalCards.getLastNames());
+                                        applicantLastName.append(" ");
+                                        applicantLastName.append(additionalCards.getLastNames());
+                                        String apellido = applicantLastName.substring(0, applicantLastName.indexOf(" "));
+                                        cardHolder = cardHolder + apellido;
+                                        card.setCardNumber(cardNumber);
+                                        card.setProgramId(r.getProgramId());
+                                        card.setProductId(reviewRequestParam.getProductId());
+                                        card.setCardHolder(cardHolder);
+                                        card.setIssueDate(new Timestamp(new Date().getTime()));
+                                        card.setExpirationDate(expirationDateCard);
+                                        card.setCardStatusId(cardStatus);
+                                        card.setPersonCustomerId(r.getPersonCustomerId());
+                                        card.setCreateDate(new Timestamp(new Date().getTime()));
+                                        card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
+                                        card.setIndRenewal(indRenewal);
+                                        card = saveCard(card);
+                                        createAccount(card, r, accountAssigned);
+                                        i++;
+                                    }else {
+                                        EJBRequest request = new EJBRequest();
+                                        request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                        statusApplicant = requestEJB.loadStatusApplicant(request);
+                                        additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
+                                        additionalCards.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualComplementaryCardResponse.getErrorDescripcion());
+                                        additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
+                                        statusApproved = false;
+                                    }
+                                }
                             }
                         }
+                        //Actualiza el estatus de la solicitud
+                        if (statusApproved)
+                           updateStatusRequest(r);
                     }
                 }
             }
@@ -441,9 +728,6 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             showError(ex);
         }
         finally {
-            if (cardNumberCredentialList == null) {
-                this.showMessage("cms.msj.notCardNumbersAvailable", false, null);
-            }
             if (i > 0) {
                 this.showMessage("cms.common.msj.assignCard", false, null);
             }            
