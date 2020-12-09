@@ -355,7 +355,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     r = requestEJB.saveRequest(r);
                                 } else{
                                     request = new EJBRequest();
-                                    request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                    request.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
                                     statusApplicant = requestEJB.loadStatusApplicant(request);  
                                     r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                     r.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardResponse.getErrorDescripcion());
@@ -370,7 +370,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 i++; 
                             }else{
                                  EJBRequest request = new EJBRequest();
-                                 request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                 request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
                                  statusApplicant = requestEJB.loadStatusApplicant(request);  
                                  r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                  r.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualCardResponse.getErrorDescripcion());
@@ -495,7 +495,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                             i++;
                                         }else{
                                             EJBRequest request = new EJBRequest();
-                                            request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                            request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
                                             statusApplicant = requestEJB.loadStatusApplicant(request);  
                                             cardComplementaries.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                             cardComplementaries.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualComplementaryCardResponse.getErrorDescripcion());
@@ -582,7 +582,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     r = requestEJB.saveRequest(r);
                                 } else {
                                     request = new EJBRequest();
-                                    request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                    request.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
                                     statusApplicant = requestEJB.loadStatusApplicant(request);
                                     r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                     r.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardResponse.getErrorDescripcion());
@@ -597,7 +597,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                i++;
                             }else{
                                     EJBRequest request = new EJBRequest();
-                                    request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                    request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
                                     statusApplicant = requestEJB.loadStatusApplicant(request);  
                                     r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                     r.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualCardResponse.getErrorDescripcion());
@@ -672,7 +672,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                             additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
                                         } else {
                                             request = new EJBRequest();
-                                            request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                            request.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
                                             statusApplicant = requestEJB.loadStatusApplicant(request);
                                             additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                             additionalCards.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardComplementaryResponse.getErrorDescripcion());
@@ -707,7 +707,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                         i++;
                                     }else {
                                         EJBRequest request = new EJBRequest();
-                                        request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                        request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
                                         statusApplicant = requestEJB.loadStatusApplicant(request);
                                         additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                         additionalCards.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualComplementaryCardResponse.getErrorDescripcion());
