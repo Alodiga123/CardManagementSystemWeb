@@ -61,7 +61,7 @@
                                                             </hlayout>
                                                             <separator/>
                                                             <hlayout>
-                                                                <label id="lblPassword" value="${c:l('sp.common.password')}" width="80px" sclass="lblbold"/>:
+                                                                <label id="lblPassword" value="${c:l('cms.common.password')}" width="80px" sclass="lblbold"/>:
                                                             </hlayout>
                                                         </vlayout>
                                                         <vlayout>

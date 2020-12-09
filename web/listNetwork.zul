@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.network.list')}" />
+                                                <toolbarbutton label="${c:l('cms.common.netWork.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -46,7 +46,7 @@
                                                                 <textbox id="txtNetwork" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                             </hlayout>
                                                             <hlayout style="text-align:center">
-                                                                <label value="${c:l('cms.common.countryFilter')}" width="80px" sclass="lblbold"/>
+                                                                <label value="${c:l('cms.common.country')}" width="80px" sclass="lblbold"/>
                                                                 <textbox id="txtCountry" value="" width="200px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                             </hlayout>
                                                             <!--Filters button-->
@@ -69,7 +69,7 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.name.network')}" width="400px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="405px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="405px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

@@ -58,7 +58,7 @@
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.requestNumber')}" width="120px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.requestDate')}" width="100px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.Program')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.program')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.requestType')}" width="50px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.applicant')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.statusRequest')}" width="180px" sort="auto"/>

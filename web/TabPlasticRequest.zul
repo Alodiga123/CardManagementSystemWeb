@@ -37,7 +37,7 @@
                                             <vlayout>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabPlasticRequest" label="${c:l('cms.tab.plasticRequest')}" />
+                                                        <tab id="tabPlasticRequest" label="${c:l('cms.common.request')}" />
                                                         <tab id="tabPlasticCard" label="${c:l('cms.tab.plasticRequest.listRequestCard')}"/>
                                                         <tab id="tabFile" label="${c:l('cms.tab.file')}"/>
                                                     </tabs>

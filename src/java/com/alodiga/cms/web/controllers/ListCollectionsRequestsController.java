@@ -134,7 +134,7 @@ public class ListCollectionsRequestsController extends GenericAbstractListContro
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.collectionsRequest.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.collectionsRequest.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

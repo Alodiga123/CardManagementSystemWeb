@@ -27,8 +27,8 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.loyaltyProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.menu.product')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.loyaltyProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cards')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.tab.loyaltyMain')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -37,9 +37,9 @@
                                                             <label id="lblLoyaltyMain" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.loyalty.programType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.applicantionRiview.agency')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.typeProgram')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.agency')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblProgramLoyaltyType" value="" width="250px" style="color:#837E76;"/>
@@ -49,7 +49,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.crud.applicantionRiview.commercialAssessorUserCode')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.applicantionRiview.AssessorName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblCommercialAssessorUserCode" value="" width="250px" style="color:#837E76;"/>
@@ -57,7 +57,7 @@
                                                             <label id="lblIdentification" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.loyaltyProgram.approved')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.loyaltyProgram.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hbox>
@@ -73,7 +73,7 @@
                                                             </hbox>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.loyalty.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">

@@ -25,9 +25,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.plasticManufacturer')}" onClick='Executions.sendRedirect(&quot;listPlasticManufacturer.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.plasticManufacturer')}" onClick='Executions.sendRedirect(&quot;listPlasticManufacturer.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.plastic.manufacturer.add')}"/>
+                                                <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.plasticManufacturer.add')}"/>
                                                  |  
                                                 <toolbarbutton id="tbbCurrentAction" /> 
                                             </hlayout>
@@ -54,7 +54,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.person.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.documentType.identification')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
@@ -70,7 +70,7 @@
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.identification.number')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.name.manufacturer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.name')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.contract.number')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -98,7 +98,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.email.contact')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtEmailContact" width="250px" maxlength="40" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>

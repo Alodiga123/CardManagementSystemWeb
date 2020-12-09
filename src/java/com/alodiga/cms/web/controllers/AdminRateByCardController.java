@@ -90,7 +90,7 @@ public class AdminRateByCardController extends GenericAbstractAdminController {
             if (rateByCard.getApprovalCardRateId() != null) {
                 lblStatus.setValue(Labels.getLabel("cms.common.approved"));
             }else{
-                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+                lblStatus.setValue(Labels.getLabel("cms.common.tobeApproved"));
             }   
             lblTransaction.setValue(rateByCard.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByCard.getRateApplicationTypeId().getDescription());

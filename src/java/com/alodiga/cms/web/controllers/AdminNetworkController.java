@@ -94,7 +94,7 @@ public class AdminNetworkController extends GenericAbstractAdminController {
         
         } else if (cmbCountry.getSelectedItem() == null) {
             cmbCountry.setFocus(true);
-            this.showMessage("cms.common.countryName.error", true, null);
+            this.showMessage("cms.error.countryName.error", true, null);
         }else {
             return true;
         }

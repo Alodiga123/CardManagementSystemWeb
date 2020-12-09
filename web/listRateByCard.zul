@@ -43,7 +43,7 @@
                                                 <listhead>
                                                   <listheader label="${c:l('cms.common.country')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.channel')}" width="60px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.code')}" width="60px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.code')}" width="60px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.transaction')}" width="210px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.fixedRate')}" width="80px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.percentageRate')}" width="120px" sort="auto"/>

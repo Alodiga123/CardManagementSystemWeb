@@ -27,7 +27,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.Program')}" onClick='Executions.sendRedirect(&quot;listProgram.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.program')}" onClick='Executions.sendRedirect(&quot;listProgram.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
@@ -38,7 +38,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.programMain')}" />
-                                                        <tab id="tabNetwork" label="${c:l('cms.common.program.network')}"/>
+                                                        <tab id="tabNetwork" label="${c:l('cms.common.netWork')}"/>
                                                         <tab id="tabProjectedAnnualVolume" label="${c:l('cms.common.projected.annual.volume')}"/>
                                                         <tab id="tabAverageCargeUsage" label="${c:l('cms.common.average.carge.usage.tab')}"/>
                                                     </tabs>

@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.country.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.country.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.common.country.name')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.country')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -54,7 +54,7 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.code')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.country.name')}" width="245px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="245px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.codeIso2')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.codeIso3')}" width="130px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.currency')}" width="180px" sort="auto"/>

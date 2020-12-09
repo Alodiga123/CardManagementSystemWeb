@@ -95,7 +95,7 @@ public class ListPersonTypeController extends GenericAbstractListController<Pers
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.person.type.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.personType.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

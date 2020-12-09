@@ -70,7 +70,7 @@ public class ListAccountPropertiesController extends GenericAbstractListControll
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.account.properties.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.account.properties.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

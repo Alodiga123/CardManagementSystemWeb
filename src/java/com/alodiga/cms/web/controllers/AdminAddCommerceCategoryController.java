@@ -125,7 +125,7 @@ public class AdminAddCommerceCategoryController extends GenericAbstractAdminCont
             request1.setParams(params);
             productHasCommerceCategoryBD = productEJB.getProductHasCommerceCategoryBD(request1);
             if (productHasCommerceCategoryBD != null) {
-                this.showMessage("sp.common.productHasCommerceCategoryExist", false, null);
+                this.showMessage("cms.error.productHasCommerceCategoryExist", false, null);
             }
         } catch (NullParameterException ex) {
             showError(ex);

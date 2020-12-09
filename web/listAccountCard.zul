@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.common.AccountCard.list')}" />
+                                                <toolbarbutton label="${c:l('cms.common.accountCard.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -56,7 +56,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="950px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.card.number')}" width="230px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.cardNumber')}" width="230px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.card.holder')}" width="230px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.account.number')}" width="230px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.status.account')}" width="170px" sort="auto"/>

@@ -59,13 +59,13 @@ public class AdminDocumentsPersonTypeController extends GenericAbstractAdminCont
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.documents.person.type.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.documentsPersonType.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.documents.person.type.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.documentsPersonType.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.documents.person.type.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.documentsPersonType.add"));
                 break;
             default:
                 break;

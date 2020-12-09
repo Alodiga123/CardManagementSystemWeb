@@ -25,7 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.common.data.request')}"/>
+                                                        <group label="${c:l('cms.common.request')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -38,7 +38,7 @@
                                                         </row>
                                                     </rows> 
                                                 </grid>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -47,13 +47,13 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.crud.cardRequestType.review')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.cardRequestType.review')}" sclass="lblbold"/>
                                                             <label id="txtNumber" value="" width="200px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -65,9 +65,9 @@
                                                             <label id="txtProductType" value="" width="250px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.requestCollection.collectionTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.requestCollection.approved')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.programName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.collectionsType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.approved')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="txtPrograms" value="" width="250px" style="color:#837E76;"/>
@@ -90,7 +90,7 @@
                                                             </hbox>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">
@@ -102,7 +102,7 @@
                                                         </row>
                                                     </rows>
                                                 </grid>
-                                                <label value="${c:l('cms.upload.title')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.upload.files')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="700px"/>

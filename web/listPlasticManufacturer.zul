@@ -43,7 +43,7 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.country')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.name.manufacturer')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.name')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identification.number')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.phone')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.email.manufacturer')}" width="155px" sort="auto"/>

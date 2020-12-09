@@ -10,8 +10,8 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.commons.exception.RegisterNotFoundException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractListController;
-import cmscredentialservicesclient.CMSCredentialServicesClient;
-import com.alodiga.cms.json.card.AssignVirtualCardResponse;
+//import cmscredentialservicesclient.CMSCredentialServicesClient;
+//import com.alodiga.cms.json.card.AssignVirtualCardResponse;
 import com.alodiga.cms.web.utils.WebConstants;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.AccountCard;
@@ -122,7 +122,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             applicantName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
                             item.appendChild(new Listcell(applicantName.toString()));
                         } else {
-                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.legalPerson.list")));
+                            item.appendChild(new Listcell(Labels.getLabel("cms.common.legalPerson")));
                             applicantName = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantName));
                         }
@@ -249,8 +249,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             if (list != null && !list.isEmpty()) {
                 
                 //Se instancia el WebService de Credencial para alta de las tarjetas
-                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
-                
+//                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
+//                
                 //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_REQUESTED);
@@ -326,12 +326,12 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         cardDeliveryAddress = cardDeliveryAddress.replace(" ", "%2B");
                         String deliveryStateCode = r.getPersonId().getPersonHasAddress().getAddressId().getCityId().getStateId().getCode();
                         String deliverZipCode = r.getPersonId().getPersonHasAddress().getAddressId().getZipZoneCode();
-                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
+//                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
 //                        assignVirtualCardResponse = credentialWebService.assignVirtualCard(countryCode, initialsDocumentType, identificationNumber, highDateCard, dateBirthApplicant, addressApplicant, 
 //                                                                                           stateCode, city, zipCode, movilPhone, email, gender, lastName, firstName, taxInformationRegistry, 
-//                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
-                        cardNumber = assignVirtualCardResponse.getAlias();
-                        accountAssigned = assignVirtualCardResponse.getCtasig();
+////                                                                                           affinityCode, recordingCard, cardDeliveryAddress, deliveryStateCode, city, deliverZipCode);
+//                        cardNumber = assignVirtualCardResponse.getAlias();
+//                        accountAssigned = assignVirtualCardResponse.getCtasig();
                         card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
                         card = saveCard(card);
                         createAccount(card,r,accountAssigned);
@@ -354,7 +354,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 for (NaturalCustomer cardComplementaries : cardComplementaryList) {
                                     card = new Card();
 
-                                    cardNumber = assignVirtualCardResponse.getAlias();
+//                                    cardNumber = assignVirtualCardResponse.getAlias();
                                     StringBuilder applicantName = new StringBuilder(cardComplementaries.getFirstNames());
                                     applicantName.append(" ");
                                     applicantName.append(cardComplementaries.getLastNames());
@@ -394,10 +394,10 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                         cardRequestList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request5);
 
                         //Asigna tarjeta a solicitante juridico
-                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
-                        cardNumber = assignVirtualCardResponse.getAlias();;
-                        card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
-                        card = saveCard(card);
+//                        AssignVirtualCardResponse assignVirtualCardResponse = new AssignVirtualCardResponse();
+//                        cardNumber = assignVirtualCardResponse.getAlias();;
+//                        card = createLegalCard(reviewRequestParam, cardNumber, r, cardStatus);
+//                        card = saveCard(card);
                         createAccount(card,r, accountAssigned);
                         //Actualiza el estatus de la solicitud
                         updateStatusRequest(r);

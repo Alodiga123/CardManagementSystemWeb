@@ -42,7 +42,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -62,8 +62,8 @@
                                                        </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.identification.number')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.issuer.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.issuer.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuerName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuerType')}" sclass="lblbold"/>
                                                        </row>
                                                         <row>
                                                             <hlayout>
@@ -77,7 +77,7 @@
                                                             <combobox id="cmbIssuerType" width="250px" mold="rounded" readonly="true" />
                                                        </row>
                                                          <row>
-                                                            <label value="${c:l('cms.common.issuer.email')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.issuerEmail')}" sclass="lblbold"/> 
                                                             <label value="${c:l('cms.common.bin.number')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.swift.code')}" sclass="lblbold"/>
                                                         </row>
@@ -98,7 +98,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.aba.code')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.contract.number')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.status.active')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -123,8 +123,8 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.web.site')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.fax.number')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.person.contact.name')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.phone')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.contact.person')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtWebSite" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="80"/>
@@ -132,7 +132,7 @@
                                                             <textbox id="txtPersonContactName" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="60"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.contact.email')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.email.contact')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtEmailPersonContact" width="250px" maxlength="80" constraint="/.+@.+\.[a-zA-Z_-]+/: ${c:l('cms.error.field.emailInvalidate')}"/>

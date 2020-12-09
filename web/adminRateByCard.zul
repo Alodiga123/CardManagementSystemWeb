@@ -27,7 +27,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -37,8 +37,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.menu.product')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cards')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <label id="lblProgram" width="250px"/>
@@ -97,7 +97,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnSave" width="150px" label="${c:l('cms.common.actions.saveAndContinue')}" class="open orange"/>                                            
+                                            <button  id="btnSave" width="150px" label="${c:l('sp.common.actions.save')}" class="open orange"/>                                            
                                         </div>
                                     </vlayout>
                                 </div>

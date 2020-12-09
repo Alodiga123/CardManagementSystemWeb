@@ -47,7 +47,7 @@
                                                         </row>
                                                     </rows> 
                                                 </grid>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -56,9 +56,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.manufacturer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

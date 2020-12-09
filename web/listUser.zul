@@ -57,8 +57,8 @@
                                                     <listheader label="${c:l('cms.common.login.user')}" width="160px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identification.number')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.name.user')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.commercial.agency')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.indEnabled')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.comercial.agency')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.enabled')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

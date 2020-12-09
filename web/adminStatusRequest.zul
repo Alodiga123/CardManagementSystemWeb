@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.status.list')}" onClick='Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('sp.common.status.list')}" onClick='Executions.sendRedirect(&quot;listStatusRequest.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.common.status')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.status')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -43,7 +43,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="250"/>
@@ -51,7 +51,7 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionStatusRequest')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.statusRequest')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtDescription" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="45" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>
                                                                 <label value="*" sclass="lblreq" />

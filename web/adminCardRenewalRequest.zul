@@ -42,7 +42,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.Program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -52,7 +52,7 @@
                                                         </row>
                                                         <!--<rows>
                                                             <row>
-                                                                <label value="${c:l('cms.common.reason.change.status')}" sclass="lblbold"/>
+                                                                <label value="${c:l('cms.common.reason')}" sclass="lblbold"/>
                                                                 <label value="${c:l('cms.common.statusCard')}" sclass="lblbold"/>
                                                             </row>
                                                             <row>

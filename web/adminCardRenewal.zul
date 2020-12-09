@@ -36,9 +36,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestNumber')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestStatus')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.statusRequest')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblNumberRequest" value="" width="230px" style="color:#837E76;"/>
@@ -46,8 +46,8 @@
                                                             <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestIssuer')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardIssuer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblIssuer" value="" width="230px" style="color:#837E76;"/>
