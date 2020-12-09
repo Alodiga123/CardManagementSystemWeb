@@ -25,7 +25,7 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                <toolbarbutton label="${c:l('cms.common.employee.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.employee.list')}" />
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                           <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.lastNameEmployee')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.lastNameEmployee')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -54,10 +54,10 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.data.EmployeeUser')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.identification.employee')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.user.position')}" width="160px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.agencyComercial')}" width="155px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.phone')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identificationNumber')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.position')}" width="160px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.comercial.agency')}" width="155px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.phone')}" width="150px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

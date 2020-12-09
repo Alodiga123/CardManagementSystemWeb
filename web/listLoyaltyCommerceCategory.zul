@@ -31,7 +31,7 @@
                                                 <listhead>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.channel')}" width="180px" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.trasaction')}" width="190px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crub.commerceCategory.economicActivity')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.commerceCategoryType')}" width="180px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

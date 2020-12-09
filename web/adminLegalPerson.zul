@@ -25,7 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.common.data.request')}"/>
+                                                        <group label="${c:l('cms.common.request')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -40,7 +40,7 @@
                                                 </grid>
                                                 <hlayout>
                                                     <div align="left" width="410px">
-                                                       <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/> 
+                                                       <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/> 
                                                     </div>                                                
                                                     <div align="right" width="475px">
                                                         <hlayout>
@@ -56,9 +56,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

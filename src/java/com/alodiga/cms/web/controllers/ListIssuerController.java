@@ -81,7 +81,7 @@ public class ListIssuerController extends GenericAbstractListController<Issuer> 
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.issuer.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.issuer.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

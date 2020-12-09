@@ -35,7 +35,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.common.data.request')}"/>
+                                                        <group label="${c:l('cms.common.request')}"/>
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -57,9 +57,9 @@
                                                     <rows>
                                                         <group label="${c:l('cms.common.data.requestAditional')}"/>
                                                         <row>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionPersonType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row> 
                                                             <combobox id="cmbCountry" width="200px" mold="rounded" readonly="true"/>
@@ -67,8 +67,8 @@
                                                             <combobox id="cmbProductType" width="200px" mold="rounded" readonly="true"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionRequestType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.programName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.requestType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbPrograms" width="200px" mold="rounded" readonly="true"/>

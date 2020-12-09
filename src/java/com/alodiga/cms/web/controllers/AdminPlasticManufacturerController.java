@@ -83,10 +83,10 @@ public class AdminPlasticManufacturerController extends GenericAbstractAdminCont
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.plastic.manufacturer.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.plasticManufacturer.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.plastic.manufacturer.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.plasticManufacturer.view"));
                 break;
             default:
                 break;

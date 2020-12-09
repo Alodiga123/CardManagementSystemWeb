@@ -36,9 +36,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.identificationsTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCountry" width="250px" mold="rounded" readonly="true" />
@@ -68,7 +68,7 @@
                                                         <row> 
                                                             <label value="${c:l('cms.common.website')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.email')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.phone')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
                                                             <textbox id="txtWebSite" value="" width="250px" maxlength="45"/>

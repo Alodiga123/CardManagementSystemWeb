@@ -103,10 +103,10 @@ public class AdminProductController extends GenericAbstractAdminController {
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("sp.crud.product.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.product.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("sp.crud.product.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.product.view"));
                 break;
             case WebConstants.EVENT_ADD:
                 tabCommerceCategory.setDisabled(true);

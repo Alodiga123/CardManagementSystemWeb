@@ -35,9 +35,9 @@
                                             <vlayout>
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
-                                                        <tab id="tabCardMananger" label="${c:l('cms.crud.cardActivation.date')}" />
+                                                        <tab id="tabCardMananger" label="${c:l('cms.common.request')}" />
                                                         <tab id="tabCardActivation" label="${c:l('cms.menu.cardActivation')}" />
-                                                        <tab id="tabCardUpdate" label="${c:l('cms.menu.cardStatusUpdate')}" />
+                                                        <tab id="tabCardUpdate" label="${c:l('cms.common.cardStatusUpdate')}" />
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>

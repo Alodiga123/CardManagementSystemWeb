@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.commom.Classification.Person')}"/>
+                                                <toolbarbutton label="${c:l('cms.commom.classification.person')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.commom.Classification.Person')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.commom.classification.person')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
 
@@ -55,7 +55,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="430px">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.commom.Classification.Person')}" width="805px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.commom.classificationPerson')}" width="805px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

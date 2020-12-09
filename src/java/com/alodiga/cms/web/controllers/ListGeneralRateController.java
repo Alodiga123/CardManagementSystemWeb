@@ -205,7 +205,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.general.rate.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.generalRate.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());
@@ -302,7 +302,7 @@ public class ListGeneralRateController extends GenericAbstractListController<Gen
     public void onClick$btnViewRates() throws InterruptedException {
         try {
             if (cmbCountry.getSelectedIndex() == -1) {
-                this.showMessage("cms.common.countryName.error", true, null);
+                this.showMessage("cms.error.countryName.error", true, null);
                 cmbCountry.setFocus(true);                
             } else {
                 loadList(generalRateList);

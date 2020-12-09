@@ -46,7 +46,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cardRenewalRequestStatus')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.statusRequest')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblRequestNumber" value="" width="230px" style="color:#837E76;"/>
@@ -55,7 +55,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.indActivation')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.indActivation')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -75,7 +75,7 @@
                                                             </hbox>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.crud.activationProduct.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">

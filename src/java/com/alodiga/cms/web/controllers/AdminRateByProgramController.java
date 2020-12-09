@@ -90,7 +90,7 @@ public class AdminRateByProgramController extends GenericAbstractAdminController
             if (rateByProgram.getApprovalProgramRateId() != null) {
                 lblStatus.setValue(Labels.getLabel("cms.common.approved"));
             }else{
-                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+                lblStatus.setValue(Labels.getLabel("cms.common.tobeApproved"));
             }   
             lblTransaction.setValue(rateByProgram.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProgram.getRateApplicationTypeId().getDescription());

@@ -25,7 +25,7 @@
                                                         <column label="" width="290px"/>
                                                     </columns>
                                                     <rows>
-                                                        <group label="${c:l('cms.common.data.request')}"/> 
+                                                        <group label="${c:l('cms.common.request')}"/> 
                                                         <row>
                                                             <label value="${c:l('cms.common.requestNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.requestDate')}" sclass="lblbold"/>
@@ -47,8 +47,8 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.applicantionRiview.agency')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.agency')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.crud.applicantionRiview.commercialAssessorUserCode')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -58,8 +58,8 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.crud.applicantionRiview.AssessorName')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.applicantionRiview.reviewDate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.reviewDate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="txtAssessorName" value="" width="250px" style="color:#837E76;"/>
@@ -99,7 +99,7 @@
                                                             
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.requestCollection.observations')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.observations')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">

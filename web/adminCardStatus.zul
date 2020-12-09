@@ -34,7 +34,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="200px"/>
@@ -42,7 +42,7 @@
                                                     </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.description')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtName" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                              <label value="*" sclass="lblreq" />

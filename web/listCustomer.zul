@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.crud.customer.name')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.customer.name')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -49,10 +49,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="480px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="120px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionPersonType')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="120px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.personType')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.customer.identificationNumber')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.customer.name')}" width="255px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.customer.name')}" width="255px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.customer.status')}" width="120px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

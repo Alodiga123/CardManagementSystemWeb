@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.loyaltyMain')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.loyaltyMain.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -53,10 +53,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.crud.loyaltyProgram')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.LoyaltyProduct')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.loyalty.programType')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.loyalty.status')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.loyaltyProgram')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.card')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.typeProgram')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.status')}" width="100px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

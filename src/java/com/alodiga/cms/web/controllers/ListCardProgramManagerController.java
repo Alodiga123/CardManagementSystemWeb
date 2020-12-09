@@ -151,7 +151,7 @@ public class ListCardProgramManagerController extends GenericAbstractListControl
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.common.cardProgramManager.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.cardProgramManager.list"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

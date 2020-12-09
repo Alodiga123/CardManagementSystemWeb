@@ -27,7 +27,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.cardRenewalByCancelled')}" onClick='Executions.sendRedirect(&quot;listCardRenewalByCanceled.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.cardRenewalByCancelled')}" onClick='Executions.sendRedirect(&quot;listCardRenewalByCanceled.zul&quot;)'/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -36,7 +36,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="700px">
                                                     <tabs>
                                                         <tab id="tabCardCanceled" label="${c:l('cms.common.data.card')}" />
-                                                        <tab id="tabCardIssuanceRequest" label="${c:l('cms.menu.cardIssuanceRequest')}" />
+                                                        <tab id="tabCardIssuanceRequest" label="${c:l('cms.common.cardIssuanceRequest')}" />
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>

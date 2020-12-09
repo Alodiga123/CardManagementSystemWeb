@@ -36,8 +36,8 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.tinTypes')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.crud.identificationNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identification.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.identificationNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -51,9 +51,9 @@
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.user.first.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.user.last.name')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.employee.email')}" sclass="lblbold"/> 
+                                                            <label value="${c:l('cms.common.user.first.names')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.user.last.names')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.email')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
                                                             <hlayout>
@@ -68,7 +68,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.common.aditionalCard.positionEnterprise')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.agencyComercial')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.comercial.agency')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

@@ -183,7 +183,7 @@ public class AdminUserHasProfileController extends GenericAbstractAdminControlle
             userHasProfile.setEnabled(indEnabled); 
             
             if (!validateUserHasProfile(userHasProfile) && (eventType == WebConstants.EVENT_ADD)) {
-                this.showMessage("cms.common.userHasProfileExistInBD", true, null);
+                this.showMessage("cms.error.userHasProfileExistInBD", true, null);
             } else {
                 userHasProfile = utilsEJB.saveUserHasProfile(userHasProfile);
                 UserHasProfileParam = userHasProfile;

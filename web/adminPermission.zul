@@ -25,7 +25,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.permission')}" onClick='Executions.sendRedirect(&quot;listPermission.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.permission')}" onClick='Executions.sendRedirect(&quot;listPermission.zul&quot;)'/>
                                                  |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.permission.add')}"/>
                                                  |  
@@ -68,7 +68,7 @@
                                                         </row> 
                                                         <row>   
                                                             <label value="${c:l('cms.common.name.permission')}" sclass="lblbold"/> 
-                                                            <label value="${c:l('cms.common.indEnabled')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

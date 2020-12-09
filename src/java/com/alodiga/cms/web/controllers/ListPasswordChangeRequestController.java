@@ -90,7 +90,7 @@ public class ListPasswordChangeRequestController extends GenericAbstractListCont
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.password.change.request.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.password.changeRequest.downloadList"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

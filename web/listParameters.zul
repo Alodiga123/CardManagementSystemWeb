@@ -20,7 +20,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="100px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -40,9 +40,9 @@
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
                                                     <listheader label="${c:l('cms.tab.loyaltyMain')}" width="225px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.product.limitAndRestrictions.cannel')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.product.limitAndRestrictions.channel')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.product.limitAndRestrictions.trasaction')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.loyalty.programType')}" width="150px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.typeProgram')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.loyalty.parameters.total')}" width="100px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>

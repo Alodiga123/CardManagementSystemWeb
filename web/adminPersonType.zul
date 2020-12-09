@@ -26,9 +26,9 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.person.type.list')}" onClick='Executions.sendRedirect(&quot;listPersonType.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.personType.list')}" onClick='Executions.sendRedirect(&quot;listPersonType.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('sp.crud.persontype.add')}"/>
+                                                <toolbarbutton label="${c:l('cms.crud.personType.add')}"/>
                                                  |
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
@@ -45,7 +45,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="220px"/>
@@ -55,8 +55,8 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.person.type')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.countryName')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Application')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.isNaturalPerson')}" sclass="lblbold"/>
                                                         </row>

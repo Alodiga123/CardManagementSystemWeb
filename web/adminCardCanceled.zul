@@ -38,7 +38,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.product.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblCardNumber" value="" width="230px" style="color:#837E76;"/>
@@ -54,8 +54,8 @@
                                                             <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.cardIssuanceRequest.identificationCardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.menu.cardIssuanceRequest.fistLastNameCardHolder')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardIdentification')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.firstLastNameCardHolder')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.user.email')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -64,7 +64,7 @@
                                                             <label id="lblEmail" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.phoneNumber')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.phone')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblPhone" value="" width="230px" style="color:#837E76;"/>

@@ -20,7 +20,7 @@
                                             <vlayout>
                                                  <!--Filters for Searching-->   
                                                 <hlayout style="text-align:right" width="845px">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -39,10 +39,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="300px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.countryName')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionProductType')}" width="180px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.requestCollection.collectionTypes')}" width="230px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.status')}" width="120px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.productType')}" width="180px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.collectionsType')}" width="230px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.status')}" width="120px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

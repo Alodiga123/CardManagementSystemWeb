@@ -52,7 +52,7 @@
                                                     </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.transaction.code')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.code')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.indMonetaryType')}" sclass="lblbold"/>
                                                         </row>

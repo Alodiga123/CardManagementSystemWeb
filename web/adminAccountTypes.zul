@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.menu.accountType')}" onClick='Executions.sendRedirect(&quot;listAccountType.zul&quot;)'/>                      
+                                                <toolbarbutton label="${c:l('cms.crud.accountType')}" onClick='Executions.sendRedirect(&quot;listAccountType.zul&quot;)'/>                      
                                                  |
                                                 <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
@@ -43,7 +43,7 @@
                                                         <label value="${c:l('sp.common.field.required2')}" sclass="lblexample" />
                                                     </hlayout>
                                                 </div>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="200px"/>
@@ -51,7 +51,7 @@
                                                     </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.menu.accountType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.accountType')}" sclass="lblbold"/>
                                                             <hlayout>
                                                                 <textbox id="txtAccount" width="320px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
                                                                 <label value="*" sclass="lblreq" />

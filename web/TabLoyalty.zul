@@ -27,7 +27,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.crud.loyaltyMain')}" onClick='Executions.sendRedirect(&quot;listLoyalty.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.crud.loyaltyMain.list')}" onClick='Executions.sendRedirect(&quot;listLoyalty.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton id="tbbTitle" label=""/>
                                             </hlayout>

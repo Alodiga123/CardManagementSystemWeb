@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.description')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.description')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -53,9 +53,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.menu.user')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.userHasProfile.role')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.status.active')}" width="80px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.user')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.role')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.enabled')}" width="80px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.userHasProfile.date.create')}" width="100px" sort="auto"/>
                                                     <listheader label="${c:l('cms.crud.userHasProfile.date.update')}" width="100px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>

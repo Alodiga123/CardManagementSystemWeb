@@ -84,7 +84,7 @@ public class ListBinSponsorController extends GenericAbstractListController<BinS
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.bin.sponsor.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.binSponsor.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

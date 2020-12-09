@@ -36,7 +36,7 @@
                                                         </row>
                                                     </rows> 
                                                 </grid>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -45,8 +45,8 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.plasticRequest.descriptionProgram')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.plasticManufacturer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.manufacturer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.cardNumber')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -57,7 +57,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.expirationDate')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.plasticRequest.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblExpirationDate" value="" width="280px" style="color:#837E76;"/>

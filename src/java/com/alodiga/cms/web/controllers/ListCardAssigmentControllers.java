@@ -125,7 +125,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             applicantName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
                             item.appendChild(new Listcell(applicantName.toString()));
                         } else {
-                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.legalPerson.list")));
+                            item.appendChild(new Listcell(Labels.getLabel("cms.common.legalPerson")));
                             applicantName = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantName));
                         }
@@ -254,8 +254,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             if (lbxRecords.getItems() != null && !lbxRecords.getItems().isEmpty()) {
                 
                 //Se instancia el WebService de Credencial para alta de las tarjetas
-                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
-                
+//                CMSCredentialServicesClient credentialWebService = new CMSCredentialServicesClient();
+//                
                 //Estatus de la tarjeta SOLICITADA
                 EJBRequest request1 = new EJBRequest();
                 request1.setParam(Constants.CARD_STATUS_REQUESTED);
