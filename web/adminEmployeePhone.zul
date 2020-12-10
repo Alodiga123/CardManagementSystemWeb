@@ -4,7 +4,7 @@
 <?link rel="icon" tye="image/x-icon" href="/images/favicon.ico"?>
 
 <zk xmlns:n="native">
-    <window id="winAdminPhoneEmployee" title="${c:l('cms.common.crud.EmployeePhone')}" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminEmployeePhoneController" closable="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
+    <window id="winAdminPhoneEmployee" title="${c:l('cms.common.employeePhone')}" width="950px" height="400px" apply="com.alodiga.cms.web.controllers.AdminEmployeePhoneController" closable="true" border="normal" position="center,center" action="show: slideDown;hide: slideUp">
         <style src="/css/general.css"/>
         <borderlayout width="100%" height="100%" class="content-transparent">
             <center border="none" flex="true" class="content-transparent" autoscroll="true">
@@ -54,7 +54,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.employeePhone')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.extensionPhone')}" sclass="lblbold"/>  
-                                                            <label value="${c:l('cms.menu.phoneTypeEmployee')}" sclass="lblbold"/>     
+                                                            <label value="${c:l('cms.menu.phoneType')}" sclass="lblbold"/>     
                                                         </row>
                                                         
                                                         <row>
@@ -69,7 +69,7 @@
                                                             </hlayout>
                                                         </row> 
                                                         <row>
-                                                           <label value="${c:l('cms.menu.phonEmployee.MainPhone')}" sclass="lblbold"/> 
+                                                           <label value="${c:l('cms.crud.phone.mainPhone')}" sclass="lblbold"/> 
                                                         </row>
                                                         <row>
                                                             <hbox>

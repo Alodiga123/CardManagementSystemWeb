@@ -126,7 +126,7 @@ public class ListCardsComplementariesController extends GenericAbstractListContr
 
     public void onClick$btnDownload() throws InterruptedException {
         try {
-            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.crud.additionalCards.list"));
+            Utils.exportExcel(lbxRecords, Labels.getLabel("cms.common.additionalCards.list"));
         } catch (Exception ex) {
             showError(ex);
         }

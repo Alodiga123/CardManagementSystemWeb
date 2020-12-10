@@ -18,7 +18,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -28,7 +28,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.cardHolder')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.Program')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
@@ -47,7 +47,7 @@
                                                             <label id="lblIssueDate" value="" width="230px" style="color:#837E76;"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.status')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.cardStatus')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblStatus" value="" width="230px" style="color:#837E76;"/>

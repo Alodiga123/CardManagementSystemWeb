@@ -20,7 +20,7 @@
                                             <vlayout>
                                                 <hlayout>
                                                     <div align="left" width="400px">
-                                                       <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                       <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                     </div>
                                                     <div align="right" width="485px">
                                                         <hlayout>
@@ -40,9 +40,9 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.state')}" sclass="lblbold"/>
-                                                            <label value="${c:l('sp.common.city')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.state')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.city')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>

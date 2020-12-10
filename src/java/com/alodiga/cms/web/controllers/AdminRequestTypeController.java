@@ -40,13 +40,13 @@ public class AdminRequestTypeController extends GenericAbstractAdminController {
         super.initialize();
         switch (eventType) {
             case WebConstants.EVENT_EDIT:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.edit"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.edit"));
                 break;
             case WebConstants.EVENT_VIEW:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.view"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.view"));
                 break;
             case WebConstants.EVENT_ADD:
-                tbbTitle.setLabel(Labels.getLabel("cms.crud.request.Type.add"));
+                tbbTitle.setLabel(Labels.getLabel("cms.crud.requestType.add"));
                 break;
             default:
                 break;

@@ -49,9 +49,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="10" height="450px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.cardRenewalRequestNumber')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.cardRenewalRequestDate')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.cardRenewalRequestIssuer')}" width="300px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestNumber')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.requestDate')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.cardIssuer')}" width="300px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

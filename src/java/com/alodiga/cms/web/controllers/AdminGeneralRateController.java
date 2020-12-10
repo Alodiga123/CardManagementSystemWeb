@@ -165,13 +165,13 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
 
         if( cmbCountry.getSelectedIndex() == -1){
-            this.showMessage("cms.common.countryName.error", true, null);
+            this.showMessage("cms.error.countryName.error", true, null);
             cmbCountry.setFocus(true);
             return false;
         }
         
         if(cmbProductType.getSelectedIndex() == -1){
-            this.showMessage("cms.common.descriptionProductType.error", true, null);
+            this.showMessage("cms.error.descriptionProductType", true, null);
             cmbProductType.setFocus(true);
             return false;
         }

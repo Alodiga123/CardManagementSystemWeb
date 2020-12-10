@@ -126,7 +126,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             applicantName.append(request.getPersonId().getApplicantNaturalPerson().getLastNames());
                             item.appendChild(new Listcell(applicantName.toString()));
                         } else {
-                            item.appendChild(new Listcell(Labels.getLabel("cms.menu.legalPerson.list")));
+                            item.appendChild(new Listcell(Labels.getLabel("cms.common.legalPerson")));
                             applicantName = request.getPersonId().getLegalPerson().getEnterpriseName();
                             item.appendChild(new Listcell(applicantName));
                         }
@@ -373,7 +373,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                     r = requestEJB.saveRequest(r);
                                 } else{
                                     request = new EJBRequest();
-                                    request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
+                                    request.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
                                     statusApplicant = requestEJB.loadStatusApplicant(request);  
                                     r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                     r.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardResponse.getErrorDescripcion());
@@ -383,7 +383,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 i++; 
                             }else{
                                  EJBRequest request = new EJBRequest();
-                                 request1.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
+                                 request.setParam(Constants.STATUS_APPLICANT_TARJETA_PENDIENTE_POR_ASIGNAR);
                                  statusApplicant = requestEJB.loadStatusApplicant(request);  
                                  r.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
                                  r.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualCardResponse.getErrorDescripcion());
@@ -405,6 +405,9 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             //Asignar tarjetas a solicitantes complementarios
                             if (cardComplementaryList != null) {                                
                                 for (NaturalCustomer cardComplementaries : cardComplementaryList) {
+                                        //Buscar el teléfono móvil del solicitante
+                                        Date dateCard = new Date();
+                                     if (cardComplementaries.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_ACTIVE) || 
                                     if (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getCode().equals(StatusApplicantE.APROBA.getStatusApplicantCode()) || 
                                        (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getCode().equals(StatusApplicantE.TARPEN.getStatusApplicantCode()))){
                                         //Asignar las tarjetas complementarias
@@ -676,13 +679,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                         request.setParam(Constants.STATUS_APPLICANT_PENDIENTE_PERSONALIZACION);
                                         statusApplicant = requestEJB.loadStatusApplicant(request);
                                         additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
-                                        additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
-                                    } else {
-                                        request = new EJBRequest();
-                                        request1.setParam(Constants.STATUS_APPLICANT_ERROR_SOLICITUD_PERSONALIZACION);
-                                        statusApplicant = requestEJB.loadStatusApplicant(request);
-                                        additionalCards.getPersonId().getApplicantNaturalPerson().setStatusApplicantId(statusApplicant);
-                                        additionalCards.getPersonId().getApplicantNaturalPerson().setObservations(assignPhysicalCardComplementaryResponse.getErrorDescripcion());
+                                        additionalCards.getPersonId().getApplicantNaturalPerson().setObservations(assignVirtualComplementaryCardResponse.getErrorDescripcion());
                                         additionalCards = personEJB.saveCardRequestNaturalPerson(additionalCards);
                                         statusApproved = false;
                                     }   

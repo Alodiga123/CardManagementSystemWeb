@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.crumb.collectionsRequest.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.collectionsRequest.list')}" />
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('cms.common.descriptionCollectionsRequest')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.collection')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -55,9 +55,9 @@
                                                 <listhead>
                                                     <listheader label="${c:l('cms.common.program')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.personType')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.product.type')}" width="140px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.country.name')}" width="105px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.descriptionCollectionsRequest')}" width="220px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.productType')}" width="140px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="105px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.collection')}" width="220px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

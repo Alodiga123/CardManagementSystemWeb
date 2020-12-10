@@ -400,7 +400,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
 
             requestCard.setReasonRejectionRequestId(reasonRejectionRequest);
             requestCard = requestEJB.saveRequest(requestCard);
-            this.showMessage("cms.common.requestRejected", false, null);
+            this.showMessage("cms.error.requestRejected", false, null);
         } catch (Exception ex) {
             showError(ex);
         }

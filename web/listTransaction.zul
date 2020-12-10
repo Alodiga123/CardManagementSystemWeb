@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.common.transaction.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.transaction.list')}" />
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
@@ -45,7 +45,7 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="450px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.transaction.code')}" width="100px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.code')}" width="100px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.description')}" width="240px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.indMonetaryType')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.indTransactionPurchase')}" width="150px" sort="auto"/>

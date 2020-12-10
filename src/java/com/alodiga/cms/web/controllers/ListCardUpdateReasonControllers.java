@@ -80,7 +80,7 @@ public class ListCardUpdateReasonControllers extends GenericAbstractListControll
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.cardUpdateReason.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.cardUpdateReason.list"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

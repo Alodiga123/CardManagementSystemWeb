@@ -22,7 +22,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="950px" height="700px">
                                                     <tabs>
                                                         <tab id="tabParameters" label="${c:l('cms.tab.pointsAndBonifications')}"/>
-                                                        <tab id="tabCommerce" label="${c:l('cms.tab.commerceCategory')}"/>
+                                                        <tab id="tabCommerce" label="${c:l('cms.common.commerceCategoryType')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>

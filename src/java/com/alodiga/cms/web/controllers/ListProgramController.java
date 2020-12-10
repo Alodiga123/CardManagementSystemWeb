@@ -155,7 +155,7 @@ public class ListProgramController extends GenericAbstractListController<Program
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.program.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.program.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

@@ -84,7 +84,7 @@ public class ListPhoneTypeController extends GenericAbstractListController<Phone
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.phone.type.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.phoneType.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.cardRenewal')}"/>
+                                                <toolbarbutton label="${c:l('cms.crud.cardRenewal')}"/>
                                             </hlayout>
                                         </div>
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
@@ -38,7 +38,7 @@
                                                     <listheader label="${c:l('cms.common.cardNumber')}" width="150px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.cardHolder')}" width="255px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.expirationDate')}" width="150px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.status')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.cardStatus')}" width="250px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

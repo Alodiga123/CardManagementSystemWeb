@@ -20,7 +20,7 @@
                                             <!--Filters for Searching-->
                                             <vlayout>
                                                 <hlayout style="text-align:right" width="845px">
-                                                    <label value="${c:l('cms.common.nameLastName')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.nameAndLastName')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="160px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -39,10 +39,10 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" mold="paging" pageSize="5" height="250px">
                                                 <listhead>
-                                                    <listheader label="${c:l('cms.common.nameLastName')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.nameAndLastName')}" width="200px" sort="auto"/>
                                                     <listheader label="${c:l('cms.common.identificationsTypes')}" width="205px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.crud.identificationNumber')}" width="200px" sort="auto"/>
-                                                    <listheader label="${c:l('cms.common.naturalperson.cardComplementaries.relationship')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.identificationNumber')}" width="200px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.relationship')}" width="200px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

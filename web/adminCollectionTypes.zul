@@ -26,7 +26,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                  |
-                                                <toolbarbutton label="${c:l('cms.requestCollection.collectionTypes')}" onClick='Executions.sendRedirect(&quot;listCardStatus.zul&quot;)'/>                      
+                                                <toolbarbutton label="${c:l('cms.common.collectionsType')}" onClick='Executions.sendRedirect(&quot;listCardStatus.zul&quot;)'/>                      
                                                  |
                                                 <toolbarbutton id= "tbbTitle" label="${c:l('cms.crud.requestType.add')}"/>
                                             </hlayout>
@@ -52,8 +52,8 @@
                                                     </columns> 
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('sp.common.country')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.collectionsType.origin')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.origin.application')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.personType')}" sclass="lblbold"/>
                                                         </row>
                                                         

@@ -27,7 +27,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.programOwner')}"/>
+                                                <toolbarbutton label="${c:l('cms.common.programOwner')}"/>
                                                 |
                                                 <toolbarbutton id= "tbbTitle" label=""/>
                                             </hlayout>
@@ -47,7 +47,7 @@
                                                 <tabbox id="tbxPurchaseTabs" width="970px" height="500px">
                                                     <tabs>
                                                         <tab id="tabMain" label="${c:l('cms.tab.ownerNaturalPersonMain')}"/>
-                                                        <tab id="tabAddress" label="${c:l('cms.tab.address')}"/>
+                                                        <tab id="tabAddress" label="${c:l('cms.common.address')}"/>
                                                     </tabs>
                                                     <tabpanels>
                                                         <tabpanel>

@@ -53,7 +53,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.name.permission.group')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.indEnabled')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.enabled')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <textbox id="txtNamePermissionGroup" width="270px" maxlength="60" onChange="self.setValue(self.getValue().toUpperCase().trim());"/>

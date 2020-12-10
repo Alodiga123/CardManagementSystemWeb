@@ -25,7 +25,7 @@
                                             <!--Bread crumb-->
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
-                                                <toolbarbutton label="${c:l('cms.common.city.list')}" />
+                                                <toolbarbutton label="${c:l('cms.crud.city.list')}" />
                                                 <toolbarbutton id="tbbCurrentAction" />
                                             </hlayout>
                                         </div>
@@ -34,7 +34,7 @@
                                             <!--Filters for Searching-->
                                           <vlayout>
                                                 <hlayout style="text-align:right">
-                                                    <label value="${c:l('sp.common.city')}" width="80px" sclass="lblbold"/>
+                                                    <label value="${c:l('cms.common.city')}" width="80px" sclass="lblbold"/>
                                                     <textbox id="txtName" value="" width="150px" tooltiptext="${c:l('sp.common.searching.filter')}"/>
                                                 </hlayout>
                                                 <hlayout>
@@ -53,9 +53,9 @@
                                             <!--Record Listbox-->
                                             <listbox id="lbxRecords" fixedLayout="true" width="895px" height="530px" mold="paging" pageSize="10">
                                                 <listhead>
-                                                    <listheader label="${c:l('sp.common.country')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.state')}" width="250px" sort="auto"/>
-                                                    <listheader label="${c:l('sp.common.city')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.country')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.state')}" width="250px" sort="auto"/>
+                                                    <listheader label="${c:l('cms.common.city')}" width="250px" sort="auto"/>
                                                     <listheader label="-" width="45px"/>
                                                     <listheader label="-" width="45px"/>
                                                 </listhead>

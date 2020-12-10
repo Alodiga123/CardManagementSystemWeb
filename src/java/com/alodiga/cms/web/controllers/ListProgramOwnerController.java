@@ -237,7 +237,7 @@ public class ListProgramOwnerController extends GenericAbstractListController<Pe
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.program.owner.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.programOwner.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

@@ -92,7 +92,7 @@ public class AdminRateByProductController extends GenericAbstractAdminController
             if (rateByProduct.getApprovalProductRateId() != null) {
                 lblStatus.setValue(Labels.getLabel("cms.common.approved"));
             }else{
-                lblStatus.setValue(Labels.getLabel("cms.common.approved2"));
+                lblStatus.setValue(Labels.getLabel("cms.common.tobeApproved"));
             }   
             lblTransaction.setValue(rateByProduct.getTransactionId().getDescription());
             lblRateApplicationType.setValue(rateByProduct.getRateApplicationTypeId().getDescription());

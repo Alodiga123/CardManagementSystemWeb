@@ -122,7 +122,7 @@ public class ListProfessionController extends GenericAbstractListController<Prof
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.profession.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.profession.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

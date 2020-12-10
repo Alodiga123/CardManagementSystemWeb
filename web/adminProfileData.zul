@@ -25,7 +25,7 @@
                                             <hlayout>
                                                 <toolbarbutton label="${c:l('sp.bread.crumb.home')}" onClick='Executions.sendRedirect(&quot;home-admin.zul&quot;)'/>
                                                 |
-                                                <toolbarbutton label="${c:l('cms.menu.profile.data')}" onClick='Executions.sendRedirect(&quot;listProfileData.zul&quot;)'/>
+                                                <toolbarbutton label="${c:l('cms.common.profile')}" onClick='Executions.sendRedirect(&quot;listProfileData.zul&quot;)'/>
                                                 |
                                                 <toolbarbutton id="tbbTitle" label="${c:l('cms.crud.profile.data.add')}"/>
                                             </hlayout>
@@ -33,7 +33,7 @@
                                         <div height="7px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -42,8 +42,8 @@
                                                     </columns>
                                                     <rows>
                                                         <row>
-                                                            <label value="${c:l('cms.common.id.profile')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.language.id')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.crud.profile.data.opcionSystem')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.language')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.alias.profile')}" sclass="lblbold"/>   
                                                         </row>
                                                         <row>
@@ -61,7 +61,7 @@
                                                             </hlayout>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.description.profile')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.description')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <cell colspan="3">

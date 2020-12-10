@@ -18,7 +18,7 @@
                                         <div height="5px" width="100%" style="background:#333;" align="left"></div>
                                         <div>
                                             <vlayout>
-                                                <label value="${c:l('sp.common.data.basic')}" sclass="lblbold"/>
+                                                <label value="${c:l('cms.common.data.basic')}" sclass="lblbold"/>
                                                 <grid fixedLayout="true">
                                                     <columns>
                                                         <column label="" width="290px"/>
@@ -29,7 +29,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.country')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.descriptionProductType')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbCountry" width="270px" mold="rounded" readonly="true" /> 
@@ -37,9 +37,9 @@
                                                             <label id="lblProductType" width="270px"/>
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.Issuer')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.issuer')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.Identifier')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.account.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('sp.common.accountType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblIssuer" width="270px"/>
@@ -47,7 +47,7 @@
                                                             <label id="lblAccountType" width="270px"/>  
                                                         </row>
                                                         <row>
-                                                            <label value="${c:l('cms.common.account.sub.type')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.account.subType')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.account.length')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.allows.overdraft')}" sclass="lblbold"/>
                                                         </row>

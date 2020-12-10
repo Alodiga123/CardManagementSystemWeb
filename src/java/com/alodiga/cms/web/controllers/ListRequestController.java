@@ -227,7 +227,7 @@ public class ListRequestController extends GenericAbstractListController<Request
             String pattern = "dd-MM-yyyy";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             String date = simpleDateFormat.format(new Date());
-            StringBuilder file = new StringBuilder(Labels.getLabel("cms.menu.request.list"));
+            StringBuilder file = new StringBuilder(Labels.getLabel("cms.crud.request.listDownload"));
             file.append("_");
             file.append(date);
             Utils.exportExcel(lbxRecords, file.toString());

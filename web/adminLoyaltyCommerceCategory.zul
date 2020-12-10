@@ -34,7 +34,7 @@
                                                         </row>
                                                         <row>
                                                             <label value="${c:l('cms.product.limitAndRestrictions.trasaction')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.tab.commerceCategory')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.commerceCategoryType')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <label id="lblTransaction" value="" width="250px" style="color:#837E76;"/>

@@ -27,7 +27,7 @@
                                                     <rows>
                                                         <row>
                                                             <label value="${c:l('cms.common.nameApplicant')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.documentTypeApplicant')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.documentType.identification')}" sclass="lblbold"/>
                                                             <label value="${c:l('sp.common.noIdentificationApplicant')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
