@@ -268,7 +268,7 @@ public class ListApplicantOFACController extends GenericAbstractListController<P
         int indBlackList = 0;
         String lastName = "";
         String firstName = "";
-        float ofacPercentege = 0.5F;
+        float ofacPercentege = 0.1F;
         Request request = adminRequest.getRequest();
         WSOFACMethodProxy ofac = new WSOFACMethodProxy();
         try {

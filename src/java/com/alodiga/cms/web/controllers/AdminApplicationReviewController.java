@@ -9,6 +9,7 @@ import com.alodiga.cms.commons.exception.GeneralException;
 import com.alodiga.cms.commons.exception.NullParameterException;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.enumeraciones.StatusApplicantE;
 import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.ApplicantNaturalPerson;
 import com.cms.commons.models.CardRequestNaturalPerson;
@@ -29,6 +30,7 @@ import com.cms.commons.models.Request;
 import com.cms.commons.models.RequestHasCollectionsRequest;
 import com.cms.commons.models.ReviewRequest;
 import com.cms.commons.models.ReviewRequestType;
+import com.cms.commons.models.StatusApplicant;
 import com.cms.commons.models.StatusCustomer;
 import com.cms.commons.models.StatusRequest;
 import com.cms.commons.models.User;
@@ -314,7 +316,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             reviewCollectionsRequest.setCreateDate(new Timestamp(new Date().getTime()));
             reviewCollectionsRequest = requestEJB.saveReviewRequest(reviewCollectionsRequest);
 
-            //Actualiza el agente comercial en la solictud de tarjeta
+            //Actualiza el agente comercial en la solicitud de tarjeta
             requestCard.setUserId(user);
             requestCard = requestEJB.saveRequest(requestCard);
 
@@ -410,6 +412,13 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             NaturalCustomer naturalCustomer = new NaturalCustomer();
             PhonePerson phonePerson = new PhonePerson();
             ApplicantNaturalPerson applicant = requestCard.getPersonId().getApplicantNaturalPerson();
+            
+            //Se actualiza el estatus del solicitante a APROBADO
+            EJBRequest request = new EJBRequest();
+            request.setParam(StatusApplicantE.APROBA.getId());
+            StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request); 
+            applicant.setStatusApplicantId(statusApplicant);
+            applicant = personEJB.saveApplicantNaturalPerson(applicant);
 
             //Guardar la persona asociada al cliente
             person.setCountryId(requestCard.getPersonId().getCountryId());
@@ -450,7 +459,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             if (requestCard.getPersonId().getPhonePerson() == null) {
                 Long personHavePhone = personEJB.havePhonesByPerson(requestCard.getPersonId().getId());
                 if (personHavePhone > 0) {
-                    EJBRequest request = new EJBRequest();
+                    request = new EJBRequest();
                     Map params = new HashMap();
                     params.put(Constants.PERSON_KEY, requestCard.getPersonId().getId());
                     request.setParams(params);
@@ -561,6 +570,13 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     phonePerson = new PhonePerson();
                     naturalCustomer = new NaturalCustomer();
 
+                    //Se actualiza el estatus del solicitante complementario a APROBADO
+                    EJBRequest request = new EJBRequest();
+                    request.setParam(StatusApplicantE.APROBA.getId());
+                    StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request); 
+                    r.setStatusApplicantId(statusApplicant);
+                    r = personEJB.saveApplicantNaturalPerson(r);
+
                     //Guardar la persona
                     person.setCountryId(r.getPersonId().getCountryId());
                     person.setPersonTypeId(r.getPersonId().getPersonTypeId());
@@ -572,7 +588,7 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
                     //Se guardan los teléfonos del solicitante adicional
                     countPhoneByPerson = personEJB.havePhonesByPerson(r.getPersonId().getId());
                     if (countPhoneByPerson != 0) {
-                        EJBRequest request = new EJBRequest(); 
+                        request = new EJBRequest(); 
                         params = new HashMap();
                         params.put(Constants.PERSON_KEY, r.getPersonId().getId());
                         request.setParams(params);
@@ -716,7 +732,11 @@ public class AdminApplicationReviewController extends GenericAbstractAdminContro
             request.setParams(params);
             cardAdditionalList = personEJB.getCardRequestNaturalPersonsByLegalApplicant(request);
             for (CardRequestNaturalPerson cardAdditional : cardAdditionalList) {
+                request = new EJBRequest();
+                request.setParam(StatusApplicantE.APROBA.getId());
+                StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request); 
                 cardRequestNaturalPerson = cardAdditional;
+                cardRequestNaturalPerson.setStatusApplicantId(statusApplicant);
                 cardRequestNaturalPerson.setLegalCustomerId(legalCustomer);
                 cardRequestNaturalPerson = personEJB.saveCardRequestNaturalPerson(cardRequestNaturalPerson);
             }
