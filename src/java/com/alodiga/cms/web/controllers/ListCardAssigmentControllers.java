@@ -405,11 +405,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                             //Asignar tarjetas a solicitantes complementarios
                             if (cardComplementaryList != null) {                                
                                 for (NaturalCustomer cardComplementaries : cardComplementaryList) {
-                                        //Buscar el teléfono móvil del solicitante
-                                        Date dateCard = new Date();
                                      if (cardComplementaries.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getId().equals(Constants.STATUS_APPLICANT_ACTIVE) || 
-                                    if (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getCode().equals(StatusApplicantE.APROBA.getStatusApplicantCode()) || 
-                                       (r.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getCode().equals(StatusApplicantE.TARPEN.getStatusApplicantCode()))){
+                                        (cardComplementaries.getPersonId().getApplicantNaturalPerson().getStatusApplicantId().getCode().equals(StatusApplicantE.TARPEN.getStatusApplicantCode()))){
                                         //Asignar las tarjetas complementarias
                                         String initialsDocumentTypeComplementary = cardComplementaries.getPersonId().getApplicantNaturalPerson().getDocumentsPersonTypeId().getCodeIdentificationNumber();
                                         countryCodeComplementary = cardComplementaries.getDocumentsPersonTypeId().getPersonTypeId().getCountryId().getCodeIso3();
