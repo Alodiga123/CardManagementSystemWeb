@@ -61,7 +61,7 @@
                                                         </columns>
                                                         <rows>
                                                             <row>
-                                                                <label value="${c:l('cms.common.login')}" sclass="lblbold"/>
+                                                                <label value="${c:l('cms.common.user')}" sclass="lblbold"/>
                                                                 <hlayout>
                                                                     <textbox id="txtLogin" width="120px" constraint="no empty: ${c:l('sp.error.field.required')}"/>
                                                                 </hlayout>
