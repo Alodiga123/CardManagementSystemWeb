@@ -738,6 +738,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                            updateStatusRequest(r);
                     }
                 }
+                getData();
+                loadDataList(requests);
             }
 
         } catch (Exception ex) {
@@ -769,6 +771,8 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
     
     public Card saveCard(Card card) {
         try {
+            card = cardEJB.saveCard(card);
+            card.setSequentialNumber(card.getId().intValue());
             card = cardEJB.saveCard(card);
         } catch (Exception ex) {
             showError(ex);
