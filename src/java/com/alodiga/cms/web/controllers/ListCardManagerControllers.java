@@ -160,7 +160,7 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
                     item.setValue(card);
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    item.appendChild(new Listcell(card.getCardNumber()));
+                    item.appendChild(new Listcell(card.getAlias()));
                     item.appendChild(new Listcell(card.getCardHolder()));
                     item.appendChild(new Listcell(simpleDateFormat.format(card.getExpirationDate())));
                     item.appendChild(new Listcell(card.getCardStatusId().getDescription()));
