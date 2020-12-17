@@ -18,13 +18,18 @@ import org.zkoss.zul.Label;
 public class AdminCardManangerControllers extends GenericAbstractAdminController {
 
     private static final long serialVersionUID = -9145887024839938515L;
-    private Label lblCarHolder;
-    private Label lblCardNumber;
+    private Label lblCountry;
     private Label lblProgram;
     private Label lblProduct;
-    private Label lblStatus;
-    private Label lblExpirationDate;
+    private Label lblDocumentType;
+    private Label lblIdentificactionNumber;
+    private Label lblCustomerName;
+    private Label lblCarHolder;
+    private Label lblEmail;
+    private Label lblPhone;
+    private Label lblCardNumber;
     private Label lblIssueDate;
+    private Label lblStatus;
     private UtilsEJB utilsEJB = null;
     private CardEJB cardEJB = null;
     private ProgramEJB programEJB = null;
@@ -66,13 +71,18 @@ public class AdminCardManangerControllers extends GenericAbstractAdminController
         try {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            lblCarHolder.setValue(card.getCardHolder());
+            lblCountry.setValue(card.getProductId().getCountryId().getName());
             lblProgram.setValue(card.getProgramId().getName());
             lblProduct.setValue(card.getProductId().getName());
-            lblCardNumber.setValue(card.getCardNumber());
-            lblExpirationDate.setValue(simpleDateFormat.format(card.getExpirationDate()));
+            lblDocumentType.setValue(card.getPersonCustomerId().getNaturalCustomer().getDocumentsPersonTypeId().getDescription());
+            lblIdentificactionNumber.setValue(card.getPersonCustomerId().getNaturalCustomer().getIdentificationNumber());
+            lblCarHolder.setValue(card.getCardHolder());
+            lblEmail.setValue(card.getPersonCustomerId().getEmail());
+            lblPhone.setValue(card.getPersonCustomerId().getPhonePerson().getNumberPhone());
+            lblCardNumber.setValue(card.getAlias());
             lblIssueDate.setValue(simpleDateFormat.format(card.getIssueDate()));
             lblStatus.setValue(card.getCardStatusId().getDescription());
+
         } catch (Exception ex) {
             showError(ex);
         }

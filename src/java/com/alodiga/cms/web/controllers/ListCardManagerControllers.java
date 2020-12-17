@@ -155,13 +155,13 @@ public class ListCardManagerControllers extends GenericAbstractListController<Ca
             if (list != null && !list.isEmpty()) {
                 btnDownload.setVisible(true);
                 for (Card card : list) {
-
                     item = new Listitem();
                     item.setValue(card);
                     String pattern = "yyyy-MM-dd";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     item.appendChild(new Listcell(card.getAlias()));
                     item.appendChild(new Listcell(card.getCardHolder()));
+                    item.appendChild(new Listcell(card.getPersonCustomerId().getEmail()));
                     item.appendChild(new Listcell(simpleDateFormat.format(card.getExpirationDate())));
                     item.appendChild(new Listcell(card.getCardStatusId().getDescription()));
                     item.appendChild(new ListcellEditButton(adminPage, card));
