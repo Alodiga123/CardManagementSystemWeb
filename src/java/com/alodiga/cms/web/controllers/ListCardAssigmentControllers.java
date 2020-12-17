@@ -156,8 +156,18 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
             params.put(Constants.STATUS_REQUEST_KEY, Constants.STATUS_REQUEST_APPROVED);
             request1.setParams(params);
             requests = requestEJB.getRequestsByStatus(request1);
+            for (Request r: requests) {
+                EJBRequest request = new EJBRequest();
+                request.setParam(StatusApplicantE.APROBA.getId());
+                StatusApplicant statusApplicant = requestEJB.loadStatusApplicant(request); 
+                ApplicantNaturalPerson applicant = r.getPersonId().getApplicantNaturalPerson();
+                applicant.setStatusApplicantId(statusApplicant);
+                applicant = personEJB.saveApplicantNaturalPerson(applicant);
+            }
         } catch (NullParameterException ex) {
             showError(ex);
+        } catch (RegisterNotFoundException ex) {
+            showError(ex);    
         } catch (EmptyListException ex) {
             showEmptyList();
         } catch (GeneralException ex) {
@@ -359,7 +369,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                 accountAssigned = assignVirtualCardResponse.getCtasig();
                                 card = createCard(reviewRequestParam, cardNumber, r, cardStatus, accountAssigned);
                                 card = saveCard(card);
-//                                createAccount(card,r,accountAssigned);
+                                createAccount(card,r,accountAssigned);
 
                                 //Se actualiza el estatus del solicitante
                                 EJBRequest request = new EJBRequest();
@@ -517,7 +527,7 @@ public class ListCardAssigmentControllers extends GenericAbstractListController<
                                             card.setAutomaticRenewalDate(cardAutomaticRenewalDate);
                                             card.setIndRenewal(indRenewal);
                                             card = saveCard(card);
-//                                            createAccount(card, r, accountAssigned);
+                                            createAccount(card, r, accountAssigned);
 
                                             //Se actualiza el estatus del solicitante complementario
                                             EJBRequest request = new EJBRequest();
