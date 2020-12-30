@@ -93,7 +93,7 @@
                                         <div id="divInfo" height="20px" width="100%" style="background:#B6E59E;" align="left" visible="false"/>
                                         <!--Buttons-->
                                         <div align="right">
-                                            <button  id="btnBack" width="150px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardManager.zul&quot;)"/>
+                                            <button  id="btnBack" width="140px" label="${c:l('sp.common.actions.back')}" class="open gray" onClick="Executions.sendRedirect(&quot;listCardManager.zul&quot;)"/>
                                         </div>
                                     </vlayout>
                                 </div>
