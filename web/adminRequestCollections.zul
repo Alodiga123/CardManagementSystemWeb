@@ -95,7 +95,7 @@
                                                         <row>
                                                             <cell colspan="3">
                                                              <hlayout>
-                                                                <textbox id="txtObservations" multiline="true" rows="2" width="830px" constraint="no empty: ${c:l('error.field.required')}" maxlength="1490"/>
+                                                                <textbox id="txtObservations" multiline="true" rows="2" width="830px" maxlength="1490"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>   
                                                             </cell>

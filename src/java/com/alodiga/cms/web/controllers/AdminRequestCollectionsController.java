@@ -134,12 +134,14 @@ public class AdminRequestCollectionsController extends GenericAbstractAdminContr
     private void loadFields(RequestHasCollectionsRequest requestHasCollectionsRequest) {
         if (requestHasCollectionsRequest != null) {
             try {
-                if (requestHasCollectionsRequest.getIndApproved() == 1) {
-                    rApprovedYes.setChecked(true);
-                } else {
-                    rApprovedNo.setChecked(true);
+                if (requestHasCollectionsRequest.getIndApproved()!=null) {
+                    if (requestHasCollectionsRequest.getIndApproved() == 1) {
+                        rApprovedYes.setChecked(true);
+                    } else {
+                        rApprovedNo.setChecked(true);
+                    }
                 }
-                txtObservations.setValue(requestHasCollectionsRequest.getObservations());
+                txtObservations.setText(requestHasCollectionsRequest.getObservations());
                 UrlFile = requestHasCollectionsRequest.getUrlImageFile();
 
                 AImage image;
