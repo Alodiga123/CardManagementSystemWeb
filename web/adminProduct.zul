@@ -120,16 +120,31 @@
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                         </row>
-                                                        <row>
+                                                                       <row>
+                                                            <label value="${c:l('cms.common.minimumBalance')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.maxBalance')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.daysBeforeExpiration')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.daysToInactivate')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.daysToActivate')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <intbox id="intDaysBeforeExpiration" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
+                                                                <intbox id="intMimBalance" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
+                                                            <hlayout>
+                                                                <intbox id="intMaxBalance" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout>
+                                                            <hlayout>
+                                                                <intbox id="intDaysBeforeExpiration" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
+                                                                <label value="*" sclass="lblreq" />
+                                                            </hlayout> 
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.daysToInactivate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.daysToActivate')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.daysToUse')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
                                                             <hlayout>
                                                                 <intbox id="intDaysToInactivate" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
@@ -138,17 +153,17 @@
                                                                 <intbox id="intDaysToActivate" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.daysToUse')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.daysToWithdrawCard')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.maximunDeactivationTimeBlocking')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
                                                             <hlayout>
                                                                 <intbox id="intDaysToUse" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
-                                                            </hlayout>
+                                                            </hlayout> 
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.daysToWithdrawCard')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.maximunDeactivationTimeBlocking')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
                                                             <hlayout>
                                                                 <intbox id="intDaysToWithdrawCard" width="250px" constraint="no empty: ${c:l('error.field.required')},no negative" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
@@ -157,17 +172,16 @@
                                                                 <intbox id="intMaximunDeactivationTimeBlocking" width="250px" maxlength="4"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
-                                                        </row>
-                                                        <row>
-                                                            <label value="${c:l('cms.common.beginDateValidity')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/>
-                                                        </row>
-                                                        <row>
                                                             <hlayout>
                                                                 <datebox id="dtbBeginDateValidity" width="250px" maxlength="60"/>                                                            
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
+                                                        </row>
+                                                        <row>
+                                                            <label value="${c:l('cms.common.endDateValidity')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.segmentMarketing')}" sclass="lblbold"/>
+                                                        </row>
+                                                        <row>
                                                             <datebox id="dtbEndDateValidity" width="250px" maxlength="60"/>
                                                             <hlayout>
                                                                 <combobox id="cmbSegmentMarketing" width="250px" mold="rounded" readonly="true"/>

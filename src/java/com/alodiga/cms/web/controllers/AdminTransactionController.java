@@ -107,10 +107,10 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     public Boolean validateEmpty() {
         if (txtCodeTransaction.getText().isEmpty()) {
             txtCodeTransaction.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("msj.error.fieldCodeEmpty", true, null);
         } else if (txtDescriptionTransaction.getText().isEmpty()) {
             txtDescriptionTransaction.setFocus(true);
-            this.showMessage("sp.error.field.cannotNull", true, null);
+            this.showMessage("cms.error.description", true, null);
         } else if ((!rMonetaryTypeYes.isChecked()) && (!rMonetaryTypeNo.isChecked())) {
             this.showMessage("cms.error.field.monetaryType", true, null);
         } else if ((!rTransactionPurchaseYes.isChecked()) && (!rTransactionPurchaseNo.isChecked())) {
