@@ -259,7 +259,7 @@ public class AdminGeneralRateController extends GenericAbstractAdminController {
             if (rModificationCardHolderYes.isChecked()) {
                 indModificationCardHolder = true;
             } else {
-                indModificationCardHolder = true;
+                indModificationCardHolder = false;
             }
 
             //Guarda las tarifas generales en la BD

@@ -27,7 +27,7 @@
                                                         <row>
                                                             <label value="${c:l('cms.common.program')}" sclass="lblbold"/>
                                                             <label value="${c:l('cms.common.productType')}" sclass="lblbold"/>
-                                                            <label value="${c:l('cms.common.cards')}" sclass="lblbold"/>
+                                                            <label value="${c:l('cms.common.product')}" sclass="lblbold"/>
                                                         </row>
                                                         <row>
                                                             <combobox id="cmbProgram" width="200px" mold="rounded" readonly="true" />
