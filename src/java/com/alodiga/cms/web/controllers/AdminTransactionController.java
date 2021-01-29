@@ -3,9 +3,15 @@ package com.alodiga.cms.web.controllers;
 import com.alodiga.cms.commons.ejb.ProductEJB;
 import com.alodiga.cms.web.generic.controllers.GenericAbstractAdminController;
 import com.alodiga.cms.web.utils.WebConstants;
+import com.cms.commons.genericEJB.EJBRequest;
 import com.cms.commons.models.Transaction;
+import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Sessions;
@@ -32,6 +38,7 @@ public class AdminTransactionController extends GenericAbstractAdminController {
     private Button btnSave;
     private Integer eventType;
     private Toolbarbutton tbbTitle;
+    List<Transaction> transactionList = new ArrayList<Transaction>();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -123,7 +130,28 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         return false;
 
     }
-
+    
+    public boolean validateTransaction(){
+        transactionList.clear();
+        try {
+            //Valida si el code ingresado ya existe en BD
+            EJBRequest request1 = new EJBRequest();
+            Map params = new HashMap();
+            params.put(Constants.PARAM_USER, txtCodeTransaction.getValue());
+            request1.setParams(params);
+            transactionList = productEJB.getTransactionByCode(request1); 
+        } catch (Exception ex) {
+            showError(ex);
+        } finally {
+                if (transactionList.size() > 0) {
+                    this.showMessage("cms.error.field.codeExistInBdTransactions", true, null);
+                    txtCodeTransaction.setFocus(true);
+                    return false;
+                }
+            }
+        return true;
+    }
+    
     private void saveTransaction(Transaction _transaction) {
         Boolean indMonetaryType = true;
         Boolean indTransactionPurchase = true;
@@ -169,7 +197,9 @@ public class AdminTransactionController extends GenericAbstractAdminController {
         if (validateEmpty()) {
             switch (eventType) {
                 case WebConstants.EVENT_ADD:
-                    saveTransaction(null);
+                    if(validateTransaction()){
+                       saveTransaction(null); 
+                    }
                     break;
                 case WebConstants.EVENT_EDIT:
                     saveTransaction(transactionParam);
