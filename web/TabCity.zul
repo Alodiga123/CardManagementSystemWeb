@@ -37,7 +37,7 @@
                                             <vlayout>
                                                 <tabbox id="tbxCityTabs" width="970px" height="400px">
                                                     <tabs>
-                                                        <tab id="tabCity" label="${c:l('sp.common.city')}" />
+                                                        <tab id="tabCity" label="${c:l('cms.common.city')}" />
                                                         <tab id="tabCityZipZone" label="${c:l('cms.common.zipZone')}"/>                                                       
                                                     </tabs>
                                                     <tabpanels>

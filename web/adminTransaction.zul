@@ -58,10 +58,10 @@
                                                         </row>
                                                         <row>
                                                             <hbox>
-                                                                <textbox id="txtCodeTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="3"/>
+                                                                <textbox id="txtCodeTransaction" width="250px" maxlength="3"/>
                                                             </hbox> 
                                                             <hbox>
-                                                                <textbox id="txtDescriptionTransaction" width="250px" constraint="no empty: ${c:l('error.field.required')}" maxlength="120"/>
+                                                                <textbox id="txtDescriptionTransaction" width="250px" maxlength="120"/>
                                                             </hbox>  
                                                             <hbox>
                                                                 <radiogroup id="monetaryType" onCheck="value = self.selectedItem.label"/>

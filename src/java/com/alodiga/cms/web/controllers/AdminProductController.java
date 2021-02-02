@@ -59,6 +59,8 @@ public class AdminProductController extends GenericAbstractAdminController {
     private Intbox intDaysToUse;
     private Intbox intDaysToWithdrawCard;
     private Intbox intMaximunDeactivationTimeBlocking;
+    private Intbox intMimBalance;
+    private Intbox intMaxBalance;
     private Datebox dtbBeginDateValidity;
     private Datebox dtbEndDateValidity;
     private Combobox cmbCountry;
@@ -134,6 +136,8 @@ public class AdminProductController extends GenericAbstractAdminController {
         intDaysToUse.setRawValue(null);
         intDaysToWithdrawCard.setRawValue(null);
         intMaximunDeactivationTimeBlocking.setRawValue(null);
+        intMimBalance.setRawValue(null);
+        intMaxBalance.setRawValue(null);
         dtbBeginDateValidity.setRawValue(null);
         dtbEndDateValidity.setRawValue(null);
     }
@@ -154,6 +158,8 @@ public class AdminProductController extends GenericAbstractAdminController {
             intDaysToActivate.setValue(product.getDaysToActivate().intValue());
             intDaysToUse.setValue(product.getDaysToUse().intValue());
             intDaysToWithdrawCard.setValue(product.getDaysToWithdrawCard().intValue());
+            intMimBalance.setValue(product.getMinimumBalance().intValue());
+            intMaxBalance.setValue(product.getMaximumBalance().intValue());
             if (product.getMaximunDeactivationTimeBlocking() != null) {
                 intMaximunDeactivationTimeBlocking.setValue(product.getMaximunDeactivationTimeBlocking().intValue());
             }
@@ -189,6 +195,8 @@ public class AdminProductController extends GenericAbstractAdminController {
         intDaysToUse.setDisabled(true);
         intDaysToWithdrawCard.setDisabled(true);
         intMaximunDeactivationTimeBlocking.setDisabled(true);
+        intMimBalance.setDisabled(true);
+        intMaxBalance.setDisabled(true);
         dtbBeginDateValidity.setDisabled(true);
         dtbEndDateValidity.setDisabled(true);
         btnSave.setVisible(false);
@@ -258,6 +266,8 @@ public class AdminProductController extends GenericAbstractAdminController {
             product.setsegmentMarketingId((SegmentMarketing) cmbSegmentMarketing.getSelectedItem().getValue());
             product.setProgramId((Program) cmbProgram.getSelectedItem().getValue());
             product.setMaximunDeactivationTimeBlocking(intMaximunDeactivationTimeBlocking.getValue());
+            product.setMinimumBalance(intMimBalance.getValue().floatValue());
+            product.setMaximumBalance(intMaxBalance.getValue().floatValue());
             product.setValidityMonths(validityMonth);
             if (eventType == WebConstants.EVENT_ADD) {
                 product.setCreateDate(new Timestamp(new Date().getTime()));
@@ -337,6 +347,8 @@ public class AdminProductController extends GenericAbstractAdminController {
         } else if (cmbSegmentMarketing.getSelectedItem() == null) {
             cmbSegmentMarketing.setFocus(true);
             this.showMessage("cms.error.segmentMarketing.noSelected", true, null);
+        } else if(intMimBalance.getValue() > intMaxBalance.getValue()){
+            this.showMessage("cms.error.mimBalanceHigher.Than.maxBalance", true, null);
         } else {
             return true;
         }
