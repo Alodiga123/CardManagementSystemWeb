@@ -61,7 +61,7 @@
                                                         </row>
                                                         <row>
                                                             <hlayout>
-                                                                <doublebox id="txtConversionRatePoints" width="250px" constraint="no negative" format="#,##0.##" maxlength="10"/>
+                                                                <doublebox id="txtConversionRatePoints" width="250px" constraint="no negative" format="#,##0.##" maxlength="20"/>
                                                                 <label value="*" sclass="lblreq" />
                                                             </hlayout>
                                                             <cell colspan="2">

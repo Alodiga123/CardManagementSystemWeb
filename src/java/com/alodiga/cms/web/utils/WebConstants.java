@@ -177,6 +177,21 @@ public class WebConstants {
     //Address Type
     public static final int ADDRESS_TYPE_COMPANY = 5;
     
+    //Tipos de Transacciones
+    public static final int RECARGA = 1;
+    public static final int RECARGA_INICIAL = 2;
+    public static final int RETIRO_DOMESTICO = 3;
+    public static final int RETIRO_INTERNACIONAL = 4;
+    public static final int COMPRA_DOMESTICA_PIN = 5;
+    public static final int COMPRA_INTERNACIONAL_PIN = 6;
+    public static final int DEPOSITO = 7;
+    public static final int CONSULTA = 8;
+    public static final int TRANSFERENCIAS_PROPIAS = 9;
+    public static final int ACTIVACION_TARJETA = 10;
+    public static final int CREACION_CUENTA = 23;
+    public static final int RECARGA_MANUAL = 24;
+    public static final int TARIFA_TRANSACCION_CMS = 25;
+    
     public static final String GENERAL_RATE= "generalRate";
     
 }

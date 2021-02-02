@@ -167,7 +167,7 @@ public class AdminLoyaltyController extends GenericAbstractAdminController {
             dtbStarDate.setValue(programLoyalty.getStartDate());
             dtbEndDate.setValue(programLoyalty.getEndDate());
             txtObservations.setText(programLoyalty.getObservations());
-            txtConversionRatePoints.setText(programLoyalty.getConversionRatePoints().toString());
+            txtConversionRatePoints.setValue(programLoyalty.getConversionRatePoints());
             programLoyaltyParent = programLoyalty;
             dtbStarDate.setDisabled(true);
             dtbEndDate.setDisabled(true);

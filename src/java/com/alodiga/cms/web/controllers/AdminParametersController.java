@@ -13,6 +13,7 @@ import com.cms.commons.models.Channel;
 import com.cms.commons.models.ProgramLoyalty;
 import com.cms.commons.models.ProgramLoyaltyTransaction;
 import com.cms.commons.models.Transaction;
+import com.cms.commons.enumeraciones.TransactionE;
 import com.cms.commons.util.Constants;
 import com.cms.commons.util.EJBServiceLocator;
 import com.cms.commons.util.EjbConstants;
@@ -172,19 +173,37 @@ public class AdminParametersController extends GenericAbstractAdminController {
     }
     
     public Boolean validateEmpty() {
-        if (txtTotalMaximumTransactions.getText().isEmpty()) {
-            txtTotalMaximumTransactions.setFocus(true);
-            this.showMessage("cms.error.emptyTotalMaximumTransactions", true, null);
-        } else if (txtTotalAmountDaily.getText().isEmpty()) {
-            txtTotalAmountDaily.setFocus(true);
-            this.showMessage("cms.error.emptyTotalAmountDaily", true, null);
-        } else if (txtTotalAmountMonthly.getText().isEmpty()) {
-            txtTotalAmountMonthly.setFocus(true);
-            this.showMessage("cms.error.emptyTotalAmountMonthly", true, null);
-        } else if (txtTotal.getText().isEmpty()) {
-            txtTotal.setFocus(true);
-            this.showMessage("cms.error.emptyTotalPointsBonification", true, null);
-        } else if (cmbTransaction.getSelectedItem() == null) {
+        Transaction transaction = (Transaction) cmbTransaction.getSelectedItem().getValue();        
+        switch (transaction.getId()) { 
+            case WebConstants.RECARGA:
+            case WebConstants.RETIRO_DOMESTICO:
+            case WebConstants.RETIRO_INTERNACIONAL:
+            case WebConstants.COMPRA_DOMESTICA_PIN:
+            case WebConstants.COMPRA_INTERNACIONAL_PIN:
+            case WebConstants.DEPOSITO:
+            case WebConstants.TRANSFERENCIAS_PROPIAS:
+            case WebConstants.RECARGA_MANUAL:
+                if (txtTotalMaximumTransactions.getText().isEmpty()) {
+                    txtTotalMaximumTransactions.setFocus(true);
+                    this.showMessage("cms.error.emptyTotalMaximumTransactions", true, null);
+                    return false;
+                } else if (txtTotalAmountDaily.getText().isEmpty()) {
+                    txtTotalAmountDaily.setFocus(true);
+                    this.showMessage("cms.error.emptyTotalAmountDaily", true, null);
+                    return false;
+                } else if (txtTotalAmountMonthly.getText().isEmpty()) {
+                    txtTotalAmountMonthly.setFocus(true);
+                    this.showMessage("cms.error.emptyTotalAmountMonthly", true, null);
+                    return false;
+                } else if (txtTotal.getText().isEmpty()) {
+                    txtTotal.setFocus(true);
+                    this.showMessage("cms.error.emptyTotalPointsBonification", true, null);
+                    return false;
+                } else {
+                    return true;
+                }               
+        } 
+        if (cmbTransaction.getSelectedItem() == null) {
             cmbTransaction.setFocus(true);
             this.showMessage("cms.error.transaction.notSelected", true, null);
         } else if (cmbChannel.getSelectedItem() == null) {
@@ -218,10 +237,13 @@ public class AdminParametersController extends GenericAbstractAdminController {
             lblLoyaltyProgramType.setValue(programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getName());
             if (programLoyaltyTransaction.getTotalMaximumTransactions() != null) {
                 txtTotalMaximumTransactions.setValue(programLoyaltyTransaction.getTotalMaximumTransactions());
-            }            
-            txtTotalAmountDaily.setValue(programLoyaltyTransaction.getTotalAmountDaily());
-            txtTotalAmountMonthly.setValue(programLoyaltyTransaction.getTotalAmountMonthly());
-
+            }      
+            if (programLoyaltyTransaction.getTotalAmountDaily() != null) {
+                txtTotalAmountDaily.setValue(programLoyaltyTransaction.getTotalAmountDaily());
+            }
+            if (programLoyaltyTransaction.getTotalAmountMonthly() != null) {
+                txtTotalAmountMonthly.setValue(programLoyaltyTransaction.getTotalAmountMonthly());
+            }          
             if (programLoyaltyTransaction.getProgramLoyaltyId().getProgramLoyaltyTypeId().getId() == WebConstants.PROGRAM_LOYALTY_TYPE_POINT) {
                 lblTitle.setValue(Labels.getLabel("cms.crud.loyalty.parameters.totalPoint"));                
                 lblIndBonificationFixed.setValue("");
@@ -248,7 +270,6 @@ public class AdminParametersController extends GenericAbstractAdminController {
         txtTotalMaximumTransactions.setReadonly(true);
         txtTotalAmountDaily.setReadonly(true);
         txtTotalAmountMonthly.setReadonly(true);
-
         btnSave.setVisible(false);
     }
 
@@ -318,14 +339,12 @@ public class AdminParametersController extends GenericAbstractAdminController {
     }
     
     public void buildProgramLoyaltyTransaction(ProgramLoyalty programLoyalty, ProgramLoyaltyTransaction programLoyaltyTransaction) {
-        boolean IndBonificationFixed = true;
-        
+        boolean IndBonificationFixed = true;        
         if (rBonificationYes.isChecked()) {
                 IndBonificationFixed = true;
             } else {
                 IndBonificationFixed = false;
             }
-        
         programLoyaltyTransaction.setChannelId((Channel) cmbChannel.getSelectedItem().getValue());
         programLoyaltyTransaction.setProgramLoyaltyId(programLoyalty);
         programLoyaltyTransaction.setTransactionId((Transaction) cmbTransaction.getSelectedItem().getValue());
@@ -337,8 +356,12 @@ public class AdminParametersController extends GenericAbstractAdminController {
         if (txtTotalMaximumTransactions.getValue() != null) {
             programLoyaltyTransaction.setTotalMaximumTransactions(txtTotalMaximumTransactions.getValue().floatValue());
         }
-        programLoyaltyTransaction.setTotalAmountDaily(txtTotalAmountDaily.getValue().floatValue());
-        programLoyaltyTransaction.setTotalAmountMonthly(txtTotalAmountMonthly.getValue().floatValue());
+        if (txtTotalAmountDaily.getValue() != null) {
+            programLoyaltyTransaction.setTotalAmountDaily(txtTotalAmountDaily.getValue().floatValue());
+        }
+        if (txtTotalAmountMonthly.getValue() != null) {
+            programLoyaltyTransaction.setTotalAmountMonthly(txtTotalAmountMonthly.getValue().floatValue());
+        }           
         programLoyaltyTransaction.setIndBonificationFixed(IndBonificationFixed);
     }
 
